@@ -6,13 +6,14 @@
 //  Copyright © 2024 Cotton (former Catowser). All rights reserved.
 //
 
+import DataServiceKit
 import Foundation
 
 /**
  Tabs data service commands for the Command design pattern.
  Each command case can carry the input data.
  */
-public enum TabsServiceCommand: Sendable {
+public enum TabsServiceCommand: GenericDataServiceCommand, Sendable {
     case getTabsCount
     case getSelectedTabId
     case getAllTabs
@@ -23,4 +24,17 @@ public enum TabsServiceCommand: Sendable {
     case selectTab(CoreBrowser.Tab)
     case replaceSelectedContent(CoreBrowser.Tab.ContentType)
     case updateSelectedTabPreview(Data?)
+    
+    public static let allCases: [TabsServiceCommand] = [
+        .getTabsCount,
+        .getSelectedTabId,
+        .getAllTabs,
+        .addTab(.blank),
+        .closeTab(.blank),
+        .closeTabWithId(.init()),
+        .closeAll,
+        .selectTab(.blank),
+        .replaceSelectedContent(.blank),
+        .updateSelectedTabPreview(nil)
+    ]
 }

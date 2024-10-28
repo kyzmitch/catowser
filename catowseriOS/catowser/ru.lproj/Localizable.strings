@@ -54,8 +54,8 @@
 "txt_app_async_api_reactive" = "Reactive";
 "txt_app_async_api_combine" = "Combine";
 "txt_app_async_api_async_await" = "Async Await";
-"txt_app_observing_api_system" = "Observation фреймворк";
-"txt_app_observing_api_design_pattern" = "Observer дизайн паттерн";
+"txt_app_observing_api_system" = "системный фреймворк";
+"txt_app_observing_api_design_pattern" = "своя имплементация";
 
 "txt_tab_content_blank" = "Пустая страница";
 "txt_tab_content_homepage" = "Домашняя страница";

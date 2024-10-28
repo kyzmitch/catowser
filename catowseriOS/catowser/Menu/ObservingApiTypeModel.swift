@@ -31,9 +31,9 @@ extension ObservingApiType: @retroactive CustomStringConvertible {
 
         switch self {
         case .observerDesignPattern:
-            key = "txt_app_observing_api_system"
-        case .systemObservation:
             key = "txt_app_observing_api_design_pattern"
+        case .systemObservation:
+            key = "txt_app_observing_api_system"
         }
         return NSLocalizedString(key, comment: "")
     }

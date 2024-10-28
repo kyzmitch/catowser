@@ -13,6 +13,9 @@ import Foundation
  Tabs list data service which can be used as a subject for observers.
  */
 public actor TabsDataService: GenericDataServiceProtocol {
+    public typealias Command = TabsServiceCommand
+    public typealias ServiceData = TabsServiceDataOutput
+    
     typealias UUIDStream = AsyncStream<UUID>
     typealias IntStream = AsyncStream<Int>
 
@@ -89,7 +92,10 @@ public actor TabsDataService: GenericDataServiceProtocol {
         }
     }
 
-    public func sendCommand(_ command: TabsServiceCommand) async -> TabsServiceDataOutput {
+    public func sendCommand(
+        _ command: Command,
+        _ input: ServiceData? = nil
+    ) async -> ServiceData {
         switch command {
         case .getTabsCount:
             return handleTabsCountCommand()
@@ -473,12 +479,9 @@ private extension TabsDataService {
 
     func subscribeForSelectedTabIdChange() {
         /// This method can't be async - it blocks init,  so have to use new task to avoid this.
+        let defaultValue = positioning.defaultSelectedTabId
         Task {
-            let filteredId = selectedTabIdStream.drop(while: { [weak self] identifier in
-                guard let self else {
-                    return false
-                }
-                let defaultValue = self.positioning.defaultSelectedTabId
+            let filteredId = selectedTabIdStream.drop(while: { identifier in
                 return identifier == defaultValue
             })
 
@@ -487,7 +490,11 @@ private extension TabsDataService {
                     continue
                 }
                 for observer in tabObservers {
-                    await observer.tabDidSelect(tabTuple.index, tabTuple.tab.contentType, tabTuple.tab.id)
+                    await observer.tabDidSelect(
+                        tabTuple.index,
+                        tabTuple.tab.contentType,
+                        tabTuple.tab.id
+                    )
                 }
             }
         }
