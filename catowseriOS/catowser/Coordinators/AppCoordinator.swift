@@ -85,15 +85,19 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators {
     private var allTabsVM: AllTabsViewModel?
     /// Feature manager
     private let featureManager: FeatureManager.StateHolder
+    /// UI service registry
+    private let uiServiceRegistry: UIServiceRegistry
 
     init(
         _ vcFactory: ViewControllerFactory,
         _ uiFramework: UIFrameworkType,
-        _ featureManager: FeatureManager.StateHolder
+        _ featureManager: FeatureManager.StateHolder,
+        _ uiServiceRegistry: UIServiceRegistry
     ) {
         self.vcFactory = vcFactory
         self.uiFramework = uiFramework
         self.featureManager = featureManager
+        self.uiServiceRegistry = uiServiceRegistry
     }
 
     func start() {
@@ -149,7 +153,12 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators {
         let observingType = await featureManager.observingApiTypeValue()
         if case .uiKit = uiFramework {
             if #available(iOS 17.0, *), .systemObservation == observingType {
+                // This is a little to late for the initial values
+                // emitted at the app start, because it happens
+                // at AppDelegate start with init of TabsDataService
+                // so that, have to read current tabs state manually as well
                 startTabsObservation()
+                await readTabsState()
             } else {
                 await TabsDataService.shared.attach(self, notify: true)
             }
@@ -160,14 +169,14 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators {
     @MainActor
     private func startTabsObservation() {
         withObservationTracking {
-            _ = UIServiceRegistry.shared().tabsSubject.selectedTabId
+            _ = uiServiceRegistry.tabsSubject.selectedTabId
         } onChange: {
             Task { [weak self] in
-                await self?.observeSelectedTab()
+                await self?.handleSelectedTabChange()
             }
         }
         withObservationTracking {
-            _ = UIServiceRegistry.shared().tabsSubject.replacedTabIndex
+            _ = uiServiceRegistry.tabsSubject.replacedTabIndex
         } onChange: {
             Task { [weak self] in
                 await self?.observeReplacedTab()
@@ -175,11 +184,15 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators {
         }
     }
     
+    @available(iOS 17.0, *)
+    private func readTabsState() async {
+        await handleSelectedTabChange()
+    }
     
     @available(iOS 17.0, *)
     @MainActor
-    private func observeSelectedTab() async {
-        let subject = UIServiceRegistry.shared().tabsSubject
+    private func handleSelectedTabChange() async {
+        let subject = uiServiceRegistry.tabsSubject
         let tabId = subject.selectedTabId
         guard let index = subject.tabs
             .firstIndex(where: { $0.id == tabId }) else {
@@ -191,7 +204,7 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators {
     @available(iOS 17.0, *)
     @MainActor
     private func observeReplacedTab() async {
-        let subject = UIServiceRegistry.shared().tabsSubject
+        let subject = uiServiceRegistry.tabsSubject
         guard let index = subject.replacedTabIndex else {
             return
         }

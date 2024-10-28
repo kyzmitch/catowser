@@ -39,15 +39,12 @@ import UIKit
     ///
     /// Should be main actor instead of data service own actor,
     /// because it will be observed almost everytime in some view controller.
-    public var tabsSubject: TabsDataSubjectProtocol {
+    @available(iOS 17.0, *)
+    public var tabsSubject: TabsDataSubject {
         if _tabsSubject == nil {
-            if #available(iOS 17.0, *) {
-                _tabsSubject = TabsDataSubject(positioning)
-            } else {
-                // Fallback on earlier versions
-            }
+            _tabsSubject = TabsDataSubject(positioning)
         }
-        return _tabsSubject as! TabsDataSubjectProtocol
+        return _tabsSubject as! TabsDataSubject
     }
     
     /// web views reuse manager

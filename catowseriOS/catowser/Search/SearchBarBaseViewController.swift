@@ -84,7 +84,7 @@ final class SearchBarBaseViewController: BaseViewController {
             _ = UIServiceRegistry.shared().tabsSubject.selectedTabId
         } onChange: {
             Task { [weak self] in
-                await self?.observeSelectedTab()
+                await self?.handleSelectedTabChange()
             }
         }
         withObservationTracking {
@@ -98,7 +98,7 @@ final class SearchBarBaseViewController: BaseViewController {
     
     @available(iOS 17.0, *)
     @MainActor
-    private func observeSelectedTab() async {
+    private func handleSelectedTabChange() async {
         let subject = UIServiceRegistry.shared().tabsSubject
         let tabId = subject.selectedTabId
         guard let index = subject.tabs

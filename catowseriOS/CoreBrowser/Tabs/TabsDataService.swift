@@ -39,8 +39,8 @@ public actor TabsDataService: GenericDataServiceProtocol {
     private let positioning: TabsStates
     /// A list of observers, usually some views which need to observer tabs count or changes to the tabs list
     private var tabObservers: [TabsObserver]
-    /// A subject for observing
-    private let tabsSubject: TabsDataSubjectProtocol
+    /// A subject for observing. Should be optional to be able to support iOS < 17.0
+    private let tabsSubject: TabsDataSubjectProtocol?
     /// Type of observation, should be passed from the client app, change should require restart
     /// because subscribing usually happens in init or viewDidLoad during app start.
     private let observingType: ObservingApiType
@@ -48,7 +48,7 @@ public actor TabsDataService: GenericDataServiceProtocol {
     public init(_ tabsRepository: TabsRepository,
                 _ positioning: TabsStates,
                 _ selectionStrategy: TabSelectionStrategy,
-                _ tabsSubject: TabsDataSubjectProtocol,
+                _ tabsSubject: TabsDataSubjectProtocol?,
                 _ observingType: ObservingApiType = .observerDesignPattern
     ) async {
         self.tabsRepository = tabsRepository
@@ -130,18 +130,18 @@ private extension TabsDataService {
         _ tabs: [CoreBrowser.Tab],
         _ addedIndex: Int?
     ) async {
-        tabsSubject.tabs = tabs
-        tabsSubject.addedTabIndex = addedIndex
+        tabsSubject?.tabs = tabs
+        tabsSubject?.addedTabIndex = addedIndex
     }
     
     @available(iOS 17.0, *)
     @MainActor func notifyObservationAboutClearTabs() async {
-        tabsSubject.tabs.removeAll()
+        tabsSubject?.tabs.removeAll()
     }
     
     @available(iOS 17.0, *)
     @MainActor func notifyObservationAboutNewSelectedTabId(_ tabId: UUID) async {
-        tabsSubject.selectedTabId = tabId
+        tabsSubject?.selectedTabId = tabId
     }
     
     @available(iOS 17.0, *)
@@ -149,7 +149,7 @@ private extension TabsDataService {
         at tabIndex: Int,
         newTab: CoreBrowser.Tab
     ) async {
-        tabsSubject.tabs[tabIndex] = newTab
+        tabsSubject?.tabs[tabIndex] = newTab
     }
 }
 

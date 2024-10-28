@@ -32,16 +32,20 @@ import FeaturesFlagsKit
     private var firstTabContentSelect: Bool
     /// Feature manager to determine which observing method to use
     private let featureManager: FeatureManager.StateHolder
+    /// UI service registry
+    private let uiServiceRegistry: UIServiceRegistry
 
     init(
         _ jsPluginsBuilder: any JSPluginsSource,
         _ defaultContentType: CoreBrowser.Tab.ContentType,
-        _ featureManager: FeatureManager.StateHolder
+        _ featureManager: FeatureManager.StateHolder,
+        _ uiServiceRegistry: UIServiceRegistry
     ) {
         firstTabContentSelect = true
         self.jsPluginsBuilder = jsPluginsBuilder
         self.contentType = defaultContentType
         self.featureManager = featureManager
+        self.uiServiceRegistry = uiServiceRegistry
         loading = true
         webViewNeedsUpdate = ()
         tabsCount = 0
@@ -64,21 +68,21 @@ import FeaturesFlagsKit
     @MainActor
     private func startTabsObservation() {
         withObservationTracking {
-            _ = UIServiceRegistry.shared().tabsSubject.selectedTabId
+            _ = uiServiceRegistry.tabsSubject.selectedTabId
         } onChange: {
             Task { [weak self] in
-                await self?.observeSelectedTab()
+                await self?.handleSelectedTabChange()
             }
         }
         withObservationTracking {
-            _ = UIServiceRegistry.shared().tabsSubject.tabsCount
+            _ = uiServiceRegistry.tabsSubject.tabsCount
         } onChange: {
             Task { [weak self] in
                 await self?.observeTabsCount()
             }
         }
         withObservationTracking {
-            _ = UIServiceRegistry.shared().tabsSubject.replacedTabIndex
+            _ = uiServiceRegistry.tabsSubject.replacedTabIndex
         } onChange: {
             Task { [weak self] in
                 await self?.observeReplacedTab()
@@ -89,8 +93,8 @@ import FeaturesFlagsKit
     
     @available(iOS 17.0, *)
     @MainActor
-    private func observeSelectedTab() async {
-        let subject = UIServiceRegistry.shared().tabsSubject
+    private func handleSelectedTabChange() async {
+        let subject = uiServiceRegistry.tabsSubject
         let tabId = subject.selectedTabId
         guard let index = subject.tabs
             .firstIndex(where: { $0.id == tabId }) else {
@@ -102,14 +106,14 @@ import FeaturesFlagsKit
     @available(iOS 17.0, *)
     @MainActor
     private func observeTabsCount() async {
-        let count = UIServiceRegistry.shared().tabsSubject.tabsCount
+        let count = uiServiceRegistry.tabsSubject.tabsCount
         await updateTabsCount(with: count)
     }
     
     @available(iOS 17.0, *)
     @MainActor
     private func observeReplacedTab() async {
-        let subject = UIServiceRegistry.shared().tabsSubject
+        let subject = uiServiceRegistry.tabsSubject
         guard let index = subject.replacedTabIndex else {
             return
         }

@@ -322,14 +322,14 @@ private extension BrowserToolbarView {
             _ = UIServiceRegistry.shared().tabsSubject.selectedTabId
         } onChange: {
             Task { [weak self] in
-                await self?.observeSelectedTab()
+                await self?.handleSelectedTabChange()
             }
         }
     }
     
     @available(iOS 17.0, *)
     @MainActor
-    func observeSelectedTab() async {
+    func handleSelectedTabChange() async {
         let subject = UIServiceRegistry.shared().tabsSubject
         let tabId = subject.selectedTabId
         guard let index = subject.tabs

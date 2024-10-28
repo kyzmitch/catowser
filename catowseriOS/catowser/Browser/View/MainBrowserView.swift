@@ -69,7 +69,8 @@ struct MainBrowserView
         let browserVM = BrowserContentViewModel(
             mainVM.jsPluginsBuilder,
             defaultContentType,
-            FeatureManager.shared
+            FeatureManager.shared,
+            UIServiceRegistry.shared()
         )
         _browserContentVM = StateObject(wrappedValue: browserVM)
         mode = uiFrameworkType.swiftUIMode
