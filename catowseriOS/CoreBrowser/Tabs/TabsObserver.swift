@@ -17,7 +17,7 @@ import Foundation
 ///
 /// This can be sendable, because all actor types are, and this one is Main actor
 @MainActor
-public protocol TabsObserver: Sendable {
+public protocol TabsObserver: AnyObject, Sendable {
     /// Prodive necessary data to render UI on tablets
     ///
     /// - Parameter tabs: Tabs from cache at application start.
@@ -79,3 +79,6 @@ public extension TabsObserver {
 
     /* optional */ func initializeObserver(with tabs: [CoreBrowser.Tab]) async {}
 }
+
+/// An actual type instead of a protocol to be able to use it in NSHashTable
+open class BaseTabsObserver: TabsObserver { }

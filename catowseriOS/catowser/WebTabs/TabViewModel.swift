@@ -32,7 +32,10 @@ final class TabViewModel {
         _state = .init(initialValue: .deSelected(tab.title, nil))
         
         Task {
-            await checkObservation()
+            let observingType = await featureManager.observingApiTypeValue()
+            if #available(iOS 17.0, *), observingType.isSystemObservation {
+                startTabsObservation()
+            }
         }
     }
 
@@ -101,13 +104,6 @@ final class TabViewModel {
             return nil
         }
         return source
-    }
-    
-    private func checkObservation() async {
-        let observingType = await featureManager.observingApiTypeValue()
-        if #available(iOS 17.0, *), .systemObservation == observingType {
-            startTabsObservation()
-        }
     }
     
     @available(iOS 17.0, *)

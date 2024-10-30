@@ -36,7 +36,12 @@ final class SearchBarBaseViewController: BaseViewController {
         super.init(nibName: nil, bundle: nil)
         
         Task {
-            await checkObservation()
+            let observingType = await featureManager.observingApiTypeValue()
+            if #available(iOS 17.0, *), observingType.isSystemObservation {
+                startTabsObservation()
+            } else {
+                await TabsDataService.shared.attach(self, notify: false)
+            }
         }
     }
 
@@ -48,33 +53,10 @@ final class SearchBarBaseViewController: BaseViewController {
         view = searchBarView
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        Task {
-            await TabsDataService.shared.attach(self, notify: false)
-        }
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-
-        Task {
-            await TabsDataService.shared.detach(self)
-        }
-    }
-
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
         searchBarView.handleTraitCollectionChange()
-    }
-    
-    private func checkObservation() async {
-        let observingType = await featureManager.observingApiTypeValue()
-        if #available(iOS 17.0, *), .systemObservation == observingType {
-            startTabsObservation()
-        }
     }
     
     @available(iOS 17.0, *)

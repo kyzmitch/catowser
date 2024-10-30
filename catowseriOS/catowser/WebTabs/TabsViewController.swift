@@ -32,7 +32,13 @@ final class TabsViewController: BaseViewController {
         super.init(nibName: nil, bundle: nil)
         
         Task {
-            await checkObservation()
+            let observingType = await featureManager.observingApiTypeValue()
+            if #available(iOS 17.0, *), observingType.isSystemObservation {
+                startTabsObservation()
+                await readTabsState()
+            } else {
+                await TabsDataService.shared.attach(self, notify: true)
+            }
         }
     }
 
@@ -118,20 +124,9 @@ final class TabsViewController: BaseViewController {
         addTabButton.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         #endif
     }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        /**
-         initializeObserver will load all of the tabs and create views
-         */
-        Task {
-            await TabsDataService.shared.attach(self, notify: true)
-        }
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
 
         Task {
             await TabsDataService.shared.detach(self)
@@ -236,11 +231,10 @@ private extension TabsViewController {
         return newlyAddedTabFrame
     }
     
-    private func checkObservation() async {
-        let observingType = await featureManager.observingApiTypeValue()
-        if #available(iOS 17.0, *), .systemObservation == observingType {
-            startTabsObservation()
-        }
+    @available(iOS 17.0, *)
+    func readTabsState() async {
+        await handleTabsCountChange()
+        await handleSelectedTabChange()
     }
     
     @available(iOS 17.0, *)
@@ -250,7 +244,7 @@ private extension TabsViewController {
             _ = UIServiceRegistry.shared().tabsSubject.addedTabIndex
         } onChange: {
             Task { [weak self] in
-                await self?.observeAddedTabs()
+                await self?.handleAddedTabs()
             }
         }
         withObservationTracking {
@@ -264,14 +258,14 @@ private extension TabsViewController {
             _ = UIServiceRegistry.shared().tabsSubject.tabsCount
         } onChange: {
             Task { [weak self] in
-                await self?.observeTabsCount()
+                await self?.handleTabsCountChange()
             }
         }
     }
     
     @available(iOS 17.0, *)
     @MainActor
-    func observeAddedTabs() async {
+    func handleAddedTabs() async {
         let subject = UIServiceRegistry.shared().tabsSubject
         if let index = subject.addedTabIndex {
             await tabDidAdd(subject.tabs[index], at: index)
@@ -294,7 +288,7 @@ private extension TabsViewController {
     
     @available(iOS 17.0, *)
     @MainActor
-    private func observeTabsCount() async {
+    private func handleTabsCountChange() async {
         let count = UIServiceRegistry.shared().tabsSubject.tabsCount
         await updateTabsCount(with: count)
     }

@@ -141,11 +141,6 @@ final class BrowserToolbarView: UIToolbar {
         return barItems
     }()
 
-    func detachFromTabsListManager() async {
-        await TabsDataService.shared.detach(counterView)
-        await TabsDataService.shared.detach(self)
-    }
-
     /// Instead of `didMoveToSuperview`
     func attachToTabsListManager() async {
         await TabsDataService.shared.attach(self, notify: false)
@@ -173,7 +168,13 @@ final class BrowserToolbarView: UIToolbar {
         }
         
         Task {
-            await checkIfNeedToSubscribe()
+            let observingType = await featureManager.observingApiTypeValue()
+            if #available(iOS 17.0, *), observingType == .systemObservation {
+                startTabsObservation()
+                await readTabsState()
+            } else {
+                await attachToTabsListManager()
+            }
         }
     }
 
@@ -182,13 +183,6 @@ final class BrowserToolbarView: UIToolbar {
     }
 
     // MARK: - state handler
-    
-    private func checkIfNeedToSubscribe() async {
-        let observingType = await featureManager.observingApiTypeValue()
-        if #available(iOS 17.0, *), observingType == .systemObservation {
-            startTabsObservation()
-        }
-    }
 
     private func onStateChange(_ nextState: WebToolbarState) {
         // See `diff` comment to find a difference with previos state handling
@@ -316,6 +310,12 @@ private extension BrowserToolbarView {
     }
     
     @available(iOS 17.0, *)
+    func readTabsState() async {
+        await handleSelectedTabChange()
+        await handleTabsCountChange()
+    }
+    
+    @available(iOS 17.0, *)
     @MainActor
     func startTabsObservation() {
         withObservationTracking {
@@ -323,6 +323,14 @@ private extension BrowserToolbarView {
         } onChange: {
             Task { [weak self] in
                 await self?.handleSelectedTabChange()
+            }
+        }
+
+        withObservationTracking {
+            _ = UIServiceRegistry.shared().tabsSubject.tabsCount
+        } onChange: {
+            Task { [weak self] in
+                await self?.handleTabsCountChange()
             }
         }
     }
@@ -337,7 +345,13 @@ private extension BrowserToolbarView {
             return
         }
         await tabDidSelect(index, subject.tabs[index].contentType, tabId)
+    }
 
+    @available(iOS 17.0, *)
+    @MainActor
+    func handleTabsCountChange() async {
+        let subject = UIServiceRegistry.shared().tabsSubject
+        await counterView.updateTabsCount(with: subject.tabsCount)
     }
 }
 

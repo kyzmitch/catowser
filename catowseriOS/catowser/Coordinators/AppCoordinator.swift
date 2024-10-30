@@ -152,11 +152,7 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators {
         // we need to attach observer only after adding all child coordinators
         let observingType = await featureManager.observingApiTypeValue()
         if case .uiKit = uiFramework {
-            if #available(iOS 17.0, *), .systemObservation == observingType {
-                // This is a little to late for the initial values
-                // emitted at the app start, because it happens
-                // at AppDelegate start with init of TabsDataService
-                // so that, have to read current tabs state manually as well
+            if #available(iOS 17.0, *), observingType.isSystemObservation {
                 startTabsObservation()
                 await readTabsState()
             } else {

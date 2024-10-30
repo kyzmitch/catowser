@@ -138,8 +138,7 @@ private extension TabsDataService {
     @MainActor func notifyObservationAboutClearTabs() async {
         tabsSubject?.tabs.removeAll()
     }
-    
-    @available(iOS 17.0, *)
+
     @MainActor func notifyObservationAboutNewSelectedTabId(_ tabId: UUID) async {
         tabsSubject?.selectedTabId = tabId
     }
@@ -379,7 +378,7 @@ private extension TabsDataService {
                 await observer.tabDidAdd(tab, at: index)
             }
             if select {
-                if #available(iOS 17.0, *), .systemObservation == observingType {
+                if observingType.isSystemObservation {
                     await notifyObservationAboutNewSelectedTabId(tab.id)
                 } else {
                     selectedTabIdentifier = tab.id
@@ -398,7 +397,7 @@ private extension TabsDataService {
                     await observer.tabDidAdd(tab, at: index)
                 }
                 if select {
-                    if #available(iOS 17.0, *), .systemObservation == observingType {
+                    if observingType.isSystemObservation {
                         await notifyObservationAboutNewSelectedTabId(tab.id)
                     } else {
                         selectedTabIdentifier = tab.id

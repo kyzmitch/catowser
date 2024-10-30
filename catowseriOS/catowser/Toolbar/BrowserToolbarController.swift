@@ -74,22 +74,6 @@ final class BrowserToolbarController<C: Navigating>: BaseViewController where C.
         toolbarView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
     }
 
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-
-        Task {
-            await toolbarView.detachFromTabsListManager()
-        }
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        Task {
-            await toolbarView.attachToTabsListManager()
-        }
-    }
-
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         // Workaround for UIBarButtonItem with a custom UIView
         // for strange reason it can't recognize gesture recognizers or

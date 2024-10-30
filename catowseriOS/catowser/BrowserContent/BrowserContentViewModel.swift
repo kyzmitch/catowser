@@ -51,17 +51,13 @@ import FeaturesFlagsKit
         tabsCount = 0
         
         Task {
-            await checkObservation()
+            let observingType = await featureManager.observingApiTypeValue()
+            if #available(iOS 17.0, *), observingType.isSystemObservation {
+                startTabsObservation()
+            }
         }
         // Fallback for before iOS 17 is outside in
         // `MainBrowserView.onAppear` by calling `attach`
-    }
-    
-    private func checkObservation() async {
-        let observingType = await featureManager.observingApiTypeValue()
-        if #available(iOS 17.0, *), .systemObservation == observingType {
-            startTabsObservation()
-        }
     }
     
     @available(iOS 17.0, *)

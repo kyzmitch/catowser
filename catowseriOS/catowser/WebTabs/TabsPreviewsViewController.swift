@@ -34,7 +34,10 @@ where C.R == TabsScreenRoute {
         super.init(nibName: nil, bundle: nil)
         
         Task {
-            await checkObservation()
+            let observingType = await featureManager.observingApiTypeValue()
+            if #available(iOS 17.0, *), observingType.isSystemObservation {
+                startTabsObservation()
+            }
         }
     }
 
@@ -225,13 +228,6 @@ where C.R == TabsScreenRoute {
     
     private func render(state: TabsPreviewState) {
         collectionView.reloadData()
-    }
-    
-    private func checkObservation() async {
-        let observingType = await featureManager.observingApiTypeValue()
-        if #available(iOS 17.0, *), .systemObservation == observingType {
-            startTabsObservation()
-        }
     }
     
     @available(iOS 17.0, *)
