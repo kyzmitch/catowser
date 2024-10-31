@@ -450,13 +450,13 @@ private extension TabsDataService {
         guard !cachedTabs.isEmpty else {
             return
         }
+        tabs = cachedTabs
+        selectedTabIdentifier = id
         if #available(iOS 17.0, *), case .systemObservation = observingType {
             await notifyObservationAboutNewTabs(cachedTabs, nil)
             await notifyObservationAboutNewSelectedTabId(id)
         } else {
-            tabs = cachedTabs
             tabsCountInput.yield(cachedTabs.count)
-            selectedTabIdentifier = id
             selectedTabIdInput.yield(id)
         }
     }

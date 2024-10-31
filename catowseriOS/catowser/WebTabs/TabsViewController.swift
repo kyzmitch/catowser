@@ -233,8 +233,7 @@ private extension TabsViewController {
     
     @available(iOS 17.0, *)
     func readTabsState() async {
-        await handleTabsCountChange()
-        await handleSelectedTabChange()
+        await handleAddedTabs()
     }
     
     @available(iOS 17.0, *)

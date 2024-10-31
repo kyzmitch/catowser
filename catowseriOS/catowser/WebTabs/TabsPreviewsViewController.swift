@@ -37,6 +37,9 @@ where C.R == TabsScreenRoute {
             let observingType = await featureManager.observingApiTypeValue()
             if #available(iOS 17.0, *), observingType.isSystemObservation {
                 startTabsObservation()
+                await readTabsState()
+            } else {
+                await TabsDataService.shared.attach(self, notify: false)
             }
         }
     }
@@ -119,19 +122,11 @@ where C.R == TabsScreenRoute {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
-        Task {
-            await TabsDataService.shared.attach(self, notify: false)
-            viewModel.load()
-        }
+        viewModel.load()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-
-        Task {
-            await TabsDataService.shared.detach(self)
-        }
         stateHandlerCancellable?.cancel()
     }
 
@@ -231,20 +226,25 @@ where C.R == TabsScreenRoute {
     }
     
     @available(iOS 17.0, *)
+    func readTabsState() async {
+        await handleAddedTabs()
+    }
+    
+    @available(iOS 17.0, *)
     @MainActor
     private func startTabsObservation() {
         withObservationTracking {
             _ = UIServiceRegistry.shared().tabsSubject.addedTabIndex
         } onChange: {
             Task { [weak self] in
-                await self?.observeAddedTabs()
+                await self?.handleAddedTabs()
             }
         }
     }
     
     @available(iOS 17.0, *)
     @MainActor
-    private func observeAddedTabs() async {
+    private func handleAddedTabs() async {
         let subject = UIServiceRegistry.shared().tabsSubject
         guard let index = subject.addedTabIndex else {
             return
