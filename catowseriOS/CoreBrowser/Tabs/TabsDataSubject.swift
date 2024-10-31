@@ -14,7 +14,7 @@ import Observation
 /// An interface for the tabs data source for observing
 @MainActor public protocol TabsDataSubjectProtocol: AnyObject, Sendable {
     /// An identifier of the selected tab
-    var selectedTabId: UUID { get set }
+    var selectedTabId: CoreBrowser.Tab.ID { get set }
     /// An array of all tabs
     var tabs: [Tab] { get set }
     /// The amount of tabs
@@ -28,7 +28,7 @@ import Observation
 @available(iOS 17.0, *)
 @MainActor @Observable public final class TabsDataSubject: TabsDataSubjectProtocol {
     /// An identifier of the selected tab
-    public var selectedTabId: UUID
+    public var selectedTabId: CoreBrowser.Tab.ID
     /// The amount of tabs
     public var tabsCount: Int {
         tabs.count

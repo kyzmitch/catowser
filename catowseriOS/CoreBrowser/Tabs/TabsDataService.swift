@@ -139,7 +139,9 @@ private extension TabsDataService {
         tabsSubject?.tabs.removeAll()
     }
 
-    @MainActor func notifyObservationAboutNewSelectedTabId(_ tabId: UUID) async {
+    @MainActor func notifyObservationAboutNewSelectedTabId(
+        _ tabId: CoreBrowser.Tab.ID
+    ) async {
         tabsSubject?.selectedTabId = tabId
     }
     
@@ -416,12 +418,14 @@ private extension TabsDataService {
         /// so, this is kind of a side effect of removing the only one last tab
         if tabs.count == 1 {
             tabs.removeAll()
-            tabsCountInput.yield(0)
-            Task {
-                let contentState = await positioning.contentState
-                let tab: CoreBrowser.Tab = .init(contentType: contentState)
-                _ = await sendCommand(.addTab(tab))
+            if #available(iOS 17.0, *), case .systemObservation = observingType {
+                await notifyObservationAboutClearTabs()
+            } else {
+                tabsCountInput.yield(0)
             }
+            let contentState = await positioning.contentState
+            let tab: CoreBrowser.Tab = .init(contentType: contentState)
+            _ = await sendCommand(.addTab(tab))
         } else {
             guard let closedTabIndex = tabs.firstIndex(of: tab) else {
                 fatalError("Closing non existing tab")
@@ -430,12 +434,20 @@ private extension TabsDataService {
             /// need to remove it before changing selected index
             /// otherwise in one case the handler will select closed tab
             tabs.remove(at: closedTabIndex)
-            tabsCountInput.yield(tabs.count)
+            if #available(iOS 17.0, *), case .systemObservation = observingType {
+                #warning("TODO: add new notify method")
+            } else {
+                tabsCountInput.yield(tabs.count)
+            }
             guard let selectedTab = tabs[safe: newIndex] else {
                 fatalError("Failed to find new selected tab")
             }
             selectedTabIdentifier = selectedTab.id
-            selectedTabIdInput.yield(selectedTab.id)
+            if #available(iOS 17.0, *), case .systemObservation = observingType {
+                await notifyObservationAboutNewSelectedTabId(selectedTab.id)
+            } else {
+                selectedTabIdInput.yield(selectedTab.id)
+            }
         }
     }
 

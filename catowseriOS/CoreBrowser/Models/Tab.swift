@@ -193,7 +193,7 @@ public extension Tab {
 }
 
 /// View model for tab view which is a website representation for specific case
-public struct Tab: Sendable {
+public struct Tab: Sendable, Identifiable {
     // The id to be able to compare e.g. blank tabs and avoid switch to ref. type
     public let id: UUID
     // Actual website info stored only for one case
