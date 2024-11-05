@@ -54,10 +54,19 @@ import FeaturesFlagsKit
             let observingType = await featureManager.observingApiTypeValue()
             if #available(iOS 17.0, *), observingType.isSystemObservation {
                 startTabsObservation()
+                await readTabsState()
+            } else {
+                // handled in `MainBrowserView`
             }
         }
         // Fallback for before iOS 17 is outside in
         // `MainBrowserView.onAppear` by calling `attach`
+    }
+    
+    @available(iOS 17.0, *)
+    private func readTabsState() async {
+        await handleSelectedTabChange()
+        await handleTabsCountChange()
     }
     
     @available(iOS 17.0, *)
@@ -74,14 +83,14 @@ import FeaturesFlagsKit
             _ = uiServiceRegistry.tabsSubject.tabsCount
         } onChange: {
             Task { [weak self] in
-                await self?.observeTabsCount()
+                await self?.handleTabsCountChange()
             }
         }
         withObservationTracking {
             _ = uiServiceRegistry.tabsSubject.replacedTabIndex
         } onChange: {
             Task { [weak self] in
-                await self?.observeReplacedTab()
+                await self?.handleReplacedTabChange()
             }
         }
     }
@@ -101,14 +110,14 @@ import FeaturesFlagsKit
     
     @available(iOS 17.0, *)
     @MainActor
-    private func observeTabsCount() async {
+    private func handleTabsCountChange() async {
         let count = uiServiceRegistry.tabsSubject.tabsCount
         await updateTabsCount(with: count)
     }
     
     @available(iOS 17.0, *)
     @MainActor
-    private func observeReplacedTab() async {
+    private func handleReplacedTabChange() async {
         let subject = uiServiceRegistry.tabsSubject
         guard let index = subject.replacedTabIndex else {
             return

@@ -45,11 +45,12 @@ public actor TabsDataService: GenericDataServiceProtocol {
     /// because subscribing usually happens in init or viewDidLoad during app start.
     private let observingType: ObservingApiType
 
-    public init(_ tabsRepository: TabsRepository,
-                _ positioning: TabsStates,
-                _ selectionStrategy: TabSelectionStrategy,
-                _ tabsSubject: TabsDataSubjectProtocol?,
-                _ observingType: ObservingApiType = .observerDesignPattern
+    public init(
+        _ tabsRepository: TabsRepository,
+        _ positioning: TabsStates,
+        _ selectionStrategy: TabSelectionStrategy,
+        _ tabsSubject: TabsDataSubjectProtocol?,
+        _ observingType: ObservingApiType = .observerDesignPattern
     ) async {
         self.tabsRepository = tabsRepository
         self.positioning = positioning
@@ -430,12 +431,15 @@ private extension TabsDataService {
             guard let closedTabIndex = tabs.firstIndex(of: tab) else {
                 fatalError("Closing non existing tab")
             }
-            let newIndex = await selectionStrategy.autoSelectedIndexAfterTabRemove(self, removedIndex: closedTabIndex)
+            let newIndex = await selectionStrategy.autoSelectedIndexAfterTabRemove(
+                self,
+                removedIndex: closedTabIndex
+            )
             /// need to remove it before changing selected index
             /// otherwise in one case the handler will select closed tab
             tabs.remove(at: closedTabIndex)
             if #available(iOS 17.0, *), case .systemObservation = observingType {
-                #warning("TODO: add new notify method")
+                await notifyObservationAboutNewTabs(tabs, nil)
             } else {
                 tabsCountInput.yield(tabs.count)
             }
