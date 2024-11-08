@@ -159,17 +159,21 @@ private extension MainToolbarCoordinator {
 }
 
 extension MainToolbarCoordinator: PhoneTabsDelegate {
-    func didTabSelect(_ tab: CoreBrowser.Tab) async {
+    func didTabSelect(_ tab: CoreBrowser.Tab) {
         /// TODO: replace this delegate in Coordinator with new ViewModel which uses WriteTabUseCase
-        _ = await TabsDataService.shared.sendCommand(.selectTab(tab))
+        Task {
+            _ = await TabsDataService.shared.sendCommand(.selectTab(tab))
+        }
     }
 
-    func didTabAdd() async {
-        let contentState = await DefaultTabProvider.shared.contentState
-        let tab = CoreBrowser.Tab(contentType: contentState)
-        /// newly added tab moves selection to itself
-        /// so, it is opened by manager by default
-        /// but user maybe don't want to move that tab right away
-        _ = await TabsDataService.shared.sendCommand(.addTab(tab))
+    func didTabAdd() {
+        Task {
+            let contentState = await DefaultTabProvider.shared.contentState
+            let tab = CoreBrowser.Tab(contentType: contentState)
+            /// newly added tab moves selection to itself
+            /// so, it is opened by manager by default
+            /// but user maybe don't want to move that tab right away
+            _ = await TabsDataService.shared.sendCommand(.addTab(tab))
+        }
     }
 }

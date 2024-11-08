@@ -37,7 +37,6 @@ where C.R == TabsScreenRoute {
             let observingType = await featureManager.observingApiTypeValue()
             if #available(iOS 17.0, *), observingType.isSystemObservation {
                 startTabsObservation()
-                await readTabsState()
             } else {
                 await TabsDataService.shared.attach(self, notify: false)
             }
@@ -223,11 +222,6 @@ where C.R == TabsScreenRoute {
     
     private func render(state: TabsPreviewState) {
         collectionView.reloadData()
-    }
-    
-    @available(iOS 17.0, *)
-    func readTabsState() async {
-        await handleAddedTabs()
     }
     
     @available(iOS 17.0, *)

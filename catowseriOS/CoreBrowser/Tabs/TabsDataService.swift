@@ -152,6 +152,7 @@ private extension TabsDataService {
         newTab: CoreBrowser.Tab
     ) async {
         tabsSubject?.tabs[tabIndex] = newTab
+        tabsSubject?.replacedTabIndex = tabIndex
     }
 }
 
