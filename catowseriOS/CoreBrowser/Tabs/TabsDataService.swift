@@ -340,6 +340,7 @@ extension TabsDataService: IndexSelectionContext {
 
 extension TabsDataService: TabsSubject {
     public func attach(_ observer: TabsObserver, notify: Bool = false) async {
+        // TODO: use `Weak<TabsObserver>` or `NSHashTable<TabsObserver>.weakObjects()` but protocol types can't be used for these approaches or revisit and use `detach` function again
         tabObservers.append(observer)
         guard notify else {
             return
