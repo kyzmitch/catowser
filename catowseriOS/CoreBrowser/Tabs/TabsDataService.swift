@@ -125,7 +125,6 @@ public actor TabsDataService: GenericDataServiceProtocol {
 // MARK: - Main actor methods
 
 private extension TabsDataService {
-    @available(iOS 17.0, *)
     /// If addedIndex is nil then it is an initial load
     @MainActor func notifyObservationAboutNewTabs(
         _ tabs: [CoreBrowser.Tab],
@@ -134,8 +133,7 @@ private extension TabsDataService {
         tabsSubject?.tabs = tabs
         tabsSubject?.addedTabIndex = addedIndex
     }
-    
-    @available(iOS 17.0, *)
+
     @MainActor func notifyObservationAboutClearTabs() async {
         tabsSubject?.tabs.removeAll()
     }
@@ -145,8 +143,7 @@ private extension TabsDataService {
     ) async {
         tabsSubject?.selectedTabId = tabId
     }
-    
-    @available(iOS 17.0, *)
+
     @MainActor func notifyObservationAboutReplacedTab(
         at tabIndex: Int,
         newTab: CoreBrowser.Tab
@@ -221,10 +218,10 @@ private extension TabsDataService {
             // need to create a local copy to unlink data from the actor
             let tabsCopy = tabs
             _ = try await tabsRepository.remove(tabs: tabsCopy)
+            tabs.removeAll()
             if #available(iOS 17.0, *), case .systemObservation = observingType {
                 await notifyObservationAboutClearTabs()
             } else {
-                tabs.removeAll()
                 tabsCountInput.yield(0)
             }
             let tab: CoreBrowser.Tab = .init(contentType: contentState)
@@ -242,10 +239,10 @@ private extension TabsDataService {
             guard identifier != selectedTabIdentifier else {
                 return .tabSelected
             }
+            selectedTabIdentifier = identifier
             if #available(iOS 17.0, *), case .systemObservation = observingType {
                 await notifyObservationAboutNewSelectedTabId(identifier)
             } else {
-                selectedTabIdentifier = identifier
                 selectedTabIdInput.yield(identifier)
             }
         } catch {
@@ -268,10 +265,10 @@ private extension TabsDataService {
 
         do {
             _ = try tabsRepository.update(tab: newTab)
+            tabs[tabIndex] = newTab
             if #available(iOS 17.0, *), case .systemObservation = observingType {
                 await notifyObservationAboutReplacedTab(at: tabIndex, newTab: newTab)
             } else {
-                tabs[tabIndex] = newTab
                 // Need to notify observers to allow them to update title for tab view
                 for observer in tabObservers {
                     await observer.tabDidReplace(newTab, at: tabIndex)
@@ -305,10 +302,14 @@ private extension TabsDataService {
         guard tabIndex >= 0 && tabIndex < tabs.count else {
             return .tabPreviewUpdated(TabsListError.wrongTabIndexToReplace)
         }
+        tabs[tabIndex] = tab
         if #available(iOS 17.0, *), case .systemObservation = observingType {
             await notifyObservationAboutReplacedTab(at: tabIndex, newTab: tab)
         } else {
-            tabs[tabIndex] = tab
+            // Most likely need to notify observers to allow them to update preview image?
+            for observer in tabObservers {
+                await observer.tabDidReplace(tab, at: tabIndex)
+            }
         }
         return .tabPreviewUpdated(nil)
     }
@@ -383,10 +384,10 @@ private extension TabsDataService {
                 await observer.tabDidAdd(tab, at: index)
             }
             if select {
+                selectedTabIdentifier = tab.id
                 if observingType.isSystemObservation {
                     await notifyObservationAboutNewSelectedTabId(tab.id)
                 } else {
-                    selectedTabIdentifier = tab.id
                     selectedTabIdInput.yield(tab.id)
                 }
             }
