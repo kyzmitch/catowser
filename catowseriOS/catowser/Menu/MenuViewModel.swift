@@ -27,6 +27,15 @@ protocol DeveloperMenuPresenter: AnyObject {
 
 @MainActor
 final class MenuViewModel: ObservableObject {
+    private struct State {
+        let tabContentRowValue: CoreBrowser.Tab.ContentType
+        let webAutocompleteRowValue: WebAutoCompletionSource
+        let tabAddPositionRowValue: AddedTabPosition
+        let asyncApiRowValue: AsyncApiType
+        let uiFrameworkRowValue: UIFrameworkType
+        let observingApiRowValue: ObservingApiType
+    }
+    
     // MARK: - global settings
 
     @Published var isDohEnabled: Bool
@@ -195,12 +204,27 @@ final class MenuViewModel: ObservableObject {
     }
     
     func load() async {
-        tabContentRowValue = await FeatureManager.shared.tabDefaultContentValue()
-        webAutocompleteRowValue = await FeatureManager.shared.webSearchAutoCompleteValue()
-        tabAddPositionRowValue = await FeatureManager.shared.tabAddPositionValue()
-        asyncApiRowValue = await FeatureManager.shared.appAsyncApiTypeValue()
-        uiFrameworkRowValue = await FeatureManager.shared.appUIFrameworkValue()
-        observingApiRowValue = await FeatureManager.shared.observingApiTypeValue()
+        async let tabValue = FeatureManager.shared.tabDefaultContentValue()
+        async let webValue = FeatureManager.shared.webSearchAutoCompleteValue()
+        async let addValue = FeatureManager.shared.tabAddPositionValue()
+        async let asyncValue = FeatureManager.shared.appAsyncApiTypeValue()
+        async let uiValue = FeatureManager.shared.appUIFrameworkValue()
+        async let observingValue = FeatureManager.shared.observingApiTypeValue()
+        
+        let state = await State(
+            tabContentRowValue: tabValue,
+            webAutocompleteRowValue: webValue,
+            tabAddPositionRowValue: addValue,
+            asyncApiRowValue: asyncValue,
+            uiFrameworkRowValue: uiValue,
+            observingApiRowValue: observingValue
+        )
+        tabContentRowValue = state.tabContentRowValue
+        webAutocompleteRowValue = state.webAutocompleteRowValue
+        tabAddPositionRowValue = state.tabAddPositionRowValue
+        asyncApiRowValue = state.asyncApiRowValue
+        uiFrameworkRowValue = state.uiFrameworkRowValue
+        observingApiRowValue = state.observingApiRowValue
     }
 }
 
