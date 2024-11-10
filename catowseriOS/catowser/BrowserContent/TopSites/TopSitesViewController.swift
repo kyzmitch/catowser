@@ -75,7 +75,7 @@ where C.R == TopSitesRoute {
             return
         }
 
-        // TODO: for some reason this is not called after you remove tab with site
+        // TODO: use `TopSitesLegacyView` model here instead of coordinator
         coordinator?.showNext(.select(site))
     }
 }

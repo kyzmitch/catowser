@@ -168,26 +168,26 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators {
             _ = uiServiceRegistry.tabsSubject.selectedTabId
         } onChange: {
             Task { [weak self] in
-                await self?.handleSelectedTabChange()
+                await self?.handleTabSelection()
             }
         }
         withObservationTracking {
             _ = uiServiceRegistry.tabsSubject.replacedTabIndex
         } onChange: {
             Task { [weak self] in
-                await self?.observeReplacedTab()
+                await self?.handleTabReplace()
             }
         }
     }
     
     @available(iOS 17.0, *)
     private func readTabsState() async {
-        await handleSelectedTabChange()
+        await handleTabSelection()
     }
     
     @available(iOS 17.0, *)
     @MainActor
-    private func handleSelectedTabChange() async {
+    private func handleTabSelection() async {
         let subject = uiServiceRegistry.tabsSubject
         let tabId = subject.selectedTabId
         guard let index = subject.tabs
@@ -199,7 +199,7 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators {
     
     @available(iOS 17.0, *)
     @MainActor
-    private func observeReplacedTab() async {
+    private func handleTabReplace() async {
         let subject = uiServiceRegistry.tabsSubject
         guard let index = subject.replacedTabIndex else {
             return
