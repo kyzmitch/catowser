@@ -10,12 +10,6 @@ import UIKit
 import CoreBrowser
 import FeaturesFlagsKit
 
-@MainActor
-protocol PhoneTabsDelegate: AnyObject {
-    func didTabSelect(_ tab: CoreBrowser.Tab)
-    func didTabAdd()
-}
-
 final class PhoneTabsCoordinator: Coordinator {
     let vcFactory: any ViewControllerFactory
     var startedCoordinator: Coordinator?
@@ -24,16 +18,13 @@ final class PhoneTabsCoordinator: Coordinator {
     weak var presenterVC: AnyViewController?
     var navigationStack: UINavigationController?
 
-    private weak var delegate: PhoneTabsDelegate?
     let uiFramework: UIFrameworkType
 
     init(_ vcFactory: any ViewControllerFactory,
          _ presenter: AnyViewController?,
-         _ delegate: PhoneTabsDelegate,
          _ uiFramework: UIFrameworkType) {
         self.vcFactory = vcFactory
         self.presenterVC = presenter
-        self.delegate = delegate
         self.uiFramework = uiFramework
     }
 
@@ -59,8 +50,6 @@ final class PhoneTabsCoordinator: Coordinator {
 
 enum TabsScreenRoute: Route {
     case error
-    case selectTab(CoreBrowser.Tab)
-    case addTab
 }
 
 extension PhoneTabsCoordinator: Navigating {
@@ -69,10 +58,6 @@ extension PhoneTabsCoordinator: Navigating {
 
     func showNext(_ route: TabsScreenRoute) {
         switch route {
-        case .selectTab(let contentType):
-            showSelected(contentType)
-        case .addTab:
-            showAdded()
         case .error:
             showError()
         }
@@ -92,22 +77,13 @@ extension PhoneTabsCoordinator: Navigating {
 }
 
 private extension PhoneTabsCoordinator {
-    func showSelected(_ tab: CoreBrowser.Tab) {
-        delegate?.didTabSelect(tab)
-    }
-
-    func showAdded() {
-        delegate?.didTabAdd()
-    }
-
     func showError() {
         Task {
-            let vm = await ViewModelFactory.shared.tabsPreviewsViewModel()
-            guard let vc = vcFactory.tabsPreviewsViewController(self, vm) else {
-                assertionFailure("Tabs previews screen is only for Phone layout")
+            guard let vc = startedVC else {
+                assertionFailure("Phone tabs coordinator is not started")
                 return
             }
-            AlertPresenter.present(on: vc)
+            AlertPresenter.present(on: vc.viewController)
         }
     }
 }

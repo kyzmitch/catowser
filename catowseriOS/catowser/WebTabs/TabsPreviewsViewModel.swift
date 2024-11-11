@@ -27,14 +27,15 @@ enum TabsPreviewState {
     }
 }
 
-@MainActor
-final class TabsPreviewsViewModel {
+@MainActor final class TabsPreviewsViewModel {
     @Published var uxState: TabsPreviewState = .loading
     private let readTabUseCase: ReadTabsUseCase
     private let writeTabUseCase: WriteTabsUseCase
 
-    init(_ readTabUseCase: ReadTabsUseCase,
-         _ writeTabUseCase: WriteTabsUseCase) {
+    init(
+        _ readTabUseCase: ReadTabsUseCase,
+        _ writeTabUseCase: WriteTabsUseCase
+    ) {
         self.readTabUseCase = readTabUseCase
         self.writeTabUseCase = writeTabUseCase
     }
@@ -58,6 +59,20 @@ final class TabsPreviewsViewModel {
                 WebViewsReuseManager.shared.removeController(for: site)
             }
             await writeTabUseCase.close(tab: tab)
+        }
+    }
+    
+    func selectTab(_ tab: CoreBrowser.Tab) {
+        Task {
+            await writeTabUseCase.select(tab: tab)
+        }
+    }
+    
+    func addTab() {
+        Task {
+            let contentState = await DefaultTabProvider.shared.contentState
+            let tab = CoreBrowser.Tab(contentType: contentState)
+            await writeTabUseCase.add(tab: tab)
         }
     }
 }

@@ -150,30 +150,10 @@ private extension MainToolbarCoordinator {
         if let existingPhoneTabsCrdr = startedCoordinator as? PhoneTabsCoordinator {
             existingPhoneTabsCrdr.start()
         } else {
-            let coordinator: PhoneTabsCoordinator = .init(vcFactory, presenter, self, uiFramework)
+            let coordinator = PhoneTabsCoordinator(vcFactory, presenter, uiFramework)
             coordinator.parent = self
             coordinator.start()
             startedCoordinator = coordinator
-        }
-    }
-}
-
-extension MainToolbarCoordinator: PhoneTabsDelegate {
-    func didTabSelect(_ tab: CoreBrowser.Tab) {
-        /// TODO: replace this delegate in Coordinator with new ViewModel which uses WriteTabUseCase
-        Task {
-            _ = await TabsDataService.shared.sendCommand(.selectTab(tab))
-        }
-    }
-
-    func didTabAdd() {
-        Task {
-            let contentState = await DefaultTabProvider.shared.contentState
-            let tab = CoreBrowser.Tab(contentType: contentState)
-            /// newly added tab moves selection to itself
-            /// so, it is opened by manager by default
-            /// but user maybe don't want to move that tab right away
-            _ = await TabsDataService.shared.sendCommand(.addTab(tab))
         }
     }
 }
