@@ -9,11 +9,6 @@
 import UIKit
 import CottonBase
 
-@MainActor
-protocol TopSitesInterface: AnyObject {
-    func reload(with sites: [Site])
-}
-
 final class TopSitesViewController<C: Navigating>: BaseViewController,
                                                    UICollectionViewDataSource,
                                                    UICollectionViewDelegateFlowLayout
@@ -21,9 +16,21 @@ where C.R == TopSitesRoute {
 
     @IBOutlet fileprivate weak var collectionView: UICollectionView!
     weak var coordinator: C?
-
-    fileprivate var source: [Site] = []
-
+    private let vm: TopSitesViewModel
+    
+    init(
+        nibName nibNameOrNil: String?,
+        bundle nibBundleOrNil: Bundle?,
+        vm: TopSitesViewModel
+    ) {
+        self.vm = vm
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+    
+    @MainActor required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // this isn't called for Nib associated with single view controller
@@ -41,14 +48,19 @@ where C.R == TopSitesRoute {
 
     // MARK: - UICollectionViewDataSource
 
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return source.count
+    func collectionView(
+        _ collectionView: UICollectionView,
+        numberOfItemsInSection section: Int
+    ) -> Int {
+        return vm.topSites.count
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         let cell = collectionView.dequeueCell(at: indexPath, type: SiteCollectionViewCell.self)
-        guard let site = source[safe: indexPath.row] else {
+        guard let site = vm.topSites[safe: indexPath.row] else {
             return cell
         }
         cell.reloadSiteCell(with: site)
@@ -57,35 +69,30 @@ where C.R == TopSitesRoute {
 
     // MARK: - UICollectionViewDelegateFlowLayout
 
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
         return SiteCollectionViewCell.size(for: traitCollection)
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        insetForSectionAt section: Int) -> UIEdgeInsets {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        insetForSectionAt section: Int
+    ) -> UIEdgeInsets {
         return UIEdgeInsets(equalInset: ImageViewSizes.spacing)
     }
 
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        didSelectItemAt indexPath: IndexPath
+    ) {
         collectionView.deselectItem(at: indexPath, animated: true)
-        guard let site = source[safe: indexPath.row] else {
+        guard let site = vm.topSites[safe: indexPath.row] else {
             return
         }
-
-        // TODO: use `TopSitesLegacyView` model here instead of coordinator
-        coordinator?.showNext(.select(site))
-    }
-}
-
-extension TopSitesViewController: TopSitesInterface {
-    func reload(with sites: [Site]) {
-        source = sites
-        guard isViewLoaded else {
-            return
-        }
-        collectionView.reloadData()
+        vm.replaceSelected(tabContent: .site(site))
     }
 }

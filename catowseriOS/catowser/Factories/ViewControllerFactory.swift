@@ -43,8 +43,10 @@ protocol ViewControllerFactory: AnyObject {
                                           _ viewModel: any WebViewModel,
                                           _ mode: UIFrameworkType) -> AnyViewController & WebViewNavigatable
     where C.R == WebContentRoute
-    func topSitesViewController<C: Navigating>(_ coordinator: C?) -> AnyViewController & TopSitesInterface
-    where C.R == TopSitesRoute
+    func topSitesViewController<C: Navigating>(
+        _ coordinator: C?,
+        _ topSitesVM: TopSitesViewModel
+    ) -> AnyViewController where C.R == TopSitesRoute
     var blankWebPageViewController: UIViewController { get }
     var loadingProgressViewController: AnyViewController { get }
     func siteMenuViewController<C: Navigating>(_ model: MenuViewModel,

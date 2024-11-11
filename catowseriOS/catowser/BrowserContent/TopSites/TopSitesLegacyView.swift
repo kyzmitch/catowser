@@ -17,8 +17,10 @@ struct TopSitesLegacyView: CatowserUIVCRepresentable {
 
     func makeUIViewController(context: Context) -> UIViewControllerType {
         let interface = context.environment.browserContentCoordinators
-        let vc: AnyViewController & TopSitesInterface = vcFactory.topSitesViewController(interface?.topSitesCoordinator)
-        vc.reload(with: vm.topSites)
+        let vc: AnyViewController = vcFactory.topSitesViewController(
+            interface?.topSitesCoordinator,
+            vm
+        )
         return vc.viewController
     }
 

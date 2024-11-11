@@ -13,7 +13,7 @@ import UIKit
 final class PhoneViewControllerFactory: ViewControllerFactory {
     private var searchBarVC: UIViewController?
     private var toolBarVC: UIViewController?
-    private var topSitesVC: (AnyViewController & TopSitesInterface)?
+    private var topSitesVC: AnyViewController?
     private var blankVC: UIViewController?
 
     init() {}
@@ -80,13 +80,19 @@ final class PhoneViewControllerFactory: ViewControllerFactory {
         return nil
     }
 
-    func topSitesViewController<C: Navigating>(_ coordinator: C?) -> AnyViewController & TopSitesInterface
-    where C.R == TopSitesRoute {
+    func topSitesViewController<C: Navigating>(
+        _ coordinator: C?,
+        _ topSitesVM: TopSitesViewModel
+    ) -> AnyViewController where C.R == TopSitesRoute {
         if let existingVC = topSitesVC {
             return existingVC
         }
         let bundle = Bundle(for: TopSitesViewController<C>.self)
-        let createdVC = TopSitesViewController<C>(nibName: "TopSitesViewController", bundle: bundle)
+        let createdVC = TopSitesViewController<C>(
+            nibName: "TopSitesViewController",
+            bundle: bundle,
+            vm: topSitesVM
+        )
         createdVC.coordinator = coordinator
         topSitesVC = createdVC
         return createdVC

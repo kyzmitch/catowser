@@ -83,6 +83,8 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators {
     /// Tablet specific view model which has to be initialised in async way earlier
     /// to not do async coordinator start for the tabs
     private var allTabsVM: AllTabsViewModel?
+    /// Top sites UIKit view controller needs that view model and it is async
+    private var topSitesVM: TopSitesViewModel?
     /// Feature manager
     private let featureManager: FeatureManager.StateHolder
     /// UI service registry
@@ -127,6 +129,7 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators {
         let allTabsVM = await ViewModelFactory.shared.allTabsViewModel()
         self.allTabsVM = allTabsVM
         let topSitesVM = await ViewModelFactory.shared.topSitesViewModel()
+        self.topSitesVM = topSitesVM
         let searchProvider = await FeatureManager.shared.webSearchAutoCompleteValue()
         let suggestionsVM = await ViewModelFactory.shared.searchSuggestionsViewModel(searchProvider)
         let webContext = WebViewContextImpl(pluginsSource)
@@ -496,7 +499,7 @@ private extension AppCoordinator {
     }
 
     func insertTopSites() {
-        guard topSitesCoordinator == nil else {
+        guard topSitesCoordinator == nil, let topSitesVM else {
             return
         }
         let coordinator: TopSitesCoordinator
@@ -506,9 +509,21 @@ private extension AppCoordinator {
                 assertionFailure("Root view controller must have content view")
                 return
             }
-            coordinator = .init(vcFactory, startedVC, containerView, uiFramework)
+            coordinator = .init(
+                vcFactory,
+                startedVC,
+                containerView,
+                uiFramework,
+                topSitesVM
+            )
         case .swiftUIWrapper, .swiftUI:
-            coordinator = .init(vcFactory, startedVC, nil, uiFramework)
+            coordinator = .init(
+                vcFactory,
+                startedVC,
+                nil,
+                uiFramework,
+                topSitesVM
+            )
         }
 
         coordinator.parent = self
