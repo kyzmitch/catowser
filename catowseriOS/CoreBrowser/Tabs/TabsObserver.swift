@@ -64,21 +64,74 @@ public extension TabsObserver {
         }
     }
 
-    func tabDidSelect(_ index: Int, _ content: CoreBrowser.Tab.ContentType, _ identifier: UUID) async {
+    func tabDidSelect(
+        _ index: Int,
+        _ content: CoreBrowser.Tab.ContentType,
+        _ identifier: UUID
+    ) async {
         // Only landscape/regular tabs list view use that
     }
 
-    func tabDidAdd(_ tab: CoreBrowser.Tab, at index: Int) async {
+    func tabDidAdd(
+        _ tab: CoreBrowser.Tab,
+        at index: Int
+    ) async {
         // e.g. Counter view doesn't need to handle that
         // as it uses another delegate method with `tabsCount`
     }
 
-    /* optional */ func tabDidReplace(_ tab: CoreBrowser.Tab, at index: Int) async {}
+    /* optional */ func tabDidReplace(
+        _ tab: CoreBrowser.Tab,
+        at index: Int
+    ) async {}
 
     /* optional */ func updateTabsCount(with tabsCount: Int) async {}
 
     /* optional */ func initializeObserver(with tabs: [CoreBrowser.Tab]) async {}
 }
 
-/// An actual type instead of a protocol to be able to use it in NSHashTable
-open class BaseTabsObserver: TabsObserver { }
+/// A wrapper for TabsObserver to be able to store them by weak reference and be able to use Swift array
+/// instead of NSPointerArray weakObjectsPointerArray which is still requires an actual type
+/// instead of a protocol TabsObserver which can't be used in a collection data structure.
+public final class TabsObserverProxy: @unchecked Sendable {
+    private weak var realSubject: TabsObserver?
+    
+    init(_ realSubject: TabsObserver) {
+        self.realSubject = realSubject
+    }
+}
+
+extension TabsObserverProxy: TabsObserver {
+    public var tabsObserverName: String {
+        get async {
+            await realSubject?.tabsObserverName ?? String(describing: self)
+        }
+    }
+
+    public func initializeObserver(with tabs: [CoreBrowser.Tab]) async {
+        await realSubject?.initializeObserver(with: tabs)
+    }
+    
+    public func updateTabsCount(with tabsCount: Int) async {
+        await realSubject?.updateTabsCount(with: tabsCount)
+    }
+    
+    public func tabDidAdd(_ tab: Tab, at index: Int) async {
+        await realSubject?.tabDidAdd(tab, at: index)
+    }
+    
+    public func tabDidSelect(
+        _ index: Int,
+        _ content: Tab.ContentType,
+        _ identifier: UUID
+    ) async {
+        await realSubject?.tabDidSelect(index, content, identifier)
+    }
+    
+    public func tabDidReplace(
+        _ tab: Tab,
+        at index: Int
+    ) async {
+        await realSubject?.tabDidReplace(tab, at: index)
+    }
+}

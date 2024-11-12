@@ -38,7 +38,7 @@ public actor TabsDataService: GenericDataServiceProtocol {
     /// Default positioning settings
     private let positioning: TabsStates
     /// A list of observers, usually some views which need to observer tabs count or changes to the tabs list
-    private var tabObservers: [TabsObserver]
+    private var tabObservers: [TabsObserverProxy]
     /// A subject for observing. Should be optional to be able to support iOS < 17.0
     private let tabsSubject: TabsDataSubjectProtocol?
     /// Type of observation, should be passed from the client app, change should require restart
@@ -126,7 +126,7 @@ public actor TabsDataService: GenericDataServiceProtocol {
 
 private extension TabsDataService {
     /// If addedIndex is nil then it is an initial load
-    @MainActor func notifyObservationAboutNewTabs(
+    @MainActor func notifyAboutNewTabs(
         _ tabs: [CoreBrowser.Tab],
         _ addedIndex: Int?
     ) async {
@@ -134,17 +134,17 @@ private extension TabsDataService {
         tabsSubject?.addedTabIndex = addedIndex
     }
 
-    @MainActor func notifyObservationAboutClearTabs() async {
+    @MainActor func notifyAboutClearedTabs() async {
         tabsSubject?.tabs.removeAll()
     }
 
-    @MainActor func notifyObservationAboutNewSelectedTabId(
+    @MainActor func notifyAboutNewSelectedTab(
         _ tabId: CoreBrowser.Tab.ID
     ) async {
         tabsSubject?.selectedTabId = tabId
     }
 
-    @MainActor func notifyObservationAboutReplacedTab(
+    @MainActor func notifyAboutReplacedTab(
         at tabIndex: Int,
         newTab: CoreBrowser.Tab
     ) async {
@@ -172,7 +172,7 @@ private extension TabsDataService {
         let positionType = await positioning.addPosition
         let newIndex = positionType.addTab(tab, to: &tabs, selectedTabIdentifier)
         if observingType.isSystemObservation {
-            await notifyObservationAboutNewTabs(tabs, newIndex)
+            await notifyAboutNewTabs(tabs, newIndex)
         } else {
             tabsCountInput.yield(tabs.count)
         }
@@ -220,7 +220,7 @@ private extension TabsDataService {
             _ = try await tabsRepository.remove(tabs: tabsCopy)
             tabs.removeAll()
             if observingType.isSystemObservation {
-                await notifyObservationAboutClearTabs()
+                await notifyAboutClearedTabs()
             } else {
                 tabsCountInput.yield(0)
             }
@@ -241,7 +241,7 @@ private extension TabsDataService {
             }
             selectedTabIdentifier = identifier
             if observingType.isSystemObservation {
-                await notifyObservationAboutNewSelectedTabId(identifier)
+                await notifyAboutNewSelectedTab(identifier)
             } else {
                 selectedTabIdInput.yield(identifier)
             }
@@ -267,7 +267,7 @@ private extension TabsDataService {
             _ = try tabsRepository.update(tab: newTab)
             tabs[tabIndex] = newTab
             if observingType.isSystemObservation {
-                await notifyObservationAboutReplacedTab(at: tabIndex, newTab: newTab)
+                await notifyAboutReplacedTab(at: tabIndex, newTab: newTab)
             } else {
                 // Need to notify observers to allow them to update title for tab view
                 for observer in tabObservers {
@@ -304,7 +304,7 @@ private extension TabsDataService {
         }
         tabs[tabIndex] = tab
         if observingType.isSystemObservation {
-            await notifyObservationAboutReplacedTab(at: tabIndex, newTab: tab)
+            await notifyAboutReplacedTab(at: tabIndex, newTab: tab)
         } else {
             // Most likely need to notify observers to allow them to update preview image?
             for observer in tabObservers {
@@ -344,8 +344,11 @@ extension TabsDataService: TabsSubject {
         _ observer: TabsObserver,
         notify: Bool = false
     ) async {
-        // TODO: use `Weak<TabsObserver>` or `NSHashTable<TabsObserver>.weakObjects()` but protocol types can't be used for these approaches or revisit and use `detach` function again
-        tabObservers.append(observer)
+        // Wrapping an observer to be able to store it by weak reference
+        // 1). to avoid any reference cycles
+        // 2). to avoid requirement to call `detach`
+        let proxyWrapper = TabsObserverProxy(observer)
+        tabObservers.append(proxyWrapper)
         guard notify else {
             return
         }
@@ -370,6 +373,9 @@ extension TabsDataService: TabsSubject {
     }
 
     public func detach(_ observer: TabsObserver) async {
+        // this function is not needed now, because
+        // an observer is stored by weak reference
+        // and it shouldn't be too bad to store nil observers
         let name = await observer.tabsObserverName
         for iterator in tabObservers.enumerated() where await iterator.element.tabsObserverName == name {
             tabObservers.remove(at: iterator.offset)
@@ -393,7 +399,7 @@ private extension TabsDataService {
             if select {
                 selectedTabIdentifier = tab.id
                 if observingType.isSystemObservation {
-                    await notifyObservationAboutNewSelectedTabId(tab.id)
+                    await notifyAboutNewSelectedTab(tab.id)
                 } else {
                     selectedTabIdInput.yield(tab.id)
                 }
@@ -411,7 +417,7 @@ private extension TabsDataService {
                 }
                 if select {
                     if observingType.isSystemObservation {
-                        await notifyObservationAboutNewSelectedTabId(tab.id)
+                        await notifyAboutNewSelectedTab(tab.id)
                     } else {
                         selectedTabIdentifier = tab.id
                         selectedTabIdInput.yield(tab.id)
@@ -430,7 +436,7 @@ private extension TabsDataService {
         if tabs.count == 1 {
             tabs.removeAll()
             if observingType.isSystemObservation {
-                await notifyObservationAboutClearTabs()
+                await notifyAboutClearedTabs()
             } else {
                 tabsCountInput.yield(0)
             }
@@ -449,7 +455,7 @@ private extension TabsDataService {
             /// otherwise in one case the handler will select closed tab
             tabs.remove(at: closedTabIndex)
             if observingType.isSystemObservation {
-                await notifyObservationAboutNewTabs(tabs, nil)
+                await notifyAboutNewTabs(tabs, nil)
             } else {
                 tabsCountInput.yield(tabs.count)
             }
@@ -458,7 +464,7 @@ private extension TabsDataService {
             }
             selectedTabIdentifier = selectedTab.id
             if observingType.isSystemObservation {
-                await notifyObservationAboutNewSelectedTabId(selectedTab.id)
+                await notifyAboutNewSelectedTab(selectedTab.id)
             } else {
                 selectedTabIdInput.yield(selectedTab.id)
             }
@@ -479,8 +485,8 @@ private extension TabsDataService {
         tabs = cachedTabs
         selectedTabIdentifier = id
         if observingType.isSystemObservation {
-            await notifyObservationAboutNewTabs(cachedTabs, nil)
-            await notifyObservationAboutNewSelectedTabId(id)
+            await notifyAboutNewTabs(cachedTabs, nil)
+            await notifyAboutNewSelectedTab(id)
         } else {
             tabsCountInput.yield(cachedTabs.count)
             selectedTabIdInput.yield(id)
