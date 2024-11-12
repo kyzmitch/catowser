@@ -275,11 +275,6 @@ extension AppCoordinator: Navigating {
     func stop() {
         // Probably it is not necessary because this is a root
         jsPluginsBuilder = nil
-        if case .uiKit = uiFramework {
-            Task {
-                await TabsDataService.shared.detach(self)
-            }
-        }
         // Next line is actually useless, because it is a root coordinator
         parent?.coordinatorDidFinish(self)
     }

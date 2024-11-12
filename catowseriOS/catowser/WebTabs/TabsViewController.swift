@@ -124,14 +124,6 @@ final class TabsViewController: BaseViewController {
         addTabButton.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         #endif
     }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-
-        Task {
-            await TabsDataService.shared.detach(self)
-        }
-    }
 }
 
 private extension TabsViewController {
@@ -160,9 +152,8 @@ private extension TabsViewController {
     }
 
     func removeTabView(_ tabView: TabView) async {
+        // TODO: this function can be sync now
         if let removedIndex = tabsStackView.arrangedSubviews.firstIndex(of: tabView) {
-            let removedVm = viewModels[removedIndex]
-            await TabsDataService.shared.detach(removedVm)
             viewModels.remove(at: removedIndex)
         }
         tabsStackView.removeArrangedSubview(tabView)

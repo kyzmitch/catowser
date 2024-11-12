@@ -99,10 +99,5 @@ struct MainBrowserView
                 await TabsDataService.shared.attach(browserContentVM, notify: true)
             }
         }
-        .onDisappear {
-            Task {
-                await TabsDataService.shared.detach(browserContentVM)
-            }
-        }
     }
 }

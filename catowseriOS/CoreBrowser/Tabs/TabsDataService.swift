@@ -270,6 +270,7 @@ private extension TabsDataService {
                 await notifyAboutReplacedTab(at: tabIndex, newTab: newTab)
             } else {
                 // Need to notify observers to allow them to update title for tab view
+                removeWeakObserversIfNeeded()
                 for observer in tabObservers {
                     await observer.tabDidReplace(newTab, at: tabIndex)
                 }
@@ -307,13 +308,31 @@ private extension TabsDataService {
             await notifyAboutReplacedTab(at: tabIndex, newTab: tab)
         } else {
             // Most likely need to notify observers to allow them to update preview image?
+            removeWeakObserversIfNeeded()
             for observer in tabObservers {
                 await observer.tabDidReplace(tab, at: tabIndex)
             }
         }
         return .tabPreviewUpdated(nil)
     }
+    
+    func removeWeakObserversIfNeeded() {
+        guard !tabObservers.isEmpty else {
+            return
+        }
+        var copiedIndex = tabObservers.endIndex
+        var removedAmount = 0
+        for pair in tabObservers.enumerated() where pair.element.realSubject == nil {
+            let elementToMove = tabObservers[copiedIndex]
+            tabObservers[pair.offset] = elementToMove
+            copiedIndex -= 1
+            removedAmount += 1
+        }
+        tabObservers.removeLast(removedAmount)
+    }
 }
+
+// MARK: - IndexSelectionContext protocol conformance
 
 extension TabsDataService: IndexSelectionContext {
     public var collectionLastIndex: Int {
@@ -339,11 +358,20 @@ extension TabsDataService: IndexSelectionContext {
     }
 }
 
+// MARK: - TabsSubject protocol conformance
+
 extension TabsDataService: TabsSubject {
     public func attach(
         _ observer: TabsObserver,
         notify: Bool = false
     ) async {
+        // need to check if observer is already attached
+        for attachedObserver in tabObservers where attachedObserver.realSubject === observer {
+            // found the same address, so that, the same observer
+            // is already present in the subject
+            return
+        }
+        // This is a new observer, need to add it.
         // Wrapping an observer to be able to store it by weak reference
         // 1). to avoid any reference cycles
         // 2). to avoid requirement to call `detach`
@@ -371,18 +399,9 @@ extension TabsDataService: TabsSubject {
         }
         await observer.tabDidSelect(tabTuple.index, tabTuple.tab.contentType, tabTuple.tab.id)
     }
-
-    public func detach(_ observer: TabsObserver) async {
-        // this function is not needed now, because
-        // an observer is stored by weak reference
-        // and it shouldn't be too bad to store nil observers
-        let name = await observer.tabsObserverName
-        for iterator in tabObservers.enumerated() where await iterator.element.tabsObserverName == name {
-            tabObservers.remove(at: iterator.offset)
-            break
-        }
-    }
 }
+
+// MARK: - private functions
 
 private extension TabsDataService {
     func handleTabAdded(
@@ -393,6 +412,7 @@ private extension TabsDataService {
         /// can select new tab only after adding it, this is because corresponding view should be in the list
         switch positioning.addSpeed {
         case .immediately:
+            removeWeakObserversIfNeeded()
             for observer in tabObservers {
                 await observer.tabDidAdd(tab, at: index)
             }
@@ -412,6 +432,7 @@ private extension TabsDataService {
                 } else {
                     try await Task.sleep(nanoseconds: interval.inNanoseconds)
                 }
+                removeWeakObserversIfNeeded()
                 for observer in tabObservers {
                     await observer.tabDidAdd(tab, at: index)
                 }
@@ -532,6 +553,8 @@ private extension TabsDataService {
     }
 }
 
+// MARK: - Array extension
+
 fileprivate extension Array where Element == CoreBrowser.Tab {
     func element(by uuid: UUID) -> (tab: CoreBrowser.Tab, index: Int)? {
         for (ix, tab) in self.enumerated() where tab.id == uuid {
@@ -540,6 +563,8 @@ fileprivate extension Array where Element == CoreBrowser.Tab {
         return nil
     }
 }
+
+// MARK: - AddedTabPosition extension
 
 extension AddedTabPosition {
     func addTab(_ tab: CoreBrowser.Tab,

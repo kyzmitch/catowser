@@ -94,7 +94,7 @@ public extension TabsObserver {
 /// instead of NSPointerArray weakObjectsPointerArray which is still requires an actual type
 /// instead of a protocol TabsObserver which can't be used in a collection data structure.
 public final class TabsObserverProxy: @unchecked Sendable {
-    private weak var realSubject: TabsObserver?
+    weak var realSubject: TabsObserver?
     
     init(_ realSubject: TabsObserver) {
         self.realSubject = realSubject
