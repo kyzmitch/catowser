@@ -171,7 +171,7 @@ private extension TabsDataService {
     func handleAddTabCommand(_ tab: CoreBrowser.Tab) async -> TabsServiceDataOutput {
         let positionType = await positioning.addPosition
         let newIndex = positionType.addTab(tab, to: &tabs, selectedTabIdentifier)
-        if #available(iOS 17.0, *), case .systemObservation = observingType {
+        if observingType.isSystemObservation {
             await notifyObservationAboutNewTabs(tabs, newIndex)
         } else {
             tabsCountInput.yield(tabs.count)
@@ -219,7 +219,7 @@ private extension TabsDataService {
             let tabsCopy = tabs
             _ = try await tabsRepository.remove(tabs: tabsCopy)
             tabs.removeAll()
-            if #available(iOS 17.0, *), case .systemObservation = observingType {
+            if observingType.isSystemObservation {
                 await notifyObservationAboutClearTabs()
             } else {
                 tabsCountInput.yield(0)
@@ -240,7 +240,7 @@ private extension TabsDataService {
                 return .tabSelected
             }
             selectedTabIdentifier = identifier
-            if #available(iOS 17.0, *), case .systemObservation = observingType {
+            if observingType.isSystemObservation {
                 await notifyObservationAboutNewSelectedTabId(identifier)
             } else {
                 selectedTabIdInput.yield(identifier)
@@ -266,7 +266,7 @@ private extension TabsDataService {
         do {
             _ = try tabsRepository.update(tab: newTab)
             tabs[tabIndex] = newTab
-            if #available(iOS 17.0, *), case .systemObservation = observingType {
+            if observingType.isSystemObservation {
                 await notifyObservationAboutReplacedTab(at: tabIndex, newTab: newTab)
             } else {
                 // Need to notify observers to allow them to update title for tab view
@@ -303,7 +303,7 @@ private extension TabsDataService {
             return .tabPreviewUpdated(TabsListError.wrongTabIndexToReplace)
         }
         tabs[tabIndex] = tab
-        if #available(iOS 17.0, *), case .systemObservation = observingType {
+        if observingType.isSystemObservation {
             await notifyObservationAboutReplacedTab(at: tabIndex, newTab: tab)
         } else {
             // Most likely need to notify observers to allow them to update preview image?
@@ -340,7 +340,10 @@ extension TabsDataService: IndexSelectionContext {
 }
 
 extension TabsDataService: TabsSubject {
-    public func attach(_ observer: TabsObserver, notify: Bool = false) async {
+    public func attach(
+        _ observer: TabsObserver,
+        notify: Bool = false
+    ) async {
         // TODO: use `Weak<TabsObserver>` or `NSHashTable<TabsObserver>.weakObjects()` but protocol types can't be used for these approaches or revisit and use `detach` function again
         tabObservers.append(observer)
         guard notify else {
@@ -376,7 +379,11 @@ extension TabsDataService: TabsSubject {
 }
 
 private extension TabsDataService {
-    func handleTabAdded(_ tab: CoreBrowser.Tab, index: Int, select: Bool) async {
+    func handleTabAdded(
+        _ tab: CoreBrowser.Tab,
+        index: Int,
+        select: Bool
+    ) async {
         /// can select new tab only after adding it, this is because corresponding view should be in the list
         switch positioning.addSpeed {
         case .immediately:
@@ -422,7 +429,7 @@ private extension TabsDataService {
         /// so, this is kind of a side effect of removing the only one last tab
         if tabs.count == 1 {
             tabs.removeAll()
-            if #available(iOS 17.0, *), case .systemObservation = observingType {
+            if observingType.isSystemObservation {
                 await notifyObservationAboutClearTabs()
             } else {
                 tabsCountInput.yield(0)
@@ -441,7 +448,7 @@ private extension TabsDataService {
             /// need to remove it before changing selected index
             /// otherwise in one case the handler will select closed tab
             tabs.remove(at: closedTabIndex)
-            if #available(iOS 17.0, *), case .systemObservation = observingType {
+            if observingType.isSystemObservation {
                 await notifyObservationAboutNewTabs(tabs, nil)
             } else {
                 tabsCountInput.yield(tabs.count)
@@ -450,7 +457,7 @@ private extension TabsDataService {
                 fatalError("Failed to find new selected tab")
             }
             selectedTabIdentifier = selectedTab.id
-            if #available(iOS 17.0, *), case .systemObservation = observingType {
+            if observingType.isSystemObservation {
                 await notifyObservationAboutNewSelectedTabId(selectedTab.id)
             } else {
                 selectedTabIdInput.yield(selectedTab.id)
@@ -471,7 +478,7 @@ private extension TabsDataService {
         }
         tabs = cachedTabs
         selectedTabIdentifier = id
-        if #available(iOS 17.0, *), case .systemObservation = observingType {
+        if observingType.isSystemObservation {
             await notifyObservationAboutNewTabs(cachedTabs, nil)
             await notifyObservationAboutNewSelectedTabId(id)
         } else {
