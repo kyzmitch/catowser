@@ -62,7 +62,7 @@ final class ViewModelFactory {
     func tabsPreviewsViewModel() async -> TabsPreviewsViewModel {
         let readUseCase = await UseCaseRegistry.shared.findUseCase(ReadTabsUseCase.self)
         let writeUseCase = await UseCaseRegistry.shared.findUseCase(WriteTabsUseCase.self)
-        return TabsPreviewsViewModel(readUseCase, writeUseCase)
+        return TabsPreviewsViewModel(readUseCase, writeUseCase, DefaultTabProvider.shared)
     }
 
     func allTabsViewModel() async -> AllTabsViewModel {

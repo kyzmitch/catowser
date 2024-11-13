@@ -15,13 +15,13 @@ enum TabsPreviewState {
     /// Maybe it is not needed state, but it is required for scalability when some user will have 100 tabs
     case loading
     /// Actual collection for tabs, at least one tab always will be in it
-    case tabs(dataSource: TabsBox)
+    case tabs(dataSource: TabsBox, selectedId: UUID?)
 
     var itemsNumber: Int {
         switch self {
         case .loading:
             return 0
-        case .tabs(let box):
+        case .tabs(let box, _):
             return box.value.count
         }
     }
@@ -31,30 +31,52 @@ enum TabsPreviewState {
     @Published var uxState: TabsPreviewState = .loading
     private let readTabUseCase: ReadTabsUseCase
     private let writeTabUseCase: WriteTabsUseCase
+    private let tabProvider: DefaultTabProvider.StateHolder
 
     init(
         _ readTabUseCase: ReadTabsUseCase,
-        _ writeTabUseCase: WriteTabsUseCase
+        _ writeTabUseCase: WriteTabsUseCase,
+        _ tabProvider: DefaultTabProvider.StateHolder
     ) {
         self.readTabUseCase = readTabUseCase
         self.writeTabUseCase = writeTabUseCase
+        self.tabProvider = tabProvider
     }
 
     func load() {
         Task {
-            let tabs = await readTabUseCase.allTabs
-            uxState = .tabs(dataSource: .init(tabs))
+            async let tabs = readTabUseCase.allTabs
+            async let selectedTabId = readTabUseCase.selectedId
+            uxState = await .tabs(
+                dataSource: .init(tabs),
+                selectedId: selectedTabId
+            )
         }
     }
 
     func closeTab(at index: Int) {
         Task {
-            guard case let .tabs(box) = uxState else {
+            guard case let .tabs(box, selectedId) = uxState else {
                 return
             }
             let tab = box.value.remove(at: index)
+            let newSelectedId: UUID?
+            // De-select tab which was closed and select the last one
+            // but actually need to select it based on the strategy
+            // and this is handled by `TabsDataService` and that information
+            // is propagated using `TabObserver`
+            //
+            // Maybe better is just to send optional selected id to select nothing instead
+            if tab.id == selectedId {
+                newSelectedId = nil
+            } else {
+                newSelectedId = selectedId
+            }
             /// Rewrite view model state with the updated box
-            uxState = .tabs(dataSource: box)
+            uxState = .tabs(
+                dataSource: box,
+                selectedId: newSelectedId
+            )
             if let site = tab.site {
                 WebViewsReuseManager.shared.removeController(for: site)
             }

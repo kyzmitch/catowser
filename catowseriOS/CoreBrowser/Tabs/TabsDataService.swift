@@ -320,7 +320,7 @@ private extension TabsDataService {
         guard !tabObservers.isEmpty else {
             return
         }
-        var indexToCopy = tabObservers.endIndex
+        var indexToCopy = tabObservers.endIndex - 1
         // find first non-nil observer from the tail
         while true {
             guard tabObservers[indexToCopy].realSubject == nil else {
@@ -335,13 +335,17 @@ private extension TabsDataService {
         var removedAmount = tabObservers.endIndex - indexToCopy
         // order of observers doesn't matter, so,
         // moving them from the tail of collection
+        var foundNilObservers = false
         for pair in tabObservers.enumerated() where pair.element.realSubject == nil {
+            foundNilObservers = true
             let elementToMove = tabObservers[indexToCopy]
             tabObservers[pair.offset] = elementToMove
             indexToCopy -= 1
             removedAmount += 1
         }
-        tabObservers.removeLast(removedAmount)
+        if foundNilObservers {
+            tabObservers.removeLast(removedAmount)
+        }
     }
 }
 
@@ -587,12 +591,12 @@ extension AddedTabPosition {
         switch self {
         case .listEnd:
             tabs.append(tab)
-            newIndex = tabs.count - 1
+            newIndex = tabs.endIndex - 1
         case .afterSelected:
             guard let tabTuple = tabs.element(by: currentlySelectedId) else {
                 /// no previously selected tab, probably when reset to one tab happend
                 tabs.append(tab)
-                return tabs.count - 1
+                return tabs.endIndex - 1
             }
             newIndex = tabTuple.index + 1
             tabs.insert(tab, at: newIndex)

@@ -173,14 +173,19 @@ where C.R == TabsScreenRoute {
         return viewModel.uxState.itemsNumber
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         var tab: CoreBrowser.Tab?
+        var shouldHighlightTab = false
         switch viewModel.uxState {
-        case .tabs(let dataSource) where indexPath.item < dataSource.value.count:
+        case .tabs(let dataSource, let selectedId) where indexPath.item < dataSource.value.count:
             // must use `item` for UICollectionView
             tab = dataSource.value[safe: indexPath.item]
-        default: break
+            shouldHighlightTab = tab?.id == selectedId
+        default:
+            break
         }
 
         guard let correctTab = tab else {
@@ -188,16 +193,24 @@ where C.R == TabsScreenRoute {
             return UICollectionViewCell(frame: .zero)
         }
         let cell = collectionView.dequeueCell(at: indexPath, type: TabPreviewCell.self)
-        cell.configure(with: correctTab, at: indexPath.item, delegate: self)
+        cell.configure(
+            with: correctTab,
+            at: indexPath.item,
+            delegate: self,
+            shouldHighlight: shouldHighlightTab
+        )
         return cell
     }
 
     // MARK: - UICollectionViewDelegate
 
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        didSelectItemAt indexPath: IndexPath
+    ) {
         var tab: CoreBrowser.Tab?
         switch viewModel.uxState {
-        case .tabs(let dataSource) where indexPath.item < dataSource.value.count:
+        case .tabs(let dataSource, _) where indexPath.item < dataSource.value.count:
             tab = dataSource.value[safe: indexPath.item]
         default:
             coordinator?.showNext(.error)
@@ -259,7 +272,7 @@ private struct Sizes {
 extension TabsPreviewsViewController: TabsObserver {
     func tabDidAdd(_ tab: CoreBrowser.Tab, at index: Int) async {
         let state = viewModel.uxState
-        guard case let .tabs(box) = state else {
+        guard case let .tabs(box, _) = state else {
             return
         }
 
