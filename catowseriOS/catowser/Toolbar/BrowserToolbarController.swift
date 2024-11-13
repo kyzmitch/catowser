@@ -49,7 +49,8 @@ final class BrowserToolbarController<C: Navigating>: BaseViewController where C.
         self.downloadPanelDelegate = downloadPanelDelegate
         toolbarView = BrowserToolbarView(
             frame: .zero,
-            featureManager: FeatureManager.shared
+            featureManager: FeatureManager.shared,
+            uiServiceRegistry: UIServiceRegistry.shared()
         )
         toolbarView.globalSettingsDelegate = globalSettingsDelegate
         super.init(nibName: nil, bundle: nil)

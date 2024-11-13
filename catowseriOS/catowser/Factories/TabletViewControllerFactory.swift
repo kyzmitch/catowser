@@ -51,7 +51,8 @@ final class TabletViewControllerFactory: ViewControllerFactory {
     func tabsViewController(_ vm: AllTabsViewModel) -> AnyViewController? {
         let vc = TabsViewController(
             vm,
-            FeatureManager.shared
+            FeatureManager.shared,
+            UIServiceRegistry.shared()
         )
         return vc
     }

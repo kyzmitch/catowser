@@ -71,7 +71,8 @@ final class PhoneViewControllerFactory: ViewControllerFactory {
         let vc: TabsPreviewsViewController = .init(
             coordinator,
             viewModel,
-            FeatureManager.shared
+            FeatureManager.shared,
+            UIServiceRegistry.shared()
         )
         return vc
     }

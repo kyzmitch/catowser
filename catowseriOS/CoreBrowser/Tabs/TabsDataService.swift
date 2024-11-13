@@ -332,7 +332,7 @@ private extension TabsDataService {
             // if all observers are nil, then do nothing
             return
         }
-        var removedAmount = 0
+        var removedAmount = tabObservers.endIndex - indexToCopy
         // order of observers doesn't matter, so,
         // moving them from the tail of collection
         for pair in tabObservers.enumerated() where pair.element.realSubject == nil {

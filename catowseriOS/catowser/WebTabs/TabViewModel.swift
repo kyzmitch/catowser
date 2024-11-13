@@ -17,18 +17,21 @@ final class TabViewModel {
     private let readTabUseCase: ReadTabsUseCase
     private let writeTabUseCase: WriteTabsUseCase
     private let featureManager: FeatureManager.StateHolder
+    private let uiServiceRegistry: UIServiceRegistry
 
     @Published var state: TabViewState
 
     init(_ tab: CoreBrowser.Tab,
          _ readTabUseCase: ReadTabsUseCase,
          _ writeTabUseCase: WriteTabsUseCase,
-         _ featureManager: FeatureManager.StateHolder
+         _ featureManager: FeatureManager.StateHolder,
+         _ uiServiceRegistry: UIServiceRegistry
     ) {
         self.tab = tab
         self.readTabUseCase = readTabUseCase
         self.writeTabUseCase = writeTabUseCase
         self.featureManager = featureManager
+        self.uiServiceRegistry = uiServiceRegistry
         _state = .init(initialValue: .deSelected(tab.title, nil))
         
         Task {
@@ -110,14 +113,14 @@ final class TabViewModel {
     @MainActor
     func startTabsObservation() {
         withObservationTracking {
-            _ = UIServiceRegistry.shared().tabsSubject.selectedTabId
+            _ = uiServiceRegistry.tabsSubject.selectedTabId
         } onChange: {
             Task { [weak self] in
                 await self?.handleSelectedTabChange()
             }
         }
         withObservationTracking {
-            _ = UIServiceRegistry.shared().tabsSubject.replacedTabIndex
+            _ = uiServiceRegistry.tabsSubject.replacedTabIndex
         } onChange: {
             Task { [weak self] in
                 await self?.observeReplacedTab()
@@ -128,7 +131,7 @@ final class TabViewModel {
     @available(iOS 17.0, *)
     @MainActor
     func handleSelectedTabChange() async {
-        let subject = UIServiceRegistry.shared().tabsSubject
+        let subject = uiServiceRegistry.tabsSubject
         let tabId = subject.selectedTabId
         guard let index = subject.tabs
             .firstIndex(where: { $0.id == tabId }) else {
@@ -141,7 +144,7 @@ final class TabViewModel {
     @available(iOS 17.0, *)
     @MainActor
     private func observeReplacedTab() async {
-        let subject = UIServiceRegistry.shared().tabsSubject
+        let subject = uiServiceRegistry.tabsSubject
         guard let index = subject.replacedTabIndex else {
             return
         }

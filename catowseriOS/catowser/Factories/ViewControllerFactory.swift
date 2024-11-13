@@ -116,7 +116,8 @@ extension ViewControllerFactory {
         let vc: SearchBarBaseViewController = .init(
             searchBarDelegate,
             uiFramework,
-            FeatureManager.shared
+            FeatureManager.shared,
+            UIServiceRegistry.shared()
         )
         return vc
     }

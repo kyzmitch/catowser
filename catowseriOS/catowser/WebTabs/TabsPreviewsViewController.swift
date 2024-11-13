@@ -22,15 +22,18 @@ where C.R == TabsScreenRoute {
 
     private let viewModel: TabsPreviewsViewModel
     private let featureManager: FeatureManager.StateHolder
+    private let uiServiceRegistry: UIServiceRegistry
 
     init(
         _ coordinator: C,
         _ viewModel: TabsPreviewsViewModel,
-        _ featureManager: FeatureManager.StateHolder
+        _ featureManager: FeatureManager.StateHolder,
+        _ uiServiceRegistry: UIServiceRegistry
     ) {
         self.coordinator = coordinator
         self.viewModel = viewModel
         self.featureManager = featureManager
+        self.uiServiceRegistry = uiServiceRegistry
         super.init(nibName: nil, bundle: nil)
         
         Task {
@@ -228,7 +231,7 @@ where C.R == TabsScreenRoute {
     @MainActor
     private func startTabsObservation() {
         withObservationTracking {
-            _ = UIServiceRegistry.shared().tabsSubject.addedTabIndex
+            _ = uiServiceRegistry.tabsSubject.addedTabIndex
         } onChange: {
             Task { [weak self] in
                 await self?.handleAddedTabs()
@@ -239,7 +242,7 @@ where C.R == TabsScreenRoute {
     @available(iOS 17.0, *)
     @MainActor
     private func handleAddedTabs() async {
-        let subject = UIServiceRegistry.shared().tabsSubject
+        let subject = uiServiceRegistry.tabsSubject
         guard let index = subject.addedTabIndex else {
             return
         }

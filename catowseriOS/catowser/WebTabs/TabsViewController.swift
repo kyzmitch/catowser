@@ -22,13 +22,16 @@ final class TabsViewController: BaseViewController {
     private var viewModels = [TabViewModel]()
     private let viewModel: AllTabsViewModel
     private let featureManager: FeatureManager.StateHolder
+    private let uiServiceRegistry: UIServiceRegistry
 
     init(
         _ viewModel: AllTabsViewModel,
-        _ featureManager: FeatureManager.StateHolder
+        _ featureManager: FeatureManager.StateHolder,
+        _ uiServiceRegistry: UIServiceRegistry
     ) {
         self.viewModel = viewModel
         self.featureManager = featureManager
+        self.uiServiceRegistry = uiServiceRegistry
         super.init(nibName: nil, bundle: nil)
         
         Task {
@@ -231,21 +234,21 @@ private extension TabsViewController {
     @MainActor
     func startTabsObservation() {
         withObservationTracking {
-            _ = UIServiceRegistry.shared().tabsSubject.addedTabIndex
+            _ = uiServiceRegistry.tabsSubject.addedTabIndex
         } onChange: {
             Task { [weak self] in
                 await self?.handleAddedTabs()
             }
         }
         withObservationTracking {
-            _ = UIServiceRegistry.shared().tabsSubject.selectedTabId
+            _ = uiServiceRegistry.tabsSubject.selectedTabId
         } onChange: {
             Task { [weak self] in
                 await self?.handleSelectedTabChange()
             }
         }
         withObservationTracking {
-            _ = UIServiceRegistry.shared().tabsSubject.tabsCount
+            _ = uiServiceRegistry.tabsSubject.tabsCount
         } onChange: {
             Task { [weak self] in
                 await self?.handleTabsCountChange()
@@ -256,7 +259,7 @@ private extension TabsViewController {
     @available(iOS 17.0, *)
     @MainActor
     func handleAddedTabs() async {
-        let subject = UIServiceRegistry.shared().tabsSubject
+        let subject = uiServiceRegistry.tabsSubject
         if let index = subject.addedTabIndex {
             await tabDidAdd(subject.tabs[index], at: index)
         } else {
@@ -267,7 +270,7 @@ private extension TabsViewController {
     @available(iOS 17.0, *)
     @MainActor
     private func handleSelectedTabChange() async {
-        let subject = UIServiceRegistry.shared().tabsSubject
+        let subject = uiServiceRegistry.tabsSubject
         let tabId = subject.selectedTabId
         guard let index = subject.tabs
             .firstIndex(where: { $0.id == tabId }) else {
@@ -279,7 +282,7 @@ private extension TabsViewController {
     @available(iOS 17.0, *)
     @MainActor
     private func handleTabsCountChange() async {
-        let count = UIServiceRegistry.shared().tabsSubject.tabsCount
+        let count = uiServiceRegistry.tabsSubject.tabsCount
         await updateTabsCount(with: count)
     }
 }

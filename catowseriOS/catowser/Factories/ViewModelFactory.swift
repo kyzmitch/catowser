@@ -54,7 +54,8 @@ final class ViewModelFactory {
             tab,
             readUseCase,
             writeUseCase,
-            FeatureManager.shared
+            FeatureManager.shared,
+            UIServiceRegistry.shared()
         )
     }
 

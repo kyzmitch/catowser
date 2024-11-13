@@ -43,6 +43,8 @@ final class BrowserToolbarView: UIToolbar {
     weak var webViewInterface: WebViewNavigatable?
     /// Feature manager
     private let featureManager: FeatureManager.StateHolder
+    /// service registry to not depend on ios 17 for the tabs subject
+    private let uiServiceRegistry: UIServiceRegistry
 
     // MARK: - state properties
 
@@ -151,9 +153,11 @@ final class BrowserToolbarView: UIToolbar {
 
     init(
         frame: CGRect,
-        featureManager: FeatureManager.StateHolder
+        featureManager: FeatureManager.StateHolder,
+        uiServiceRegistry: UIServiceRegistry
     ) {
         self.featureManager = featureManager
+        self.uiServiceRegistry = uiServiceRegistry
         if frame.width <= 10 {
             // iOS 13.x fix for layout errors for code
             // which works on iOS 13.x on iPad
@@ -319,7 +323,7 @@ private extension BrowserToolbarView {
     @MainActor
     func startTabsObservation() {
         withObservationTracking {
-            _ = UIServiceRegistry.shared().tabsSubject.selectedTabId
+            _ = uiServiceRegistry.tabsSubject.selectedTabId
         } onChange: {
             Task { [weak self] in
                 await self?.handleSelectedTabChange()
@@ -327,7 +331,7 @@ private extension BrowserToolbarView {
         }
 
         withObservationTracking {
-            _ = UIServiceRegistry.shared().tabsSubject.tabsCount
+            _ = uiServiceRegistry.tabsSubject.tabsCount
         } onChange: {
             Task { [weak self] in
                 await self?.handleTabsCountChange()
@@ -338,7 +342,7 @@ private extension BrowserToolbarView {
     @available(iOS 17.0, *)
     @MainActor
     func handleSelectedTabChange() async {
-        let subject = UIServiceRegistry.shared().tabsSubject
+        let subject = uiServiceRegistry.tabsSubject
         let tabId = subject.selectedTabId
         guard let index = subject.tabs
             .firstIndex(where: { $0.id == tabId }) else {
@@ -350,7 +354,7 @@ private extension BrowserToolbarView {
     @available(iOS 17.0, *)
     @MainActor
     func handleTabsCountChange() async {
-        let subject = UIServiceRegistry.shared().tabsSubject
+        let subject = uiServiceRegistry.tabsSubject
         await counterView.updateTabsCount(with: subject.tabsCount)
     }
 }
