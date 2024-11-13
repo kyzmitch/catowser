@@ -320,12 +320,25 @@ private extension TabsDataService {
         guard !tabObservers.isEmpty else {
             return
         }
-        var copiedIndex = tabObservers.endIndex
+        var indexToCopy = tabObservers.endIndex
+        // find first non-nil observer from the tail
+        while true {
+            guard tabObservers[indexToCopy].realSubject == nil else {
+                break
+            }
+            indexToCopy -= 1
+        }
+        guard indexToCopy >= 0 else {
+            // if all observers are nil, then do nothing
+            return
+        }
         var removedAmount = 0
+        // order of observers doesn't matter, so,
+        // moving them from the tail of collection
         for pair in tabObservers.enumerated() where pair.element.realSubject == nil {
-            let elementToMove = tabObservers[copiedIndex]
+            let elementToMove = tabObservers[indexToCopy]
             tabObservers[pair.offset] = elementToMove
-            copiedIndex -= 1
+            indexToCopy -= 1
             removedAmount += 1
         }
         tabObservers.removeLast(removedAmount)
