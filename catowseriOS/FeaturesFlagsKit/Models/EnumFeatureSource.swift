@@ -6,11 +6,6 @@
 //  Copyright © 2022 Cotton (former Catowser). All rights reserved.
 //
 
-@preconcurrency import ReactiveSwift
-#if canImport(Combine)
-import Combine
-#endif
-
 public protocol EnumFeatureSource: Sendable {
     func currentEnumValue<F: EnumFeature>(
         of feature: ApplicationEnumFeature<F>

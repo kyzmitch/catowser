@@ -18,7 +18,7 @@ import Foundation
 /// This can be sendable, because all actor types are, and this one is Main actor
 @MainActor
 public protocol TabsObserver: AnyObject, Sendable {
-    /// Prodive necessary data to render UI on tablets
+    /// Provide necessary data to render UI on the tablets
     ///
     /// - Parameter tabs: Tabs from cache at application start.
     func initializeObserver(with tabs: [CoreBrowser.Tab]) async

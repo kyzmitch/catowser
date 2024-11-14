@@ -12,7 +12,7 @@ import Foundation
 /// Can't be a subset of a `BasicFeature` or `Feature` which have static properties
 public protocol EnumFeature: Sendable {
     associatedtype EnumValue: CaseIterable & RawRepresentable & Sendable
-    associatedtype RawValue
+    associatedtype RawValue where EnumValue.RawValue == RawValue
 
     var defaultEnumValue: EnumValue { get }
     var defaultRawValue: RawValue { get }
