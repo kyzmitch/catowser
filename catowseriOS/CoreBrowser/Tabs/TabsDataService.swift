@@ -16,19 +16,19 @@ public actor TabsDataService: GenericDataServiceProtocol {
     public typealias Command = TabsServiceCommand
     public typealias ServiceData = TabsServiceDataOutput
     
-    typealias UUIDStream = AsyncStream<UUID>
+    typealias UUIDStream = AsyncStream<Tab.ID>
     typealias IntStream = AsyncStream<Int>
 
     /// Tabs selection strategy
     private let selectionStrategy: TabSelectionStrategy
     /// In memory storage for the tabs
-    private var tabs: [CoreBrowser.Tab] = []
+    private var tabs: [Tab] = []
     /// Async stream for the selected tab id instead of using Combine's @Published
     private var selectedTabIdStream: UUIDStream!
     /// Async's stream continuation to notify about new id
     private var selectedTabIdInput: UUIDStream.Continuation!
     ///  Simple variable needed for direct sync access and for async getter
-    private var selectedTabIdentifier: UUID
+    private var selectedTabIdentifier: Tab.ID
     /// Tabs count stream
     private var tabsCountStream: IntStream!
     /// Tabs count input for the async stream
@@ -61,7 +61,7 @@ public actor TabsDataService: GenericDataServiceProtocol {
         self.observingType = observingType
 
         #if swift(>=5.9)
-        let (tabIdStream, tabIdContinuation) = AsyncStream.makeStream(of: UUID.self)
+        let (tabIdStream, tabIdContinuation) = AsyncStream.makeStream(of: Tab.ID.self)
         selectedTabIdStream = tabIdStream
         selectedTabIdInput = tabIdContinuation
         tabIdContinuation.yield(positioning.defaultSelectedTabId)

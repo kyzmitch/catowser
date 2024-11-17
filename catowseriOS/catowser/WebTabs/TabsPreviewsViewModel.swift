@@ -60,27 +60,20 @@ enum TabsPreviewState {
                 return
             }
             let tab = box.value.remove(at: index)
-            let newSelectedId: UUID?
-            // De-select tab which was closed and select the last one
-            // but actually need to select it based on the strategy
-            // and this is handled by `TabsDataService` and that information
-            // is propagated using `TabObserver`
-            //
-            // Maybe better is just to send optional selected id to select nothing instead
-            if tab.id == selectedId {
-                newSelectedId = nil
-            } else {
-                newSelectedId = selectedId
-            }
             /// Rewrite view model state with the updated box
             uxState = .tabs(
                 dataSource: box,
-                selectedId: newSelectedId
+                selectedId: nil
             )
             if let site = tab.site {
                 WebViewsReuseManager.shared.removeController(for: site)
             }
             await writeTabUseCase.close(tab: tab)
+            let newSelectedId = await readTabUseCase.selectedId
+            uxState = .tabs(
+                dataSource: box,
+                selectedId: newSelectedId
+            )
         }
     }
     
