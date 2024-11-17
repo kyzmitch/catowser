@@ -56,7 +56,7 @@ enum TabsPreviewState {
 
     func closeTab(at index: Int) {
         Task {
-            guard case let .tabs(box, selectedId) = uxState else {
+            guard case let .tabs(box, _) = uxState else {
                 return
             }
             let tab = box.value.remove(at: index)
@@ -80,14 +80,22 @@ enum TabsPreviewState {
     func selectTab(_ tab: CoreBrowser.Tab) {
         Task {
             await writeTabUseCase.select(tab: tab)
+            // no need to select anything in the view, because it will be closed
         }
     }
     
     func addTab() {
         Task {
-            let contentState = await DefaultTabProvider.shared.contentState
+            let contentState = await tabProvider.contentState
             let tab = CoreBrowser.Tab(contentType: contentState)
             await writeTabUseCase.add(tab: tab)
+            // now need to re-check selected tab in the view
+            async let allNewTabs = readTabUseCase.allTabs
+            async let newSelectedId = readTabUseCase.selectedId
+            uxState = await .tabs(
+                dataSource: TabsBox(allNewTabs),
+                selectedId: newSelectedId
+            )
         }
     }
 }
