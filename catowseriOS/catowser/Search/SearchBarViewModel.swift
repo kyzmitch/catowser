@@ -51,7 +51,7 @@ private extension SearchBarViewModel {
             return
         }
         /// TODO: think how to replace delegate with view model func and WriteTabUseCase
-        _ = await TabsDataService.shared.sendCommand(.replaceSelectedContent(.site(site)))
+        _ = await TabsDataService.shared.sendCommand(.replaceContent(.site(site)))
     }
 }
 

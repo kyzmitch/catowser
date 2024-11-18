@@ -17,12 +17,12 @@ public enum TabsServiceCommand: GenericDataServiceCommand, Sendable {
     case getTabsCount
     case getSelectedTabId
     case getAllTabs
-    case addTab(CoreBrowser.Tab)
-    case closeTab(CoreBrowser.Tab)
-    case closeTabWithId(UUID)
+    case addTab(Tab)
+    case closeTab(Tab)
+    case closeTabWithId(Tab.ID)
     case closeAll
-    case selectTab(CoreBrowser.Tab)
-    case replaceSelectedContent(CoreBrowser.Tab.ContentType)
+    case selectTab(Tab)
+    case replaceContent(Tab.ContentType)
     case updateSelectedTabPreview(Data?)
     
     public static let allCases: [TabsServiceCommand] = [
@@ -34,7 +34,7 @@ public enum TabsServiceCommand: GenericDataServiceCommand, Sendable {
         .closeTabWithId(.init()),
         .closeAll,
         .selectTab(.blank),
-        .replaceSelectedContent(.blank),
+        .replaceContent(.blank),
         .updateSelectedTabPreview(nil)
     ]
 }

@@ -114,7 +114,7 @@ public actor TabsDataService: GenericDataServiceProtocol {
             return await handleCloseAllCommand()
         case .selectTab(let value):
             return await handleSelectTabCommand(value)
-        case .replaceSelectedContent(let value):
+        case .replaceContent(let value):
             return await handleReplaceTabContentCommand(value)
         case .updateSelectedTabPreview(let value):
             return await handleUpdateSelectedTabPreviewCommand(value)
