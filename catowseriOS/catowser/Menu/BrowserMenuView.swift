@@ -64,6 +64,9 @@ struct BrowserMenuView: View {
                     NavigationLink(value: CottonMenuItem.uiFramework) {
                         MenuStatefullLabel(.appUIFrameworkTypeTxt, model.uiFrameworkRowValue.description)
                     }
+                    NavigationLink(value: CottonMenuItem.observingApi) {
+                        MenuStatefullLabel(.observingApiTypeTxt, model.observingApiRowValue.description)
+                    }
                     Button("Simulate download resources") {
                         // Need to dismiss menu popover first if on Tablet
                         presentationMode.wrappedValue.dismiss()
@@ -98,6 +101,12 @@ struct BrowserMenuView: View {
                     BaseMenuView<UIFrameworkType>(viewModel: .init(model.uiFrameworkRowValue) { selected in
                         showingAppRestartAlert.toggle()
                         model.setUiFramework(selected)
+                        path = []
+                    })
+                case .observingApi:
+                    BaseMenuView<ObservingApiType>(viewModel: .init(model.observingApiRowValue) { selected in
+                        showingAppRestartAlert.toggle()
+                        model.setObservingApi(selected)
                         path = []
                     })
                 }

@@ -6,13 +6,14 @@
 //  Copyright © 2022 Cotton (former Catowser). All rights reserved.
 //
 
+import FeaturesFlagsKit
 import UIKit
 
 /// Implements the operations to create phone layout product objects.
 final class PhoneViewControllerFactory: ViewControllerFactory {
     private var searchBarVC: UIViewController?
     private var toolBarVC: UIViewController?
-    private var topSitesVC: (AnyViewController & TopSitesInterface)?
+    private var topSitesVC: AnyViewController?
     private var blankVC: UIViewController?
 
     init() {}
@@ -52,7 +53,12 @@ final class PhoneViewControllerFactory: ViewControllerFactory {
         if let existingVC = toolBarVC {
             return existingVC
         }
-        let vc = BrowserToolbarController(coordinator, downloadDelegate, settingsDelegate)
+        let vc = BrowserToolbarController(
+            coordinator,
+            downloadDelegate,
+            settingsDelegate,
+            FeatureManager.shared
+        )
         vc.presenter = presenter
         toolBarVC = vc
         return toolBarVC
@@ -62,7 +68,12 @@ final class PhoneViewControllerFactory: ViewControllerFactory {
         _ coordinator: C,
         _ viewModel: TabsPreviewsViewModel
     ) -> UIViewController? where C.R == TabsScreenRoute {
-        let vc: TabsPreviewsViewController = .init(coordinator, viewModel)
+        let vc: TabsPreviewsViewController = .init(
+            coordinator,
+            viewModel,
+            FeatureManager.shared,
+            UIServiceRegistry.shared()
+        )
         return vc
     }
 
@@ -70,13 +81,19 @@ final class PhoneViewControllerFactory: ViewControllerFactory {
         return nil
     }
 
-    func topSitesViewController<C: Navigating>(_ coordinator: C?) -> AnyViewController & TopSitesInterface
-    where C.R == TopSitesRoute {
+    func topSitesViewController<C: Navigating>(
+        _ coordinator: C?,
+        _ topSitesVM: TopSitesViewModel
+    ) -> AnyViewController where C.R == TopSitesRoute {
         if let existingVC = topSitesVC {
             return existingVC
         }
         let bundle = Bundle(for: TopSitesViewController<C>.self)
-        let createdVC = TopSitesViewController<C>(nibName: "TopSitesViewController", bundle: bundle)
+        let createdVC = TopSitesViewController<C>(
+            nibName: "TopSitesViewController",
+            bundle: bundle,
+            vm: topSitesVM
+        )
         createdVC.coordinator = coordinator
         topSitesVC = createdVC
         return createdVC

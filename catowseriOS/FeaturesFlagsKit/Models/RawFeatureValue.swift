@@ -8,8 +8,11 @@
 
 import Foundation
 
-// Raw types of features we support.
+// MARK: - Raw types of features we support
+
+/// Marker protocol for the possible feature value types
 public protocol RawFeatureValue {}
+
 extension Bool: RawFeatureValue {}
 extension Int: RawFeatureValue {}
 extension String: RawFeatureValue {}

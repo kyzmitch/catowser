@@ -16,6 +16,7 @@ extension String {
     static let tabDefaultContentKey = "ios.tab.default_content"
     static let browserAsyncApiKey = "ios.browser.async_api"
     static let uiFrameworkKey = "ios.browser.ui_framework"
+    static let observingApiKey = "ios.browser.observing_api"
 }
 
 typealias WebAutoCompletionFeature = GenericEnumFeature<WebAutoCompletionSource>
@@ -23,6 +24,7 @@ typealias TabAddPositionFeature = GenericEnumFeature<AddedTabPosition>
 typealias TabContentFeature = GenericEnumFeature<CoreBrowser.Tab.ContentType>
 typealias AppAsyncApiFeature = GenericEnumFeature<AsyncApiType>
 typealias UIFrameworkFeature = GenericEnumFeature<UIFrameworkType>
+typealias ObservingApiFeature = GenericEnumFeature<ObservingApiType>
 
 enum EnumFeaturesHolder {
     static let webAutoCompletionSource = WebAutoCompletionFeature(.autoCompletionKey)
@@ -30,6 +32,7 @@ enum EnumFeaturesHolder {
     static let tabDefaultContent = TabContentFeature(.tabDefaultContentKey)
     static let selectedAppAsyncApi = AppAsyncApiFeature(.browserAsyncApiKey)
     static let selectedUIFramework = UIFrameworkFeature(.uiFrameworkKey)
+    static let observingApiKey = ObservingApiFeature(.observingApiKey)
 }
 
 extension GenericEnumFeature where E == AsyncApiType {
@@ -42,6 +45,16 @@ extension GenericEnumFeature where E == AsyncApiType {
             #endif
         } else {
             return .combine
+        }
+    }
+}
+
+extension GenericEnumFeature where E == ObservingApiType {
+    var defaultEnumValue: ObservingApiType {
+        if #available(iOS 17.0, *) {
+            return .observerDesignPattern
+        } else {
+            return .observerDesignPattern
         }
     }
 }

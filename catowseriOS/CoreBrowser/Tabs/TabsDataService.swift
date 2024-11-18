@@ -6,25 +6,29 @@
 //  Copyright © 2019 Cotton (former Catowser). All rights reserved.
 //
 
+import DataServiceKit
 import Foundation
 
 /**
  Tabs list data service which can be used as a subject for observers.
  */
-public actor TabsDataService {
-    typealias UUIDStream = AsyncStream<UUID>
+public actor TabsDataService: GenericDataServiceProtocol {
+    public typealias Command = TabsServiceCommand
+    public typealias ServiceData = TabsServiceDataOutput
+    
+    typealias UUIDStream = AsyncStream<Tab.ID>
     typealias IntStream = AsyncStream<Int>
 
     /// Tabs selection strategy
     private let selectionStrategy: TabSelectionStrategy
     /// In memory storage for the tabs
-    private var tabs: [CoreBrowser.Tab] = []
+    private var tabs: [Tab] = []
     /// Async stream for the selected tab id instead of using Combine's @Published
     private var selectedTabIdStream: UUIDStream!
     /// Async's stream continuation to notify about new id
     private var selectedTabIdInput: UUIDStream.Continuation!
     ///  Simple variable needed for direct sync access and for async getter
-    private var selectedTabIdentifier: UUID
+    private var selectedTabIdentifier: Tab.ID
     /// Tabs count stream
     private var tabsCountStream: IntStream!
     /// Tabs count input for the async stream
@@ -34,19 +38,30 @@ public actor TabsDataService {
     /// Default positioning settings
     private let positioning: TabsStates
     /// A list of observers, usually some views which need to observer tabs count or changes to the tabs list
-    private var tabObservers: [TabsObserver]
+    private var tabObservers: [TabsObserverProxy]
+    /// A subject for observing. Should be optional to be able to support iOS < 17.0
+    private let tabsSubject: TabsDataSubjectProtocol?
+    /// Type of observation, should be passed from the client app, change should require restart
+    /// because subscribing usually happens in init or viewDidLoad during app start.
+    private let observingType: ObservingApiType
 
-    public init(_ storage: TabsRepository,
-                _ positioning: TabsStates,
-                _ selectionStrategy: TabSelectionStrategy) async {
-        self.selectionStrategy = selectionStrategy
-        self.tabsRepository = storage
+    public init(
+        _ tabsRepository: TabsRepository,
+        _ positioning: TabsStates,
+        _ selectionStrategy: TabSelectionStrategy,
+        _ tabsSubject: TabsDataSubjectProtocol?,
+        _ observingType: ObservingApiType = .observerDesignPattern
+    ) async {
+        self.tabsRepository = tabsRepository
         self.positioning = positioning
+        self.selectionStrategy = selectionStrategy
+        self.tabsSubject = tabsSubject
         self.tabObservers = []
         self.selectedTabIdentifier = positioning.defaultSelectedTabId
+        self.observingType = observingType
 
         #if swift(>=5.9)
-        let (tabIdStream, tabIdContinuation) = AsyncStream.makeStream(of: UUID.self)
+        let (tabIdStream, tabIdContinuation) = AsyncStream.makeStream(of: Tab.ID.self)
         selectedTabIdStream = tabIdStream
         selectedTabIdInput = tabIdContinuation
         tabIdContinuation.yield(positioning.defaultSelectedTabId)
@@ -78,7 +93,10 @@ public actor TabsDataService {
         }
     }
 
-    public func sendCommand(_ command: TabsServiceCommand) async -> TabsServiceDataOutput {
+    public func sendCommand(
+        _ command: Command,
+        _ input: ServiceData? = nil
+    ) async -> ServiceData {
         switch command {
         case .getTabsCount:
             return handleTabsCountCommand()
@@ -96,13 +114,46 @@ public actor TabsDataService {
             return await handleCloseAllCommand()
         case .selectTab(let value):
             return await handleSelectTabCommand(value)
-        case .replaceSelectedContent(let value):
+        case .replaceContent(let value):
             return await handleReplaceTabContentCommand(value)
         case .updateSelectedTabPreview(let value):
             return await handleUpdateSelectedTabPreviewCommand(value)
         }
     }
 }
+
+// MARK: - Main actor methods
+
+private extension TabsDataService {
+    /// If addedIndex is nil then it is an initial load
+    @MainActor func notifyAboutNewTabs(
+        _ tabs: [CoreBrowser.Tab],
+        _ addedIndex: Int?
+    ) async {
+        tabsSubject?.tabs = tabs
+        tabsSubject?.addedTabIndex = addedIndex
+    }
+
+    @MainActor func notifyAboutClearedTabs() async {
+        tabsSubject?.tabs.removeAll()
+    }
+
+    @MainActor func notifyAboutNewSelectedTab(
+        _ tabId: CoreBrowser.Tab.ID
+    ) async {
+        tabsSubject?.selectedTabId = tabId
+    }
+
+    @MainActor func notifyAboutReplacedTab(
+        at tabIndex: Int,
+        newTab: CoreBrowser.Tab
+    ) async {
+        tabsSubject?.tabs[tabIndex] = newTab
+        tabsSubject?.replacedTabIndex = tabIndex
+    }
+}
+
+// MARK: - Private functions
 
 private extension TabsDataService {
     func handleTabsCountCommand() -> TabsServiceDataOutput {
@@ -120,7 +171,11 @@ private extension TabsDataService {
     func handleAddTabCommand(_ tab: CoreBrowser.Tab) async -> TabsServiceDataOutput {
         let positionType = await positioning.addPosition
         let newIndex = positionType.addTab(tab, to: &tabs, selectedTabIdentifier)
-        tabsCountInput.yield(tabs.count)
+        if observingType.isSystemObservation {
+            await notifyAboutNewTabs(tabs, newIndex)
+        } else {
+            tabsCountInput.yield(tabs.count)
+        }
         let needSelect = selectionStrategy.makeTabActiveAfterAdding
         do {
             let addedTab = try await tabsRepository.add(tab, select: needSelect)
@@ -164,7 +219,11 @@ private extension TabsDataService {
             let tabsCopy = tabs
             _ = try await tabsRepository.remove(tabs: tabsCopy)
             tabs.removeAll()
-            tabsCountInput.yield(0)
+            if observingType.isSystemObservation {
+                await notifyAboutClearedTabs()
+            } else {
+                tabsCountInput.yield(0)
+            }
             let tab: CoreBrowser.Tab = .init(contentType: contentState)
             _ = try await tabsRepository.add(tab, select: true)
         } catch {
@@ -181,7 +240,11 @@ private extension TabsDataService {
                 return .tabSelected
             }
             selectedTabIdentifier = identifier
-            selectedTabIdInput.yield(identifier)
+            if observingType.isSystemObservation {
+                await notifyAboutNewSelectedTab(identifier)
+            } else {
+                selectedTabIdInput.yield(identifier)
+            }
         } catch {
             print("Failed to select tab with id \(tab.id) \(error)")
         }
@@ -203,9 +266,14 @@ private extension TabsDataService {
         do {
             _ = try tabsRepository.update(tab: newTab)
             tabs[tabIndex] = newTab
-            // Need to notify observers to allow them to update title for tab view
-            for observer in tabObservers {
-                await observer.tabDidReplace(newTab, at: tabIndex)
+            if observingType.isSystemObservation {
+                await notifyAboutReplacedTab(at: tabIndex, newTab: newTab)
+            } else {
+                // Need to notify observers to allow them to update title for tab view
+                removeWeakObserversIfNeeded()
+                for observer in tabObservers {
+                    await observer.tabDidReplace(newTab, at: tabIndex)
+                }
             }
             return .tabContentReplaced(nil)
         } catch {
@@ -236,9 +304,52 @@ private extension TabsDataService {
             return .tabPreviewUpdated(TabsListError.wrongTabIndexToReplace)
         }
         tabs[tabIndex] = tab
+        if observingType.isSystemObservation {
+            await notifyAboutReplacedTab(at: tabIndex, newTab: tab)
+        } else {
+            // Most likely need to notify observers to allow them to update preview image?
+            removeWeakObserversIfNeeded()
+            for observer in tabObservers {
+                await observer.tabDidReplace(tab, at: tabIndex)
+            }
+        }
         return .tabPreviewUpdated(nil)
     }
+    
+    func removeWeakObserversIfNeeded() {
+        guard !tabObservers.isEmpty else {
+            return
+        }
+        var indexToCopy = tabObservers.endIndex - 1
+        // find first non-nil observer from the tail
+        while true {
+            guard tabObservers[indexToCopy].realSubject == nil else {
+                break
+            }
+            indexToCopy -= 1
+        }
+        guard indexToCopy >= 0 else {
+            // if all observers are nil, then do nothing
+            return
+        }
+        var removedAmount = tabObservers.endIndex - indexToCopy
+        // order of observers doesn't matter, so,
+        // moving them from the tail of collection
+        var foundNilObservers = false
+        for pair in tabObservers.enumerated() where pair.element.realSubject == nil {
+            foundNilObservers = true
+            let elementToMove = tabObservers[indexToCopy]
+            tabObservers[pair.offset] = elementToMove
+            indexToCopy -= 1
+            removedAmount += 1
+        }
+        if foundNilObservers {
+            tabObservers.removeLast(removedAmount)
+        }
+    }
 }
+
+// MARK: - IndexSelectionContext protocol conformance
 
 extension TabsDataService: IndexSelectionContext {
     public var collectionLastIndex: Int {
@@ -264,9 +375,25 @@ extension TabsDataService: IndexSelectionContext {
     }
 }
 
+// MARK: - TabsSubject protocol conformance
+
 extension TabsDataService: TabsSubject {
-    public func attach(_ observer: TabsObserver, notify: Bool = false) async {
-        tabObservers.append(observer)
+    public func attach(
+        _ observer: TabsObserver,
+        notify: Bool = false
+    ) async {
+        // need to check if observer is already attached
+        for attachedObserver in tabObservers where attachedObserver.realSubject === observer {
+            // found the same address, so that, the same observer
+            // is already present in the subject
+            return
+        }
+        // This is a new observer, need to add it.
+        // Wrapping an observer to be able to store it by weak reference
+        // 1). to avoid any reference cycles
+        // 2). to avoid requirement to call `detach`
+        let proxyWrapper = TabsObserverProxy(observer)
+        tabObservers.append(proxyWrapper)
         guard notify else {
             return
         }
@@ -289,27 +416,30 @@ extension TabsDataService: TabsSubject {
         }
         await observer.tabDidSelect(tabTuple.index, tabTuple.tab.contentType, tabTuple.tab.id)
     }
-
-    public func detach(_ observer: TabsObserver) async {
-        let name = await observer.tabsObserverName
-        for iterator in tabObservers.enumerated() where await iterator.element.tabsObserverName == name {
-            tabObservers.remove(at: iterator.offset)
-            break
-        }
-    }
 }
 
+// MARK: - private functions
+
 private extension TabsDataService {
-    func handleTabAdded(_ tab: CoreBrowser.Tab, index: Int, select: Bool) async {
+    func handleTabAdded(
+        _ tab: CoreBrowser.Tab,
+        index: Int,
+        select: Bool
+    ) async {
         /// can select new tab only after adding it, this is because corresponding view should be in the list
         switch positioning.addSpeed {
         case .immediately:
+            removeWeakObserversIfNeeded()
             for observer in tabObservers {
                 await observer.tabDidAdd(tab, at: index)
             }
             if select {
                 selectedTabIdentifier = tab.id
-                selectedTabIdInput.yield(tab.id)
+                if observingType.isSystemObservation {
+                    await notifyAboutNewSelectedTab(tab.id)
+                } else {
+                    selectedTabIdInput.yield(tab.id)
+                }
             }
         case .after(let interval):
             do {
@@ -319,12 +449,17 @@ private extension TabsDataService {
                 } else {
                     try await Task.sleep(nanoseconds: interval.inNanoseconds)
                 }
+                removeWeakObserversIfNeeded()
                 for observer in tabObservers {
                     await observer.tabDidAdd(tab, at: index)
                 }
                 if select {
-                    selectedTabIdentifier = tab.id
-                    selectedTabIdInput.yield(tab.id)
+                    if observingType.isSystemObservation {
+                        await notifyAboutNewSelectedTab(tab.id)
+                    } else {
+                        selectedTabIdentifier = tab.id
+                        selectedTabIdInput.yield(tab.id)
+                    }
                 }
             } catch {
                 print("Failed to wait before adding a new tab: \(error)")
@@ -338,26 +473,39 @@ private extension TabsDataService {
         /// so, this is kind of a side effect of removing the only one last tab
         if tabs.count == 1 {
             tabs.removeAll()
-            tabsCountInput.yield(0)
-            Task {
-                let contentState = await positioning.contentState
-                let tab: CoreBrowser.Tab = .init(contentType: contentState)
-                _ = await sendCommand(.addTab(tab))
+            if observingType.isSystemObservation {
+                await notifyAboutClearedTabs()
+            } else {
+                tabsCountInput.yield(0)
             }
+            let contentState = await positioning.contentState
+            let tab: CoreBrowser.Tab = .init(contentType: contentState)
+            _ = await sendCommand(.addTab(tab))
         } else {
             guard let closedTabIndex = tabs.firstIndex(of: tab) else {
                 fatalError("Closing non existing tab")
             }
-            let newIndex = await selectionStrategy.autoSelectedIndexAfterTabRemove(self, removedIndex: closedTabIndex)
+            let newIndex = await selectionStrategy.autoSelectedIndexAfterTabRemove(
+                self,
+                removedIndex: closedTabIndex
+            )
             /// need to remove it before changing selected index
             /// otherwise in one case the handler will select closed tab
             tabs.remove(at: closedTabIndex)
-            tabsCountInput.yield(tabs.count)
+            if observingType.isSystemObservation {
+                await notifyAboutNewTabs(tabs, nil)
+            } else {
+                tabsCountInput.yield(tabs.count)
+            }
             guard let selectedTab = tabs[safe: newIndex] else {
                 fatalError("Failed to find new selected tab")
             }
             selectedTabIdentifier = selectedTab.id
-            selectedTabIdInput.yield(selectedTab.id)
+            if observingType.isSystemObservation {
+                await notifyAboutNewSelectedTab(selectedTab.id)
+            } else {
+                selectedTabIdInput.yield(selectedTab.id)
+            }
         }
     }
 
@@ -373,13 +521,22 @@ private extension TabsDataService {
             return
         }
         tabs = cachedTabs
-        tabsCountInput.yield(cachedTabs.count)
         selectedTabIdentifier = id
-        selectedTabIdInput.yield(id)
+        if observingType.isSystemObservation {
+            await notifyAboutNewTabs(cachedTabs, nil)
+            await notifyAboutNewSelectedTab(id)
+        } else {
+            tabsCountInput.yield(cachedTabs.count)
+            selectedTabIdInput.yield(id)
+        }
     }
 
     func subscribeForTabsCountChange() {
-        /// This method can't be async, have to use new Task
+        /// This method can't be async, have to use new Task.
+        /// ! Forgot to explain why it can't be async!! everything in it requires it, but I'm guessing the AsyncStream
+        /// doesn't like it somehow.
+        ///
+        /// This unstructured task will use data service actor instead of global or main actors.
         Task {
             for await newTabsCount in tabsCountStream {
                 for observer in self.tabObservers {
@@ -391,12 +548,9 @@ private extension TabsDataService {
 
     func subscribeForSelectedTabIdChange() {
         /// This method can't be async - it blocks init,  so have to use new task to avoid this.
+        let defaultValue = positioning.defaultSelectedTabId
         Task {
-            let filteredId = selectedTabIdStream.drop(while: { [weak self] identifier in
-                guard let self else {
-                    return false
-                }
-                let defaultValue = self.positioning.defaultSelectedTabId
+            let filteredId = selectedTabIdStream.drop(while: { identifier in
                 return identifier == defaultValue
             })
 
@@ -405,12 +559,18 @@ private extension TabsDataService {
                     continue
                 }
                 for observer in tabObservers {
-                    await observer.tabDidSelect(tabTuple.index, tabTuple.tab.contentType, tabTuple.tab.id)
+                    await observer.tabDidSelect(
+                        tabTuple.index,
+                        tabTuple.tab.contentType,
+                        tabTuple.tab.id
+                    )
                 }
             }
         }
     }
 }
+
+// MARK: - Array extension
 
 fileprivate extension Array where Element == CoreBrowser.Tab {
     func element(by uuid: UUID) -> (tab: CoreBrowser.Tab, index: Int)? {
@@ -421,6 +581,8 @@ fileprivate extension Array where Element == CoreBrowser.Tab {
     }
 }
 
+// MARK: - AddedTabPosition extension
+
 extension AddedTabPosition {
     func addTab(_ tab: CoreBrowser.Tab,
                 to tabs: inout [CoreBrowser.Tab],
@@ -429,12 +591,12 @@ extension AddedTabPosition {
         switch self {
         case .listEnd:
             tabs.append(tab)
-            newIndex = tabs.count - 1
+            newIndex = tabs.endIndex - 1
         case .afterSelected:
             guard let tabTuple = tabs.element(by: currentlySelectedId) else {
                 /// no previously selected tab, probably when reset to one tab happend
                 tabs.append(tab)
-                return tabs.count - 1
+                return tabs.endIndex - 1
             }
             newIndex = tabTuple.index + 1
             tabs.insert(tab, at: newIndex)

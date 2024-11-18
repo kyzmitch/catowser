@@ -21,7 +21,11 @@ struct BaseListViewModelImpl<SourceType: FullEnumTypeConstraints>: BaseListViewM
     /// Need to improve/re-desing Feature system to initialize it here based on a generic type instead of init usage
     let selected: EnumDataSourceType
 
-    init( _ viewTitle: String, _ onPop: @escaping PopClosure, _ selected: EnumDataSourceType?) {
+    init(
+        _ viewTitle: String,
+        _ onPop: @escaping PopClosure,
+        _ selected: EnumDataSourceType?
+    ) {
         // Using random/first enum value just because it seems
         // it is not possible to pass just a type name
         // swiftlint:disable:next force_unwrapping

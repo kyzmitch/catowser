@@ -1,5 +1,5 @@
 //
-//  TabsEnvironment.swift
+//  AsyncServiceRegistry.swift
 //  catowser
 //
 //  Created by Andrei Ermoshin on 5/28/20.
@@ -8,14 +8,20 @@
 
 import CoreBrowser
 import CoreData
+import FeaturesFlagsKit
 
-private final class TabsEnvironment {
+private final class AsyncServiceRegistry {
     static func shared() async -> ManagerHolder {
         if let holder = internalInstance {
             return holder
         }
 
-        let created = await ManagerHolder()
+        let created: ManagerHolder
+        if #available(iOS 17.0, *) {
+            created = await ManagerHolder(UIServiceRegistry.shared().tabsSubject)
+        } else {
+            created = await ManagerHolder(nil)
+        }
         internalInstance = created
         return created
     }
@@ -27,7 +33,7 @@ private final class TabsEnvironment {
         let tabsDataService: TabsDataService
         private let database: Database
 
-        init() async {
+        init(_ tabsSubject: TabsDataSubjectProtocol?) async {
             guard let database = Database(name: "CottonDbModel") else {
                 fatalError("Failed to initialize CoreData database")
             }
@@ -45,7 +51,13 @@ private final class TabsEnvironment {
             }
             let cacheProvider = TabsRepositoryImpl(database.viewContext, contextClosure)
             let strategy = NearbySelectionStrategy()
-            tabsDataService = await .init(cacheProvider, DefaultTabProvider.shared, strategy)
+            tabsDataService = await TabsDataService(
+                cacheProvider,
+                DefaultTabProvider.shared,
+                strategy,
+                tabsSubject,
+                FeatureManager.shared.observingApiTypeValue()
+            )
         }
     }
 }
@@ -53,7 +65,7 @@ private final class TabsEnvironment {
 extension TabsDataService {
     static var shared: TabsDataService {
         get async {
-            await TabsEnvironment.shared().tabsDataService
+            await AsyncServiceRegistry.shared().tabsDataService
         }
     }
 }

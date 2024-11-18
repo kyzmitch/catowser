@@ -30,7 +30,7 @@ final class BrowserToolbarViewModel: ObservableObject {
     @Published var downloadsDisabled: Bool
 
     private var vcFactory: ViewControllerFactory {
-        ViewsEnvironment.shared.vcFactory
+        UIServiceRegistry.shared().vcFactory
     }
 
     private var siteNavigationDelegate: SiteNavigationChangable? {

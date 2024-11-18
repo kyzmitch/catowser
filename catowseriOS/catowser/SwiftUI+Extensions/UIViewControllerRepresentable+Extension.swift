@@ -15,6 +15,6 @@ protocol CatowserUIVCRepresentable: UIViewControllerRepresentable {
 
 extension CatowserUIVCRepresentable {
     var vcFactory: ViewControllerFactory {
-        ViewsEnvironment.shared.vcFactory
+        UIServiceRegistry.shared().vcFactory
     }
 }

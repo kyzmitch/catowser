@@ -21,7 +21,7 @@ final class SmartphoneSearchBarViewController: BaseViewController {
     }()
 
     init(_ searchBarDelegate: UISearchBarDelegate?, _ uiFramework: UIFrameworkType) {
-        searchBarViewController = ViewsEnvironment.shared
+        searchBarViewController = UIServiceRegistry.shared()
             .vcFactory
             .searchBarViewController(searchBarDelegate, uiFramework)
         super.init(nibName: nil, bundle: nil)

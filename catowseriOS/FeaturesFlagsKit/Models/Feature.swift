@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Represents basic types (no enumeration types, see EnumFeature instead)
 public protocol Feature {
     associatedtype Value: Sendable
 
@@ -27,7 +28,7 @@ extension Feature {
     }
 }
 
-/// For `syntatic sugar`
+/// A wrapper type for "syntatic sugar"
 public struct ApplicationFeature<F: Feature>: Sendable {
     public var defaultValue: F.Value {
         return F.defaultValue

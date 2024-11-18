@@ -184,13 +184,25 @@ final class TabPreviewCell: UICollectionViewCell, ReusableItem, FaviconImageView
         }
     }
 
-    func configure(with tab: CoreBrowser.Tab, at index: Int, delegate: TabPreviewCellDelegate) {
+    func configure(
+        with tab: CoreBrowser.Tab,
+        at index: Int,
+        delegate: TabPreviewCellDelegate,
+        shouldHighlight: Bool = false
+    ) {
         // `TabViewModel` can be used instead, but cell view init doesn't allow to inject it normally
         var tabCopy = tab
         screenshotView.image = tabCopy.preview
 
         titleText.text = tab.title
         titleText.text = tab.contentType.title
+        
+        if shouldHighlight {
+            self.layer.borderWidth = 2
+            self.layer.borderColor = UIColor.black.cgColor
+        } else {
+            self.layer.borderWidth = 0
+        }
 
         self.tabIndex = index
         self.delegate = delegate

@@ -9,20 +9,21 @@
 import CottonBase
 import CoreBrowser
 
-@MainActor
-final class TopSitesViewModel: ObservableObject {
+@MainActor final class TopSitesViewModel: ObservableObject {
     let topSites: [Site]
     private let writeTabUseCase: WriteTabsUseCase
 
-    init(_ topSites: [Site],
-         _ writeTabUseCase: WriteTabsUseCase) {
+    init(
+        _ topSites: [Site],
+        _ writeTabUseCase: WriteTabsUseCase
+    ) {
         self.topSites = topSites
         self.writeTabUseCase = writeTabUseCase
     }
 
     func replaceSelected(tabContent: CoreBrowser.Tab.ContentType) {
         Task {
-            _ = await writeTabUseCase.replaceSelected(tabContent)
+            await writeTabUseCase.replaceSelected(tabContent)
         }
     }
 }

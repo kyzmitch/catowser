@@ -41,11 +41,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 private extension AppDelegate {
     func start() -> Bool {
         Task {
-            // Init database for tabs first
+            // Init database for the tabs first
             _ = await TabsDataService.shared
             // Now can start UI
             let value = await FeatureManager.shared.appUIFrameworkValue()
-            appCoordinator = AppCoordinator(ViewsEnvironment.shared.vcFactory, value)
+            appCoordinator = AppCoordinator(
+                UIServiceRegistry.shared().vcFactory,
+                value,
+                FeatureManager.shared,
+                UIServiceRegistry.shared()
+            )
             appCoordinator?.start()
         }
         return true

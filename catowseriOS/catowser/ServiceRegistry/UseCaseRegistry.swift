@@ -1,5 +1,5 @@
 //
-//  UseCaseFactory.swift
+//  UseCaseRegistry.swift
 //  catowser
 //
 //  Created by Andrey Ermoshin on 20.01.2024.
@@ -17,7 +17,7 @@ extension String {
 }
 
 @globalActor
-final class UseCaseFactory {
+final class UseCaseRegistry {
     static let shared = StateHolder()
     
     actor StateHolder {
@@ -52,16 +52,16 @@ final class UseCaseFactory {
         }
 
         private func registerSearchAutocompleteUseCases() {
-            let googleContext = GoogleContext(HttpEnvironment.shared.googleClient,
-                                              HttpEnvironment.shared.googleClientRxSubscriber,
-                                              HttpEnvironment.shared.googleClientSubscriber)
+            let googleContext = GoogleContext(ServiceRegistry.shared.googleClient,
+                                              ServiceRegistry.shared.googleClientRxSubscriber,
+                                              ServiceRegistry.shared.googleClientSubscriber)
             let googleStrategy = GoogleAutocompleteStrategy(googleContext)
             let googleUseCase: any AutocompleteSearchUseCase = AutocompleteSearchUseCaseImpl(googleStrategy)
             locator.registerNamed(googleUseCase, .googleAutocompleteUseCase)
 
-            let ddGoContext = DDGoContext(HttpEnvironment.shared.duckduckgoClient,
-                                          HttpEnvironment.shared.duckduckgoClientRxSubscriber,
-                                          HttpEnvironment.shared.duckduckgoClientSubscriber)
+            let ddGoContext = DDGoContext(ServiceRegistry.shared.duckduckgoClient,
+                                          ServiceRegistry.shared.duckduckgoClientRxSubscriber,
+                                          ServiceRegistry.shared.duckduckgoClientSubscriber)
             let ddGoStrategy = DDGoAutocompleteStrategy(ddGoContext)
             let ddGoUseCase: any AutocompleteSearchUseCase = AutocompleteSearchUseCaseImpl(ddGoStrategy)
             locator.registerNamed(ddGoUseCase, .duckDuckGoAutocompleteUseCase)
@@ -69,9 +69,9 @@ final class UseCaseFactory {
 
         private func registerDnsResolveUseCases() {
             /// It is the same context for any site or view model, maybe it makes sense to use only one
-            let googleContext = GoogleDNSContext(HttpEnvironment.shared.dnsClient,
-                                                 HttpEnvironment.shared.dnsClientRxSubscriber,
-                                                 HttpEnvironment.shared.dnsClientSubscriber)
+            let googleContext = GoogleDNSContext(ServiceRegistry.shared.dnsClient,
+                                                 ServiceRegistry.shared.dnsClientRxSubscriber,
+                                                 ServiceRegistry.shared.dnsClientSubscriber)
 
             let googleStrategy = GoogleDNSStrategy(googleContext)
             let googleUseCase: any ResolveDNSUseCase = ResolveDNSUseCaseImpl(googleStrategy)

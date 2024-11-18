@@ -16,13 +16,13 @@ import CottonData
 
  @main
  struct CottonApp: App {
- @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
- var body: some Scene {
- WindowGroup {
- MainBrowserView()
- }
- }
+    var body: some Scene {
+        WindowGroup {
+            MainBrowserView()
+        }
+    }
  }
 
  This allows to keep using UIKit views for now as a 2nd option.

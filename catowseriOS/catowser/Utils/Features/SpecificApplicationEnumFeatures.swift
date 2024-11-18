@@ -24,4 +24,7 @@ extension ApplicationEnumFeature {
     static var appDefaultUIFramework: ApplicationEnumFeature<UIFrameworkFeature> {
         return ApplicationEnumFeature<UIFrameworkFeature>(feature: EnumFeaturesHolder.selectedUIFramework)
     }
+    static var observingApi: ApplicationEnumFeature<ObservingApiFeature> {
+        return ApplicationEnumFeature<ObservingApiFeature>(feature: EnumFeaturesHolder.observingApiKey)
+    }
 }

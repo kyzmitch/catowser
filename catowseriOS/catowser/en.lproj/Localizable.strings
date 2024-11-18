@@ -49,10 +49,13 @@
 "ttl_app_async_method" = "Async API method";
 "ttl_web_search_auto_complete_source" = "Web search auto completion source";
 "ttl_app_ui_framework_type" = "UI framework";
+"ttl_app_observing_method" = "Observing method";
 
 "txt_app_async_api_reactive" = "Reactive";
 "txt_app_async_api_combine" = "Combine";
 "txt_app_async_api_async_await" = "Async Await";
+"txt_app_observing_api_system" = "System's framework (Beta)";
+"txt_app_observing_api_design_pattern" = "own implementation";
 
 "txt_tab_content_blank" = "Blank";
 "txt_tab_content_homepage" = "Homepage";

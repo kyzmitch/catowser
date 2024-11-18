@@ -12,7 +12,10 @@ import FeaturesFlagsKit
 typealias AppUIFrameworkTypeModel = BaseListViewModelImpl<UIFrameworkType>
 
 extension BaseListViewModelImpl where EnumDataSourceType == UIFrameworkType {
-    init( _ selected: EnumDataSourceType?, _ completion: @escaping PopClosure) {
+    init(
+        _ selected: EnumDataSourceType?,
+        _ completion: @escaping PopClosure
+    ) {
         self.init(NSLocalizedString("ttl_app_ui_framework_type", comment: ""),
                   completion,
                   selected)

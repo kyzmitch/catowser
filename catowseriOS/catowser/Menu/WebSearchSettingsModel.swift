@@ -11,7 +11,10 @@ import Foundation
 typealias WebSearchSettingsModel = BaseListViewModelImpl<WebAutoCompletionSource>
 
 extension BaseListViewModelImpl where EnumDataSourceType == WebAutoCompletionSource {
-    init(_ selected: EnumDataSourceType?, _ completion: @escaping PopClosure) {
+    init(
+        _ selected: EnumDataSourceType?,
+        _ completion: @escaping PopClosure
+    ) {
         self.init(NSLocalizedString("ttl_search_menu", comment: ""),
                   completion,
                   selected)

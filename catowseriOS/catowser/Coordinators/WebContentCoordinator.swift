@@ -64,7 +64,7 @@ final class WebContentCoordinator: Coordinator {
     }
 
     func start() {
-        let manager = ViewsEnvironment.shared.reuseManager
+        let manager = UIServiceRegistry.shared().reuseManager
         guard let viewModel else {
             return
         }

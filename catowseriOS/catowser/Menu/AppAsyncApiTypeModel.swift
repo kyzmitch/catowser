@@ -12,8 +12,11 @@ import FeaturesFlagsKit
 typealias AppAsyncApiTypeModel = BaseListViewModelImpl<AsyncApiType>
 
 extension BaseListViewModelImpl where EnumDataSourceType == AsyncApiType {
-    init( _ selected: EnumDataSourceType?, _ completion: @escaping PopClosure) {
-        self.init(NSLocalizedString("ttl_app_async_method", comment: ""),
+    init(
+        _ selected: EnumDataSourceType?,
+        _ completion: @escaping PopClosure
+    ) {
+        self.init(NSLocalizedString(.appAsyncApiTypeTxt, comment: ""),
                   completion,
                   selected)
     }

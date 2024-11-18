@@ -25,7 +25,13 @@ extension WebAutoCompletionSource: EnumDefaultValueSupportable {
 
 extension AsyncApiType: @retroactive EnumDefaultValueSupportable {
     public var defaultValue: AsyncApiType {
-        return .combine
+        return .asyncAwait
+    }
+}
+
+extension ObservingApiType: @retroactive EnumDefaultValueSupportable {
+    public var defaultValue: ObservingApiType {
+        return .observerDesignPattern
     }
 }
 

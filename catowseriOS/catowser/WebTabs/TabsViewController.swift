@@ -9,6 +9,7 @@
 import UIKit
 import CoreGraphics
 import CoreBrowser
+import FeaturesFlagsKit
 
 fileprivate extension TabsViewController {
     struct Sizes {
@@ -20,10 +21,28 @@ fileprivate extension TabsViewController {
 final class TabsViewController: BaseViewController {
     private var viewModels = [TabViewModel]()
     private let viewModel: AllTabsViewModel
+    private let featureManager: FeatureManager.StateHolder
+    private let uiServiceRegistry: UIServiceRegistry
 
-    init(_ viewModel: AllTabsViewModel) {
+    init(
+        _ viewModel: AllTabsViewModel,
+        _ featureManager: FeatureManager.StateHolder,
+        _ uiServiceRegistry: UIServiceRegistry
+    ) {
         self.viewModel = viewModel
+        self.featureManager = featureManager
+        self.uiServiceRegistry = uiServiceRegistry
         super.init(nibName: nil, bundle: nil)
+        
+        Task {
+            let observingType = await featureManager.observingApiTypeValue()
+            if #available(iOS 17.0, *), observingType.isSystemObservation {
+                startTabsObservation()
+                await readTabsState()
+            } else {
+                await TabsDataService.shared.attach(self, notify: true)
+            }
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -108,25 +127,6 @@ final class TabsViewController: BaseViewController {
         addTabButton.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         #endif
     }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        /**
-         initializeObserver will load all of the tabs and create views
-         */
-        Task {
-            await TabsDataService.shared.attach(self, notify: true)
-        }
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-
-        Task {
-            await TabsDataService.shared.detach(self)
-        }
-    }
 }
 
 private extension TabsViewController {
@@ -155,9 +155,8 @@ private extension TabsViewController {
     }
 
     func removeTabView(_ tabView: TabView) async {
+        // TODO: this function can be sync now
         if let removedIndex = tabsStackView.arrangedSubviews.firstIndex(of: tabView) {
-            let removedVm = viewModels[removedIndex]
-            await TabsDataService.shared.detach(removedVm)
             viewModels.remove(at: removedIndex)
         }
         tabsStackView.removeArrangedSubview(tabView)
@@ -225,9 +224,71 @@ private extension TabsViewController {
         }
         return newlyAddedTabFrame
     }
+    
+    @available(iOS 17.0, *)
+    func readTabsState() async {
+        await handleAddedTabs()
+    }
+    
+    @available(iOS 17.0, *)
+    @MainActor
+    func startTabsObservation() {
+        withObservationTracking {
+            _ = uiServiceRegistry.tabsSubject.addedTabIndex
+        } onChange: {
+            Task { [weak self] in
+                await self?.handleAddedTabs()
+            }
+        }
+        withObservationTracking {
+            _ = uiServiceRegistry.tabsSubject.selectedTabId
+        } onChange: {
+            Task { [weak self] in
+                await self?.handleSelectedTabChange()
+            }
+        }
+        withObservationTracking {
+            _ = uiServiceRegistry.tabsSubject.tabsCount
+        } onChange: {
+            Task { [weak self] in
+                await self?.handleTabsCountChange()
+            }
+        }
+    }
+    
+    @available(iOS 17.0, *)
+    @MainActor
+    func handleAddedTabs() async {
+        let subject = uiServiceRegistry.tabsSubject
+        if let index = subject.addedTabIndex {
+            await tabDidAdd(subject.tabs[index], at: index)
+        } else {
+            await initializeObserver(with: subject.tabs)
+        }
+    }
+    
+    @available(iOS 17.0, *)
+    @MainActor
+    private func handleSelectedTabChange() async {
+        let subject = uiServiceRegistry.tabsSubject
+        let tabId = subject.selectedTabId
+        guard let index = subject.tabs
+            .firstIndex(where: { $0.id == tabId }) else {
+            return
+        }
+        await tabDidSelect(index, subject.tabs[index].contentType, tabId)
+    }
+    
+    @available(iOS 17.0, *)
+    @MainActor
+    private func handleTabsCountChange() async {
+        let count = uiServiceRegistry.tabsSubject.tabsCount
+        await updateTabsCount(with: count)
+    }
 }
 
-// MARK: Tabs observer
+// MARK: - TabsObserver
+
 extension TabsViewController: TabsObserver {
     func tabDidSelect(_ index: Int, _ content: CoreBrowser.Tab.ContentType, _ identifier: UUID) async {
         guard !tabsStackView.arrangedSubviews.isEmpty else {
@@ -277,6 +338,8 @@ extension TabsViewController: TabsObserver {
     }
 }
 
+// MARK: - TabDelegate
+
 extension TabsViewController: TabDelegate {
     func tabViewDidClose(_ tabView: TabView) async {
         print("\(#function): tab closed")
@@ -293,7 +356,10 @@ extension TabsViewController {
         resizeTabsWidthBasedOnCurrentHorizontalSizeClass()
     }
 
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(
+        to size: CGSize,
+        with coordinator: UIViewControllerTransitionCoordinator
+    ) {
         super.viewWillTransition(to: size, with: coordinator)
         // https://stackoverflow.com/a/41805346/483101
         // Need to redraw background layer

@@ -326,7 +326,7 @@ extension FeatureManager.StateHolder {
 
 private extension SearchBarCoordinator {
     func handleSuggestion(_ suggestion: String) async {
-        let client = await HttpEnvironment.shared.searchSuggestClient()
+        let client = await ServiceRegistry.shared.searchSuggestClient()
         guard let url = client.searchURLForQuery(suggestion) else {
             assertionFailure("Failed construct search engine url from suggestion string")
             return

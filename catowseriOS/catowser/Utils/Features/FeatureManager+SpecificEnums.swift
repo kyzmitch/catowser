@@ -26,6 +26,8 @@ extension FeatureManager.StateHolder {
             keyStr = .browserAsyncApiKey
         case is UIFrameworkType:
             keyStr = .uiFrameworkKey
+        case is ObservingApiType:
+            keyStr = .observingApiKey
         default:
             assertionFailure("Attempt to search for not supported enum feature type")
             return nil
@@ -76,6 +78,14 @@ extension FeatureManager.StateHolder {
 
     func appUIFrameworkValue() async -> UIFrameworkType {
         let feature: ApplicationEnumFeature = .appDefaultUIFramework
+        guard let source = source(for: feature) else {
+            return feature.defaultEnumValue
+        }
+        return await source.currentEnumValue(of: feature)
+    }
+    
+    func observingApiTypeValue() async -> ObservingApiType {
+        let feature: ApplicationEnumFeature = .observingApi
         guard let source = source(for: feature) else {
             return feature.defaultEnumValue
         }

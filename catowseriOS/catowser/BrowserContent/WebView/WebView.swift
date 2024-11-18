@@ -79,7 +79,7 @@ private struct WebViewLegacyView: CatowserUIVCRepresentable {
          and most likely advantage of `WebViewsReuseManager` can't be used here.
          We have to re-create web view inside view controller.
          */
-        let manager = ViewsEnvironment.shared.reuseManager
+        let manager = UIServiceRegistry.shared().reuseManager
         let vc = try? manager.controllerFor(site, dummyArgument, viewModel, .swiftUIWrapper)
         Task {
             await viewModel.reset(site)

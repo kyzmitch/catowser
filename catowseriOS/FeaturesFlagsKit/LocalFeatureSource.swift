@@ -81,8 +81,9 @@ extension LocalFeatureSource: FeatureSource {
 }
 
 extension LocalFeatureSource: EnumFeatureSource {
-    public func currentEnumValue<F: EnumFeature>(of feature: ApplicationEnumFeature<F>) async -> F.EnumValue
-    where F.EnumValue.RawValue == Int {
+    public func currentEnumValue<F: EnumFeature>(
+        of feature: ApplicationEnumFeature<F>
+    ) async -> F.EnumValue where F.EnumValue.RawValue == Int {
         guard let result = await settings.getInt(for: feature.feature.key.prefixedEnum()) else {
             return feature.defaultEnumValue
         }

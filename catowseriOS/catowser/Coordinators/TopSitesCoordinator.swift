@@ -22,15 +22,19 @@ final class TopSitesCoordinator: Coordinator {
 
     private let contentContainerView: UIView?
     let uiFramework: UIFrameworkType
+    private let topSitesVM: TopSitesViewModel
 
     init(_ vcFactory: ViewControllerFactory,
          _ presenter: AnyViewController?,
          _ contentContainerView: UIView?,
-         _ uiFramework: UIFrameworkType) {
+         _ uiFramework: UIFrameworkType,
+         _ topSitesVM: TopSitesViewModel
+    ) {
         self.vcFactory = vcFactory
         self.presenterVC = presenter
         self.contentContainerView = contentContainerView
         self.uiFramework = uiFramework
+        self.topSitesVM = topSitesVM
     }
 
     func start() {
@@ -40,40 +44,28 @@ final class TopSitesCoordinator: Coordinator {
         guard let contentContainerView = contentContainerView else {
             return
         }
-        let vc = vcFactory.topSitesViewController(self)
+        let vc = vcFactory.topSitesViewController(self, topSitesVM)
         startedVC = vc
-        /// Async start should be fine here, because layout is in the same closure
-        Task {
-            let isJsEnabled = await FeatureManager.shared.boolValue(of: .javaScriptEnabled)
-            vc.reload(with: await DefaultTabProvider.shared.topSites(isJsEnabled))
-            presenterVC?.viewController.add(asChildViewController: vc.viewController, to: contentContainerView)
+        presenterVC?.viewController.add(
+            asChildViewController: vc.viewController,
+            to: contentContainerView
+        )
 
-            let topSitesView: UIView = vc.controllerView
-            topSitesView.translatesAutoresizingMaskIntoConstraints = false
-            topSitesView.leadingAnchor.constraint(equalTo: contentContainerView.leadingAnchor).isActive = true
-            topSitesView.trailingAnchor.constraint(equalTo: contentContainerView.trailingAnchor).isActive = true
-            topSitesView.topAnchor.constraint(equalTo: contentContainerView.topAnchor).isActive = true
-            topSitesView.bottomAnchor.constraint(equalTo: contentContainerView.bottomAnchor).isActive = true
-        }
+        let topSitesView: UIView = vc.controllerView
+        topSitesView.translatesAutoresizingMaskIntoConstraints = false
+        topSitesView.leadingAnchor.constraint(equalTo: contentContainerView.leadingAnchor).isActive = true
+        topSitesView.trailingAnchor.constraint(equalTo: contentContainerView.trailingAnchor).isActive = true
+        topSitesView.topAnchor.constraint(equalTo: contentContainerView.topAnchor).isActive = true
+        topSitesView.bottomAnchor.constraint(equalTo: contentContainerView.bottomAnchor).isActive = true
     }
 }
 
-enum TopSitesRoute: Route {
-    case select(Site)
-}
+enum TopSitesRoute: Route { }
 
 extension TopSitesCoordinator: Navigating {
     typealias R = TopSitesRoute
 
-    func showNext(_ route: R) {
-        switch route {
-        case .select(let site):
-            /// TODO: Usually it would be a view model responsibility and not coordinator
-            Task {
-                _ = await TabsDataService.shared.sendCommand(.replaceSelectedContent(.site(site)))
-            }
-        }
-    }
+    func showNext(_ route: R) { }
 
     func stop() {
         guard uiFramework == .uiKit else {

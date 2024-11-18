@@ -1,5 +1,5 @@
 //
-//  HttpEnvironment.swift
+//  ServiceRegistry.swift
 //  catowser
 //
 //  Created by Andrei Ermoshin on 5/1/20.
@@ -14,7 +14,7 @@ import Alamofire // only needed for `JSONEncoding`
 import FeaturesFlagsKit
 
 @globalActor
-final class HttpEnvironment {
+final class ServiceRegistry {
     static let shared = StateHolder()
 
     actor StateHolder {
@@ -81,18 +81,18 @@ final class HttpEnvironment {
 
 extension RestClient where Server == GoogleDnsServer {
     static var shared: GoogleDnsClient {
-        return HttpEnvironment.shared.dnsClient
+        return ServiceRegistry.shared.dnsClient
     }
 }
 
 extension RestClient where Server == GoogleServer {
     static var shared: GoogleSuggestionsClient {
-        return HttpEnvironment.shared.googleClient
+        return ServiceRegistry.shared.googleClient
     }
 }
 
 extension RestClient where Server == DuckDuckGoServer {
     static var shared: DDGoSuggestionsClient {
-        return HttpEnvironment.shared.duckduckgoClient
+        return ServiceRegistry.shared.duckduckgoClient
     }
 }

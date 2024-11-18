@@ -9,6 +9,7 @@
 import UIKit
 import CoreBrowser
 import CottonData
+import FeaturesFlagsKit
 
 enum WebToolbarState {
     case nothingToNavigate
@@ -40,6 +41,10 @@ final class BrowserToolbarView: UIToolbar {
     weak var globalSettingsDelegate: GlobalMenuDelegate?
     /// web view navigation interface
     weak var webViewInterface: WebViewNavigatable?
+    /// Feature manager
+    private let featureManager: FeatureManager.StateHolder
+    /// service registry to not depend on ios 17 for the tabs subject
+    private let uiServiceRegistry: UIServiceRegistry
 
     // MARK: - state properties
 
@@ -138,11 +143,6 @@ final class BrowserToolbarView: UIToolbar {
         return barItems
     }()
 
-    func detachFromTabsListManager() async {
-        await TabsDataService.shared.detach(counterView)
-        await TabsDataService.shared.detach(self)
-    }
-
     /// Instead of `didMoveToSuperview`
     func attachToTabsListManager() async {
         await TabsDataService.shared.attach(self, notify: false)
@@ -151,17 +151,34 @@ final class BrowserToolbarView: UIToolbar {
 
     // MARK: - initialization
 
-    override init(frame: CGRect) {
+    init(
+        frame: CGRect,
+        featureManager: FeatureManager.StateHolder,
+        uiServiceRegistry: UIServiceRegistry
+    ) {
+        self.featureManager = featureManager
+        self.uiServiceRegistry = uiServiceRegistry
         if frame.width <= 10 {
             // iOS 13.x fix for layout errors for code
             // which works on iOS 13.x on iPad
             // and worked for iOS 12.x for all kind of devices
 
             // swiftlint:disable:next line_length
-            // https://github.com/hackiftekhar/IQKeyboardManager/pull/1598/files#diff-f73f23d86e3154de71cd5bd9abf275f0R146
+            // https://github.com/hackiftekhar/IQKeyboardManager/pull/1598/
+            // files#diff-f73f23d86e3154de71cd5bd9abf275f0R146
             super.init(frame: CGRect(x: 0, y: 0, width: 1000, height: .toolbarViewHeight))
         } else {
             super.init(frame: frame)
+        }
+        
+        Task {
+            let observingType = await featureManager.observingApiTypeValue()
+            if #available(iOS 17.0, *), observingType == .systemObservation {
+                startTabsObservation()
+                await readTabsState()
+            } else {
+                await attachToTabsListManager()
+            }
         }
     }
 
@@ -295,10 +312,61 @@ private extension BrowserToolbarView {
         }
         rotate.startAnimation()
     }
+    
+    @available(iOS 17.0, *)
+    func readTabsState() async {
+        await handleSelectedTabChange()
+        await handleTabsCountChange()
+    }
+    
+    @available(iOS 17.0, *)
+    @MainActor
+    func startTabsObservation() {
+        withObservationTracking {
+            _ = uiServiceRegistry.tabsSubject.selectedTabId
+        } onChange: {
+            Task { [weak self] in
+                await self?.handleSelectedTabChange()
+            }
+        }
+
+        withObservationTracking {
+            _ = uiServiceRegistry.tabsSubject.tabsCount
+        } onChange: {
+            Task { [weak self] in
+                await self?.handleTabsCountChange()
+            }
+        }
+    }
+    
+    @available(iOS 17.0, *)
+    @MainActor
+    func handleSelectedTabChange() async {
+        let subject = uiServiceRegistry.tabsSubject
+        let tabId = subject.selectedTabId
+        guard let index = subject.tabs
+            .firstIndex(where: { $0.id == tabId }) else {
+            return
+        }
+        await tabDidSelect(index, subject.tabs[index].contentType, tabId)
+    }
+
+    @available(iOS 17.0, *)
+    @MainActor
+    func handleTabsCountChange() async {
+        let subject = uiServiceRegistry.tabsSubject
+        await counterView.updateTabsCount(with: subject.tabsCount)
+    }
 }
 
+// MARK: - TabsObserver
+
 extension BrowserToolbarView: TabsObserver {
-    func tabDidSelect(_ index: Int, _ content: CoreBrowser.Tab.ContentType, _ identifier: UUID) async {
+    func tabDidSelect(
+        _ index: Int,
+        _ content: CoreBrowser.Tab.ContentType,
+        _ identifier: UUID
+    ) async {
         switch content {
         case .site:
             updateToolbar(downloadsAvailable: false, actionsAvailable: true)

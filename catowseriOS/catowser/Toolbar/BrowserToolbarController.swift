@@ -17,6 +17,7 @@
 import UIKit
 import CoreBrowser
 import CottonData
+import FeaturesFlagsKit
 
 final class BrowserToolbarController<C: Navigating>: BaseViewController where C.R == ToolbarRoute {
     private weak var coordinator: C?
@@ -38,12 +39,19 @@ final class BrowserToolbarController<C: Navigating>: BaseViewController where C.
 
     private let toolbarView: BrowserToolbarView
 
-    init(_ coordinator: C?,
-         _ downloadPanelDelegate: DownloadPanelPresenter?,
-         _ globalSettingsDelegate: GlobalMenuDelegate?) {
+    init(
+        _ coordinator: C?,
+        _ downloadPanelDelegate: DownloadPanelPresenter?,
+        _ globalSettingsDelegate: GlobalMenuDelegate?,
+        _ featureManager: FeatureManager.StateHolder
+    ) {
         self.coordinator = coordinator
         self.downloadPanelDelegate = downloadPanelDelegate
-        toolbarView = BrowserToolbarView(frame: .zero)
+        toolbarView = BrowserToolbarView(
+            frame: .zero,
+            featureManager: FeatureManager.shared,
+            uiServiceRegistry: UIServiceRegistry.shared()
+        )
         toolbarView.globalSettingsDelegate = globalSettingsDelegate
         super.init(nibName: nil, bundle: nil)
     }
@@ -67,23 +75,10 @@ final class BrowserToolbarController<C: Navigating>: BaseViewController where C.
         toolbarView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
     }
 
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-
-        Task {
-            await toolbarView.detachFromTabsListManager()
-        }
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        Task {
-            await toolbarView.attachToTabsListManager()
-        }
-    }
-
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    override func touchesBegan(
+        _ touches: Set<UITouch>,
+        with event: UIEvent?
+    ) {
         // Workaround for UIBarButtonItem with a custom UIView
         // for strange reason it can't recognize gesture recognizers or
         // even target-action for this specific view
@@ -127,7 +122,10 @@ extension BrowserToolbarController: FullSiteNavigationComponent {
         toolbarView.state = prevState
     }
 
-    func reloadNavigationElements(_ withSite: Bool, downloadsAvailable: Bool = false) {
+    func reloadNavigationElements(
+        _ withSite: Bool,
+        downloadsAvailable: Bool = false
+    ) {
         switch (withSite, downloadsAvailable) {
         case (false, _):
             toolbarView.state = .nothingToNavigate

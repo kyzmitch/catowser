@@ -13,5 +13,5 @@ public protocol TabsStates: AutoMockable, Sendable {
     var addPosition: AddedTabPosition { get async }
     var contentState: Tab.ContentType { get async }
     var addSpeed: TabAddSpeed { get }
-    var defaultSelectedTabId: UUID { get }
+    var defaultSelectedTabId: Tab.ID { get }
 }

@@ -9,6 +9,7 @@
 import SwiftUI
 import CoreBrowser
 import CottonData
+import FeaturesFlagsKit
 
 enum SwiftUIMode {
     /// Re-uses UIKit views
@@ -65,7 +66,12 @@ struct MainBrowserView
          _ webVM: W) {
         let mainVM = MainBrowserViewModel(coordinatorsInterface)
         _viewModel = StateObject(wrappedValue: mainVM)
-        let browserVM = BrowserContentViewModel(mainVM.jsPluginsBuilder, defaultContentType)
+        let browserVM = BrowserContentViewModel(
+            mainVM.jsPluginsBuilder,
+            defaultContentType,
+            FeatureManager.shared,
+            UIServiceRegistry.shared()
+        )
         _browserContentVM = StateObject(wrappedValue: browserVM)
         mode = uiFrameworkType.swiftUIMode
         self.defaultContentType = defaultContentType
@@ -91,11 +97,6 @@ struct MainBrowserView
         .onAppear {
             Task {
                 await TabsDataService.shared.attach(browserContentVM, notify: true)
-            }
-        }
-        .onDisappear {
-            Task {
-                await TabsDataService.shared.detach(browserContentVM)
             }
         }
     }

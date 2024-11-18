@@ -27,7 +27,7 @@ public final class ReadTabsUseCaseImpl: ReadTabsUseCase {
         }
     }
 
-    public var selectedId: UUID {
+    public var selectedId: Tab.ID {
         get async {
             let response = await tabsDataService.sendCommand(.getSelectedTabId)
             guard case .selectedTabId(let value) = response else {

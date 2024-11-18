@@ -9,6 +9,7 @@
 import UIKit
 import CoreBrowser
 import Combine
+import FeaturesFlagsKit
 
 final class TabsPreviewsViewController<C: Navigating>: BaseViewController,
                                                        CollectionViewInterface,
@@ -20,12 +21,29 @@ where C.R == TabsScreenRoute {
     private weak var coordinator: C?
 
     private let viewModel: TabsPreviewsViewModel
+    private let featureManager: FeatureManager.StateHolder
+    private let uiServiceRegistry: UIServiceRegistry
 
-    init(_ coordinator: C,
-         _ viewModel: TabsPreviewsViewModel) {
+    init(
+        _ coordinator: C,
+        _ viewModel: TabsPreviewsViewModel,
+        _ featureManager: FeatureManager.StateHolder,
+        _ uiServiceRegistry: UIServiceRegistry
+    ) {
         self.coordinator = coordinator
         self.viewModel = viewModel
+        self.featureManager = featureManager
+        self.uiServiceRegistry = uiServiceRegistry
         super.init(nibName: nil, bundle: nil)
+        
+        Task {
+            let observingType = await featureManager.observingApiTypeValue()
+            if #available(iOS 17.0, *), observingType.isSystemObservation {
+                startTabsObservation()
+            } else {
+                await TabsDataService.shared.attach(self, notify: false)
+            }
+        }
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -106,19 +124,11 @@ where C.R == TabsScreenRoute {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
-        Task {
-            await TabsDataService.shared.attach(self, notify: false)
-            viewModel.load()
-        }
+        viewModel.load()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-
-        Task {
-            await TabsDataService.shared.detach(self)
-        }
         stateHandlerCancellable?.cancel()
     }
 
@@ -163,14 +173,19 @@ where C.R == TabsScreenRoute {
         return viewModel.uxState.itemsNumber
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         var tab: CoreBrowser.Tab?
+        var shouldHighlightTab = false
         switch viewModel.uxState {
-        case .tabs(let dataSource) where indexPath.item < dataSource.value.count:
+        case .tabs(let dataSource, let selectedId) where indexPath.item < dataSource.value.count:
             // must use `item` for UICollectionView
             tab = dataSource.value[safe: indexPath.item]
-        default: break
+            shouldHighlightTab = tab?.id == selectedId
+        default:
+            break
         }
 
         guard let correctTab = tab else {
@@ -178,16 +193,24 @@ where C.R == TabsScreenRoute {
             return UICollectionViewCell(frame: .zero)
         }
         let cell = collectionView.dequeueCell(at: indexPath, type: TabPreviewCell.self)
-        cell.configure(with: correctTab, at: indexPath.item, delegate: self)
+        cell.configure(
+            with: correctTab,
+            at: indexPath.item,
+            delegate: self,
+            shouldHighlight: shouldHighlightTab
+        )
         return cell
     }
 
     // MARK: - UICollectionViewDelegate
 
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        didSelectItemAt indexPath: IndexPath
+    ) {
         var tab: CoreBrowser.Tab?
         switch viewModel.uxState {
-        case .tabs(let dataSource) where indexPath.item < dataSource.value.count:
+        case .tabs(let dataSource, _) where indexPath.item < dataSource.value.count:
             tab = dataSource.value[safe: indexPath.item]
         default:
             coordinator?.showNext(.error)
@@ -198,19 +221,45 @@ where C.R == TabsScreenRoute {
             return
         }
 
-        coordinator?.showNext(.selectTab(correctTab))
+        viewModel.selectTab(correctTab)
         coordinator?.stop()
     }
 
     // MARK: - private functions
 
     @objc func addTabPressed() {
-        coordinator?.showNext(.addTab)
+        viewModel.addTab()
         // on previews screen will make new added tab always selected
         // same behaviour has Safari and Firefox
         if DefaultTabProvider.shared.selected {
             coordinator?.stop()
         }
+    }
+    
+    private func render(state: TabsPreviewState) {
+        collectionView.reloadData()
+    }
+    
+    @available(iOS 17.0, *)
+    @MainActor
+    private func startTabsObservation() {
+        withObservationTracking {
+            _ = uiServiceRegistry.tabsSubject.addedTabIndex
+        } onChange: {
+            Task { [weak self] in
+                await self?.handleAddedTabs()
+            }
+        }
+    }
+    
+    @available(iOS 17.0, *)
+    @MainActor
+    private func handleAddedTabs() async {
+        let subject = uiServiceRegistry.tabsSubject
+        guard let index = subject.addedTabIndex else {
+            return
+        }
+        await tabDidAdd(subject.tabs[index], at: index)
     }
 }
 
@@ -218,16 +267,12 @@ private struct Sizes {
     static let margin = CGFloat(15)
 }
 
-private extension TabsPreviewsViewController {
-    func render(state: TabsPreviewState) {
-        collectionView.reloadData()
-    }
-}
+// MARK: - TabsObserver
 
 extension TabsPreviewsViewController: TabsObserver {
     func tabDidAdd(_ tab: CoreBrowser.Tab, at index: Int) async {
         let state = viewModel.uxState
-        guard case let .tabs(box) = state else {
+        guard case let .tabs(box, _) = state else {
             return
         }
 
@@ -235,6 +280,8 @@ extension TabsPreviewsViewController: TabsObserver {
         render(state: state)
     }
 }
+
+// MARK: - TabPreviewCellDelegate
 
 extension TabsPreviewsViewController: TabPreviewCellDelegate {
     func tabCellDidClose(at index: Int) async {

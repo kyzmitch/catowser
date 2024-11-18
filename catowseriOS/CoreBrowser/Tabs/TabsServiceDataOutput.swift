@@ -6,17 +6,18 @@
 //  Copyright © 2024 Cotton (former Catowser). All rights reserved.
 //
 
+import DataServiceKit
 import Foundation
 
 /**
  Tabs service data output/response type.
  */
-public enum TabsServiceDataOutput: Sendable {
+public enum TabsServiceDataOutput: GenericServiceData, Sendable {
     case tabsCount(Int)
-    case selectedTabId(UUID)
-    case allTabs([CoreBrowser.Tab])
+    case selectedTabId(Tab.ID)
+    case allTabs([Tab])
     case tabAdded
-    case tabClosed(UUID?)
+    case tabClosed(Tab.ID?)
     case allTabsClosed
     case tabSelected
     case tabContentReplaced(TabsListError?)

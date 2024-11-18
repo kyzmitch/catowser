@@ -49,10 +49,13 @@
 "ttl_app_async_method" = "Async API метод";
 "ttl_web_search_auto_complete_source" = "Поставщик авто дополения вэб поиска";
 "ttl_app_ui_framework_type" = "UI фреймворк";
+"ttl_app_observing_method" = "тип Observing API";
 
 "txt_app_async_api_reactive" = "Reactive";
 "txt_app_async_api_combine" = "Combine";
 "txt_app_async_api_async_await" = "Async Await";
+"txt_app_observing_api_system" = "системный фреймворк (Бета)";
+"txt_app_observing_api_design_pattern" = "своя имплементация";
 
 "txt_tab_content_blank" = "Пустая страница";
 "txt_tab_content_homepage" = "Домашняя страница";

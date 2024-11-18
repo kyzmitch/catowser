@@ -48,8 +48,8 @@ public protocol RxInterface: Hashable, AnyObject {
 // gryphon ignore
 public enum ResponseHandlingApi<Response,
                                 Server,
-                                Observer: RxInterface>: Hashable where Observer.Observer.Response == Response,
-                                                                       Observer.Server == Server {
+                                Observer: RxInterface>: Hashable
+where Observer.Observer.Response == Response, Observer.Server == Server {
     case closure(ClosureWrapper<Response, Server>)
     case rxObserver(Observer)
     case waitsForRxObserver

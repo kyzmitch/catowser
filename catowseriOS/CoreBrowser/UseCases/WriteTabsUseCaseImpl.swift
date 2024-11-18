@@ -32,6 +32,6 @@ public final class WriteTabsUseCaseImpl: WriteTabsUseCase {
     }
 
     public func replaceSelected(_ tabContent: CoreBrowser.Tab.ContentType) async {
-        _ = await tabsDataService.sendCommand(.replaceSelectedContent(tabContent))
+        _ = await tabsDataService.sendCommand(.replaceContent(tabContent))
     }
 }

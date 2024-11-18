@@ -21,6 +21,7 @@ extension String {
     static let appAsyncApiTypeTxt: String = "ttl_app_async_method"
     static let webAutoCompleteSourceTxt: String = "ttl_web_search_auto_complete_source"
     static let appUIFrameworkTypeTxt: String = "ttl_app_ui_framework_type"
+    static let observingApiTypeTxt: String = "ttl_app_observing_method"
 }
 
 enum CottonMenuItem {
@@ -29,4 +30,5 @@ enum CottonMenuItem {
     case webAutocompletionSource
     case asyncApi
     case uiFramework
+    case observingApi
 }
