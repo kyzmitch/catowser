@@ -192,11 +192,15 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators {
     @MainActor
     private func handleTabSelection() async {
         let subject = uiServiceRegistry.tabsSubject
-        let tabId = subject.selectedTabId
-        guard let index = subject.tabs
-            .firstIndex(where: { $0.id == tabId }) else {
-            return
+        guard subject.tabsCount > 0 else {
+            fatalError("Browser always should have at least 1 tab")
         }
+        let tabId = subject.selectedTabId
+        let selectedIndex = subject.tabs.firstIndex(where: { $0.id == tabId })
+        if selectedIndex == nil {
+            print("Error: unknown selected tab")
+        }
+        let index = selectedIndex ?? subject.tabs.startIndex
         await tabDidSelect(index, subject.tabs[index].contentType, tabId)
     }
     
