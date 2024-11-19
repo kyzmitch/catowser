@@ -284,7 +284,9 @@ extension TabsPreviewsViewController: TabsObserver {
 // MARK: - TabPreviewCellDelegate
 
 extension TabsPreviewsViewController: TabPreviewCellDelegate {
-    func tabCellDidClose(at index: Int) async {
-        viewModel.closeTab(at: index)
+    nonisolated func tabCellDidClose(at index: Int) {
+        Task {
+            await viewModel.closeTab(at: index)
+        }
     }
 }

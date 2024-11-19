@@ -38,9 +38,8 @@ fileprivate extension UIBlurEffect.Style {
     static let tabTitleBlur: UIBlurEffect.Style = .extraLight
 }
 
-@MainActor
 protocol TabPreviewCellDelegate: AnyObject {
-    func tabCellDidClose(at index: Int) async
+    func tabCellDidClose(at index: Int)
 }
 
 final class TabPreviewCell: UICollectionViewCell, ReusableItem, FaviconImageViewable {
@@ -180,9 +179,7 @@ final class TabPreviewCell: UICollectionViewCell, ReusableItem, FaviconImageView
         guard let closedIndex = tabIndex else {
             return
         }
-        Task { [weak self] in
-            await self?.delegate?.tabCellDidClose(at: closedIndex)
-        }
+        delegate?.tabCellDidClose(at: closedIndex)
     }
 
     func configure(
