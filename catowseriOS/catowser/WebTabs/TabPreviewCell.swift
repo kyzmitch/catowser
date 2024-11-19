@@ -176,11 +176,12 @@ final class TabPreviewCell: UICollectionViewCell, ReusableItem, FaviconImageView
 
     @objc func close() {
         print("tab preview cell \(#function)")
+        #warning("TODO: bug https://github.com/kyzmitch/Cotton/issues/85")
         guard let closedIndex = tabIndex else {
             return
         }
-        Task {
-            await delegate?.tabCellDidClose(at: closedIndex)
+        Task { [weak self] in
+            await self?.delegate?.tabCellDidClose(at: closedIndex)
         }
     }
 
