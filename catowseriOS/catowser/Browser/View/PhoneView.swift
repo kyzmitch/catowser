@@ -153,11 +153,20 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel>: View {
         }
         .onReceive(browserContentVM.$loading.dropFirst()) { isLoading = $0 }
         .task {
-            // Fetch data asynhroniously from Global actor:
-            searchProviderType = await FeatureManager.shared.webSearchAutoCompleteValue()
-            isDohEnabled = await FeatureManager.shared.boolValue(of: .dnsOverHTTPSAvailable)
-            isJavaScriptEnabled = await FeatureManager.shared.boolValue(of: .javaScriptEnabled)
-            nativeAppRedirectEnabled = await FeatureManager.shared.boolValue(of: .nativeAppRedirect)
+            async let searchProviderType = FeatureManager.shared.webSearchAutoCompleteValue()
+            async let isDohEnabled = FeatureManager.shared.boolValue(of: .dnsOverHTTPSAvailable)
+            async let isJavaScriptEnabled = FeatureManager.shared.boolValue(of: .javaScriptEnabled)
+            async let nativeAppRedirectEnabled = FeatureManager.shared.boolValue(of: .nativeAppRedirect)
+            let combinedValue = await (
+                searchProviderType: searchProviderType,
+                isDohEnabled: isDohEnabled,
+                isJavaScriptEnabled: isJavaScriptEnabled,
+                nativeAppRedirectEnabled: nativeAppRedirectEnabled
+            )
+            self.searchProviderType = combinedValue.searchProviderType
+            self.isDohEnabled = combinedValue.isDohEnabled
+            self.isJavaScriptEnabled = combinedValue.isJavaScriptEnabled
+            self.nativeAppRedirectEnabled = combinedValue.nativeAppRedirectEnabled
             webVM.siteNavigation = toolbarVM
         }
     }
@@ -234,11 +243,20 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel>: View {
         }
         .onReceive(browserContentVM.$loading.dropFirst()) { isLoading = $0 }
         .task {
-            // Fetch data asynhroniously from Global actor:
-            searchProviderType = await FeatureManager.shared.webSearchAutoCompleteValue()
-            isDohEnabled = await FeatureManager.shared.boolValue(of: .dnsOverHTTPSAvailable)
-            isJavaScriptEnabled = await FeatureManager.shared.boolValue(of: .javaScriptEnabled)
-            nativeAppRedirectEnabled = await FeatureManager.shared.boolValue(of: .nativeAppRedirect)
+            async let searchProviderType = FeatureManager.shared.webSearchAutoCompleteValue()
+            async let isDohEnabled = FeatureManager.shared.boolValue(of: .dnsOverHTTPSAvailable)
+            async let isJavaScriptEnabled = FeatureManager.shared.boolValue(of: .javaScriptEnabled)
+            async let nativeAppRedirectEnabled = FeatureManager.shared.boolValue(of: .nativeAppRedirect)
+            let combinedValue = await (
+                searchProviderType: searchProviderType,
+                isDohEnabled: isDohEnabled,
+                isJavaScriptEnabled: isJavaScriptEnabled,
+                nativeAppRedirectEnabled: nativeAppRedirectEnabled
+            )
+            self.searchProviderType = combinedValue.searchProviderType
+            self.isDohEnabled = combinedValue.isDohEnabled
+            self.isJavaScriptEnabled = combinedValue.isJavaScriptEnabled
+            self.nativeAppRedirectEnabled = combinedValue.nativeAppRedirectEnabled
             webVM.siteNavigation = toolbarVM
         }
     }
