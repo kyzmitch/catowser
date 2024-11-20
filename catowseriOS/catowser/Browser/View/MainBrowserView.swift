@@ -35,8 +35,12 @@ extension UIFrameworkType {
     }
 }
 
-struct MainBrowserView
-<C: BrowserContentCoordinators, W: WebViewModel, S: SearchSuggestionsViewModel>: View {
+struct MainBrowserView<
+    C: BrowserContentCoordinators,
+    W: WebViewModel,
+    S: SearchSuggestionsViewModel,
+    SB: SearchBarViewModelProtocol
+>: View {
     /// Store main view model in this main view to not have generic parameter in phone/tablet views
     @StateObject private var viewModel: MainBrowserViewModel<C>
     /// Browser content view model
@@ -54,6 +58,8 @@ struct MainBrowserView
     @StateObject private var searchSuggestionsVM: S
     /// Web view model without a specific site
     @StateObject private var webVM: W
+    /// Search bar view model
+    @StateObject private var searchBarVM: SB
     /// Default content type is determined in async way, so, would be good to pass it like this
     private let defaultContentType: CoreBrowser.Tab.ContentType
 
@@ -63,7 +69,9 @@ struct MainBrowserView
          _ allTabsVM: AllTabsViewModel,
          _ topSitesVM: TopSitesViewModel,
          _ searchSuggestionsVM: S,
-         _ webVM: W) {
+         _ webVM: W,
+         _ searchBarVM: SB
+    ) {
         let mainVM = MainBrowserViewModel(coordinatorsInterface)
         _viewModel = StateObject(wrappedValue: mainVM)
         let browserVM = BrowserContentViewModel(
@@ -79,14 +87,27 @@ struct MainBrowserView
         _topSitesVM = StateObject(wrappedValue: topSitesVM)
         _searchSuggestionsVM = StateObject(wrappedValue: searchSuggestionsVM)
         _webVM = StateObject(wrappedValue: webVM)
+        _searchBarVM = StateObject(wrappedValue: searchBarVM)
     }
 
     var body: some View {
         Group {
             if isPad {
-                TabletView(mode, defaultContentType, webVM, searchSuggestionsVM)
+                TabletView(
+                    mode,
+                    defaultContentType,
+                    webVM,
+                    searchSuggestionsVM,
+                    searchBarVM
+                )
             } else {
-                PhoneView(mode, defaultContentType, webVM, searchSuggestionsVM)
+                PhoneView(
+                    mode,
+                    defaultContentType,
+                    webVM,
+                    searchSuggestionsVM,
+                    searchBarVM
+                )
             }
         }
         .environment(\.browserContentCoordinators, viewModel.coordinatorsInterface)

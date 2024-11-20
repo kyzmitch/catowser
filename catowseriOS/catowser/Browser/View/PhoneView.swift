@@ -12,11 +12,11 @@ import FeaturesFlagsKit
 import CottonPlugins
 import CottonData
 
-struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel>: View {
+struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarViewModelProtocol>: View {
     // MARK: - view models of subviews
 
     /// Search bar view model
-    @StateObject private var searchBarVM: SearchBarViewModel = .init()
+    @ObservedObject private var searchBarVM: SB
     /// A reference to created view model
     @EnvironmentObject private var browserContentVM: BrowserContentViewModel
     /// Toolbar view model needed by both UI modes
@@ -80,12 +80,25 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel>: View {
             style = .onlyGlobalMenu
         }
 
-        return MenuViewModel(style, isDohEnabled, isJavaScriptEnabled, nativeAppRedirectEnabled)
+        return MenuViewModel(
+            style,
+            isDohEnabled,
+            isJavaScriptEnabled,
+            nativeAppRedirectEnabled
+        )
     }
 
-    init(_ mode: SwiftUIMode, _ defaultContentType: CoreBrowser.Tab.ContentType, _ webVM: W, _ searchVM: S) {
+    init(
+        _ mode: SwiftUIMode,
+        _ defaultContentType: CoreBrowser.Tab.ContentType,
+        _ webVM: W,
+        _ searchVM: S,
+        _ searchBarVM: SB
+    ) {
         self.webVM = webVM
+        #warning("TODO: searchSuggestionsVM is not used")
         self.searchSuggestionsVM = searchVM
+        self.searchBarVM = searchBarVM
         searchBarAction = .clearView
         self.mode = mode
         self.contentType = defaultContentType

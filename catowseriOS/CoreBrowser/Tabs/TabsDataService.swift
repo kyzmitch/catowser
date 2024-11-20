@@ -9,12 +9,15 @@
 import DataServiceKit
 import Foundation
 
+public protocol TabsDataServiceProtocol: GenericDataServiceActorProtocol, TabsSubject where
+Command == TabsServiceCommand,
+ServiceData == TabsServiceDataOutput {
+}
+
 /**
  Tabs list data service which can be used as a subject for observers.
  */
-public actor TabsDataService: GenericDataServiceActorProtocol {
-    public typealias Command = TabsServiceCommand
-    public typealias ServiceData = TabsServiceDataOutput
+public actor TabsDataService: TabsDataServiceProtocol {
     
     typealias UUIDStream = AsyncStream<Tab.ID>
     typealias IntStream = AsyncStream<Int>

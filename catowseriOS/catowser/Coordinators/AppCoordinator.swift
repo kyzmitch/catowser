@@ -138,6 +138,7 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators {
             webContext,
             nil
         )
+        let searchBarVM = await ViewModelFactory.shared.searchBarViewModel()
         let vc = vcFactory.rootViewController(
             self,
             uiFramework,
@@ -145,7 +146,8 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators {
             allTabsVM,
             topSitesVM,
             suggestionsVM,
-            webViewModel
+            webViewModel,
+            searchBarVM
         )
         startedVC = vc
         

@@ -23,7 +23,9 @@ final class ViewModelFactory {
 
     private init() {}
 
-    func searchSuggestionsViewModel(_ searchProviderType: WebAutoCompletionSource) async -> any SearchSuggestionsViewModel {
+    func searchSuggestionsViewModel(
+        _ searchProviderType: WebAutoCompletionSource
+    ) async -> any SearchSuggestionsViewModel {
         let vmContext: SearchViewContextImpl = .init()
         switch searchProviderType {
         case .google:
@@ -37,9 +39,11 @@ final class ViewModelFactory {
         }
     }
 
-    func getWebViewModel(_ site: Site?,
-                         _ context: WebViewContext,
-                         _ siteNavigation: SiteExternalNavigationDelegate?) async -> any WebViewModel {
+    func getWebViewModel(
+        _ site: Site?,
+        _ context: WebViewContext,
+        _ siteNavigation: SiteExternalNavigationDelegate?
+    ) async -> any WebViewModel {
         let type = (any ResolveDNSUseCase).self
         async let googleDnsUseCase = UseCaseRegistry.shared.findUseCase(type, .googleResolveDnsUseCase)
         async let selectTabUseCase = UseCaseRegistry.shared.findUseCase(SelectedTabUseCase.self)
@@ -82,5 +86,10 @@ final class ViewModelFactory {
         async let sites = DefaultTabProvider.shared.topSites(isJsEnabled)
         async let writeUseCase = UseCaseRegistry.shared.findUseCase(WriteTabsUseCase.self)
         return await TopSitesViewModel(sites, writeUseCase)
+    }
+    
+    func searchBarViewModel() async -> any SearchBarViewModelProtocol {
+        async let writeUseCase = UseCaseRegistry.shared.findUseCase(WriteTabsUseCase.self)
+        return await SearchBarViewModel(writeUseCase)
     }
 }

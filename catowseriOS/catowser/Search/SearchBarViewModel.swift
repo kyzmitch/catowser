@@ -12,6 +12,7 @@ import CoreBrowser
 import FeaturesFlagsKit
 import BrowserNetworking
 import CottonBase
+import Combine
 
 /// An analog of existing SearchBar coordinator, but for SwiftUI
 /// and at the same time it implements `SearchSuggestionsListDelegate`
@@ -21,26 +22,33 @@ import CottonBase
 final class SearchBarViewModel: NSObject, ObservableObject {
     /// Based on values from observed delegates and search bar state it is possible to tell
     /// if search suggestions view can be showed or no.
-    @Published var showSearchSuggestions: Bool
+    @Published var showSearchSuggestionsState: Bool
     /// Search query which is empty by default and won't look like URL
-    @Published var searchQuery: String
+    @Published var searchQueryState: String
     /// Current action which is initiated by User to search bar which would be handled in SwiftUI view
-    @Published var action: SearchBarAction
+    @Published var actionState: SearchBarAction
     /// Temporary property which automatically removes leading spaces.
     /// Can't declare it private due to compiler error.
     @LeadingTrimmed private var tempSearchText: String
+    /// write tabs use case
+    private let writeTabsUseCase: WriteTabsUseCase
 
-    override init() {
-        showSearchSuggestions = false
-        searchQuery = ""
+    init(_ writeTabsUseCase: WriteTabsUseCase) {
+        self.writeTabsUseCase = writeTabsUseCase
+        showSearchSuggestionsState = false
+        searchQueryState = ""
         tempSearchText = ""
-        action = .clearView
+        actionState = .clearView
         super.init()
     }
 }
 
 private extension SearchBarViewModel {
-    func replaceTab(with url: URL, with suggestion: String? = nil, _ isJSEnabled: Bool) async {
+    func replaceTab(
+        with url: URL,
+        with suggestion: String? = nil,
+        _ isJSEnabled: Bool
+    ) async {
         let blockPopups = DefaultTabProvider.shared.blockPopups
         let settings = Site.Settings(isPrivate: false,
                                      blockPopups: blockPopups,
@@ -50,14 +58,13 @@ private extension SearchBarViewModel {
             assertionFailure("\(#function) failed to replace current tab - failed create site")
             return
         }
-        /// TODO: think how to replace delegate with view model func and WriteTabUseCase
-        _ = await TabsDataService.shared.sendCommand(.replaceContent(.site(site)))
+        await writeTabsUseCase.replaceSelected(.site(site))
     }
 }
 
 extension SearchBarViewModel: SearchSuggestionsListDelegate {
     func searchSuggestionDidSelect(_ content: SuggestionType) async {
-        showSearchSuggestions = false
+        showSearchSuggestionsState = false
 
         let isJSEnabled = await FeatureManager.shared.boolValue(of: .javaScriptEnabled)
         switch content {
@@ -87,10 +94,10 @@ extension SearchBarViewModel: SearchSuggestionsListDelegate {
 extension SearchBarViewModel: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchQuery: String) {
         if searchQuery.isEmpty || searchQuery.looksLikeAURL() {
-            showSearchSuggestions = false
+            showSearchSuggestionsState = false
         } else {
-            showSearchSuggestions = true
-            self.searchQuery = searchQuery
+            showSearchSuggestionsState = true
+            searchQueryState = searchQuery
         }
     }
 
@@ -115,12 +122,12 @@ extension SearchBarViewModel: UISearchBarDelegate {
     }
 
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        action = .startSearch
+        actionState = .startSearch
     }
 
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        action = .cancelTapped
-        showSearchSuggestions = false
+        actionState = .cancelTapped
+        showSearchSuggestionsState = false
         searchBar.resignFirstResponder()
     }
 
@@ -143,5 +150,26 @@ extension SearchBarViewModel: UISearchBarDelegate {
 
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         // called when `Cancel` pressed or search bar no more a first responder
+    }
+}
+
+@MainActor
+protocol SearchBarViewModelProtocol: ObservableObject, UISearchBarDelegate, SearchSuggestionsListDelegate {
+    var showSearchSuggestions: Published<Bool>.Publisher { get }
+    var searchQuery: Published<String>.Publisher { get }
+    var action: Published<SearchBarAction>.Publisher { get }
+}
+
+extension SearchBarViewModel: SearchBarViewModelProtocol {
+    var showSearchSuggestions: Published<Bool>.Publisher {
+        $showSearchSuggestionsState
+    }
+    
+    var searchQuery: Published<String>.Publisher {
+        $searchQueryState
+    }
+    
+    var action: Published<SearchBarAction>.Publisher {
+        $actionState
     }
 }

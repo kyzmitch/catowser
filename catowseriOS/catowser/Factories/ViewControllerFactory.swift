@@ -26,13 +26,17 @@ import CoreBrowser
 /// View controllers factory which doesn't depend on device type (phone or tablet)
 @MainActor
 protocol ViewControllerFactory: AnyObject {
-    func rootViewController<W, S>(_ coordinator: AppCoordinator,
-                                  _ uiFramework: UIFrameworkType,
-                                  _ defaultContentType: CoreBrowser.Tab.ContentType,
-                                  _ allTabsVM: AllTabsViewModel,
-                                  _ topSitesVM: TopSitesViewModel,
-                                  _ searchSuggestionsVM: S,
-                                  _ webVM: W) -> AnyViewController  where W: WebViewModel, S: SearchSuggestionsViewModel
+    func rootViewController<W, S, SB>(
+        _ coordinator: AppCoordinator,
+        _ uiFramework: UIFrameworkType,
+        _ defaultContentType: CoreBrowser.Tab.ContentType,
+        _ allTabsVM: AllTabsViewModel,
+        _ topSitesVM: TopSitesViewModel,
+        _ searchSuggestionsVM: S,
+        _ webVM: W,
+        _ searchBarVM: SB
+    ) -> AnyViewController
+    where W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarViewModelProtocol
 
     func searchBarViewController(_ searchBarDelegate: UISearchBarDelegate?,
                                  _ uiFramework: UIFrameworkType) -> SearchBarBaseViewController
@@ -87,26 +91,32 @@ protocol ViewControllerFactory: AnyObject {
 }
 
 extension ViewControllerFactory {
-    func rootViewController<W, S>(_ coordinator: AppCoordinator,
-                                  _ uiFramework: UIFrameworkType,
-                                  _ defaultContentType: CoreBrowser.Tab.ContentType,
-                                  _ allTabsVM: AllTabsViewModel,
-                                  _ topSitesVM: TopSitesViewModel,
-                                  _ searchSuggestionsVM: S,
-                                  _ webVM: W) -> AnyViewController
-    where W: WebViewModel, S: SearchSuggestionsViewModel {
+    func rootViewController<W, S, SB>(
+        _ coordinator: AppCoordinator,
+        _ uiFramework: UIFrameworkType,
+        _ defaultContentType: CoreBrowser.Tab.ContentType,
+        _ allTabsVM: AllTabsViewModel,
+        _ topSitesVM: TopSitesViewModel,
+        _ searchSuggestionsVM: S,
+        _ webVM: W,
+        _ searchBarVM: SB
+    ) -> AnyViewController
+    where W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarViewModelProtocol {
         let vc: AnyViewController
         switch uiFramework {
         case .uiKit:
             vc = MainBrowserViewController(coordinator)
         case .swiftUIWrapper, .swiftUI:
-            vc = MainBrowserV2ViewController(coordinator,
-                                             uiFramework,
-                                             defaultContentType,
-                                             allTabsVM,
-                                             topSitesVM,
-                                             searchSuggestionsVM,
-                                             webVM)
+            vc = MainBrowserV2ViewController(
+                coordinator,
+                uiFramework,
+                defaultContentType,
+                allTabsVM,
+                topSitesVM,
+                searchSuggestionsVM,
+                webVM,
+                searchBarVM
+            )
         }
         return vc
     }

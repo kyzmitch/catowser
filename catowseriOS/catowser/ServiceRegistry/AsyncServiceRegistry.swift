@@ -30,7 +30,7 @@ private final class AsyncServiceRegistry {
     static nonisolated(unsafe) private var internalInstance: ManagerHolder?
 
     fileprivate actor ManagerHolder {
-        let tabsDataService: TabsDataService
+        let tabsDataService: any TabsDataServiceProtocol
         private let database: Database
 
         init(_ tabsSubject: TabsDataSubjectProtocol?) async {
@@ -63,7 +63,7 @@ private final class AsyncServiceRegistry {
 }
 
 extension TabsDataService {
-    static var shared: TabsDataService {
+    static var shared: any TabsDataServiceProtocol {
         get async {
             await AsyncServiceRegistry.shared().tabsDataService
         }

@@ -9,13 +9,13 @@
 import Foundation
 
 public final class SelectedTabUseCaseImpl: SelectedTabUseCase {
-    private let tabsDataService: TabsDataService
+    private let tabsDataService: any TabsDataServiceProtocol
 
-    public init(_ tabsDataService: TabsDataService) {
+    public init(_ tabsDataService: any TabsDataServiceProtocol) {
         self.tabsDataService = tabsDataService
     }
 
     public func setSelectedPreview(_ image: Data?) async {
-        _ = await tabsDataService.sendCommand(.updateSelectedTabPreview(image))
+        _ = await tabsDataService.sendCommand(.updateSelectedTabPreview(image), nil)
     }
 }

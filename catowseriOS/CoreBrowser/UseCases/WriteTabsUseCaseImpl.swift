@@ -9,29 +9,29 @@
 import Foundation
 
 public final class WriteTabsUseCaseImpl: WriteTabsUseCase {
-    private let tabsDataService: TabsDataService
+    private let tabsDataService: any TabsDataServiceProtocol
 
-    public init(_ tabsDataService: TabsDataService) {
+    public init(_ tabsDataService: any TabsDataServiceProtocol) {
         self.tabsDataService = tabsDataService
     }
 
     public func add(tab: CoreBrowser.Tab) async {
-        _ = await tabsDataService.sendCommand(.addTab(tab))
+        _ = await tabsDataService.sendCommand(.addTab(tab), nil)
     }
 
     public func close(tab: CoreBrowser.Tab) async {
-        _ = await tabsDataService.sendCommand(.closeTab(tab))
+        _ = await tabsDataService.sendCommand(.closeTab(tab), nil)
     }
 
     public func closeAll() async {
-        _ = await tabsDataService.sendCommand(.closeAll)
+        _ = await tabsDataService.sendCommand(.closeAll, nil)
     }
 
     public func select(tab: CoreBrowser.Tab) async {
-        _ = await tabsDataService.sendCommand(.selectTab(tab))
+        _ = await tabsDataService.sendCommand(.selectTab(tab), nil)
     }
 
     public func replaceSelected(_ tabContent: CoreBrowser.Tab.ContentType) async {
-        _ = await tabsDataService.sendCommand(.replaceContent(tabContent))
+        _ = await tabsDataService.sendCommand(.replaceContent(tabContent), nil)
     }
 }

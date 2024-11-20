@@ -11,10 +11,11 @@ import CoreBrowser
 import FeaturesFlagsKit
 import CottonData
 
-struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel>: View {
+struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarViewModelProtocol>: View {
     // MARK: - view models of subviews
 
-    @StateObject private var searchBarVM: SearchBarViewModel = .init()
+    /// Search bar view model
+    @ObservedObject private var searchBarVM: SB
     /// A reference to created vm in main view
     @EnvironmentObject private var browserContentVM: BrowserContentViewModel
     /// Toolbar model needed by both UI modes
@@ -77,15 +78,25 @@ struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel>: View {
             style = .onlyGlobalMenu
         }
 
-        return MenuViewModel(style, isDohEnabled, isJavaScriptEnabled, nativeAppRedirectEnabled)
+        return MenuViewModel(
+            style,
+            isDohEnabled,
+            isJavaScriptEnabled,
+            nativeAppRedirectEnabled
+        )
     }
 
-    init(_ mode: SwiftUIMode,
-         _ defaultContentType: CoreBrowser.Tab.ContentType,
-         _ webVM: W,
-         _ searchVM: S) {
+    init(
+        _ mode: SwiftUIMode,
+        _ defaultContentType: CoreBrowser.Tab.ContentType,
+        _ webVM: W,
+        _ searchVM: S,
+        _ searchBarVM: SB
+    ) {
         self.webVM = webVM
+        #warning("TODO: searchSuggestionsVM is not used")
         self.searchSuggestionsVM = searchVM
+        self.searchBarVM = searchBarVM
         self.contentType = defaultContentType
         self.mode = mode
 
