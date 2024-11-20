@@ -99,12 +99,14 @@ public final class WebViewModelImpl: WebViewModel {
 
      @param site Can be nil when you are using just one same web view model because can't create new one every time in SwiftUI mode
      */
-    public init(_ resolveDnsUseCase: any ResolveDNSUseCase,
-                _ context: any WebViewContext,
-                _ selectTabUseCase: SelectedTabUseCase,
-                _ writeTabUseCase: WriteTabsUseCase,
-                _ siteNavigation: SiteExternalNavigationDelegate?,
-                _ site: Site? = nil) {
+    public init(
+        _ context: any WebViewContext,
+        _ resolveDnsUseCase: any ResolveDNSUseCase,
+        _ selectTabUseCase: SelectedTabUseCase,
+        _ writeTabUseCase: WriteTabsUseCase,
+        _ siteNavigation: SiteExternalNavigationDelegate?,
+        _ site: Site? = nil
+    ) {
         self.resolveDnsUseCase = resolveDnsUseCase
         /// Do we need to use `updateState` function even in init?
         if let site = site {

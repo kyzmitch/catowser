@@ -41,16 +41,23 @@ final class ViewModelFactory {
                          _ context: WebViewContext,
                          _ siteNavigation: SiteExternalNavigationDelegate?) async -> any WebViewModel {
         let type = (any ResolveDNSUseCase).self
-        let googleDnsUseCase = await UseCaseRegistry.shared.findUseCase(type, .googleResolveDnsUseCase)
-        let selectTabUseCase = await UseCaseRegistry.shared.findUseCase(SelectedTabUseCase.self)
-        let writeUseCase = await UseCaseRegistry.shared.findUseCase(WriteTabsUseCase.self)
-        return WebViewModelImpl(googleDnsUseCase, context, selectTabUseCase, writeUseCase, siteNavigation, site)
+        async let googleDnsUseCase = UseCaseRegistry.shared.findUseCase(type, .googleResolveDnsUseCase)
+        async let selectTabUseCase = UseCaseRegistry.shared.findUseCase(SelectedTabUseCase.self)
+        async let writeUseCase = UseCaseRegistry.shared.findUseCase(WriteTabsUseCase.self)
+        return await WebViewModelImpl(
+            context,
+            googleDnsUseCase,
+            selectTabUseCase,
+            writeUseCase,
+            siteNavigation,
+            site
+        )
     }
 
     func tabViewModel(_ tab: CoreBrowser.Tab) async -> TabViewModel {
-        let readUseCase = await UseCaseRegistry.shared.findUseCase(ReadTabsUseCase.self)
-        let writeUseCase = await UseCaseRegistry.shared.findUseCase(WriteTabsUseCase.self)
-        return TabViewModel(
+        async let readUseCase = UseCaseRegistry.shared.findUseCase(ReadTabsUseCase.self)
+        async let writeUseCase = UseCaseRegistry.shared.findUseCase(WriteTabsUseCase.self)
+        return await TabViewModel(
             tab,
             readUseCase,
             writeUseCase,
@@ -60,9 +67,9 @@ final class ViewModelFactory {
     }
 
     func tabsPreviewsViewModel() async -> TabsPreviewsViewModel {
-        let readUseCase = await UseCaseRegistry.shared.findUseCase(ReadTabsUseCase.self)
-        let writeUseCase = await UseCaseRegistry.shared.findUseCase(WriteTabsUseCase.self)
-        return TabsPreviewsViewModel(readUseCase, writeUseCase, DefaultTabProvider.shared)
+        async let readUseCase = UseCaseRegistry.shared.findUseCase(ReadTabsUseCase.self)
+        async let writeUseCase = UseCaseRegistry.shared.findUseCase(WriteTabsUseCase.self)
+        return await TabsPreviewsViewModel(readUseCase, writeUseCase, DefaultTabProvider.shared)
     }
 
     func allTabsViewModel() async -> AllTabsViewModel {
@@ -72,8 +79,8 @@ final class ViewModelFactory {
 
     func topSitesViewModel() async -> TopSitesViewModel {
         let isJsEnabled = await FeatureManager.shared.boolValue(of: .javaScriptEnabled)
-        let writeUseCase = await UseCaseRegistry.shared.findUseCase(WriteTabsUseCase.self)
-        let sites = await DefaultTabProvider.shared.topSites(isJsEnabled)
-        return TopSitesViewModel(sites, writeUseCase)
+        async let sites = DefaultTabProvider.shared.topSites(isJsEnabled)
+        async let writeUseCase = UseCaseRegistry.shared.findUseCase(WriteTabsUseCase.self)
+        return await TopSitesViewModel(sites, writeUseCase)
     }
 }
