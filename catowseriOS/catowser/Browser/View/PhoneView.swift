@@ -155,9 +155,9 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
         .ignoresSafeArea(.container, edges: [.leading, .trailing])
         .onReceive(toolbarVM.$showProgress) { showProgress = $0 }
         .onReceive(toolbarVM.$websiteLoadProgress) { websiteLoadProgress = $0 }
-        .onReceive(searchBarVM.$showSearchSuggestions) { showSearchSuggestions = $0 }
-        .onReceive(searchBarVM.$searchQuery) { searchQuery = $0 }
-        .onReceive(searchBarVM.$action.dropFirst()) { searchBarAction = $0 }
+        .onReceive(searchBarVM.showSearchSuggestions) { showSearchSuggestions = $0 }
+        .onReceive(searchBarVM.searchQuery) { searchQuery = $0 }
+        .onReceive(searchBarVM.action.dropFirst()) { searchBarAction = $0 }
         .onReceive(toolbarVM.$stopWebViewReuseAction.dropFirst()) { webViewNeedsUpdate = false }
         .onReceive(browserContentVM.$webViewNeedsUpdate.dropFirst()) { webViewNeedsUpdate = true }
         .onReceive(browserContentVM.$contentType) { value in
@@ -233,7 +233,7 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
         .ignoresSafeArea(.container, edges: [.leading, .trailing])
         .onReceive(toolbarVM.$showProgress) { showProgress = $0 }
         .onReceive(toolbarVM.$websiteLoadProgress) { websiteLoadProgress = $0 }
-        .onReceive(searchBarVM.$showSearchSuggestions) { showSearchSuggestions = $0 }
+        .onReceive(searchBarVM.showSearchSuggestions) { showSearchSuggestions = $0 }
         .onChange(of: searchQuery) { value in
             let inSearchMode = searchBarAction == .startSearch
             let validQuery = !value.isEmpty && !value.looksLikeAURL()
