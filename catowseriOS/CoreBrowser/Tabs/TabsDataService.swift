@@ -12,7 +12,7 @@ import Foundation
 /**
  Tabs list data service which can be used as a subject for observers.
  */
-public actor TabsDataService: GenericDataServiceProtocol {
+public actor TabsDataService: GenericDataServiceActorProtocol {
     public typealias Command = TabsServiceCommand
     public typealias ServiceData = TabsServiceDataOutput
     
