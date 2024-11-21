@@ -117,7 +117,7 @@ struct MainBrowserView<
         .environmentObject(searchSuggestionsVM)
         .onAppear {
             Task {
-                await TabsDataService.shared.attach(browserContentVM, notify: true)
+                await TabsDataServiceFactory.shared.attach(browserContentVM, notify: true)
             }
         }
     }

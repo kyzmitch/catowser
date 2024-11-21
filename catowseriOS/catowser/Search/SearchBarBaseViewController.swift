@@ -43,7 +43,7 @@ final class SearchBarBaseViewController: BaseViewController {
             if #available(iOS 17.0, *), observingType.isSystemObservation {
                 startTabsObservation()
             } else {
-                await TabsDataService.shared.attach(self, notify: false)
+                await TabsDataServiceFactory.shared.attach(self, notify: false)
             }
         }
     }

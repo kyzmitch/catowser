@@ -9,15 +9,10 @@
 import DataServiceKit
 import Foundation
 
-public protocol TabsDataServiceProtocol: GenericDataServiceActorProtocol, TabsSubject where
-Command == TabsServiceCommand,
-ServiceData == TabsServiceDataOutput {
-}
-
 /**
  Tabs list data service which can be used as a subject for observers.
  */
-public actor TabsDataService: TabsDataServiceProtocol {
+actor TabsDataService: TabsDataServiceProtocol {
     
     typealias UUIDStream = AsyncStream<Tab.ID>
     typealias IntStream = AsyncStream<Int>
@@ -48,7 +43,7 @@ public actor TabsDataService: TabsDataServiceProtocol {
     /// because subscribing usually happens in init or viewDidLoad during app start.
     private let observingType: ObservingApiType
 
-    public init(
+    init(
         _ tabsRepository: TabsRepository,
         _ positioning: TabsStates,
         _ selectionStrategy: TabSelectionStrategy,
@@ -586,10 +581,12 @@ fileprivate extension Array where Element == CoreBrowser.Tab {
 
 // MARK: - AddedTabPosition extension
 
-extension AddedTabPosition {
-    func addTab(_ tab: CoreBrowser.Tab,
-                to tabs: inout [CoreBrowser.Tab],
-                _ currentlySelectedId: UUID) -> Int {
+private extension AddedTabPosition {
+    func addTab(
+        _ tab: CoreBrowser.Tab,
+        to tabs: inout [CoreBrowser.Tab],
+        _ currentlySelectedId: UUID
+    ) -> Int {
         let newIndex: Int
         switch self {
         case .listEnd:

@@ -175,6 +175,7 @@
 		8A0E0EAB224A94E600D86CD7 /* InstagramVideoNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0E0EAA224A94E600D86CD7 /* InstagramVideoNode.swift */; };
 		8A0E4D5A29133E77008F7964 /* SwiftyMocky in Frameworks */ = {isa = PBXBuildFile; productRef = 8A0E4D5929133E77008F7964 /* SwiftyMocky */; };
 		8A0E4D5B29133F65008F7964 /* WebSearchAutocompleteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB9BE0928FEB17E002063C2 /* WebSearchAutocompleteTests.swift */; };
+		8A0F683B2CEF255C00514AA4 /* TabsDataServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0F683A2CEF255B00514AA4 /* TabsDataServiceProtocol.swift */; };
 		8A0FC19B29F246640044829A /* SearchSuggestionsLegacyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0FC19A29F246640044829A /* SearchSuggestionsLegacyView.swift */; };
 		8A0FC1A029F24C950044829A /* PhoneSearchBarLegacyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0FC19F29F24C950044829A /* PhoneSearchBarLegacyView.swift */; };
 		8A0FC1A329F24D320044829A /* TabletSearchBarLegacyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0FC1A229F24D320044829A /* TabletSearchBarLegacyView.swift */; };
@@ -875,6 +876,7 @@
 		8A0DF8FD224C0146000CADA6 /* DummyDecodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyDecodable.swift; sourceTree = "<group>"; };
 		8A0DF8FF224C019C000CADA6 /* InstagramVideoArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstagramVideoArray.swift; sourceTree = "<group>"; };
 		8A0E0EAA224A94E600D86CD7 /* InstagramVideoNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstagramVideoNode.swift; sourceTree = "<group>"; };
+		8A0F683A2CEF255B00514AA4 /* TabsDataServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabsDataServiceProtocol.swift; sourceTree = "<group>"; };
 		8A0FC19A29F246640044829A /* SearchSuggestionsLegacyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSuggestionsLegacyView.swift; sourceTree = "<group>"; };
 		8A0FC19F29F24C950044829A /* PhoneSearchBarLegacyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneSearchBarLegacyView.swift; sourceTree = "<group>"; };
 		8A0FC1A229F24D320044829A /* TabletSearchBarLegacyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabletSearchBarLegacyView.swift; sourceTree = "<group>"; };
@@ -1367,6 +1369,7 @@
 				8A745C1324802E4F00A379AD /* TabsObserver.swift */,
 				8A9980632845409100E18762 /* TabsSubject.swift */,
 				607D02AE21FEF87F009FCD0B /* TabsDataService.swift */,
+				8A0F683A2CEF255B00514AA4 /* TabsDataServiceProtocol.swift */,
 				8A15A4282BA75E360082E7E6 /* TabsDataSubject.swift */,
 				750B6DE62B5C348E00063E75 /* TabsServiceCommand.swift */,
 				750B6DE82B5C34D000063E75 /* TabsServiceDataOutput.swift */,
@@ -3271,6 +3274,7 @@
 				8AA60B2225A33568002EF8AF /* TabCacheErrors.swift in Sources */,
 				6094E740221FE6CB004269A2 /* Box.swift in Sources */,
 				75458E432B468FE800004581 /* ReadTabsUseCase.swift in Sources */,
+				8A0F683B2CEF255C00514AA4 /* TabsDataServiceProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

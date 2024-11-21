@@ -42,7 +42,7 @@ final class UseCaseRegistry {
         /// a reference to data service and also because this
         /// factory should be a singleton as well
         private func registerTabsUseCases() async {
-            let dataService = await TabsDataService.shared
+            let dataService = await TabsDataServiceFactory.shared
             let readUseCase: ReadTabsUseCase = ReadTabsUseCaseImpl(dataService, DefaultTabProvider.shared)
             locator.registerTyped(readUseCase, of: ReadTabsUseCase.self)
             let writeUseCase: WriteTabsUseCase = WriteTabsUseCaseImpl(dataService)

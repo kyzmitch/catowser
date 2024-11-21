@@ -51,7 +51,7 @@ private final class AsyncServiceRegistry {
             }
             let cacheProvider = TabsRepositoryImpl(database.viewContext, contextClosure)
             let strategy = NearbySelectionStrategy()
-            tabsDataService = await TabsDataService(
+            tabsDataService = await TabsDataServiceFactory.create(
                 cacheProvider,
                 DefaultTabProvider.shared,
                 strategy,
@@ -62,7 +62,7 @@ private final class AsyncServiceRegistry {
     }
 }
 
-extension TabsDataService {
+extension TabsDataServiceFactory {
     static var shared: any TabsDataServiceProtocol {
         get async {
             await AsyncServiceRegistry.shared().tabsDataService
