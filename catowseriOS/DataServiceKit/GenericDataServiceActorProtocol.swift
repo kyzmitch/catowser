@@ -13,7 +13,10 @@
 public protocol GenericDataServiceCommand: CaseIterable { }
 
 /// An interface or a marker protocol for a data service state
-public protocol GenericServiceData { }
+public protocol GenericServiceData {
+    /// Any data should have some initial state, so, must have an emty init at least
+    init()
+}
 
 /// A base interface for a data service which can be specialized
 /// for a specific business logic domain (tabs, search auto-completion, DNS over HTTPS, etc.)

@@ -13,6 +13,8 @@ public protocol GenericDataServiceProtocol: AnyObject {
     associatedtype Command: GenericDataServiceCommand
     /// Type of a state for a specific domain of business logic
     associatedtype ServiceData: GenericServiceData
+    /// Service data
+    var serviceData: ServiceData { get set }
     
     /// A single entry point in data service API for read/write functionality
     /// related to specific domain of business logic.
