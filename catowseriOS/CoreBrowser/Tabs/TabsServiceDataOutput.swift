@@ -13,6 +13,10 @@ import Foundation
  Tabs service data output/response type.
  */
 public enum TabsServiceDataOutput: GenericServiceData, Sendable {
+    public init() {
+        self = .allTabs([])
+    }
+    
     case tabsCount(Int)
     case selectedTabId(Tab.ID)
     case allTabs([Tab])

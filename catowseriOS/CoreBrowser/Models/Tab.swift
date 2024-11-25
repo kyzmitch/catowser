@@ -283,3 +283,4 @@ extension Tab.ContentType: CustomStringConvertible {
 }
 
 extension Tab.ContentType: Hashable { }
+extension Tab: Hashable { }
