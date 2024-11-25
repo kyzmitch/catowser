@@ -94,7 +94,7 @@ struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarV
         _ searchBarVM: SB
     ) {
         self.webVM = webVM
-        #warning("TODO: searchSuggestionsVM is not used")
+        // search suggestions vm is used as a template argument later
         self.searchSuggestionsVM = searchVM
         self.searchBarVM = searchBarVM
         self.contentType = defaultContentType

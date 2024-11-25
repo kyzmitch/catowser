@@ -96,7 +96,7 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
         _ searchBarVM: SB
     ) {
         self.webVM = webVM
-        #warning("TODO: searchSuggestionsVM is not used")
+        // search suggestions vm is used as a template argument later
         self.searchSuggestionsVM = searchVM
         self.searchBarVM = searchBarVM
         searchBarAction = .clearView
