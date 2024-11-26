@@ -11,7 +11,7 @@ import DataServiceKit
 /// Tabs data service interface
 public protocol TabsDataServiceProtocol: GenericDataServiceActorProtocol, TabsSubject where
 Command == TabsServiceCommand,
-ServiceData == TabsServiceDataOutput { }
+ServiceData == TabsServiceData { }
 
 /// Tabs data service factory to create it
 public class TabsDataServiceFactory {

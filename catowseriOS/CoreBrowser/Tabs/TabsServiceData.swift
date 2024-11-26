@@ -1,5 +1,5 @@
 //
-//  TabsServiceDataOutput.swift
+//  TabsServiceData.swift
 //  CoreBrowser
 //
 //  Created by Andrey Ermoshin on 20.01.2024.
@@ -12,7 +12,7 @@ import Foundation
 /**
  Tabs service data output/response type.
  */
-public enum TabsServiceDataOutput: GenericServiceData, Sendable {
+public enum TabsServiceData: GenericServiceData, Sendable {
     public init() {
         self = .allTabs([])
     }
@@ -28,4 +28,4 @@ public enum TabsServiceDataOutput: GenericServiceData, Sendable {
     case tabPreviewUpdated(TabsListError?)
 }
 
-extension TabsServiceDataOutput: Equatable {}
+extension TabsServiceData: Equatable {}

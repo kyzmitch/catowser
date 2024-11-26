@@ -154,19 +154,19 @@ private extension TabsDataService {
 // MARK: - Private functions
 
 private extension TabsDataService {
-    func handleTabsCountCommand() -> TabsServiceDataOutput {
+    func handleTabsCountCommand() -> TabsServiceData {
         return .tabsCount(tabs.count)
     }
 
-    func handleSelectedTabIdCommand() -> TabsServiceDataOutput {
+    func handleSelectedTabIdCommand() -> TabsServiceData {
         return .selectedTabId(selectedTabIdentifier)
     }
 
-    func handleFetchAllTabsCommand() -> TabsServiceDataOutput {
+    func handleFetchAllTabsCommand() -> TabsServiceData {
         return .allTabs(tabs)
     }
 
-    func handleAddTabCommand(_ tab: CoreBrowser.Tab) async -> TabsServiceDataOutput {
+    func handleAddTabCommand(_ tab: CoreBrowser.Tab) async -> TabsServiceData {
         let positionType = await positioning.addPosition
         let newIndex = positionType.addTab(tab, to: &tabs, selectedTabIdentifier)
         if observingType.isSystemObservation {
@@ -185,7 +185,7 @@ private extension TabsDataService {
         return .tabAdded
     }
 
-    func handleCloseTabCommand(_ tab: CoreBrowser.Tab) async -> TabsServiceDataOutput {
+    func handleCloseTabCommand(_ tab: CoreBrowser.Tab) async -> TabsServiceData {
         do {
             let removedTabs = try await tabsRepository.remove(tabs: [tab])
             // swiftlint:disable:next force_unwrapping
@@ -197,14 +197,14 @@ private extension TabsDataService {
         return .tabClosed(tab.id)
     }
 
-    func handleCloseTabWithIdCommand(_ tabId: UUID) async -> TabsServiceDataOutput {
+    func handleCloseTabWithIdCommand(_ tabId: UUID) async -> TabsServiceData {
         guard let tabToRemove = tabs.first(where: { $0.id == tabId }) else {
             return .tabClosed(nil)
         }
         return await handleCloseTabCommand(tabToRemove)
     }
 
-    func handleCloseAllCommand() async -> TabsServiceDataOutput {
+    func handleCloseAllCommand() async -> TabsServiceData {
         let contentState = await positioning.contentState
         do {
             // because `tabs` field isolated to data service actor
@@ -231,7 +231,7 @@ private extension TabsDataService {
         return .allTabsClosed
     }
 
-    func handleSelectTabCommand(_ tab: CoreBrowser.Tab) async -> TabsServiceDataOutput {
+    func handleSelectTabCommand(_ tab: CoreBrowser.Tab) async -> TabsServiceData {
         do {
             let identifier = try await tabsRepository.select(tab: tab)
             guard identifier != selectedTabIdentifier else {
@@ -249,7 +249,7 @@ private extension TabsDataService {
         return .tabSelected
     }
 
-    func handleReplaceTabContentCommand(_ tabContent: CoreBrowser.Tab.ContentType) async -> TabsServiceDataOutput {
+    func handleReplaceTabContentCommand(_ tabContent: CoreBrowser.Tab.ContentType) async -> TabsServiceData {
         guard let tabTuple = tabs.element(by: selectedTabIdentifier) else {
             return .tabContentReplaced(TabsListError.notInitializedYet)
         }
@@ -280,7 +280,7 @@ private extension TabsDataService {
         }
     }
 
-    func handleUpdateSelectedTabPreviewCommand(_ image: Data?) async -> TabsServiceDataOutput {
+    func handleUpdateSelectedTabPreviewCommand(_ image: Data?) async -> TabsServiceData {
         let defaultValue = positioning.defaultSelectedTabId
         guard selectedTabIdentifier != defaultValue else {
             return .tabPreviewUpdated(TabsListError.notInitializedYet)

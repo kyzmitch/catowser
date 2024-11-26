@@ -8,7 +8,7 @@
 
 /// Base generic data service which will use dispatch queue as a synhronization.
 /// There is another approach in this framework using an actor base protocol.
-public class GenericConcurrentDataService<
+open class GenericConcurrentDataService<
     C: GenericDataServiceCommand,
     S: GenericServiceData
 >: GenericDataServiceProtocol {
@@ -40,7 +40,7 @@ public class GenericConcurrentDataService<
     ) {
         executionQueue.performAsync { [weak self] in
             guard let self else {
-                onComplete(.failure(DummyError()))
+                onComplete(.failure(DataServiceKitError.zombyInstance))
                 return
             }
             lock.lock()
@@ -62,10 +62,7 @@ public class GenericConcurrentDataService<
         _ command: Command,
         _ input: ServiceData?,
         _ onComplete: @escaping (Result<ServiceData, Error>) -> Void
-    ) {
-        let tempOutput = DummyError()
-        finishCommand(command, .failure(tempOutput))
-    }
+    ) { }
     
     /// Finilizes handling of a command by calling completion closure with the result.
     ///
@@ -86,6 +83,3 @@ public class GenericConcurrentDataService<
         }
     }
 }
-
-
-struct DummyError: Error { }
