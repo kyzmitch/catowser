@@ -107,10 +107,6 @@
 		75458E452B468FF800004581 /* WriteTabsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75458E442B468FF800004581 /* WriteTabsUseCase.swift */; };
 		75458E482B46EC9700004581 /* ReadTabsUseCaseImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75458E472B46EC9700004581 /* ReadTabsUseCaseImpl.swift */; };
 		75458E4A2B46ED0500004581 /* WriteTabsUseCaseImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75458E492B46ED0500004581 /* WriteTabsUseCaseImpl.swift */; };
-		75458E542B47114400004581 /* LazyServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75458E512B47113B00004581 /* LazyServiceLocator.swift */; };
-		75458E552B47114700004581 /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75458E4E2B47111300004581 /* ServiceLocator.swift */; };
-		75458E562B47115000004581 /* UseCaseLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75458E4B2B46F44100004581 /* UseCaseLocator.swift */; };
-		75458E582B47127C00004581 /* BaseUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75458E572B47127C00004581 /* BaseUseCase.swift */; };
 		75458E5A2B471A2100004581 /* SelectedTabUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75458E592B471A2100004581 /* SelectedTabUseCase.swift */; };
 		75458E5C2B471A4700004581 /* SelectedTabUseCaseImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75458E5B2B471A4700004581 /* SelectedTabUseCaseImpl.swift */; };
 		755E107127BC3DC500D90AD0 /* AppAsyncApiTypeViewPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755E107027BC3DC500D90AD0 /* AppAsyncApiTypeViewPreview.swift */; };
@@ -820,10 +816,6 @@
 		75458E442B468FF800004581 /* WriteTabsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteTabsUseCase.swift; sourceTree = "<group>"; };
 		75458E472B46EC9700004581 /* ReadTabsUseCaseImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadTabsUseCaseImpl.swift; sourceTree = "<group>"; };
 		75458E492B46ED0500004581 /* WriteTabsUseCaseImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteTabsUseCaseImpl.swift; sourceTree = "<group>"; };
-		75458E4B2B46F44100004581 /* UseCaseLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UseCaseLocator.swift; sourceTree = "<group>"; };
-		75458E4E2B47111300004581 /* ServiceLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocator.swift; sourceTree = "<group>"; };
-		75458E512B47113B00004581 /* LazyServiceLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LazyServiceLocator.swift; sourceTree = "<group>"; };
-		75458E572B47127C00004581 /* BaseUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseUseCase.swift; sourceTree = "<group>"; };
 		75458E592B471A2100004581 /* SelectedTabUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedTabUseCase.swift; sourceTree = "<group>"; };
 		75458E5B2B471A4700004581 /* SelectedTabUseCaseImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedTabUseCaseImpl.swift; sourceTree = "<group>"; };
 		755E107027BC3DC500D90AD0 /* AppAsyncApiTypeViewPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAsyncApiTypeViewPreview.swift; sourceTree = "<group>"; };
@@ -1555,14 +1547,10 @@
 		75458E462B46900100004581 /* UseCases */ = {
 			isa = PBXGroup;
 			children = (
-				75458E4B2B46F44100004581 /* UseCaseLocator.swift */,
-				75458E4E2B47111300004581 /* ServiceLocator.swift */,
-				75458E512B47113B00004581 /* LazyServiceLocator.swift */,
 				75458E422B468FE800004581 /* ReadTabsUseCase.swift */,
 				75458E472B46EC9700004581 /* ReadTabsUseCaseImpl.swift */,
 				75458E442B468FF800004581 /* WriteTabsUseCase.swift */,
 				75458E492B46ED0500004581 /* WriteTabsUseCaseImpl.swift */,
-				75458E572B47127C00004581 /* BaseUseCase.swift */,
 				75458E592B471A2100004581 /* SelectedTabUseCase.swift */,
 				75458E5B2B471A4700004581 /* SelectedTabUseCaseImpl.swift */,
 			);
@@ -3264,7 +3252,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				75458E562B47115000004581 /* UseCaseLocator.swift in Sources */,
 				6094E732221FE2EF004269A2 /* Collection+CatowserExtensions.swift in Sources */,
 				8A15A4292BA75E370082E7E6 /* TabsDataSubject.swift in Sources */,
 				8A99805E28453DE900E18762 /* NearbySelectionStrategy.swift in Sources */,
@@ -3284,13 +3271,10 @@
 				608DA709222E6F5E009F75BD /* TabSelectionStrategy.swift in Sources */,
 				60D52D41225F542E00CB56F0 /* Trie.swift in Sources */,
 				8A437DA9247ED376001C1E8B /* TrimmedString.swift in Sources */,
-				75458E582B47127C00004581 /* BaseUseCase.swift in Sources */,
 				6094E733221FE2F6004269A2 /* String+CatowserExtensions.swift in Sources */,
 				750B6DE92B5C34D000063E75 /* TabsServiceData.swift in Sources */,
 				60D52D3C225F317C00CB56F0 /* DomainsHistory.swift in Sources */,
 				750B6DE72B5C348E00063E75 /* TabsServiceCommand.swift in Sources */,
-				75458E552B47114700004581 /* ServiceLocator.swift in Sources */,
-				75458E542B47114400004581 /* LazyServiceLocator.swift in Sources */,
 				8A745C1424802E4F00A379AD /* TabsObserver.swift in Sources */,
 				75458E452B468FF800004581 /* WriteTabsUseCase.swift in Sources */,
 				60D52D3E225F47DB00CB56F0 /* InMemoryDomainSearchProvider.swift in Sources */,

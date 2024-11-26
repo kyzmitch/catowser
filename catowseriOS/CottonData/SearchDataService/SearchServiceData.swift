@@ -8,9 +8,9 @@
 
 import DataServiceKit
 
-struct SearchServiceData: GenericServiceData {
+public struct SearchServiceData: GenericServiceData {
     var resolvedUrl: URL?
     var autocompleteSuggestions: [String]?
     
-    init() { }
+    public init() { }
 }

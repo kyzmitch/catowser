@@ -6,6 +6,7 @@
 //  Copyright © 2024 Cotton (former Catowser). All rights reserved.
 //
 
+import DataServiceKit
 import Foundation
 import CoreBrowser
 import CottonData
@@ -43,12 +44,21 @@ final class UseCaseRegistry {
         /// factory should be a singleton as well
         private func registerTabsUseCases() async {
             let dataService = await TabsDataServiceFactory.shared
-            let readUseCase: ReadTabsUseCase = ReadTabsUseCaseImpl(dataService, DefaultTabProvider.shared)
+            let readUseCase: ReadTabsUseCase = ReadTabsUseCaseImpl(
+                dataService,
+                DefaultTabProvider.shared
+            )
             locator.registerTyped(readUseCase, of: ReadTabsUseCase.self)
             let writeUseCase: WriteTabsUseCase = WriteTabsUseCaseImpl(dataService)
-            locator.registerTyped(writeUseCase, of: WriteTabsUseCase.self)
+            locator.registerTyped(
+                writeUseCase,
+                of: WriteTabsUseCase.self
+            )
             let selectedTabUseCase: SelectedTabUseCase = SelectedTabUseCaseImpl(dataService)
-            locator.registerTyped(selectedTabUseCase, of: SelectedTabUseCase.self)
+            locator.registerTyped(
+                selectedTabUseCase,
+                of: SelectedTabUseCase.self
+            )
         }
 
         private func registerSearchAutocompleteUseCases() {
@@ -64,7 +74,10 @@ final class UseCaseRegistry {
                                           ServiceRegistry.shared.duckduckgoClientSubscriber)
             let ddGoStrategy = DDGoAutocompleteStrategy(ddGoContext)
             let ddGoUseCase: any AutocompleteSearchUseCase = AutocompleteSearchUseCaseImpl(ddGoStrategy)
-            locator.registerNamed(ddGoUseCase, .duckDuckGoAutocompleteUseCase)
+            locator.registerNamed(
+                ddGoUseCase,
+                .duckDuckGoAutocompleteUseCase
+            )
         }
 
         private func registerDnsResolveUseCases() {
@@ -75,7 +88,10 @@ final class UseCaseRegistry {
 
             let googleStrategy = GoogleDNSStrategy(googleContext)
             let googleUseCase: any ResolveDNSUseCase = ResolveDNSUseCaseImpl(googleStrategy)
-            locator.registerNamed(googleUseCase, .googleResolveDnsUseCase)
+            locator.registerNamed(
+                googleUseCase,
+                .googleResolveDnsUseCase
+            )
         }
     }
 }

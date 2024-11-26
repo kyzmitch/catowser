@@ -8,11 +8,11 @@
 
 import DataServiceKit
 
-enum SearchServiceCommand: GenericDataServiceCommand {
+public enum SearchServiceCommand: GenericDataServiceCommand {
     case fetchAutocompleteSuggestions(String)
     case resolveDomainNameInURL(URL)
     
-    static var allCases: [SearchServiceCommand] {
+    public static var allCases: [SearchServiceCommand] {
         // swiftlint:disable:next force_unwrapping
         let dummyURL = URL(string: "www.example.com")!
         return [

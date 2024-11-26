@@ -32,6 +32,7 @@ final class PhoneTabsCoordinator: Coordinator {
         /// Async start should be fine, because there are no layout steps in this coordinator
         /// which could be done later after start
         Task {
+            #warning("TODO: in SwiftUI this VM should be constructed before use case registering, but it is not")
             let vm = await ViewModelFactory.shared.tabsPreviewsViewModel()
             guard let vc = vcFactory.tabsPreviewsViewController(self, vm) else {
                 assertionFailure("Tabs previews screen is only for Phone layout")

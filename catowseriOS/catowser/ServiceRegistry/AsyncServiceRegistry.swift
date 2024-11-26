@@ -10,6 +10,7 @@ import CoreBrowser
 import CoreData
 import FeaturesFlagsKit
 
+/// Service registry for the data services with async constructors
 private final class AsyncServiceRegistry {
     static func shared() async -> ManagerHolder {
         if let holder = internalInstance {

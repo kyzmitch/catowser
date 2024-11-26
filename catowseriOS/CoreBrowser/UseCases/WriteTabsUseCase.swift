@@ -6,6 +6,7 @@
 //  Copyright © 2024 Cotton (former Catowser). All rights reserved.
 //
 
+import DataServiceKit
 import Foundation
 import AutoMockable
 

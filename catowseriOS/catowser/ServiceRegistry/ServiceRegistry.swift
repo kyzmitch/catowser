@@ -6,18 +6,23 @@
 //  Copyright © 2020 Cotton (former Catowser). All rights reserved.
 //
 
+import DataServiceKit
 import Foundation
 import CottonRestKit
+import CottonData
 import CoreBrowser
 import BrowserNetworking
 import Alamofire // only needed for `JSONEncoding`
 import FeaturesFlagsKit
 
-@globalActor
-final class ServiceRegistry {
+/// Service registry for the serial data services and other related classes
+@globalActor final class ServiceRegistry {
     static let shared = StateHolder()
 
     actor StateHolder {
+        /// locator for the data services
+        private let locator: LazyServiceLocator
+        
         let dnsClient: GoogleDnsClient
         let googleClient: GoogleSuggestionsClient
         let duckduckgoClient: DDGoSuggestionsClient
@@ -35,6 +40,8 @@ final class ServiceRegistry {
         let duckduckgoClientRxSubscriber: DDGoSuggestionsClientRxSubscriber = .init()
 
         init() {
+            locator = LazyServiceLocator()
+            
             let googleDNSserver = GoogleDnsServer()
             // swiftlint:disable:next force_unwrapping
             dnsAlReachability = .init(server: googleDNSserver)!
@@ -57,6 +64,11 @@ final class ServiceRegistry {
                                      jsonEncoder: JSONEncoding.default,
                                      reachability: ddGoAlReachability,
                                      httpTimeout: 10)
+        }
+        
+        func registerDataServices() {
+            let searchDataService = SearchDataService()
+            locator.register(searchDataService)
         }
 
         func searchSuggestClient() async -> SearchEngine {

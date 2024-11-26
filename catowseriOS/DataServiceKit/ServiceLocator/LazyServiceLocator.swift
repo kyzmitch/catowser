@@ -23,9 +23,13 @@ enum ServiceRecord {
     }
 }
 
+/// Service locator
 public class LazyServiceLocator {
     private lazy var idByRecord: [ObjectIdentifier: ServiceRecord] = [:]
     private lazy var stringByRecord: [String: ServiceRecord] = [:]
+    
+    /// Constructor
+    public init() { }
     
     /// Register a closure which could create an instance of a certain type
     /// - Parameter instance: an instance (without generic parameters) which is stored by the specific metatype id

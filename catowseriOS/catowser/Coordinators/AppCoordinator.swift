@@ -120,6 +120,7 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators {
     }
     
     private func prepareBeforeStart() async {
+        await ServiceRegistry.shared.registerDataServices()
         await UseCaseRegistry.shared.registerUseCases()
         let defaultTabContent = await DefaultTabProvider.shared.contentState
         let pluginsSource = JSPluginsBuilder()

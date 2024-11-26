@@ -8,10 +8,9 @@
 
 import Foundation
 
-/**
- Service locator for the use cases
- */
+/// Service locator for the use cases
 public final class UseCaseLocator: LazyServiceLocator {
+    /// Init
     public override init() {}
     
     /// Register a closure which could create an instance of a use case
