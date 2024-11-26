@@ -18,6 +18,7 @@ final class MainToolbarCoordinator: Coordinator {
     var startedVC: AnyViewController?
     weak var presenterVC: AnyViewController?
     var navigationStack: UINavigationController?
+    private let phoneTabPreviewsVM: TabsPreviewsViewModel
 
     private weak var downloadDelegate: DownloadPanelPresenter?
     private weak var settingsDelegate: GlobalMenuDelegate?
@@ -28,12 +29,15 @@ final class MainToolbarCoordinator: Coordinator {
          _ presenter: AnyViewController?,
          _ downloadDelegate: DownloadPanelPresenter?,
          _ settingsDelegate: GlobalMenuDelegate,
-         _ uiFramework: UIFrameworkType) {
+         _ uiFramework: UIFrameworkType,
+         _ phoneTabPreviewsVM: TabsPreviewsViewModel
+    ) {
         self.vcFactory = vcFactory
         self.presenterVC = presenter
         self.downloadDelegate = downloadDelegate
         self.settingsDelegate = settingsDelegate
         self.uiFramework = uiFramework
+        self.phoneTabPreviewsVM = phoneTabPreviewsVM
     }
 
     func start() {
@@ -150,7 +154,12 @@ private extension MainToolbarCoordinator {
         if let existingPhoneTabsCrdr = startedCoordinator as? PhoneTabsCoordinator {
             existingPhoneTabsCrdr.start()
         } else {
-            let coordinator = PhoneTabsCoordinator(vcFactory, presenter, uiFramework)
+            let coordinator = PhoneTabsCoordinator(
+                vcFactory,
+                presenter,
+                uiFramework,
+                phoneTabPreviewsVM
+            )
             coordinator.parent = self
             coordinator.start()
             startedCoordinator = coordinator

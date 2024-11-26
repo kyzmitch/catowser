@@ -16,36 +16,34 @@ final class PhoneTabsCoordinator: Coordinator {
     weak var parent: CoordinatorOwner?
     var startedVC: AnyViewController?
     weak var presenterVC: AnyViewController?
+    private let vm: TabsPreviewsViewModel
     var navigationStack: UINavigationController?
 
     let uiFramework: UIFrameworkType
 
     init(_ vcFactory: any ViewControllerFactory,
          _ presenter: AnyViewController?,
-         _ uiFramework: UIFrameworkType) {
+         _ uiFramework: UIFrameworkType,
+         _ viewModel: TabsPreviewsViewModel
+    ) {
         self.vcFactory = vcFactory
         self.presenterVC = presenter
         self.uiFramework = uiFramework
+        self.vm = viewModel
     }
 
     func start() {
-        /// Async start should be fine, because there are no layout steps in this coordinator
-        /// which could be done later after start
-        Task {
-            #warning("TODO: in SwiftUI this VM should be constructed before use case registering, but it is not")
-            let vm = await ViewModelFactory.shared.tabsPreviewsViewModel()
-            guard let vc = vcFactory.tabsPreviewsViewController(self, vm) else {
-                assertionFailure("Tabs previews screen is only for Phone layout")
-                return
-            }
-            startedVC = vc
-            guard !uiFramework.isUIKitFree else {
-                // For SwiftUI mode we still need to create view controller
-                // but presenting should happen on SwiftUI level
-                return
-            }
-            presenterVC?.viewController.present(vc, animated: true, completion: nil)
+        guard let vc = vcFactory.tabsPreviewsViewController(self, vm) else {
+            assertionFailure("Tabs previews screen is only for Phone layout")
+            return
         }
+        startedVC = vc
+        guard !uiFramework.isUIKitFree else {
+            // For SwiftUI mode we still need to create view controller
+            // but presenting should happen on SwiftUI level
+            return
+        }
+        presenterVC?.viewController.present(vc, animated: true, completion: nil)
     }
 }
 

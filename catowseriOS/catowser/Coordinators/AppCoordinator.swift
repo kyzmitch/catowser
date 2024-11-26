@@ -85,6 +85,10 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators {
     private var allTabsVM: AllTabsViewModel?
     /// Top sites UIKit view controller needs that view model and it is async
     private var topSitesVM: TopSitesViewModel?
+    /// phone tab previews view model needed to make Phone previews coordinator
+    /// work without a crash, because View model used to fetch VM before use cases registration
+    /// which is not the planned sequence of initialization
+    private var phoneTabPreviewsVM: TabsPreviewsViewModel?
     /// Feature manager
     private let featureManager: FeatureManager.StateHolder
     /// UI service registry
@@ -106,20 +110,10 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators {
         Task {
             await prepareBeforeStart()
         }
-        
-        if uiFramework.swiftUIBased {
-            // Must do coordinators init earlier
-            // to allow to use some of them in SwiftUI views
-            insertTopSites()
-            insertToolbar()
-            if uiFramework.isUIKitFree {
-                // Need to create PhoneTabs coordinator as well
-                toolbarCoordinator?.showNext(.tabs)
-            }
-        }
     }
     
     private func prepareBeforeStart() async {
+        #warning("TODO: move to AppAssembler")
         await ServiceRegistry.shared.registerDataServices()
         await UseCaseRegistry.shared.registerUseCases()
         let defaultTabContent = await DefaultTabProvider.shared.contentState
@@ -133,6 +127,7 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators {
         self.topSitesVM = topSitesVM
         let searchProvider = await FeatureManager.shared.webSearchAutoCompleteValue()
         let suggestionsVM = await ViewModelFactory.shared.searchSuggestionsViewModel(searchProvider)
+        self.phoneTabPreviewsVM = await ViewModelFactory.shared.tabsPreviewsViewModel()
         let webContext = WebViewContextImpl(pluginsSource)
         let webViewModel = await ViewModelFactory.shared.getWebViewModel(
             nil,
@@ -163,6 +158,16 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators {
                 await readTabsState()
             } else {
                 await TabsDataServiceFactory.shared.attach(self, notify: true)
+            }
+        }
+        if uiFramework.swiftUIBased {
+            // Must do coordinators init earlier
+            // to allow to use some of them in SwiftUI views
+            insertTopSites()
+            insertToolbar()
+            if uiFramework.isUIKitFree {
+                // Need to create PhoneTabs coordinator as well
+                toolbarCoordinator?.showNext(.tabs)
             }
         }
     }
@@ -473,7 +478,7 @@ private extension AppCoordinator {
     }
 
     func insertToolbar() {
-        guard !isPad else {
+        guard !isPad, let phoneTabPreviewsVM else {
             return
         }
         guard toolbarCoordinator == nil else {
@@ -482,10 +487,14 @@ private extension AppCoordinator {
         let presenter = startedVC
         // Link tags coordinator MUST be initialized before this toolbar
         // and it is initialized before Search bar coordinator now
-        let coordinator: MainToolbarCoordinator = .init(vcFactory,
-                                                        presenter,
-                                                        linkTagsCoordinator,
-                                                        self, uiFramework)
+        let coordinator: MainToolbarCoordinator = .init(
+            vcFactory,
+            presenter,
+            linkTagsCoordinator,
+            self,
+            uiFramework,
+            phoneTabPreviewsVM
+        )
         coordinator.parent = self
         coordinator.start()
         toolbarCoordinator = coordinator
