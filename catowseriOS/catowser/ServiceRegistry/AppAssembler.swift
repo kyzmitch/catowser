@@ -9,6 +9,7 @@
 import CottonPlugins
 import FeaturesFlagsKit
 import CottonData
+import CoreBrowser
 
 @globalActor final class AppAssembler {
     static let shared = StateHolder()
@@ -23,10 +24,16 @@ import CottonData
         func configure(
             baseDelegate: BasePluginContentDelegate,
             instagramDelegate: InstagramContentDelegate
-        ) async -> ViewModelInfos {
+        ) async -> AppStartInfo {
+            // Init database for the tabs first
+            _ = await TabsDataServiceFactory.shared
+            // Register data services and use cases
             await ServiceRegistry.shared.registerDataServices()
             await UseCaseRegistry.shared.registerUseCases()
             async let searchProvider = featureManager.webSearchAutoCompleteValue()
+            async let uiFramework = FeatureManager.shared.appUIFrameworkValue()
+            async let defaultTabContent = DefaultTabProvider.shared.contentState
+            async let observingType = featureManager.observingApiTypeValue()
             async let pluginsSource = JSPluginsBuilder()
                 .setBase(baseDelegate)
                 .setInstagram(instagramDelegate)
@@ -39,6 +46,7 @@ import CottonData
 
             let webContext = await WebViewContextImpl(pluginsSource)
             let factory = supplementaryData.viewModelFactory
+            // Init view models
             async let allTabsVM = factory.allTabsViewModel()
             async let topSitesVM = factory.topSitesViewModel()
             async let suggestionsVM = factory.searchSuggestionsViewModel(supplementaryData.searchProvider)
@@ -50,14 +58,17 @@ import CottonData
             )
             async let searchBarVM = factory.searchBarViewModel()
 
-            return await ViewModelInfos(
+            return await AppStartInfo(
                 allTabsVM: allTabsVM,
                 topSitesVM: topSitesVM,
                 phoneTabPreviewsVM: phoneTabPreviewsVM,
                 suggestionsVM: suggestionsVM,
                 webViewModel: webViewModel,
                 searchBarVM: searchBarVM,
-                jsPluginsBuilder: pluginsSource
+                jsPluginsBuilder: pluginsSource,
+                defaultTabContent: defaultTabContent,
+                observingType: observingType,
+                uiFramework: uiFramework
             )
         }
     }

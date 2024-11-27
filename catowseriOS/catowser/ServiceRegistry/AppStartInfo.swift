@@ -1,5 +1,5 @@
 //
-//  ViewModelInfos.swift
+//  AppStartInfo.swift
 //  catowser
 //
 //  Created by Andrey Ermoshin on 27.11.2024.
@@ -8,10 +8,11 @@
 
 import CottonData
 import CottonPlugins
+import CoreBrowser
 
 /// A simple type to return multiple view models from one function
 /// instead of a tuple.
-final class ViewModelInfos: Sendable {
+final class AppStartInfo: Sendable {
     /// Tablet specific view model which has to be initialised in async way earlier
     /// to not do async coordinator start for the tabs
     let allTabsVM: AllTabsViewModel
@@ -29,6 +30,12 @@ final class ViewModelInfos: Sendable {
     let searchBarVM: any SearchBarViewModelProtocol
     /// Java script plugins source
     let jsPluginsBuilder: (any JSPluginsSource)
+    /// default tab content
+    let defaultTabContent: CoreBrowser.Tab.ContentType
+    /// Observing API method
+    let observingType: ObservingApiType
+    /// UI framework type
+    let uiFramework: UIFrameworkType
     
     init(
         allTabsVM: AllTabsViewModel,
@@ -37,7 +44,10 @@ final class ViewModelInfos: Sendable {
         suggestionsVM: any SearchSuggestionsViewModel,
         webViewModel: any WebViewModel,
         searchBarVM: any SearchBarViewModelProtocol,
-        jsPluginsBuilder: (any JSPluginsSource)
+        jsPluginsBuilder: (any JSPluginsSource),
+        defaultTabContent: CoreBrowser.Tab.ContentType,
+        observingType: ObservingApiType,
+        uiFramework: UIFrameworkType
     ) {
         self.allTabsVM = allTabsVM
         self.topSitesVM = topSitesVM
@@ -46,5 +56,8 @@ final class ViewModelInfos: Sendable {
         self.webViewModel = webViewModel
         self.searchBarVM = searchBarVM
         self.jsPluginsBuilder = jsPluginsBuilder
+        self.defaultTabContent = defaultTabContent
+        self.observingType = observingType
+        self.uiFramework = uiFramework
     }
 }

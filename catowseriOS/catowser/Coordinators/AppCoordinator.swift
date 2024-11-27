@@ -23,7 +23,7 @@ protocol BrowserContentCoordinators: AnyObject, Sendable {
     var toolbarPresenter: AnyViewController? { get }
 }
 
-final class AppCoordinator: Coordinator, BrowserContentCoordinators {
+final class AppCoordinator: Coordinator, BrowserContentCoordinators, PluginsBackDelegate {
     /// Could be accessed using `ViewsEnvironment.shared.vcFactory` singleton as well
     let vcFactory: ViewControllerFactory
     /// Currently presented (next) coordinator, to be able to stop it
@@ -80,51 +80,42 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators {
 
     let uiFramework: UIFrameworkType
     
-    /// View model links object which is initialized later
-    private var viewModels: ViewModelInfos?
+    /// App start info (including view models and other data)
+    private let appStartInfo: AppStartInfo
     /// Feature manager
     private let featureManager: FeatureManager.StateHolder
     /// UI service registry
     private let uiServiceRegistry: UIServiceRegistry
+    /// Plugins handler
+    private let pluginsDelegate: PluginsDelegate
 
     init(
         _ vcFactory: ViewControllerFactory,
         _ uiFramework: UIFrameworkType,
         _ featureManager: FeatureManager.StateHolder,
-        _ uiServiceRegistry: UIServiceRegistry
+        _ uiServiceRegistry: UIServiceRegistry,
+        _ pluginsDelegate: PluginsDelegate,
+        _ appStartInfo: AppStartInfo
     ) {
         self.vcFactory = vcFactory
         self.uiFramework = uiFramework
         self.featureManager = featureManager
         self.uiServiceRegistry = uiServiceRegistry
+        self.pluginsDelegate = pluginsDelegate
+        self.appStartInfo = appStartInfo
+        pluginsDelegate.delegate = self
     }
 
     func start() {
-        Task {
-            await prepareBeforeStart()
-        }
-    }
-    
-    private func prepareBeforeStart() async {
-        async let viewModels = AppAssembler.shared.configure(
-            baseDelegate: self,
-            instagramDelegate: self
-        )
-        async let defaultTabContent = DefaultTabProvider.shared.contentState
-        let supplementaryData = await (
-            viewModels: viewModels,
-            defaultTabContent: defaultTabContent
-        )
-        self.viewModels = supplementaryData.viewModels
-        let allTabsVM = supplementaryData.viewModels.allTabsVM
-        let topSitesVM = supplementaryData.viewModels.topSitesVM
-        let suggestionsVM = supplementaryData.viewModels.suggestionsVM
-        let webViewModel = supplementaryData.viewModels.webViewModel
-        let searchBarVM = supplementaryData.viewModels.searchBarVM
+        let allTabsVM = appStartInfo.allTabsVM
+        let topSitesVM = appStartInfo.topSitesVM
+        let suggestionsVM = appStartInfo.suggestionsVM
+        let webViewModel = appStartInfo.webViewModel
+        let searchBarVM = appStartInfo.searchBarVM
         let vc = vcFactory.rootViewController(
             self,
             uiFramework,
-            supplementaryData.defaultTabContent,
+            appStartInfo.defaultTabContent,
             allTabsVM,
             topSitesVM,
             suggestionsVM,
@@ -137,13 +128,14 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators {
         window.makeKeyAndVisible()
         // Now, with introducing the actors model
         // we need to attach observer only after adding all child coordinators
-        let observingType = await featureManager.observingApiTypeValue()
         if case .uiKit = uiFramework {
-            if #available(iOS 17.0, *), observingType.isSystemObservation {
-                startTabsObservation()
-                await readTabsState()
-            } else {
-                await TabsDataServiceFactory.shared.attach(self, notify: true)
+            Task {
+                if #available(iOS 17.0, *), appStartInfo.observingType.isSystemObservation {
+                    startTabsObservation()
+                    await readTabsState()
+                } else {
+                    await TabsDataServiceFactory.shared.attach(self, notify: true)
+                }
             }
         }
         if uiFramework.swiftUIBased {
@@ -402,12 +394,12 @@ private extension AppCoordinator {
     // MARK: - insert methods to start subview coordinators
 
     func insertTabs() {
-        guard isPad, let allTabsVM = viewModels?.allTabsVM else {
+        guard isPad else {
             return
         }
         // swiftlint:disable:next force_unwrapping
         let presenter = startedVC!
-        let coordinator: TabletTabsCoordinator = .init(vcFactory, presenter, allTabsVM)
+        let coordinator: TabletTabsCoordinator = .init(vcFactory, presenter, appStartInfo.allTabsVM)
         coordinator.parent = self
         coordinator.start()
         tabletTabsCoordinator = coordinator
@@ -464,7 +456,7 @@ private extension AppCoordinator {
     }
 
     func insertToolbar() {
-        guard !isPad, let phoneTabPreviewsVM = viewModels?.phoneTabPreviewsVM else {
+        guard !isPad else {
             return
         }
         guard toolbarCoordinator == nil else {
@@ -479,7 +471,7 @@ private extension AppCoordinator {
             linkTagsCoordinator,
             self,
             uiFramework,
-            phoneTabPreviewsVM
+            appStartInfo.phoneTabPreviewsVM
         )
         coordinator.parent = self
         coordinator.start()
@@ -496,7 +488,7 @@ private extension AppCoordinator {
     }
 
     func insertTopSites() {
-        guard topSitesCoordinator == nil, let topSitesVM = viewModels?.topSitesVM else {
+        guard topSitesCoordinator == nil else {
             return
         }
         let coordinator: TopSitesCoordinator
@@ -511,7 +503,7 @@ private extension AppCoordinator {
                 startedVC,
                 containerView,
                 uiFramework,
-                topSitesVM
+                appStartInfo.topSitesVM
             )
         case .swiftUIWrapper, .swiftUI:
             coordinator = .init(
@@ -519,7 +511,7 @@ private extension AppCoordinator {
                 startedVC,
                 nil,
                 uiFramework,
-                topSitesVM
+                appStartInfo.topSitesVM
             )
         }
 

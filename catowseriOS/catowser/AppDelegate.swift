@@ -17,6 +17,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     /// Should be stored by strong reference, because it is the only owner of App coordinator
     private var appCoordinator: AppCoordinator?
+    /// Plugins delegate
+    private var pluginsDelegate: PluginsDelegate?
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -41,16 +43,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 private extension AppDelegate {
     func start() -> Bool {
         Task {
-            // Init database for the tabs first
-            _ = await TabsDataServiceFactory.shared
-            // Now can start UI
-            let value = await FeatureManager.shared.appUIFrameworkValue()
-            appCoordinator = AppCoordinator(
-                UIServiceRegistry.shared().vcFactory,
-                value,
-                FeatureManager.shared,
-                UIServiceRegistry.shared()
+            let pluginsHandler = PluginsDelegate()
+            self.pluginsDelegate = pluginsHandler
+            let appStartInfo = await AppAssembler.shared.configure(
+                baseDelegate: pluginsHandler,
+                instagramDelegate: pluginsHandler
             )
+            let coordinator = AppCoordinator(
+                UIServiceRegistry.shared().vcFactory,
+                appStartInfo.uiFramework,
+                FeatureManager.shared,
+                UIServiceRegistry.shared(),
+                pluginsHandler,
+                appStartInfo
+            )
+            appCoordinator = coordinator
             appCoordinator?.start()
         }
         return true
