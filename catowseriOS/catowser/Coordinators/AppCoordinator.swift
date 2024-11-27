@@ -80,15 +80,8 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators {
 
     let uiFramework: UIFrameworkType
     
-    /// Tablet specific view model which has to be initialised in async way earlier
-    /// to not do async coordinator start for the tabs
-    private var allTabsVM: AllTabsViewModel?
-    /// Top sites UIKit view controller needs that view model and it is async
-    private var topSitesVM: TopSitesViewModel?
-    /// phone tab previews view model needed to make Phone previews coordinator
-    /// work without a crash, because View model used to fetch VM before use cases registration
-    /// which is not the planned sequence of initialization
-    private var phoneTabPreviewsVM: TabsPreviewsViewModel?
+    /// View model links object which is initialized later
+    private var viewModels: ViewModelInfos?
     /// Feature manager
     private let featureManager: FeatureManager.StateHolder
     /// UI service registry
@@ -113,32 +106,25 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators {
     }
     
     private func prepareBeforeStart() async {
-        #warning("TODO: move to AppAssembler")
-        await ServiceRegistry.shared.registerDataServices()
-        await UseCaseRegistry.shared.registerUseCases()
-        let defaultTabContent = await DefaultTabProvider.shared.contentState
-        let pluginsSource = JSPluginsBuilder()
-            .setBase(self)
-            .setInstagram(self)
-        jsPluginsBuilder = pluginsSource
-        let allTabsVM = await ViewModelFactory.shared.allTabsViewModel()
-        self.allTabsVM = allTabsVM
-        let topSitesVM = await ViewModelFactory.shared.topSitesViewModel()
-        self.topSitesVM = topSitesVM
-        let searchProvider = await FeatureManager.shared.webSearchAutoCompleteValue()
-        let suggestionsVM = await ViewModelFactory.shared.searchSuggestionsViewModel(searchProvider)
-        self.phoneTabPreviewsVM = await ViewModelFactory.shared.tabsPreviewsViewModel()
-        let webContext = WebViewContextImpl(pluginsSource)
-        let webViewModel = await ViewModelFactory.shared.getWebViewModel(
-            nil,
-            webContext,
-            nil
+        async let viewModels = AppAssembler.shared.configure(
+            baseDelegate: self,
+            instagramDelegate: self
         )
-        let searchBarVM = await ViewModelFactory.shared.searchBarViewModel()
+        async let defaultTabContent = DefaultTabProvider.shared.contentState
+        let supplementaryData = await (
+            viewModels: viewModels,
+            defaultTabContent: defaultTabContent
+        )
+        self.viewModels = supplementaryData.viewModels
+        let allTabsVM = supplementaryData.viewModels.allTabsVM
+        let topSitesVM = supplementaryData.viewModels.topSitesVM
+        let suggestionsVM = supplementaryData.viewModels.suggestionsVM
+        let webViewModel = supplementaryData.viewModels.webViewModel
+        let searchBarVM = supplementaryData.viewModels.searchBarVM
         let vc = vcFactory.rootViewController(
             self,
             uiFramework,
-            defaultTabContent,
+            supplementaryData.defaultTabContent,
             allTabsVM,
             topSitesVM,
             suggestionsVM,
@@ -416,7 +402,7 @@ private extension AppCoordinator {
     // MARK: - insert methods to start subview coordinators
 
     func insertTabs() {
-        guard isPad, let allTabsVM else {
+        guard isPad, let allTabsVM = viewModels?.allTabsVM else {
             return
         }
         // swiftlint:disable:next force_unwrapping
@@ -478,7 +464,7 @@ private extension AppCoordinator {
     }
 
     func insertToolbar() {
-        guard !isPad, let phoneTabPreviewsVM else {
+        guard !isPad, let phoneTabPreviewsVM = viewModels?.phoneTabPreviewsVM else {
             return
         }
         guard toolbarCoordinator == nil else {
@@ -510,7 +496,7 @@ private extension AppCoordinator {
     }
 
     func insertTopSites() {
-        guard topSitesCoordinator == nil, let topSitesVM else {
+        guard topSitesCoordinator == nil, let topSitesVM = viewModels?.topSitesVM else {
             return
         }
         let coordinator: TopSitesCoordinator
@@ -776,9 +762,9 @@ extension AppCoordinator: GlobalMenuDelegate {
             style = .onlyGlobalMenu
         }
         Task {
-            let isDohEnabled = await FeatureManager.shared.boolValue(of: .dnsOverHTTPSAvailable)
-            let isJavaScriptEnabled = await FeatureManager.shared.boolValue(of: .javaScriptEnabled)
-            let nativeAppRedirectEnabled = await FeatureManager.shared.boolValue(of: .nativeAppRedirect)
+            let isDohEnabled = await featureManager.boolValue(of: .dnsOverHTTPSAvailable)
+            let isJavaScriptEnabled = await featureManager.boolValue(of: .javaScriptEnabled)
+            let nativeAppRedirectEnabled = await featureManager.boolValue(of: .nativeAppRedirect)
             let menuModel: MenuViewModel = .init(style, isDohEnabled, isJavaScriptEnabled, nativeAppRedirectEnabled)
             menuModel.developerMenuPresenter = self
             showNext(.menu(menuModel, sourceView, sourceRect))

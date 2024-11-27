@@ -154,7 +154,7 @@ extension SearchBarViewModel: UISearchBarDelegate {
 }
 
 @MainActor
-protocol SearchBarViewModelProtocol: ObservableObject, UISearchBarDelegate, SearchSuggestionsListDelegate {
+protocol SearchBarViewModelProtocol: ObservableObject, UISearchBarDelegate, SearchSuggestionsListDelegate, Sendable {
     var showSearchSuggestions: Published<Bool>.Publisher { get }
     var searchQuery: Published<String>.Publisher { get }
     var action: Published<SearchBarAction>.Publisher { get }

@@ -102,6 +102,8 @@
 		7537526A2CF59E3B008D40CF /* DataServiceKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 756AE6BA2CA348BF00938FCC /* DataServiceKit.framework */; };
 		753752702CF59EA5008D40CF /* SearchServiceCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7537526F2CF59EA1008D40CF /* SearchServiceCommand.swift */; };
 		753752722CF59F02008D40CF /* SearchServiceData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752712CF59EFE008D40CF /* SearchServiceData.swift */; };
+		753752842CF5FEDE008D40CF /* AppAssembler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752832CF5FED8008D40CF /* AppAssembler.swift */; };
+		753752862CF6F1A9008D40CF /* ViewModelInfos.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752852CF6F1A8008D40CF /* ViewModelInfos.swift */; };
 		754249D32944B3F9002D6505 /* AppUIFrameworkTypeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754249D22944B3F9002D6505 /* AppUIFrameworkTypeModel.swift */; };
 		75458E432B468FE800004581 /* ReadTabsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75458E422B468FE800004581 /* ReadTabsUseCase.swift */; };
 		75458E452B468FF800004581 /* WriteTabsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75458E442B468FF800004581 /* WriteTabsUseCase.swift */; };
@@ -811,6 +813,8 @@
 		753752682CF59E29008D40CF /* SearchDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchDataService.swift; sourceTree = "<group>"; };
 		7537526F2CF59EA1008D40CF /* SearchServiceCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchServiceCommand.swift; sourceTree = "<group>"; };
 		753752712CF59EFE008D40CF /* SearchServiceData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchServiceData.swift; sourceTree = "<group>"; };
+		753752832CF5FED8008D40CF /* AppAssembler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAssembler.swift; sourceTree = "<group>"; };
+		753752852CF6F1A8008D40CF /* ViewModelInfos.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelInfos.swift; sourceTree = "<group>"; };
 		754249D22944B3F9002D6505 /* AppUIFrameworkTypeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUIFrameworkTypeModel.swift; sourceTree = "<group>"; };
 		75458E422B468FE800004581 /* ReadTabsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadTabsUseCase.swift; sourceTree = "<group>"; };
 		75458E442B468FF800004581 /* WriteTabsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteTabsUseCase.swift; sourceTree = "<group>"; };
@@ -2118,6 +2122,8 @@
 			isa = PBXGroup;
 			children = (
 				75DA4C7A2C9C7F40009AE049 /* UIServiceRegistry.swift */,
+				753752832CF5FED8008D40CF /* AppAssembler.swift */,
+				753752852CF6F1A8008D40CF /* ViewModelInfos.swift */,
 				8AA68A9E245BE47900263E22 /* ServiceRegistry.swift */,
 				8A745C102480295B00A379AD /* AsyncServiceRegistry.swift */,
 				60724EED220C4FDC0071BECF /* WebViewsReuseManager.swift */,
@@ -3388,6 +3394,7 @@
 				8A1115EB24837DA400E63114 /* TabAddPositionsModel.swift in Sources */,
 				8AEEBBB929F7B63A00F23A02 /* TappableTextOverlayView.swift in Sources */,
 				8AFDBB0629F93A05006C0E47 /* MenuButton.swift in Sources */,
+				753752842CF5FEDE008D40CF /* AppAssembler.swift in Sources */,
 				8A95D942226E0E5200862E8D /* TagsSiteDataSource.swift in Sources */,
 				8AEEBBB329F7AA9300F23A02 /* ClearCancelPairButton.swift in Sources */,
 				841022BD224785340021516F /* LinksBadgeView.swift in Sources */,
@@ -3450,6 +3457,7 @@
 				8AB9BE2028FF0D0D002063C2 /* AnyViewController.swift in Sources */,
 				8A1273DD2937B7FC0022B934 /* FilesGridCoordinator.swift in Sources */,
 				8A0FC19B29F246640044829A /* SearchSuggestionsLegacyView.swift in Sources */,
+				753752862CF6F1A9008D40CF /* ViewModelInfos.swift in Sources */,
 				8A55351A247D740900E3B330 /* MenuViewModel.swift in Sources */,
 				8A0319DC29FE71A500AF3BE3 /* UIViewControllerRepresentable+Extension.swift in Sources */,
 				755E108227C169AC00D90AD0 /* BaseListViewModel.swift in Sources */,

@@ -85,7 +85,7 @@ public enum SearchSuggestionsViewState: Equatable {
 }
 
 @MainActor
-public protocol SearchSuggestionsViewModel: ObservableObject {
+public protocol SearchSuggestionsViewModel: ObservableObject, Sendable {
     /// Initiate fetching only after subscribing to the async interfaces below
     func fetchSuggestions(_ query: String) async
     /// Concurrency state, also can be used as a synchronous state. A wrapped value for Published
