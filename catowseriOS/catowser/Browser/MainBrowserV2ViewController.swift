@@ -30,7 +30,7 @@ import CottonData
 
 @available(iOS 13.0.0, *)
 final class MainBrowserV2ViewController<
-    C: Navigating & BrowserContentCoordinators,
+    C: Navigating & ContentCoordinatorsInterface,
     W: WebViewModel,
     S: SearchSuggestionsViewModel,
     SB: SearchBarViewModelProtocol

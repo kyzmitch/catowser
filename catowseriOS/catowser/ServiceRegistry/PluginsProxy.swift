@@ -1,5 +1,5 @@
 //
-//  PluginsDelegate.swift
+//  PluginsProxy.swift
 //  catowser
 //
 //  Created by Andrey Ermoshin on 27.11.2024.
@@ -8,18 +8,18 @@
 
 import CottonPlugins
 
-protocol PluginsBackDelegate: AnyObject, InstagramContentDelegate, BasePluginContentDelegate { }
+protocol PluginsProxyDelegate: AnyObject, InstagramContentDelegate, BasePluginContentDelegate { }
 
 /// Need to have it for AppCoordinator because its init is getting called after AppAssembler,
 /// and something is needed as a delegate as a replacement
-final class PluginsDelegate: @unchecked Sendable {
+final class PluginsProxy: @unchecked Sendable {
     /// Points to AppCoordinator
-    weak var delegate: PluginsBackDelegate?
+    weak var delegate: PluginsProxyDelegate?
 }
 
 // MARK: - InstagramContentDelegate
 
-extension PluginsDelegate: InstagramContentDelegate {
+extension PluginsProxy: InstagramContentDelegate {
     func didReceiveVideoNodes(_ nodes: [InstagramVideoNode]) {
         delegate?.didReceiveVideoNodes(nodes)
     }
@@ -27,7 +27,7 @@ extension PluginsDelegate: InstagramContentDelegate {
 
 // MARK: - BasePluginContentDelegate
 
-extension PluginsDelegate: BasePluginContentDelegate {
+extension PluginsProxy: BasePluginContentDelegate {
     func didReceiveVideoTags(_ tags: [HTMLVideoTag]) {
         delegate?.didReceiveVideoTags(tags)
     }

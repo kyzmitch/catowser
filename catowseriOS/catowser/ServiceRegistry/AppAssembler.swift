@@ -17,8 +17,10 @@ import CoreBrowser
     actor StateHolder {
         private let featureManager: FeatureManager.StateHolder
 
-        init () {
-            featureManager = FeatureManager.shared
+        init (
+            featureManager: FeatureManager.StateHolder = FeatureManager.shared
+        ) {
+            self.featureManager = featureManager
         }
         
         func configure(
@@ -30,8 +32,9 @@ import CoreBrowser
             // Register data services and use cases
             await ServiceRegistry.shared.registerDataServices()
             await UseCaseRegistry.shared.registerUseCases()
+            // Read main settings
             async let searchProvider = featureManager.webSearchAutoCompleteValue()
-            async let uiFramework = FeatureManager.shared.appUIFrameworkValue()
+            async let uiFramework = featureManager.appUIFrameworkValue()
             async let defaultTabContent = DefaultTabProvider.shared.contentState
             async let observingType = featureManager.observingApiTypeValue()
             async let pluginsSource = JSPluginsBuilder()

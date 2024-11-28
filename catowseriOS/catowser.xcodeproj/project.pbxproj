@@ -104,7 +104,8 @@
 		753752722CF59F02008D40CF /* SearchServiceData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752712CF59EFE008D40CF /* SearchServiceData.swift */; };
 		753752842CF5FEDE008D40CF /* AppAssembler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752832CF5FED8008D40CF /* AppAssembler.swift */; };
 		753752862CF6F1A9008D40CF /* AppStartInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752852CF6F1A8008D40CF /* AppStartInfo.swift */; };
-		753752882CF6FFCA008D40CF /* PluginsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752872CF6FFB7008D40CF /* PluginsDelegate.swift */; };
+		753752882CF6FFCA008D40CF /* PluginsProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752872CF6FFB7008D40CF /* PluginsProxy.swift */; };
+		7537528A2CF798B9008D40CF /* ContentCoordinatorsInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752892CF798B7008D40CF /* ContentCoordinatorsInterface.swift */; };
 		754249D32944B3F9002D6505 /* AppUIFrameworkTypeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754249D22944B3F9002D6505 /* AppUIFrameworkTypeModel.swift */; };
 		75458E432B468FE800004581 /* ReadTabsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75458E422B468FE800004581 /* ReadTabsUseCase.swift */; };
 		75458E452B468FF800004581 /* WriteTabsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75458E442B468FF800004581 /* WriteTabsUseCase.swift */; };
@@ -816,7 +817,8 @@
 		753752712CF59EFE008D40CF /* SearchServiceData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchServiceData.swift; sourceTree = "<group>"; };
 		753752832CF5FED8008D40CF /* AppAssembler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAssembler.swift; sourceTree = "<group>"; };
 		753752852CF6F1A8008D40CF /* AppStartInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartInfo.swift; sourceTree = "<group>"; };
-		753752872CF6FFB7008D40CF /* PluginsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginsDelegate.swift; sourceTree = "<group>"; };
+		753752872CF6FFB7008D40CF /* PluginsProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginsProxy.swift; sourceTree = "<group>"; };
+		753752892CF798B7008D40CF /* ContentCoordinatorsInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentCoordinatorsInterface.swift; sourceTree = "<group>"; };
 		754249D22944B3F9002D6505 /* AppUIFrameworkTypeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUIFrameworkTypeModel.swift; sourceTree = "<group>"; };
 		75458E422B468FE800004581 /* ReadTabsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadTabsUseCase.swift; sourceTree = "<group>"; };
 		75458E442B468FF800004581 /* WriteTabsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteTabsUseCase.swift; sourceTree = "<group>"; };
@@ -1522,6 +1524,7 @@
 			children = (
 				75339299291FCEDD00570461 /* Coordinator.swift */,
 				753392A92920BB6700570461 /* AppCoordinator.swift */,
+				753752892CF798B7008D40CF /* ContentCoordinatorsInterface.swift */,
 				8AE85DAB293491E10047F14F /* TabletTabsCoordinator.swift */,
 				75FAAB37292D56880086F2D1 /* SearchBarCoordinator.swift */,
 				8AE0BDDC292D079300A8BF9E /* LoadingProgressCoordinator.swift */,
@@ -2127,7 +2130,7 @@
 				753752832CF5FED8008D40CF /* AppAssembler.swift */,
 				753752852CF6F1A8008D40CF /* AppStartInfo.swift */,
 				8AA68A9E245BE47900263E22 /* ServiceRegistry.swift */,
-				753752872CF6FFB7008D40CF /* PluginsDelegate.swift */,
+				753752872CF6FFB7008D40CF /* PluginsProxy.swift */,
 				8A745C102480295B00A379AD /* AsyncServiceRegistry.swift */,
 				60724EED220C4FDC0071BECF /* WebViewsReuseManager.swift */,
 				7570F7452B5C07E90066ABF1 /* UseCaseRegistry.swift */,
@@ -3341,7 +3344,7 @@
 				8A1C1C172484E5900098F2F1 /* TabDefaultContentModel.swift in Sources */,
 				8A81C6F92945C72F0075BEF9 /* View+Extension.swift in Sources */,
 				8A825947294E2E1A007B97CF /* TopSitesView.swift in Sources */,
-				753752882CF6FFCA008D40CF /* PluginsDelegate.swift in Sources */,
+				753752882CF6FFCA008D40CF /* PluginsProxy.swift in Sources */,
 				8A81C6FC2945C8050075BEF9 /* ToolbarView.swift in Sources */,
 				8A0FC1A029F24C950044829A /* PhoneSearchBarLegacyView.swift in Sources */,
 				8435A49B1EED5E700020102F /* AppDelegate.swift in Sources */,
@@ -3350,6 +3353,7 @@
 				8ADC4971293A589200F37BF2 /* BottomViewCoordinator.swift in Sources */,
 				755E108527C16AB100D90AD0 /* BaseListViewModelImpl.swift in Sources */,
 				755E107127BC3DC500D90AD0 /* AppAsyncApiTypeViewPreview.swift in Sources */,
+				7537528A2CF798B9008D40CF /* ContentCoordinatorsInterface.swift in Sources */,
 				753392A1291FD8DA00570461 /* PhoneViewControllerFactory.swift in Sources */,
 				8AE70EAC29648927007D56C1 /* SearchBarViewV2.swift in Sources */,
 				755E10B727CA81B600D90AD0 /* SpecificApplicationEnumFeatures.swift in Sources */,

@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     /// Should be stored by strong reference, because it is the only owner of App coordinator
     private var appCoordinator: AppCoordinator?
     /// Plugins delegate
-    private var pluginsDelegate: PluginsDelegate?
+    private var pluginsDelegate: PluginsProxy?
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -43,7 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 private extension AppDelegate {
     func start() -> Bool {
         Task {
-            let pluginsHandler = PluginsDelegate()
+            let pluginsHandler = PluginsProxy()
             self.pluginsDelegate = pluginsHandler
             let appStartInfo = await AppAssembler.shared.configure(
                 baseDelegate: pluginsHandler,

@@ -13,17 +13,7 @@ import FeaturesFlagsKit
 import CottonPlugins
 import CottonData
 
-/// Browser content related coordinators
-@MainActor
-protocol BrowserContentCoordinators: AnyObject, Sendable {
-    var topSitesCoordinator: TopSitesCoordinator? { get }
-    var webContentCoordinator: WebContentCoordinator? { get }
-    var globalMenuDelegate: GlobalMenuDelegate? { get }
-    var toolbarCoordinator: MainToolbarCoordinator? { get }
-    var toolbarPresenter: AnyViewController? { get }
-}
-
-final class AppCoordinator: Coordinator, BrowserContentCoordinators, PluginsBackDelegate {
+final class AppCoordinator: Coordinator, ContentCoordinatorsInterface, PluginsProxyDelegate {
     /// Could be accessed using `ViewsEnvironment.shared.vcFactory` singleton as well
     let vcFactory: ViewControllerFactory
     /// Currently presented (next) coordinator, to be able to stop it
@@ -78,8 +68,8 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators, PluginsBack
         }
     }
 
+    /// UI framework type
     let uiFramework: UIFrameworkType
-    
     /// App start info (including view models and other data)
     private let appStartInfo: AppStartInfo
     /// Feature manager
@@ -87,14 +77,14 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators, PluginsBack
     /// UI service registry
     private let uiServiceRegistry: UIServiceRegistry
     /// Plugins handler
-    private let pluginsDelegate: PluginsDelegate
+    private let pluginsDelegate: PluginsProxy
 
     init(
         _ vcFactory: ViewControllerFactory,
         _ uiFramework: UIFrameworkType,
         _ featureManager: FeatureManager.StateHolder,
         _ uiServiceRegistry: UIServiceRegistry,
-        _ pluginsDelegate: PluginsDelegate,
+        _ pluginsDelegate: PluginsProxy,
         _ appStartInfo: AppStartInfo
     ) {
         self.vcFactory = vcFactory
@@ -126,7 +116,6 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators, PluginsBack
         
         window.rootViewController = startedVC?.viewController
         window.makeKeyAndVisible()
-        // Now, with introducing the actors model
         // we need to attach observer only after adding all child coordinators
         if case .uiKit = uiFramework {
             Task {

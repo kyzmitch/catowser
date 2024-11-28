@@ -36,7 +36,7 @@ extension UIFrameworkType {
 }
 
 struct MainBrowserView<
-    C: BrowserContentCoordinators,
+    C: ContentCoordinatorsInterface,
     W: WebViewModel,
     S: SearchSuggestionsViewModel,
     SB: SearchBarViewModelProtocol
