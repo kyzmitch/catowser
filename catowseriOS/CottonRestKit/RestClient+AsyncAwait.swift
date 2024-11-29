@@ -14,13 +14,16 @@ import CottonBase
 extension RestClient {
     @available(swift 5.5)
     @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
-    private func aaMakeRequest<T, B: HTTPAdapter>(for endpoint: Endpoint<Server>,
-                                                  withAccessToken accessToken: String?,
-                                                  transport adapter: B) async throws -> T
-    where B.Response == T, B.Server == Server {
-        let requestInfo = endpoint.request(server: server,
-                                           requestTimeout: Int64(httpTimeout),
-                                           accessToken: accessToken)
+    private func aaMakeRequest<T, B: HTTPAdapter>(
+        for endpoint: Endpoint<Server>,
+        withAccessToken accessToken: String?,
+        transport adapter: B
+    ) async throws -> T where B.Response == T, B.Server == Server {
+        let requestInfo = endpoint.request(
+            server: server,
+            requestTimeout: Int64(httpTimeout),
+            accessToken: accessToken
+        )
         guard let httpRequest = requestInfo.urlRequest else {
             throw HttpError.failedKotlinRequestConstruct
         }
@@ -33,19 +36,29 @@ extension RestClient {
 
     @available(swift 5.5)
     @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
-    public func aaMakePublicRequest<T, B: HTTPAdapter>(for endpoint: Endpoint<Server>,
-                                                       transport adapter: B) async throws -> T
-    where B.Response == T, B.Server == Server {
-        return try await aaMakeRequest(for: endpoint, withAccessToken: nil, transport: adapter)
+    public func aaMakePublicRequest<T, B: HTTPAdapter>(
+        for endpoint: Endpoint<Server>,
+        transport adapter: B
+    ) async throws -> T where B.Response == T, B.Server == Server {
+        return try await aaMakeRequest(
+            for: endpoint,
+            withAccessToken: nil,
+            transport: adapter
+        )
     }
 
     @available(swift 5.5)
     @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
-    func aaMakeAuthorizedRequest<T, B: HTTPAdapter>(for endpoint: Endpoint<Server>,
-                                                    withAccessToken accessToken: String,
-                                                    transport adapter: B) async throws -> T
-    where B.Response == T, B.Server == Server {
-        return try await aaMakeRequest(for: endpoint, withAccessToken: accessToken, transport: adapter)
+    func aaMakeAuthorizedRequest<T, B: HTTPAdapter>(
+        for endpoint: Endpoint<Server>,
+        withAccessToken accessToken: String,
+        transport adapter: B
+    ) async throws -> T where B.Response == T, B.Server == Server {
+        return try await aaMakeRequest(
+            for: endpoint,
+            withAccessToken: accessToken,
+            transport: adapter
+        )
     }
 }
 

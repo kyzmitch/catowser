@@ -15,11 +15,12 @@ import CottonBase
 extension RestClient {
     public typealias ResponseFuture<T> = Deferred<Publishers.HandleEvents<Future<T, HttpError>>>
 
-    public func cMakeRequest<T, B: HTTPAdapter>(for endpoint: Endpoint<Server>,
-                                                withAccessToken accessToken: String?,
-                                                transport adapter: B,
-                                                subscriber: Subscriber<T, Server>) -> ResponseFuture<T>
-    where B.Response == T, B.Server == Server {
+    public func cMakeRequest<T, B: HTTPAdapter>(
+        for endpoint: Endpoint<Server>,
+        withAccessToken accessToken: String?,
+        transport adapter: B,
+        subscriber: Subscriber<T, Server>
+    ) -> ResponseFuture<T> where B.Response == T, B.Server == Server {
         // Can't use Future without Deferred because
         // a Future will begin executing immediately when you create it.
         return Combine.Deferred {
