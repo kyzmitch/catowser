@@ -23,20 +23,10 @@ final class ViewModelFactory {
 
     private init() {}
 
-    func searchSuggestionsViewModel(
-        _ searchProviderType: WebAutoCompletionSource
-    ) async -> any SearchSuggestionsViewModel {
+    func searchSuggestionsViewModel() async -> any SearchSuggestionsViewModel {
         let vmContext: SearchViewContextImpl = .init()
-        switch searchProviderType {
-        case .google:
-            let type = (any AutocompleteSearchUseCase).self
-            let autocompleteUseCase = await UseCaseRegistry.shared.findUseCase(type, .googleAutocompleteUseCase)
-            return SearchSuggestionsViewModelImpl(autocompleteUseCase, vmContext)
-        case .duckduckgo:
-            let type = (any AutocompleteSearchUseCase).self
-            let autocompleteUseCase = await UseCaseRegistry.shared.findUseCase(type, .duckDuckGoAutocompleteUseCase)
-            return SearchSuggestionsViewModelImpl(autocompleteUseCase, vmContext)
-        }
+        let autocompleteUseCase = await UseCaseRegistry.shared.findUseCase(AutocompleteSearchUseCase.self)
+        return SearchSuggestionsViewModelImpl(autocompleteUseCase, vmContext)
     }
 
     func getWebViewModel(

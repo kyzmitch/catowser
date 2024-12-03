@@ -12,8 +12,6 @@ import CoreBrowser
 import CottonData
 
 extension String {
-    static let googleAutocompleteUseCase = "googleAutocompleteUseCase"
-    static let duckDuckGoAutocompleteUseCase = "duckDuckGoAutocompleteUseCase"
     static let googleResolveDnsUseCase = "googleResolveDnsUseCase"
 }
 
@@ -22,21 +20,26 @@ final class UseCaseRegistry {
     static let shared = StateHolder()
     
     actor StateHolder {
-        private let locator: UseCaseLocator
+        private let useCaseLocator: UseCaseLocator
+        private let serviceRegistry: ServiceRegistry.StateHolder
 
-        init() {
-            locator = .init()
+        init(
+            useCaseLocator: UseCaseLocator = UseCaseLocator(),
+            serviceRegistry: ServiceRegistry.StateHolder = ServiceRegistry.shared
+        ) {
+            self.useCaseLocator = useCaseLocator
+            self.serviceRegistry = serviceRegistry
         }
         
         func registerUseCases() async {
             await registerTabsUseCases()
-            registerSearchAutocompleteUseCases()
+            await registerSearchAutocompleteUseCases()
             registerDnsResolveUseCases()
         }
 
         func findUseCase<T>(_ type: T.Type, _ key: String? = nil) -> T {
             // swiftlint:disable:next force_unwrapping
-            locator.findService(type, key)!
+            useCaseLocator.findService(type, key)!
         }
 
         /// Have to use async functions and actor to be able to get
@@ -48,35 +51,25 @@ final class UseCaseRegistry {
                 dataService,
                 DefaultTabProvider.shared
             )
-            locator.registerTyped(readUseCase, of: ReadTabsUseCase.self)
+            useCaseLocator.registerTyped(readUseCase, of: ReadTabsUseCase.self)
             let writeUseCase: WriteTabsUseCase = WriteTabsUseCaseImpl(dataService)
-            locator.registerTyped(
+            useCaseLocator.registerTyped(
                 writeUseCase,
                 of: WriteTabsUseCase.self
             )
             let selectedTabUseCase: SelectedTabUseCase = SelectedTabUseCaseImpl(dataService)
-            locator.registerTyped(
+            useCaseLocator.registerTyped(
                 selectedTabUseCase,
                 of: SelectedTabUseCase.self
             )
         }
 
-        private func registerSearchAutocompleteUseCases() {
-            let googleContext = GoogleContext(ServiceRegistry.shared.googleClient,
-                                              ServiceRegistry.shared.googleClientRxSubscriber,
-                                              ServiceRegistry.shared.googleClientSubscriber)
-            let googleStrategy = GoogleAutocompleteStrategy(googleContext)
-            let googleUseCase: any AutocompleteSearchUseCase = AutocompleteSearchUseCaseImpl(googleStrategy)
-            locator.registerNamed(googleUseCase, .googleAutocompleteUseCase)
-
-            let ddGoContext = DDGoContext(ServiceRegistry.shared.duckduckgoClient,
-                                          ServiceRegistry.shared.duckduckgoClientRxSubscriber,
-                                          ServiceRegistry.shared.duckduckgoClientSubscriber)
-            let ddGoStrategy = DDGoAutocompleteStrategy(ddGoContext)
-            let ddGoUseCase: any AutocompleteSearchUseCase = AutocompleteSearchUseCaseImpl(ddGoStrategy)
-            locator.registerNamed(
-                ddGoUseCase,
-                .duckDuckGoAutocompleteUseCase
+        private func registerSearchAutocompleteUseCases() async {
+            let searchDataService = await serviceRegistry.findDataService(SearchDataService.self)
+            let googleUseCase: AutocompleteSearchUseCase = AutocompleteSearchUseCaseImpl(searchDataService)
+            useCaseLocator.registerTyped(
+                googleUseCase,
+                of: AutocompleteSearchUseCase.self
             )
         }
 
@@ -88,7 +81,7 @@ final class UseCaseRegistry {
 
             let googleStrategy = GoogleDNSStrategy(googleContext)
             let googleUseCase: any ResolveDNSUseCase = ResolveDNSUseCaseImpl(googleStrategy)
-            locator.registerNamed(
+            useCaseLocator.registerNamed(
                 googleUseCase,
                 .googleResolveDnsUseCase
             )

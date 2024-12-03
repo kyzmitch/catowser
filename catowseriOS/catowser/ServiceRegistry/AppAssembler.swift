@@ -33,7 +33,6 @@ import CoreBrowser
             await ServiceRegistry.shared.registerDataServices()
             await UseCaseRegistry.shared.registerUseCases()
             // Read main settings
-            async let searchProvider = featureManager.webSearchAutoCompleteValue()
             async let uiFramework = featureManager.appUIFrameworkValue()
             async let defaultTabContent = DefaultTabProvider.shared.contentState
             async let observingType = featureManager.observingApiTypeValue()
@@ -42,7 +41,6 @@ import CoreBrowser
                 .setInstagram(instagramDelegate)
             async let viewModelFactory = ViewModelFactory.shared
             let supplementaryData = await (
-                searchProvider: searchProvider,
                 pluginsSource: pluginsSource,
                 viewModelFactory: viewModelFactory
             )
@@ -52,7 +50,7 @@ import CoreBrowser
             // Init view models
             async let allTabsVM = factory.allTabsViewModel()
             async let topSitesVM = factory.topSitesViewModel()
-            async let suggestionsVM = factory.searchSuggestionsViewModel(supplementaryData.searchProvider)
+            async let suggestionsVM = factory.searchSuggestionsViewModel()
             async let phoneTabPreviewsVM = factory.tabsPreviewsViewModel()
             async let webViewModel = factory.getWebViewModel(
                 nil,

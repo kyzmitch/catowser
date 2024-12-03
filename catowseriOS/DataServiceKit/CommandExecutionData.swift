@@ -14,7 +14,7 @@
 ///
 /// Should be used only inside GenericServiceData implementations.
 /// The most close system's type is `Result`, but it doesn't allow to store the input data.
-public enum CommandExecutionData<Input, Output> {
+public enum CommandExecutionData<Input: Sendable, Output: Sendable>: Sendable {
     case notStarted
     case started(input: Input?)
     case finished(output: Result<Output, Error>)

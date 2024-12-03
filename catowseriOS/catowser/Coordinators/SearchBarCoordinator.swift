@@ -224,8 +224,7 @@ extension SearchBarCoordinator: UISearchBarDelegate {
         } else {
             /// Async layout is fine for this case because both insert & show operations are together in one closure
             Task {
-                let searchProviderType = await FeatureManager.shared.webSearchAutoCompleteValue()
-                let viewModel = await ViewModelFactory.shared.searchSuggestionsViewModel(searchProviderType)
+                let viewModel = await ViewModelFactory.shared.searchSuggestionsViewModel()
                 insertNext(.suggestions(viewModel))
                 /// Use delegate and not a direct call
                 /// because it requires layout info

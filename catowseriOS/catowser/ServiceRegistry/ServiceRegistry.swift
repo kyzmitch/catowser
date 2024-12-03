@@ -66,6 +66,11 @@ import FeaturesFlagsKit
                                      httpTimeout: 10)
         }
         
+        func findDataService<T>(_ type: T.Type, _ key: String? = nil) -> T {
+            // swiftlint:disable:next force_unwrapping
+            locator.findService(type, key)!
+        }
+        
         func registerDataServices() {
             let searchDataService = SearchDataService(
                 stratsFactory: StratsFactory.shared

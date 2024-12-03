@@ -8,6 +8,9 @@
 
 import Foundation
 
-enum AppError: LocalizedError {
+/// Errors used on use case level
+public enum AppError: LocalizedError {
     case zombieSelf
+    case searchDataServiceError(SearchServiceError)
+    case erasedSearchDataServiceError(Error)
 }

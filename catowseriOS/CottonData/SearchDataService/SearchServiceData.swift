@@ -8,7 +8,7 @@
 
 import DataServiceKit
 
-public struct SuggestionsRequest {
+public struct SuggestionsRequest: Sendable {
     let searchEngine: WebAutoCompletionSource
     let query: String
 }
@@ -21,4 +21,32 @@ public struct SearchServiceData: GenericServiceData {
     var searchSuggestions: SearchSuggestionsData = .notStarted
     
     public init() { }
+    
+    public var suggestions: [String] {
+        get throws(SearchServiceError) {
+            guard case .finished(let result) = searchSuggestions else {
+                throw .requestedDataWhenNotCorrecrtState
+            }
+            switch result {
+            case .success(let value):
+                return value
+            case .failure(let failure):
+                throw .strategyError(failure)
+            }
+        }
+    }
+    
+    public var resolvedURL: URL {
+        get throws(SearchServiceError) {
+            guard case .finished(let result) = domainResolving else {
+                throw .requestedDataWhenNotCorrecrtState
+            }
+            switch result {
+            case .success(let value):
+                return value
+            case .failure(let failure):
+                throw .strategyError(failure)
+            }
+        }
+    }
 }

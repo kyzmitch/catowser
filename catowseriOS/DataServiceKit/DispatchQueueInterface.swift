@@ -8,7 +8,7 @@
 
 import Dispatch
 
-public protocol DispatchQueueInterface {
+public protocol DispatchQueueInterface: Sendable {
     @preconcurrency func performAsync(
         execute work: @escaping @Sendable @convention(block) () -> Void
     )

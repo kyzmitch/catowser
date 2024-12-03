@@ -14,18 +14,13 @@ import Combine
 import CottonRestKit
 import AutoMockable
 
-public typealias WebSearchSuggestionsProducer = SignalProducer<[String], HttpError>
-public typealias WebSearchSuggestionsPublisher = AnyPublisher<[String], HttpError>
+public typealias WebSearchSuggestionsProducer = SignalProducer<[String], AppError>
+public typealias WebSearchSuggestionsPublisher = AnyPublisher<[String], AppError>
 
-/// Autocomplete search use case.
-/// Use cases do not hold any mutable state, so that, any of them can be sendable.
-// swiftlint:disable comment_spacing
-//sourcery: associatedtype = "Strategy: SearchAutocompleteStrategy"
+/// Search auto-complete use case.
+///
+/// Use cases do not hold any mutable state, so that, any of them can be (should be) sendable.
 public protocol AutocompleteSearchUseCase: BaseUseCase, AutoMockable, Sendable {
-    // swiftlint:enable comment_spacing
-
-    associatedtype Strategy: SearchAutocompleteStrategy
-    var strategy: Strategy { get }
     func rxFetchSuggestions(_ query: String) -> WebSearchSuggestionsProducer
     func combineFetchSuggestions(_ query: String) -> WebSearchSuggestionsPublisher
     func aaFetchSuggestions(_ query: String) async throws -> [String]

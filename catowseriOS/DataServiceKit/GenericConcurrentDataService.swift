@@ -8,11 +8,14 @@
 
 /// Base generic data service which will use dispatch queue as a synhronization.
 /// There is another approach in this framework using an actor base protocol.
+///
+/// Using unchecked Sendable marker, because thread-safety is accomplished manually
+/// using recursive lock.
 open class GenericConcurrentDataService<
     C: GenericDataServiceCommand,
     S: GenericServiceData,
     E: DataServiceKitError
->: GenericDataServiceProtocol {
+>: GenericDataServiceProtocol, @unchecked Sendable {
     
     public typealias Command = C
     public typealias ServiceData = S
