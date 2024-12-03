@@ -10,6 +10,7 @@
 @preconcurrency import Combine
 #endif
 import CottonBase
+import CottonData
 import CoreBrowser
 import FeaturesFlagsKit
 

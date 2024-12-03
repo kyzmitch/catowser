@@ -8,13 +8,8 @@
 
 import Foundation
 import CoreBrowser
+import CottonData
 import FeaturesFlagsKit
-
-/// Web search completion source
-enum WebAutoCompletionSource: Int, CaseIterable {
-    case google
-    case duckduckgo
-}
 
 extension WebAutoCompletionSource: EnumDefaultValueSupportable {
     public var defaultValue: WebAutoCompletionSource {

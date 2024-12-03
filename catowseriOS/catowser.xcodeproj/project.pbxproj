@@ -109,6 +109,8 @@
 		753752C82CFEB4B8008D40CF /* GoogleDNSOverJSONResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752C72CFEB4B7008D40CF /* GoogleDNSOverJSONResponse.swift */; };
 		753752CA2CFEB51D008D40CF /* GoogleDNSEndpointError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752C92CFEB51C008D40CF /* GoogleDNSEndpointError.swift */; };
 		753752CE2CFEBE05008D40CF /* SearchServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752CD2CFEBDFF008D40CF /* SearchServiceError.swift */; };
+		753752D02CFED1E4008D40CF /* WebAutoCompletionSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752CF2CFED1DC008D40CF /* WebAutoCompletionSource.swift */; };
+		753752D22CFEE086008D40CF /* StratFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752D12CFEE080008D40CF /* StratFactory.swift */; };
 		754249D32944B3F9002D6505 /* AppUIFrameworkTypeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754249D22944B3F9002D6505 /* AppUIFrameworkTypeModel.swift */; };
 		75458E432B468FE800004581 /* ReadTabsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75458E422B468FE800004581 /* ReadTabsUseCase.swift */; };
 		75458E452B468FF800004581 /* WriteTabsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75458E442B468FF800004581 /* WriteTabsUseCase.swift */; };
@@ -825,6 +827,8 @@
 		753752C72CFEB4B7008D40CF /* GoogleDNSOverJSONResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleDNSOverJSONResponse.swift; sourceTree = "<group>"; };
 		753752C92CFEB51C008D40CF /* GoogleDNSEndpointError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleDNSEndpointError.swift; sourceTree = "<group>"; };
 		753752CD2CFEBDFF008D40CF /* SearchServiceError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchServiceError.swift; sourceTree = "<group>"; };
+		753752CF2CFED1DC008D40CF /* WebAutoCompletionSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebAutoCompletionSource.swift; sourceTree = "<group>"; };
+		753752D12CFEE080008D40CF /* StratFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StratFactory.swift; sourceTree = "<group>"; };
 		754249D22944B3F9002D6505 /* AppUIFrameworkTypeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUIFrameworkTypeModel.swift; sourceTree = "<group>"; };
 		75458E422B468FE800004581 /* ReadTabsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadTabsUseCase.swift; sourceTree = "<group>"; };
 		75458E442B468FF800004581 /* WriteTabsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteTabsUseCase.swift; sourceTree = "<group>"; };
@@ -1615,6 +1619,7 @@
 			isa = PBXGroup;
 			children = (
 				8A23989228622FCA005DA801 /* ViewModelFactory.swift */,
+				753752D12CFEE080008D40CF /* StratFactory.swift */,
 				753392A3291FD9A500570461 /* ViewControllerFactory.swift */,
 				753392A0291FD8DA00570461 /* PhoneViewControllerFactory.swift */,
 				753392A6291FEBFD00570461 /* TabletViewControllerFactory.swift */,
@@ -1983,6 +1988,7 @@
 				8A5FD6A826AF34570019384A /* AppErrors.swift */,
 				8A964E3924867A9400A0AABE /* SiteSettings+Extensions.swift */,
 				8A7B1BFE28EB3269004FC135 /* Site+Extensions.swift */,
+				753752CF2CFED1DC008D40CF /* WebAutoCompletionSource.swift */,
 				8A23987E286223CE005DA801 /* RestClientContext.swift */,
 				753752C62CFE301D008D40CF /* UseCases */,
 				753752672CF59E0B008D40CF /* SearchDataService */,
@@ -3457,6 +3463,7 @@
 				75DA4C7B2C9C7F4D009AE049 /* UIServiceRegistry.swift in Sources */,
 				8412FF3D1F72AF050011FDD7 /* UIConstants.swift in Sources */,
 				8AEA73602948FDDE00B2E261 /* Color+Extension.swift in Sources */,
+				753752D22CFEE086008D40CF /* StratFactory.swift in Sources */,
 				754249D32944B3F9002D6505 /* AppUIFrameworkTypeModel.swift in Sources */,
 				8A4815062922A4B700F9DA1F /* SearchSuggestionsCoordinator.swift in Sources */,
 				8A745C112480295B00A379AD /* AsyncServiceRegistry.swift in Sources */,
@@ -3567,6 +3574,7 @@
 				75A764342B650B0A00D9D158 /* SearchAutocompleteStrategy.swift in Sources */,
 				75A764322B64BC3800D9D158 /* SiteNavigationComponent.swift in Sources */,
 				75A764362B650C2C00D9D158 /* AutocompleteSearchUseCase.swift in Sources */,
+				753752D02CFED1E4008D40CF /* WebAutoCompletionSource.swift in Sources */,
 				8A7B1BFF28EB3269004FC135 /* Site+Extensions.swift in Sources */,
 				8A7B1BC428EB16C4004FC135 /* AutocompleteSearchUseCaseImpl.swift in Sources */,
 				8A7B1BC928EB16DA004FC135 /* DDGoAutocompleteStrategy.swift in Sources */,

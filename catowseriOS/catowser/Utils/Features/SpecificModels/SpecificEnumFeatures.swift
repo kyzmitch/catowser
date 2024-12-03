@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreBrowser
+import CottonData
 import FeaturesFlagsKit
 
 extension String {

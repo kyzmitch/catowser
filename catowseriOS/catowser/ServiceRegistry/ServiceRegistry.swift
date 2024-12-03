@@ -67,24 +67,14 @@ import FeaturesFlagsKit
         }
         
         func registerDataServices() {
-            #warning("TODO: figure out how is better to set the needed strategy")
-            let ddGoContext = DDGoContext(ServiceRegistry.shared.duckduckgoClient,
-                                          ServiceRegistry.shared.duckduckgoClientRxSubscriber,
-                                          ServiceRegistry.shared.duckduckgoClientSubscriber)
-            let ddGoStrategy = DDGoAutocompleteStrategy(ddGoContext)
-            let googleContext = GoogleDNSContext(ServiceRegistry.shared.dnsClient,
-                                                 ServiceRegistry.shared.dnsClientRxSubscriber,
-                                                 ServiceRegistry.shared.dnsClientSubscriber)
-
-            let googleStrategy = GoogleDNSStrategy(googleContext)
             let searchDataService = SearchDataService(
-                autocompleteStrategy: ddGoStrategy,
-                dnsResolveStrategy: googleStrategy
+                stratsFactory: StratsFactory.shared
             )
             locator.register(searchDataService)
         }
 
         func searchSuggestClient() async -> SearchEngine {
+            #warning("TODO: can be a part of search data service")
             let selectedPluginName = await FeatureManager.shared.searchPluginName()
             let optionalXmlData = ResourceReader.readXmlSearchPlugin(with: selectedPluginName, on: .main)
             guard let xmlData = optionalXmlData else {

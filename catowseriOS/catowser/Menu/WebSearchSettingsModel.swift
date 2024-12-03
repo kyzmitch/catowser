@@ -6,6 +6,7 @@
 //  Copyright © 2022 Cotton/Catowser Andrei Ermoshin. All rights reserved.
 //
 
+import CottonData
 import Foundation
 
 typealias WebSearchSettingsModel = BaseListViewModelImpl<WebAutoCompletionSource>

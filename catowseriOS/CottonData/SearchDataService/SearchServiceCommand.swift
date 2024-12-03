@@ -11,7 +11,7 @@ import DataServiceKit
 /// Search data service commands
 public enum SearchServiceCommand: GenericDataServiceCommand {
     /// Search for the suggestions about how to finish the query/prefix text
-    case fetchAutocompleteSuggestions(String)
+    case fetchAutocompleteSuggestions(WebAutoCompletionSource, String)
     /// Search for an IP address of the domain name
     case resolveDomainNameInURL(URL)
     
@@ -19,7 +19,7 @@ public enum SearchServiceCommand: GenericDataServiceCommand {
         // swiftlint:disable:next force_unwrapping
         let dummyURL = URL(string: "www.example.com")!
         return [
-            .fetchAutocompleteSuggestions(""),
+            .fetchAutocompleteSuggestions(.duckduckgo, ""),
             .resolveDomainNameInURL(dummyURL)
         ]
     }

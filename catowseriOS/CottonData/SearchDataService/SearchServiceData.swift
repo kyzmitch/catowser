@@ -8,8 +8,13 @@
 
 import DataServiceKit
 
+public struct SuggestionsRequest {
+    let searchEngine: WebAutoCompletionSource
+    let query: String
+}
+
 typealias DomainResolvingData = CommandExecutionData<URL, URL>
-typealias SearchSuggestionsData = CommandExecutionData<String, [String]>
+typealias SearchSuggestionsData = CommandExecutionData<SuggestionsRequest, [String]>
 
 public struct SearchServiceData: GenericServiceData {
     var domainResolving: DomainResolvingData = .notStarted
