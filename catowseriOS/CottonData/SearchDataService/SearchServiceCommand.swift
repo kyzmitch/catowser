@@ -8,8 +8,11 @@
 
 import DataServiceKit
 
+/// Search data service commands
 public enum SearchServiceCommand: GenericDataServiceCommand {
+    /// Search for the suggestions about how to finish the query/prefix text
     case fetchAutocompleteSuggestions(String)
+    /// Search for an IP address of the domain name
     case resolveDomainNameInURL(URL)
     
     public static var allCases: [SearchServiceCommand] {

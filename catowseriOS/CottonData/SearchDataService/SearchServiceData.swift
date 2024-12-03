@@ -8,9 +8,12 @@
 
 import DataServiceKit
 
+typealias DomainResolvingData = CommandExecutionData<URL, URL>
+typealias SearchSuggestionsData = CommandExecutionData<String, [String]>
+
 public struct SearchServiceData: GenericServiceData {
-    var resolvedUrl: URL?
-    var autocompleteSuggestions: [String]?
+    var domainResolving: DomainResolvingData = .notStarted
+    var searchSuggestions: SearchSuggestionsData = .notStarted
     
     public init() { }
 }

@@ -67,7 +67,20 @@ import FeaturesFlagsKit
         }
         
         func registerDataServices() {
-            let searchDataService = SearchDataService()
+            #warning("TODO: figure out how is better to set the needed strategy")
+            let ddGoContext = DDGoContext(ServiceRegistry.shared.duckduckgoClient,
+                                          ServiceRegistry.shared.duckduckgoClientRxSubscriber,
+                                          ServiceRegistry.shared.duckduckgoClientSubscriber)
+            let ddGoStrategy = DDGoAutocompleteStrategy(ddGoContext)
+            let googleContext = GoogleDNSContext(ServiceRegistry.shared.dnsClient,
+                                                 ServiceRegistry.shared.dnsClientRxSubscriber,
+                                                 ServiceRegistry.shared.dnsClientSubscriber)
+
+            let googleStrategy = GoogleDNSStrategy(googleContext)
+            let searchDataService = SearchDataService(
+                autocompleteStrategy: ddGoStrategy,
+                dnsResolveStrategy: googleStrategy
+            )
             locator.register(searchDataService)
         }
 

@@ -25,9 +25,11 @@ where Strategy: DNSResolvingStrategy {
     public init(_ strategy: Strategy) {
         self.strategy = strategy
         waitingQueue = DispatchQueue(label: .waitingQueueName)
-        waitingScheduler = QueueScheduler(qos: .userInitiated,
-                                          name: .waitingQueueName,
-                                          targeting: waitingQueue)
+        waitingScheduler = QueueScheduler(
+            qos: .userInitiated,
+            name: .waitingQueueName,
+            targeting: waitingQueue
+        )
     }
 
     public func rxResolveDomainName(_ url: URL) -> DNSResolvingProducer {

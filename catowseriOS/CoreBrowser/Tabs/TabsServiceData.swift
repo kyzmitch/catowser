@@ -29,3 +29,5 @@ public enum TabsServiceData: GenericServiceData, Sendable {
 }
 
 extension TabsServiceData: Equatable {}
+
+#warning("TODO: try to use CommandExecutionData instead of enum cases")

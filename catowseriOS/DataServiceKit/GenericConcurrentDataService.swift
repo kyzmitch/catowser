@@ -10,17 +10,19 @@
 /// There is another approach in this framework using an actor base protocol.
 open class GenericConcurrentDataService<
     C: GenericDataServiceCommand,
-    S: GenericServiceData
+    S: GenericServiceData,
+    E: DataServiceKitError
 >: GenericDataServiceProtocol {
     
     public typealias Command = C
     public typealias ServiceData = S
+    public typealias ServiceError = E
     
     public let executionQueue: DispatchQueueInterface
     public let responseQueue: DispatchQueueInterface
     public var serviceData: ServiceData
     public let lock: NSRecursiveLock
-    private var commandToPromise: [Command: (Result<ServiceData, Error>) -> Void]
+    private var commandToPromise: [Command: (Result<ServiceData, ServiceError>) -> Void]
     
     public init(
         executionQueue: DispatchQueueInterface = DispatchQueue.global(),
@@ -36,11 +38,12 @@ open class GenericConcurrentDataService<
     public func sendCommand(
         _ command: Command,
         _ input: ServiceData?,
-        _ onComplete: @escaping (Result<ServiceData, Error>) -> Void
+        _ onComplete: @escaping (Result<ServiceData, ServiceError>) -> Void
     ) {
         executionQueue.performAsync { [weak self] in
             guard let self else {
-                onComplete(.failure(DataServiceKitError.zombyInstance))
+                let zombyError = ServiceError(zombyInstance: true)
+                onComplete(.failure(zombyError))
                 return
             }
             lock.lock()
@@ -49,7 +52,7 @@ open class GenericConcurrentDataService<
             }
             commandToPromise[command] = onComplete
             lock.unlock()
-            handleCommand(command, input, onComplete)
+            handleCommand(command, input)
         }
     }
     
@@ -57,20 +60,18 @@ open class GenericConcurrentDataService<
     ///
     /// - Parameter command: a command to handle by the data service
     /// - Parameter input: an input for a command if it wasn't passed in the same parameter as command
-    /// - Parameter onComplete: a closure which will be called after handling the command with some output or an error
     open func handleCommand(
         _ command: Command,
-        _ input: ServiceData?,
-        _ onComplete: @escaping (Result<ServiceData, Error>) -> Void
+        _ input: ServiceData?
     ) { }
     
     /// Finilizes handling of a command by calling completion closure with the result.
     ///
     /// - Parameter command: a command to handle by the data service
     /// - Parameter output: a result with service data or an error
-    func finishCommand(
+    public func finishCommand(
         _ command: Command,
-        _ output: Result<ServiceData, Error>
+        _ output: Result<ServiceData, ServiceError>
     ) {
         lock.lock()
         guard let onComplete = commandToPromise.removeValue(forKey: command) else {

@@ -85,7 +85,10 @@ public final class GSearchSuggestionsResponse: ResponseType {
 }
 
 extension RestClient where Server == GoogleServer {
-    public func googleSearchSuggestions(for text: String, _ subscriber: GSearchClientRxSubscriber) -> GSearchProducer {
+    public func googleSearchSuggestions(
+        for text: String,
+        _ subscriber: GSearchClientRxSubscriber
+    ) -> GSearchProducer {
         let endpoint: GSearchEndpoint
         do {
             endpoint = try .googleSearchSuggestions(query: text)
@@ -103,7 +106,10 @@ extension RestClient where Server == GoogleServer {
     }
 
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    public func cGoogleSearchSuggestions(for text: String, _ subscriber: GSearchClientSubscriber) -> CGSearchPublisher {
+    public func cGoogleSearchSuggestions(
+        for text: String,
+        _ subscriber: GSearchClientSubscriber
+    ) -> CGSearchPublisher {
         let endpoint: GSearchEndpoint
         do {
             endpoint = try .googleSearchSuggestions(query: text)

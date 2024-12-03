@@ -78,8 +78,10 @@ public typealias DDGoSuggestionsClientSubscriber = Sub<DDGoSuggestionsResponse,
 public typealias DDGoSuggestionsPublisher = AnyPublisher<DDGoSuggestionsResponse, HttpError>
 
 extension RestClient where Server == DuckDuckGoServer {
-    public func duckDuckGoSuggestions(for text: String,
-                                      subscriber: DDGoSuggestionsClientRxSubscriber) -> DDGoSuggestionsProducer {
+    public func duckDuckGoSuggestions(
+        for text: String,
+        subscriber: DDGoSuggestionsClientRxSubscriber
+    ) -> DDGoSuggestionsProducer {
         let endpoint: DDGoSuggestionsEndpoint
         do {
             endpoint = try .duckduckgoSuggestions(query: text)
@@ -96,8 +98,10 @@ extension RestClient where Server == DuckDuckGoServer {
         return producer
     }
 
-    public func cDuckDuckgoSuggestions(for text: String,
-                                       subscriber: DDGoSuggestionsClientSubscriber) -> DDGoSuggestionsPublisher {
+    public func cDuckDuckgoSuggestions(
+        for text: String,
+        subscriber: DDGoSuggestionsClientSubscriber
+    ) -> DDGoSuggestionsPublisher {
         let endpoint: DDGoSuggestionsEndpoint
         do {
             endpoint = try .duckduckgoSuggestions(query: text)

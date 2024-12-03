@@ -26,9 +26,11 @@ where Strategy: SearchAutocompleteStrategy {
     public init(_ strategy: Strategy) {
         self.strategy = strategy
         waitingQueue = DispatchQueue(label: .waitingQueueName)
-        waitingScheduler = QueueScheduler(qos: .userInitiated,
-                                          name: .waitingQueueName,
-                                          targeting: waitingQueue)
+        waitingScheduler = QueueScheduler(
+            qos: .userInitiated,
+            name: .waitingQueueName,
+            targeting: waitingQueue
+        )
     }
 
     public func rxFetchSuggestions(_ query: String) -> WebSearchSuggestionsProducer {

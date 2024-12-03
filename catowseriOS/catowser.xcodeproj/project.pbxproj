@@ -106,6 +106,9 @@
 		753752862CF6F1A9008D40CF /* AppStartInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752852CF6F1A8008D40CF /* AppStartInfo.swift */; };
 		753752882CF6FFCA008D40CF /* PluginsProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752872CF6FFB7008D40CF /* PluginsProxy.swift */; };
 		7537528A2CF798B9008D40CF /* ContentCoordinatorsInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752892CF798B7008D40CF /* ContentCoordinatorsInterface.swift */; };
+		753752C82CFEB4B8008D40CF /* GoogleDNSOverJSONResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752C72CFEB4B7008D40CF /* GoogleDNSOverJSONResponse.swift */; };
+		753752CA2CFEB51D008D40CF /* GoogleDNSEndpointError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752C92CFEB51C008D40CF /* GoogleDNSEndpointError.swift */; };
+		753752CE2CFEBE05008D40CF /* SearchServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752CD2CFEBDFF008D40CF /* SearchServiceError.swift */; };
 		754249D32944B3F9002D6505 /* AppUIFrameworkTypeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754249D22944B3F9002D6505 /* AppUIFrameworkTypeModel.swift */; };
 		75458E432B468FE800004581 /* ReadTabsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75458E422B468FE800004581 /* ReadTabsUseCase.swift */; };
 		75458E452B468FF800004581 /* WriteTabsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75458E442B468FF800004581 /* WriteTabsUseCase.swift */; };
@@ -819,6 +822,9 @@
 		753752852CF6F1A8008D40CF /* AppStartInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartInfo.swift; sourceTree = "<group>"; };
 		753752872CF6FFB7008D40CF /* PluginsProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginsProxy.swift; sourceTree = "<group>"; };
 		753752892CF798B7008D40CF /* ContentCoordinatorsInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentCoordinatorsInterface.swift; sourceTree = "<group>"; };
+		753752C72CFEB4B7008D40CF /* GoogleDNSOverJSONResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleDNSOverJSONResponse.swift; sourceTree = "<group>"; };
+		753752C92CFEB51C008D40CF /* GoogleDNSEndpointError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleDNSEndpointError.swift; sourceTree = "<group>"; };
+		753752CD2CFEBDFF008D40CF /* SearchServiceError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchServiceError.swift; sourceTree = "<group>"; };
 		754249D22944B3F9002D6505 /* AppUIFrameworkTypeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUIFrameworkTypeModel.swift; sourceTree = "<group>"; };
 		75458E422B468FE800004581 /* ReadTabsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadTabsUseCase.swift; sourceTree = "<group>"; };
 		75458E442B468FF800004581 /* WriteTabsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteTabsUseCase.swift; sourceTree = "<group>"; };
@@ -1549,8 +1555,22 @@
 				753752682CF59E29008D40CF /* SearchDataService.swift */,
 				7537526F2CF59EA1008D40CF /* SearchServiceCommand.swift */,
 				753752712CF59EFE008D40CF /* SearchServiceData.swift */,
+				753752CD2CFEBDFF008D40CF /* SearchServiceError.swift */,
+				8A16102728947C0900D45228 /* DNSResolving */,
+				8A23987A28622391005DA801 /* Autocomplete */,
 			);
 			path = SearchDataService;
+			sourceTree = "<group>";
+		};
+		753752C62CFE301D008D40CF /* UseCases */ = {
+			isa = PBXGroup;
+			children = (
+				8A23987B286223A7005DA801 /* AutocompleteSearchUseCaseImpl.swift */,
+				75A764352B650C2C00D9D158 /* AutocompleteSearchUseCase.swift */,
+				8A16102828947C2F00D45228 /* ResolveDNSUseCaseImpl.swift */,
+				75A764372B651E0E00D9D158 /* ResolveDNSUseCase.swift */,
+			);
+			path = UseCases;
 			sourceTree = "<group>";
 		};
 		75458E462B46900100004581 /* UseCases */ = {
@@ -1840,8 +1860,6 @@
 		8A16102728947C0900D45228 /* DNSResolving */ = {
 			isa = PBXGroup;
 			children = (
-				8A16102828947C2F00D45228 /* ResolveDNSUseCaseImpl.swift */,
-				75A764372B651E0E00D9D158 /* ResolveDNSUseCase.swift */,
 				8A16102E28947D2100D45228 /* DNSResolvingStrategy.swift */,
 				8AC19CBF289E2F690021D8ED /* SpecificStrategies */,
 			);
@@ -1861,8 +1879,6 @@
 		8A23987A28622391005DA801 /* Autocomplete */ = {
 			isa = PBXGroup;
 			children = (
-				8A23987B286223A7005DA801 /* AutocompleteSearchUseCaseImpl.swift */,
-				75A764352B650C2C00D9D158 /* AutocompleteSearchUseCase.swift */,
 				75A764332B650B0A00D9D158 /* SearchAutocompleteStrategy.swift */,
 				8A23988B286226E1005DA801 /* SearchSuggestionsResponse.swift */,
 				8A23988728622486005DA801 /* SpecificStrategies */,
@@ -1968,6 +1984,7 @@
 				8A964E3924867A9400A0AABE /* SiteSettings+Extensions.swift */,
 				8A7B1BFE28EB3269004FC135 /* Site+Extensions.swift */,
 				8A23987E286223CE005DA801 /* RestClientContext.swift */,
+				753752C62CFE301D008D40CF /* UseCases */,
 				753752672CF59E0B008D40CF /* SearchDataService */,
 				8A7B1BC028EB1679004FC135 /* SearchViewModel */,
 				8A7B1BB328EB1512004FC135 /* WebViewModel */,
@@ -1992,7 +2009,6 @@
 		8A7B1BB328EB1512004FC135 /* WebViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				8A16102728947C0900D45228 /* DNSResolving */,
 				8A3FED7B288FC8CA004997E4 /* WebViewModel.swift */,
 				8A8F038A293FA96200237DFF /* WebViewNavigatable.swift */,
 				8AF0B95D28B9FAC8001D202C /* WebViewAction.swift */,
@@ -2009,7 +2025,6 @@
 		8A7B1BC028EB1679004FC135 /* SearchViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				8A23987A28622391005DA801 /* Autocomplete */,
 				8A23988F28622E62005DA801 /* SearchSuggestionsViewModel.swift */,
 				8A5755A928638748004D6F1E /* SearchSuggestionsViewModelImpl.swift */,
 			);
@@ -2020,6 +2035,8 @@
 			isa = PBXGroup;
 			children = (
 				8A7DCCCC23643032006AAEE2 /* GoogleJSONDNSoHTTPsEndpoint.swift */,
+				753752C92CFEB51C008D40CF /* GoogleDNSEndpointError.swift */,
+				753752C72CFEB4B7008D40CF /* GoogleDNSOverJSONResponse.swift */,
 				8A9069D9267F52BE0058F12D /* GoogleJSONDNSoHTTPsEndpoint+AsyncAwait.swift */,
 			);
 			path = DNSoverHTTPS;
@@ -3492,9 +3509,11 @@
 				8A2771E9268E4AC200D8878C /* GDNSRequestParams.swift in Sources */,
 				8A277192268E4AA400D8878C /* GoogleJSONDNSoHTTPsEndpoint.swift in Sources */,
 				8A27722E268E4AD400D8878C /* SearchEngine+OpenSearchParser.swift in Sources */,
+				753752CA2CFEB51D008D40CF /* GoogleDNSEndpointError.swift in Sources */,
 				755E107C27C1241000D90AD0 /* DuckDuckGoServer.swift in Sources */,
 				8A2771FB268E4AC900D8878C /* SearchEngine.swift in Sources */,
 				8AB4A1B327B55484008030FB /* AlamofireHTTPRxVoidAdaptee.swift in Sources */,
+				753752C82CFEB4B8008D40CF /* GoogleDNSOverJSONResponse.swift in Sources */,
 				75F342472A6063A400E66192 /* AuthChallenge.swift in Sources */,
 				8A2771A3268E4AA800D8878C /* GoogleJSONDNSoHTTPsEndpoint+AsyncAwait.swift in Sources */,
 				755E107A27C0FBC600D90AD0 /* DuckDuckGoSearchEndpoint.swift in Sources */,
@@ -3530,6 +3549,7 @@
 				8A7B1BC628EB16CC004FC135 /* RestClientContext.swift in Sources */,
 				8A7B1BF828EB2D7D004FC135 /* SiteSettings+Extensions.swift in Sources */,
 				8A7B1BB728EB15D8004FC135 /* WebViewModelState.swift in Sources */,
+				753752CE2CFEBE05008D40CF /* SearchServiceError.swift in Sources */,
 				8A7B1BC228EB16A0004FC135 /* SearchSuggestionsViewModelImpl.swift in Sources */,
 				8A7B1BB628EB15D4004FC135 /* WebViewAction.swift in Sources */,
 				8A7B1BBC28EB1614004FC135 /* ResolveDNSUseCaseImpl.swift in Sources */,
