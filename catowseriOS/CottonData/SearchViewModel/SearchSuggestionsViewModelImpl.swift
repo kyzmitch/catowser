@@ -53,7 +53,7 @@ public final class SearchSuggestionsViewModelImpl: SearchSuggestionsViewModel {
         state = .knownDomainsLoaded(domainNames)
         searchSuggestionsTaskHandler?.cancel()
         do {
-            let suggestions = try await autocompleteUseCase.aaFetchSuggestions(query)
+            let suggestions = try await autocompleteUseCase.fetchSuggestions(query)
             state = .everythingLoaded(domainNames, suggestions)
         } catch {
             state = .everythingLoaded(domainNames, [])

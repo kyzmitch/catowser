@@ -21,7 +21,7 @@ public typealias WebSearchSuggestionsPublisher = AnyPublisher<[String], AppError
 ///
 /// Use cases do not hold any mutable state, so that, any of them can be (should be) sendable.
 public protocol AutocompleteSearchUseCase: BaseUseCase, AutoMockable, Sendable {
-    func rxFetchSuggestions(_ query: String) -> WebSearchSuggestionsProducer
-    func combineFetchSuggestions(_ query: String) -> WebSearchSuggestionsPublisher
-    func aaFetchSuggestions(_ query: String) async throws -> [String]
+    func suggestionsProducer(_ query: String) -> WebSearchSuggestionsProducer
+    func suggestionsPublisher(_ query: String) -> WebSearchSuggestionsPublisher
+    func fetchSuggestions(_ query: String) async throws -> [String]
 }

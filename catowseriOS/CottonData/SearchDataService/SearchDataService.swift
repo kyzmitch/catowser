@@ -9,17 +9,19 @@
 import Combine
 import DataServiceKit
 
+/// An interface for a factory to be able to mock it for the unit tests
 public protocol SearchStrategiesFactoryProtocol: AnyObject {
     func googleDnsResolvingStrategy() -> any DNSResolvingStrategy
     func duckDuckGoSearchStrategy() -> any SearchAutocompleteStrategy
     func googleSearchStrategy() -> any SearchAutocompleteStrategy
 }
 
-/// Autocompletion search suggestions and DnS data service.
-/// In the future should be internal to the module,
-/// and only use cases need to be publicly accessible outside of the module.
-/// Also, probably DNS part is for another data service.
-public final class SearchDataService: GenericConcurrentDataService<SearchServiceCommand, SearchServiceData, SearchServiceError> {
+/// A data service needed to find search any data needed for the app.
+/// Currently it searches for the search suggestions to support auto-completion
+/// and also can resolve domain names in the URLs to have ip addresses instead.
+///
+/// Can be unchecked sendable, because thread-safety is accomplished using recursive mutex.
+public final class SearchDataService: GenericConcurrentDataService<SearchServiceCommand, SearchServiceData, SearchServiceError>, @unchecked Sendable {
 
     private var autocompleteHandler: AnyCancellable?
     private var domainNameResolveHandler: AnyCancellable?

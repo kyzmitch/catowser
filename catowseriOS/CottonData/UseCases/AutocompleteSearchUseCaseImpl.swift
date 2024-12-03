@@ -32,7 +32,7 @@ public final class AutocompleteSearchUseCaseImpl: AutocompleteSearchUseCase {
         )
     }
 
-    public func rxFetchSuggestions(_ query: String) -> WebSearchSuggestionsProducer {
+    public func suggestionsProducer(_ query: String) -> WebSearchSuggestionsProducer {
         #warning("TODO: remove Rx variant or fix it")
         return WebSearchSuggestionsProducer.init(value: [""])
         /**
@@ -50,7 +50,7 @@ public final class AutocompleteSearchUseCaseImpl: AutocompleteSearchUseCase {
          */
     }
 
-    public func combineFetchSuggestions(_ query: String) -> WebSearchSuggestionsPublisher {
+    public func suggestionsPublisher(_ query: String) -> WebSearchSuggestionsPublisher {
         let dataServicePublisher = Deferred {
             Future<SearchServiceData, AppError> { [weak self] promise in
                 guard let self else {
@@ -90,7 +90,7 @@ public final class AutocompleteSearchUseCaseImpl: AutocompleteSearchUseCase {
             .eraseToAnyPublisher()
     }
 
-    public func aaFetchSuggestions(_ query: String) async throws -> [String] {
+    public func fetchSuggestions(_ query: String) async throws -> [String] {
         #warning("TODO: support this API with a new data service")
         throw AppError.zombieSelf
         /**
