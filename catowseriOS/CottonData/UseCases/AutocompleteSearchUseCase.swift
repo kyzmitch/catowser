@@ -26,5 +26,8 @@ public protocol AutocompleteSearchUseCase: BaseUseCase, AutoMockable, Sendable {
         _ source: WebAutoCompletionSource,
         _ query: String
     ) -> WebSearchSuggestionsPublisher
-    func fetchSuggestions(_ query: String) async throws -> [String]
+    func fetchSuggestions(
+        _ source: WebAutoCompletionSource,
+        _ query: String
+    ) async throws -> [String]
 }

@@ -8,6 +8,8 @@
 
 import Foundation
 
+/// An analog type (enum) from `CottonData` `WebAutoCompletionSource`
+/// to avoid circular dependency between `CottonData` and `CoreBrowser`
 public enum KnownSearchPluginName: String, Sendable {
     case google
     case duckduckgo
@@ -15,8 +17,10 @@ public enum KnownSearchPluginName: String, Sendable {
 
 /// Resource reader parser, doesn't hold any state, so no need to be global actor
 public enum ResourceReader {
-    public static func readXmlSearchPlugin(with name: KnownSearchPluginName,
-                                           on bundle: Bundle) -> Data? {
+    public static func readXmlSearchPlugin(
+        with name: KnownSearchPluginName,
+        on bundle: Bundle
+    ) -> Data? {
         guard let fileURL = bundle.url(forResource: name.rawValue, withExtension: "xml") else {
             return nil
         }

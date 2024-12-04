@@ -13,14 +13,15 @@ import CoreBrowser
 import AutoMockable
 
 /// This is only needed now to not have a direct dependency on FutureManager
-public protocol SearchViewContext: AutoMockable {
+public protocol SearchViewContext: AutoMockable, Sendable {
     var appAsyncApiTypeValue: AsyncApiType { get async }
+    var webAutocompletionSourceValue: WebAutoCompletionSource { get async }
     var knownDomainsStorage: KnownDomainsSource { get }
 }
 
 public final class SearchSuggestionsViewModelImpl: SearchSuggestionsViewModel {
     /// Autocomplete client, probably need to depend on all possible use case (google, duckduckgo, etc.)
-    private let autocompleteUseCase: any AutocompleteSearchUseCase
+    private let autocompleteUseCase: AutocompleteSearchUseCase
     /// search view context
     private let searchContext: SearchViewContext
 
@@ -38,7 +39,10 @@ public final class SearchSuggestionsViewModelImpl: SearchSuggestionsViewModel {
     lazy var searchSuggestionsTaskHandler: Task<[String], Error>? = nil
     #endif
 
-    public init(_ autocompleteUseCase: any AutocompleteSearchUseCase, _ context: SearchViewContext) {
+    public init(
+        _ autocompleteUseCase: AutocompleteSearchUseCase,
+        _ context: SearchViewContext
+    ) {
         state = .waitingForQuery
         self.autocompleteUseCase = autocompleteUseCase
         searchContext = context
@@ -49,14 +53,19 @@ public final class SearchSuggestionsViewModelImpl: SearchSuggestionsViewModel {
     }
 
     public func fetchSuggestions(_ query: String) async {
-        let domainNames = await searchContext.knownDomainsStorage.domainNames(whereURLContains: query)
-        state = .knownDomainsLoaded(domainNames)
+        async let autocompletionSource = searchContext.webAutocompletionSourceValue
+        async let domainNames = searchContext.knownDomainsStorage.domainNames(whereURLContains: query)
+        let fetchData = await (
+            autocompletionSource: autocompletionSource,
+            domainNames: domainNames
+        )
+        state = .knownDomainsLoaded(fetchData.domainNames)
         searchSuggestionsTaskHandler?.cancel()
         do {
-            let suggestions = try await autocompleteUseCase.fetchSuggestions(query)
-            state = .everythingLoaded(domainNames, suggestions)
+            let suggestions = try await autocompleteUseCase.fetchSuggestions(fetchData.autocompletionSource, query)
+            state = .everythingLoaded(fetchData.domainNames, suggestions)
         } catch {
-            state = .everythingLoaded(domainNames, [])
+            state = .everythingLoaded(fetchData.domainNames, [])
         }
     }
 }

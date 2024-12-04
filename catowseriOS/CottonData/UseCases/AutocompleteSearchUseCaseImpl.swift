@@ -93,12 +93,31 @@ public final class AutocompleteSearchUseCaseImpl: AutocompleteSearchUseCase {
             .eraseToAnyPublisher()
     }
 
-    public func fetchSuggestions(_ query: String) async throws -> [String] {
-        #warning("TODO: support this API with a new data service")
-        throw AppError.zombieSelf
-        /**
-        let response = try await strategy.suggestionsTask(for: query)
-        return response.textResults
-         */
+    public func fetchSuggestions(
+        _ source: WebAutoCompletionSource,
+        _ query: String
+    ) async throws -> [String] {
+        let suggestions: [String] = try await withCheckedThrowingContinuation { [weak self] continuation in
+            guard let self else {
+                continuation.resume(throwing: AppError.zombieSelf)
+                return
+            }
+            searchDataService.sendCommand(
+                .fetchAutocompleteSuggestions(source, query),
+                nil
+            ) { result in
+                switch result {
+                case .failure(let searchError):
+                    continuation.resume(throwing: AppError.searchDataServiceError(searchError))
+                case .success(let serviceData):
+                    do {
+                        continuation.resume(returning: try serviceData.suggestions)
+                    } catch {
+                        continuation.resume(throwing: error)
+                    }
+                }
+            }
+        }
+        return suggestions
     }
 }
