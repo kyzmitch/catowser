@@ -402,12 +402,15 @@ private extension AppCoordinator {
         linkTagsCoordinator = LinkTagsCoordinator(vcFactory, presenter)
         linkTagsCoordinator?.parent = self
 
-        let coordinator: SearchBarCoordinator = .init(vcFactory,
-                                                      presenter,
-                                                      linkTagsCoordinator,
-                                                      self,
-                                                      self,
-                                                      uiFramework)
+        let coordinator = SearchBarCoordinator(
+            vcFactory,
+            presenter,
+            linkTagsCoordinator,
+            self,
+            self,
+            uiFramework,
+            appStartInfo.searchDataService
+        )
         coordinator.parent = self
         coordinator.start()
         searchBarCoordinator = coordinator

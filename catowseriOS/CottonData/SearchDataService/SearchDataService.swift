@@ -7,6 +7,7 @@
 //
 
 import Combine
+import CoreBrowser
 import DataServiceKit
 
 /// An interface for a factory to be able to mock it for the unit tests
@@ -56,6 +57,12 @@ public final class SearchDataService: GenericConcurrentDataService<SearchService
                 command,
                 urlWithDomainName
             )
+        case let .fetchSearchURL(suggestion, source):
+            handleConstructSearchEngineURL(
+                command,
+                source,
+                suggestion
+            )
         }
     }
 }
@@ -68,7 +75,7 @@ private extension SearchDataService {
         searchEngine: WebAutoCompletionSource,
         query: String
     ) {
-        if case .started(input: let existingRequest) = serviceData.searchSuggestions,
+        if case .started(input: let existingRequest) = serviceData.fetchingSearchSuggestions,
            existingRequest?.query == query {
             finishCommand(command, .failure(.sameSearchQueryAlreadyInProgress))
             return
@@ -97,7 +104,7 @@ private extension SearchDataService {
                 guard let self else {
                     return
                 }
-                serviceData.searchSuggestions = .finished(output: .success(suggestions))
+                serviceData.fetchingSearchSuggestions = .finished(output: .success(suggestions))
                 finishCommand(command, .success(serviceData))
             })
     }
@@ -122,8 +129,46 @@ private extension SearchDataService {
                 guard let self else {
                     return
                 }
-                serviceData.domainResolving = .finished(output: .success(resolvedURL))
+                serviceData.resolvingDomainName = .finished(output: .success(resolvedURL))
                 finishCommand(command, .success(serviceData))
             })
+    }
+
+    func handleConstructSearchEngineURL(
+        _ command: Command,
+        _ selectedPluginName: WebAutoCompletionSource,
+        _ suggestion: String
+    ) {
+        let client = parseSearchEngine(selectedPluginName)
+        guard let url = client.searchURLForQuery(suggestion) else {
+            finishCommand(command, .failure(.failedToCreateSearchEngine))
+            return
+        }
+        serviceData.constructingSearchURL = .finished(output: .success(url))
+        finishCommand(command, .success(serviceData))
+    }
+    
+    // MARK: - private functions
+    
+    func parseSearchEngine(
+        _ selectedPluginName: WebAutoCompletionSource
+    ) -> SearchEngine {
+        let optionalXmlData = ResourceReader.readXmlSearchPlugin(
+            with: selectedPluginName,
+            on: .main
+        )
+        guard let xmlData = optionalXmlData else {
+            return .googleSearchEngine()
+        }
+
+        let osDescription: OpenSearch.Description
+        do {
+            osDescription = try OpenSearch.Description(data: xmlData)
+        } catch {
+            print("Open search xml parser error: \(error.localizedDescription)")
+            return .googleSearchEngine()
+        }
+
+        return osDescription.html
     }
 }

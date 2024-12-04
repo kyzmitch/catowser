@@ -109,7 +109,6 @@
 		753752C82CFEB4B8008D40CF /* GoogleDNSOverJSONResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752C72CFEB4B7008D40CF /* GoogleDNSOverJSONResponse.swift */; };
 		753752CA2CFEB51D008D40CF /* GoogleDNSEndpointError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752C92CFEB51C008D40CF /* GoogleDNSEndpointError.swift */; };
 		753752CE2CFEBE05008D40CF /* SearchServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752CD2CFEBDFF008D40CF /* SearchServiceError.swift */; };
-		753752D02CFED1E4008D40CF /* WebAutoCompletionSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752CF2CFED1DC008D40CF /* WebAutoCompletionSource.swift */; };
 		753752D22CFEE086008D40CF /* StratFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752D12CFEE080008D40CF /* StratFactory.swift */; };
 		754249D32944B3F9002D6505 /* AppUIFrameworkTypeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754249D22944B3F9002D6505 /* AppUIFrameworkTypeModel.swift */; };
 		75458E432B468FE800004581 /* ReadTabsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75458E422B468FE800004581 /* ReadTabsUseCase.swift */; };
@@ -136,6 +135,11 @@
 		756AE6E02CA34B1A00938FCC /* DataServiceKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 756AE6BA2CA348BF00938FCC /* DataServiceKit.framework */; };
 		756AE6E52CA34B8E00938FCC /* DataServiceKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 756AE6BA2CA348BF00938FCC /* DataServiceKit.framework */; };
 		7570F7462B5C07E90066ABF1 /* UseCaseRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7570F7452B5C07E90066ABF1 /* UseCaseRegistry.swift */; };
+		75869DBD2D0059CC00D981B6 /* SearchEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60724F76221693670071BECF /* SearchEngine.swift */; };
+		75869DBE2D0059D600D981B6 /* GoogleSearchEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8035FC24449C9D000E035F /* GoogleSearchEngine.swift */; };
+		75869DBF2D005A2500D981B6 /* OpenSearchParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE46353244E07E600C8E063 /* OpenSearchParser.swift */; };
+		75869DC02D005A2C00D981B6 /* SearchEngine+OpenSearchParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A7A968C24462E8700E035F8 /* SearchEngine+OpenSearchParser.swift */; };
+		75869DC12D00C0D100D981B6 /* WebAutoCompletionSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752CF2CFED1DC008D40CF /* WebAutoCompletionSource.swift */; };
 		759E3E4D2C863B3D00245B44 /* Atomics in Frameworks */ = {isa = PBXBuildFile; productRef = 759E3E4C2C863B3D00245B44 /* Atomics */; };
 		75A764302B64BBB100D9D158 /* SiteNavigationProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A510F622424ADC30070503C /* SiteNavigationProtocols.swift */; };
 		75A764312B64BBDF00D9D158 /* WebViewNavigatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8F038A293FA96200237DFF /* WebViewNavigatable.swift */; };
@@ -215,10 +219,6 @@
 		8A2771D7268E4AB700D8878C /* GoogleDnsServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A46AB9C2377260300DC03E6 /* GoogleDnsServer.swift */; };
 		8A2771E9268E4AC200D8878C /* GDNSRequestParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A68E40F24597E3B0070F338 /* GDNSRequestParams.swift */; };
 		8A2771F2268E4AC600D8878C /* DnsRR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A68E41124597E880070F338 /* DnsRR.swift */; };
-		8A2771FB268E4AC900D8878C /* SearchEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60724F76221693670071BECF /* SearchEngine.swift */; };
-		8A27720C268E4ACC00D8878C /* GoogleSearchEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8035FC24449C9D000E035F /* GoogleSearchEngine.swift */; };
-		8A27721D268E4ACF00D8878C /* OpenSearchParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE46353244E07E600C8E063 /* OpenSearchParser.swift */; };
-		8A27722E268E4AD400D8878C /* SearchEngine+OpenSearchParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A7A968C24462E8700E035F8 /* SearchEngine+OpenSearchParser.swift */; };
 		8A3286F0294B585100ECCAEA /* SearchBarLegacyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A3286EF294B585100ECCAEA /* SearchBarLegacyView.swift */; };
 		8A328F3527B690980021F6B0 /* NetworkReachabilityAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A328F3427B690980021F6B0 /* NetworkReachabilityAdapter.swift */; };
 		8A328F3927B695490021F6B0 /* AlamofireReachabilityAdaptee.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A328F3827B695490021F6B0 /* AlamofireReachabilityAdaptee.swift */; };
@@ -1414,6 +1414,7 @@
 			isa = PBXGroup;
 			children = (
 				846220AE1EEE9B6C00B84C73 /* Tab.swift */,
+				753752CF2CFED1DC008D40CF /* WebAutoCompletionSource.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1917,8 +1918,6 @@
 				8AE6D1752350FF52006316AD /* Endpoints */,
 				8A62AEDA2351CDDB001A9C83 /* Servers */,
 				8A7DCCCE236432AA006AAEE2 /* Models */,
-				8A8035FB24449C72000E035F /* SearchEngines */,
-				8AE46352244E07D600C8E063 /* OpenSearch */,
 				8AA4FFF227A006CD003C3BBA /* HttpClient+Alamofire.swift */,
 				8A328F3827B695490021F6B0 /* AlamofireReachabilityAdaptee.swift */,
 				8A74188B245086330019695E /* Downloadable.swift */,
@@ -1988,8 +1987,9 @@
 				8A5FD6A826AF34570019384A /* AppErrors.swift */,
 				8A964E3924867A9400A0AABE /* SiteSettings+Extensions.swift */,
 				8A7B1BFE28EB3269004FC135 /* Site+Extensions.swift */,
-				753752CF2CFED1DC008D40CF /* WebAutoCompletionSource.swift */,
 				8A23987E286223CE005DA801 /* RestClientContext.swift */,
+				8AE46352244E07D600C8E063 /* OpenSearch */,
+				8A8035FB24449C72000E035F /* SearchEngines */,
 				753752C62CFE301D008D40CF /* UseCases */,
 				753752672CF59E0B008D40CF /* SearchDataService */,
 				8A7B1BC028EB1679004FC135 /* SearchViewModel */,
@@ -3296,6 +3296,7 @@
 				8A9863692822441300F679D7 /* URLInfo+Extension.swift in Sources */,
 				8A9980642845409100E18762 /* TabsSubject.swift in Sources */,
 				752A8C082A7058B100804319 /* TabsListError.swift in Sources */,
+				75869DC12D00C0D100D981B6 /* WebAutoCompletionSource.swift in Sources */,
 				8A99806028453FFD00E18762 /* TabAddStates.swift in Sources */,
 				8A745C0F2480287700A379AD /* TabsRepository.swift in Sources */,
 				8AD18E102447580A00224702 /* ResourceReader.swift in Sources */,
@@ -3515,10 +3516,8 @@
 				8A328F3927B695490021F6B0 /* AlamofireReachabilityAdaptee.swift in Sources */,
 				8A2771E9268E4AC200D8878C /* GDNSRequestParams.swift in Sources */,
 				8A277192268E4AA400D8878C /* GoogleJSONDNSoHTTPsEndpoint.swift in Sources */,
-				8A27722E268E4AD400D8878C /* SearchEngine+OpenSearchParser.swift in Sources */,
 				753752CA2CFEB51D008D40CF /* GoogleDNSEndpointError.swift in Sources */,
 				755E107C27C1241000D90AD0 /* DuckDuckGoServer.swift in Sources */,
-				8A2771FB268E4AC900D8878C /* SearchEngine.swift in Sources */,
 				8AB4A1B327B55484008030FB /* AlamofireHTTPRxVoidAdaptee.swift in Sources */,
 				753752C82CFEB4B8008D40CF /* GoogleDNSOverJSONResponse.swift in Sources */,
 				75F342472A6063A400E66192 /* AuthChallenge.swift in Sources */,
@@ -3526,10 +3525,8 @@
 				755E107A27C0FBC600D90AD0 /* DuckDuckGoSearchEndpoint.swift in Sources */,
 				8ABDB0B127B24E3900D6EDE7 /* Downloadable.swift in Sources */,
 				755E107727BFF85900D90AD0 /* AlamofireHTTPAdaptee.swift in Sources */,
-				8A27720C268E4ACC00D8878C /* GoogleSearchEngine.swift in Sources */,
 				8A2771BD268E4AAF00D8878C /* GoogleSearchEndpoint+AsyncAwait.swift in Sources */,
 				8A2771F2268E4AC600D8878C /* DnsRR.swift in Sources */,
-				8A27721D268E4ACF00D8878C /* OpenSearchParser.swift in Sources */,
 				8AE8D048280D3CB500FADE3A /* HttpKotlinTypes+Extensions.swift in Sources */,
 				8A239879286222F1005DA801 /* DuckDuckGoSearchEndpoint+AsyncAwait.swift in Sources */,
 				8A2771D7268E4AB700D8878C /* GoogleDnsServer.swift in Sources */,
@@ -3552,6 +3549,7 @@
 			files = (
 				8A7B1BC128EB169A004FC135 /* SearchSuggestionsViewModel.swift in Sources */,
 				8A7B1BB428EB15CB004FC135 /* WebViewModel.swift in Sources */,
+				75869DBD2D0059CC00D981B6 /* SearchEngine.swift in Sources */,
 				75A764312B64BBDF00D9D158 /* WebViewNavigatable.swift in Sources */,
 				8A7B1BC628EB16CC004FC135 /* RestClientContext.swift in Sources */,
 				8A7B1BF828EB2D7D004FC135 /* SiteSettings+Extensions.swift in Sources */,
@@ -3559,11 +3557,13 @@
 				753752CE2CFEBE05008D40CF /* SearchServiceError.swift in Sources */,
 				8A7B1BC228EB16A0004FC135 /* SearchSuggestionsViewModelImpl.swift in Sources */,
 				8A7B1BB628EB15D4004FC135 /* WebViewAction.swift in Sources */,
+				75869DBF2D005A2500D981B6 /* OpenSearchParser.swift in Sources */,
 				8A7B1BBC28EB1614004FC135 /* ResolveDNSUseCaseImpl.swift in Sources */,
 				753752692CF59E2E008D40CF /* SearchDataService.swift in Sources */,
 				8A7B1BF228EB28D3004FC135 /* AppErrors.swift in Sources */,
 				75A764382B651E0E00D9D158 /* ResolveDNSUseCase.swift in Sources */,
 				8A7B1BCB28EB16DF004FC135 /* GoogleAutocompleteStrategy.swift in Sources */,
+				75869DC02D005A2C00D981B6 /* SearchEngine+OpenSearchParser.swift in Sources */,
 				8A7B1BBB28EB15E6004FC135 /* WebViewContext.swift in Sources */,
 				75A764302B64BBB100D9D158 /* SiteNavigationProtocols.swift in Sources */,
 				753752722CF59F02008D40CF /* SearchServiceData.swift in Sources */,
@@ -3574,9 +3574,9 @@
 				75A764342B650B0A00D9D158 /* SearchAutocompleteStrategy.swift in Sources */,
 				75A764322B64BC3800D9D158 /* SiteNavigationComponent.swift in Sources */,
 				75A764362B650C2C00D9D158 /* AutocompleteSearchUseCase.swift in Sources */,
-				753752D02CFED1E4008D40CF /* WebAutoCompletionSource.swift in Sources */,
 				8A7B1BFF28EB3269004FC135 /* Site+Extensions.swift in Sources */,
 				8A7B1BC428EB16C4004FC135 /* AutocompleteSearchUseCaseImpl.swift in Sources */,
+				75869DBE2D0059D600D981B6 /* GoogleSearchEngine.swift in Sources */,
 				8A7B1BC928EB16DA004FC135 /* DDGoAutocompleteStrategy.swift in Sources */,
 				753752702CF59EA5008D40CF /* SearchServiceCommand.swift in Sources */,
 				8A7B1BBA28EB15E2004FC135 /* WebViewModelImpl.swift in Sources */,

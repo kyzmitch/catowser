@@ -31,6 +31,7 @@ import CoreBrowser
             _ = await TabsDataServiceFactory.shared
             // Register data services and use cases
             await ServiceRegistry.shared.registerDataServices()
+            let searchDataService = await ServiceRegistry.shared.findDataService(SearchDataService.self)
             await UseCaseRegistry.shared.registerUseCases()
             // Read main settings
             async let uiFramework = featureManager.appUIFrameworkValue()
@@ -69,7 +70,8 @@ import CoreBrowser
                 jsPluginsBuilder: pluginsSource,
                 defaultTabContent: defaultTabContent,
                 observingType: observingType,
-                uiFramework: uiFramework
+                uiFramework: uiFramework,
+                searchDataService: searchDataService
             )
         }
     }

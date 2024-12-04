@@ -6,6 +6,7 @@
 //  Copyright © 2024 Cotton (Catowser). All rights reserved.
 //
 
+import CoreBrowser
 import DataServiceKit
 
 /// Search data service commands
@@ -14,6 +15,11 @@ public enum SearchServiceCommand: GenericDataServiceCommand {
     case fetchAutocompleteSuggestions(WebAutoCompletionSource, String)
     /// Search for an IP address of the domain name
     case resolveDomainNameInURL(URL)
+    /// Fetch a search engine information and use it to construct a URL with a suggested phase
+    case fetchSearchURL(
+        suggestion: String,
+        searchEngineName: WebAutoCompletionSource
+    )
     
     public static var allCases: [SearchServiceCommand] {
         // swiftlint:disable:next force_unwrapping

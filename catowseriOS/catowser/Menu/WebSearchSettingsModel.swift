@@ -7,6 +7,7 @@
 //
 
 import CottonData
+import CoreBrowser
 import Foundation
 
 typealias WebSearchSettingsModel = BaseListViewModelImpl<WebAutoCompletionSource>

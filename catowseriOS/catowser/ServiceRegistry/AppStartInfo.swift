@@ -36,6 +36,8 @@ final class AppStartInfo: Sendable {
     let observingType: ObservingApiType
     /// UI framework type
     let uiFramework: UIFrameworkType
+    /// Search data service
+    let searchDataService: SearchDataService
     
     init(
         allTabsVM: AllTabsViewModel,
@@ -47,7 +49,8 @@ final class AppStartInfo: Sendable {
         jsPluginsBuilder: (any JSPluginsSource),
         defaultTabContent: CoreBrowser.Tab.ContentType,
         observingType: ObservingApiType,
-        uiFramework: UIFrameworkType
+        uiFramework: UIFrameworkType,
+        searchDataService: SearchDataService
     ) {
         self.allTabsVM = allTabsVM
         self.topSitesVM = topSitesVM
@@ -59,5 +62,6 @@ final class AppStartInfo: Sendable {
         self.defaultTabContent = defaultTabContent
         self.observingType = observingType
         self.uiFramework = uiFramework
+        self.searchDataService = searchDataService
     }
 }

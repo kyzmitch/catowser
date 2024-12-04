@@ -24,12 +24,14 @@ public struct SearchEngine: Sendable {
     /// So far not used parameter,  but it is present in OpenSearch format
     let httpMethod: HTTPMethod
 
-    init(shortName: String,
-         domainName: String,
-         path: String,
-         queryItems: [URLQueryItem],
-         imageData: OpenSearch.ImageParseResult = .none,
-         httpMethod: HTTPMethod = .get) {
+    init(
+        shortName: String,
+        domainName: String,
+        path: String,
+        queryItems: [URLQueryItem],
+        imageData: OpenSearch.ImageParseResult = .none,
+        httpMethod: HTTPMethod = .get
+    ) {
         self.shortName = shortName
 
         var components = URLComponents()

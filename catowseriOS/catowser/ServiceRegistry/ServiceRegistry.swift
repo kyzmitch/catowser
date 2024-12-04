@@ -21,7 +21,7 @@ import FeaturesFlagsKit
 
     actor StateHolder {
         /// locator for the data services
-        private let locator: LazyServiceLocator
+        private let dataServiceLocator: DataServiceLocator
         
         let dnsClient: GoogleDnsClient
         let googleClient: GoogleSuggestionsClient
@@ -40,7 +40,7 @@ import FeaturesFlagsKit
         let duckduckgoClientRxSubscriber: DDGoSuggestionsClientRxSubscriber = .init()
 
         init() {
-            locator = LazyServiceLocator()
+            dataServiceLocator = DataServiceLocator()
             
             let googleDNSserver = GoogleDnsServer()
             // swiftlint:disable:next force_unwrapping
@@ -68,33 +68,12 @@ import FeaturesFlagsKit
         
         func findDataService<T>(_ type: T.Type, _ key: String? = nil) -> T {
             // swiftlint:disable:next force_unwrapping
-            locator.findService(type, key)!
+            dataServiceLocator.findService(type, key)!
         }
         
         func registerDataServices() {
-            let searchDataService = SearchDataService(
-                stratsFactory: StratsFactory.shared
-            )
-            locator.register(searchDataService)
-        }
-
-        func searchSuggestClient() async -> SearchEngine {
-            #warning("TODO: can be a part of search data service")
-            let selectedPluginName = await FeatureManager.shared.searchPluginName()
-            let optionalXmlData = ResourceReader.readXmlSearchPlugin(with: selectedPluginName, on: .main)
-            guard let xmlData = optionalXmlData else {
-                return .googleSearchEngine()
-            }
-
-            let osDescription: OpenSearch.Description
-            do {
-                osDescription = try OpenSearch.Description(data: xmlData)
-            } catch {
-                print("Open search xml parser error: \(error.localizedDescription)")
-                return .googleSearchEngine()
-            }
-
-            return osDescription.html
+            let searchDataService = SearchDataService(stratsFactory: StratsFactory.shared)
+            dataServiceLocator.register(searchDataService)
         }
     }
 }

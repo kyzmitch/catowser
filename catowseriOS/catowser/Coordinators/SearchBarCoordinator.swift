@@ -41,19 +41,24 @@ final class SearchBarCoordinator: NSObject, Coordinator {
     private var isSuggestionsShowed: Bool = false
 
     let uiFramework: UIFrameworkType
+    private let searchDataService: SearchDataService
 
-    init(_ vcFactory: ViewControllerFactory,
-         _ presenter: AnyViewController,
-         _ downloadPanelDelegate: DownloadPanelPresenter?,
-         _ globalMenuDelegate: GlobalMenuDelegate?,
-         _ delegate: SearchBarDelegate?,
-         _ uiFramework: UIFrameworkType) {
+    init(
+        _ vcFactory: ViewControllerFactory,
+        _ presenter: AnyViewController,
+        _ downloadPanelDelegate: DownloadPanelPresenter?,
+        _ globalMenuDelegate: GlobalMenuDelegate?,
+        _ delegate: SearchBarDelegate?,
+        _ uiFramework: UIFrameworkType,
+        _ searchDataService: SearchDataService
+    ) {
         self.vcFactory = vcFactory
         self.presenterVC = presenter
         self.downloadPanelDelegate = downloadPanelDelegate
         self.globalMenuDelegate = globalMenuDelegate
         self.delegate = delegate
         self.uiFramework = uiFramework
+        self.searchDataService = searchDataService
     }
 
     func start() {
@@ -310,26 +315,31 @@ extension SearchBarCoordinator: SearchSuggestionsListDelegate {
     }
 }
 
-extension FeatureManager.StateHolder {
-    func searchPluginName() async -> KnownSearchPluginName {
-        switch await webSearchAutoCompleteValue() {
-        case .google:
-            return .google
-        case .duckduckgo:
-            return .duckduckgo
-        }
-    }
-}
-
 // MARK: - Async private methods
 
 private extension SearchBarCoordinator {
     func handleSuggestion(_ suggestion: String) async {
-        let client = await ServiceRegistry.shared.searchSuggestClient()
-        guard let url = client.searchURLForQuery(suggestion) else {
-            assertionFailure("Failed construct search engine url from suggestion string")
-            return
+        let searchEngineName = await FeatureManager.shared.webSearchAutoCompleteValue()
+        searchDataService.sendCommand(
+            .fetchSearchURL(
+                suggestion: suggestion,
+                searchEngineName: searchEngineName
+            ),
+            nil
+        ) { [weak self] result in
+            switch result {
+            case .failure(let failure):
+                print("Fail to fetch search engine: \(failure)")
+            case .success(let serviceData):
+                do {
+                    let url = try serviceData.searchURL
+                    Task {
+                        await self?.replaceTab(with: url, with: suggestion)
+                    }
+                } catch {
+                    print("Fail to construct search URL: \(error)")
+                }
+            }
         }
-        await replaceTab(with: url, with: suggestion)
     }
 }

@@ -13,13 +13,13 @@ import FeaturesFlagsKit
 import BrowserNetworking
 import CottonBase
 import Combine
+import CottonData
 
 /// An analog of existing SearchBar coordinator, but for SwiftUI
 /// and at the same time it implements `SearchSuggestionsListDelegate`
 /// and `UISearchBarDelegate` which couldn't be implemented in SwiftUI view.
 /// This class is only needed for SwiftUI mode when it uses old UKit view controller.
-@MainActor
-final class SearchBarViewModel: NSObject, ObservableObject {
+@MainActor final class SearchBarViewModel: NSObject, ObservableObject {
     /// Based on values from observed delegates and search bar state it is possible to tell
     /// if search suggestions view can be showed or no.
     @Published var showSearchSuggestionsState: Bool
@@ -30,11 +30,17 @@ final class SearchBarViewModel: NSObject, ObservableObject {
     /// Temporary property which automatically removes leading spaces.
     /// Can't declare it private due to compiler error.
     @LeadingTrimmed private var tempSearchText: String
-    /// write tabs use case
+    /// Write tabs use case
     private let writeTabsUseCase: WriteTabsUseCase
+    /// Autocomplete search use case
+    private let autocompletionUseCase: AutocompleteSearchUseCase
 
-    init(_ writeTabsUseCase: WriteTabsUseCase) {
+    init(
+        _ writeTabsUseCase: WriteTabsUseCase,
+        _ autocompletionUseCase: AutocompleteSearchUseCase
+    ) {
         self.writeTabsUseCase = writeTabsUseCase
+        self.autocompletionUseCase = autocompletionUseCase
         showSearchSuggestionsState = false
         searchQueryState = ""
         tempSearchText = ""
@@ -81,8 +87,8 @@ extension SearchBarViewModel: SearchSuggestionsListDelegate {
             }
             await replaceTab(with: url, with: nil, isJSEnabled)
         case .suggestion(let suggestion):
-            let client = await ServiceRegistry.shared.searchSuggestClient()
-            guard let url = client.searchURLForQuery(suggestion) else {
+            let source = await FeatureManager.shared.webSearchAutoCompleteValue()
+            guard let url = try? await autocompletionUseCase.createSearchURL(source, suggestion) else {
                 assertionFailure("Failed construct search engine url from suggestion string")
                 return
             }

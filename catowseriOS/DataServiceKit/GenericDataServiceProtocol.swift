@@ -17,6 +17,9 @@ public protocol GenericDataServiceProtocol: AnyObject {
     associatedtype ServiceData: GenericServiceData
     /// Data service error type
     associatedtype ServiceError: DataServiceKitError
+    /// Type of closure for response on a command
+    typealias Promise = (Result<ServiceData, ServiceError>) -> Void
+
     /// mutable service data (state)
     var serviceData: ServiceData { get set }
     /// Dispatch queue for a business logic
@@ -33,6 +36,6 @@ public protocol GenericDataServiceProtocol: AnyObject {
     func sendCommand(
         _ command: Command,
         _ input: ServiceData?,
-        _ onComplete: @escaping (Result<ServiceData, ServiceError>) -> Void
+        _ onComplete: @escaping Promise
     )
 }

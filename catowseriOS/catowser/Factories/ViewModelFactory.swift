@@ -79,6 +79,10 @@ final class ViewModelFactory {
     
     func searchBarViewModel() async -> any SearchBarViewModelProtocol {
         async let writeUseCase = UseCaseRegistry.shared.findUseCase(WriteTabsUseCase.self)
-        return await SearchBarViewModel(writeUseCase)
+        async let autocompleteUseCase = UseCaseRegistry.shared.findUseCase(AutocompleteSearchUseCase.self)
+        return await SearchBarViewModel(
+            writeUseCase,
+            autocompleteUseCase
+        )
     }
 }

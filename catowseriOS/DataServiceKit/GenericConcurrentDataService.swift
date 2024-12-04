@@ -25,7 +25,7 @@ open class GenericConcurrentDataService<
     public let responseQueue: DispatchQueueInterface
     public var serviceData: ServiceData
     public let lock: NSRecursiveLock
-    private var commandToPromise: [Command: (Result<ServiceData, ServiceError>) -> Void]
+    private var commandToPromise: [Command: Promise]
     
     public init(
         executionQueue: DispatchQueueInterface = DispatchQueue.global(),
@@ -41,7 +41,7 @@ open class GenericConcurrentDataService<
     public func sendCommand(
         _ command: Command,
         _ input: ServiceData?,
-        _ onComplete: @escaping (Result<ServiceData, ServiceError>) -> Void
+        _ onComplete: @escaping Promise
     ) {
         executionQueue.performAsync { [weak self] in
             guard let self else {

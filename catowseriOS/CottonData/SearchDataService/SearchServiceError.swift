@@ -12,7 +12,9 @@ public enum SearchServiceError: DataServiceKitError {
     case zombyInstance
     case sameSearchQueryAlreadyInProgress
     case strategyError(Error)
-    case requestedDataWhenNotCorrecrtState
+    case requestDataWhenNotCorrectState
+    case xmlParsingError(Error)
+    case failedToCreateSearchEngine
 
     public init(zombyInstance: Bool) {
         self = .zombyInstance
