@@ -355,7 +355,7 @@ private extension WebViewModelImpl {
             guard let self = self else {
                 throw AppError.zombieSelf
             }
-            return try await self.resolveDnsUseCase.aaResolveDomainName(originalURL)
+            return try await self.resolveDnsUseCase.resolveDomainName(originalURL)
         }
         dnsRequestTaskHandler = taskHandler
         do {

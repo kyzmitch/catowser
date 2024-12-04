@@ -34,8 +34,7 @@ final class ViewModelFactory {
         _ context: WebViewContext,
         _ siteNavigation: SiteExternalNavigationDelegate?
     ) async -> any WebViewModel {
-        let type = (any ResolveDNSUseCase).self
-        async let googleDnsUseCase = UseCaseRegistry.shared.findUseCase(type, .googleResolveDnsUseCase)
+        async let googleDnsUseCase = UseCaseRegistry.shared.findUseCase(ResolveDNSUseCase.self)
         async let selectTabUseCase = UseCaseRegistry.shared.findUseCase(SelectedTabUseCase.self)
         async let writeUseCase = UseCaseRegistry.shared.findUseCase(WriteTabsUseCase.self)
         return await WebViewModelImpl(

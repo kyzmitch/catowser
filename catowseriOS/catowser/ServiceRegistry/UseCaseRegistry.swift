@@ -11,10 +11,6 @@ import Foundation
 import CoreBrowser
 import CottonData
 
-extension String {
-    static let googleResolveDnsUseCase = "googleResolveDnsUseCase"
-}
-
 @globalActor
 final class UseCaseRegistry {
     static let shared = StateHolder()
@@ -34,7 +30,7 @@ final class UseCaseRegistry {
         func registerUseCases() async {
             await registerTabsUseCases()
             await registerSearchAutocompleteUseCases()
-            registerDnsResolveUseCases()
+            await registerDnsResolveUseCases()
         }
 
         func findUseCase<T>(_ type: T.Type, _ key: String? = nil) -> T {
@@ -73,17 +69,12 @@ final class UseCaseRegistry {
             )
         }
 
-        private func registerDnsResolveUseCases() {
-            /// It is the same context for any site or view model, maybe it makes sense to use only one
-            let googleContext = GoogleDNSContext(ServiceRegistry.shared.dnsClient,
-                                                 ServiceRegistry.shared.dnsClientRxSubscriber,
-                                                 ServiceRegistry.shared.dnsClientSubscriber)
-
-            let googleStrategy = GoogleDNSStrategy(googleContext)
-            let googleUseCase: any ResolveDNSUseCase = ResolveDNSUseCaseImpl(googleStrategy)
-            useCaseLocator.registerNamed(
+        private func registerDnsResolveUseCases() async {
+            let searchDataService = await serviceRegistry.findDataService(SearchDataService.self)
+            let googleUseCase: ResolveDNSUseCase = ResolveDNSUseCaseImpl(searchDataService)
+            useCaseLocator.registerTyped(
                 googleUseCase,
-                .googleResolveDnsUseCase
+                of: ResolveDNSUseCase.self
             )
         }
     }

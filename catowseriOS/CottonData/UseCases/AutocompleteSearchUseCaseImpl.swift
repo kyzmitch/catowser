@@ -17,7 +17,7 @@ private extension String {
 
 /// Web search suggestions (search autocomplete) facade
 public final class AutocompleteSearchUseCaseImpl: AutocompleteSearchUseCase {
-    public let searchDataService: SearchDataService
+    private let searchDataService: SearchDataService
 
     private let waitingQueue: DispatchQueue
     private let waitingScheduler: QueueScheduler
@@ -50,7 +50,10 @@ public final class AutocompleteSearchUseCaseImpl: AutocompleteSearchUseCase {
          */
     }
 
-    public func suggestionsPublisher(_ query: String) -> WebSearchSuggestionsPublisher {
+    public func suggestionsPublisher(
+        _ source: WebAutoCompletionSource,
+        _ query: String
+    ) -> WebSearchSuggestionsPublisher {
         let dataServicePublisher = Deferred {
             Future<SearchServiceData, AppError> { [weak self] promise in
                 guard let self else {
@@ -58,7 +61,7 @@ public final class AutocompleteSearchUseCaseImpl: AutocompleteSearchUseCase {
                     return
                 }
                 searchDataService.sendCommand(
-                    .fetchAutocompleteSuggestions(.duckduckgo, query),
+                    .fetchAutocompleteSuggestions(source, query),
                     nil
                 ) { result in
                     switch result {
