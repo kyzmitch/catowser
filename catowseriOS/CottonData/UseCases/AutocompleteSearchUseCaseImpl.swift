@@ -33,21 +33,39 @@ public final class AutocompleteSearchUseCaseImpl: AutocompleteSearchUseCase {
     }
 
     public func suggestionsProducer(_ query: String) -> WebSearchSuggestionsProducer {
-        #warning("TODO: remove Rx variant or fix it")
-        return WebSearchSuggestionsProducer.init(value: [""])
-        /**
+        let producer: SignalProducer<SearchServiceData, AppError> = .init { [weak self] (observer, lifetime) in
+            guard let self = self else {
+                observer.send(error: .zombieSelf)
+                return
+            }
+            searchDataService.sendCommand(
+                .fetchAutocompleteSuggestions(.duckduckgo, query),
+                nil
+            ) { result in
+                switch result {
+                case .failure(let searchError):
+                    observer.send(error: .searchDataServiceError(searchError))
+                case .success(let serviceData):
+                    observer.send(value: serviceData)
+                    observer.sendCompleted()
+                }
+            }
+        }
         let source = SignalProducer<String, Never>.init(value: query)
         return source
             .delay(0.5, on: waitingScheduler)
-            .flatMap(.latest, { [weak self] _ -> WebSearchSuggestionsProducer in
-                guard let self = self else {
-                    return .init(error: .zombieSelf)
-                }
-                return self.strategy.suggestionsProducer(for: query)
-                    .map { $0.textResults }
+            .flatMap(.latest, { _ -> WebSearchSuggestionsProducer in
+                return producer
+                    .attemptMap { serviceData in
+                        do {
+                            return .success(try serviceData.suggestions)
+                        } catch {
+                            return .failure(.erasedSearchDataServiceError(error))
+                        }
+                    }
+                    
             })
             .observe(on: QueueScheduler.main)
-         */
     }
 
     public func suggestionsPublisher(

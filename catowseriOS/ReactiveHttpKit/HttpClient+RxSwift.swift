@@ -15,10 +15,11 @@ public typealias RxProducer<R: ResponseType> = SignalProducer<R, HttpError>
 public typealias RxVoidProducer = SignalProducer<Void, HttpError>
 
 extension RestClient {
-    public func rxMakeRequest<T, B: HTTPRxAdapter, RX>(for endpoint: Endpoint<Server>,
-                                                       withAccessToken accessToken: String?,
-                                                       transport adapter: B,
-                                                       subscriber: RxSubscriber<T, Server, RX>) -> RxProducer<T>
+    public func rxMakeRequest<T, B: HTTPRxAdapter, RX>(
+        for endpoint: Endpoint<Server>,
+        withAccessToken accessToken: String?,
+        transport adapter: B,
+        subscriber: RxSubscriber<T, Server, RX>) -> RxProducer<T>
     where B.Response == T, B.Server == Server, B.ObserverWrapper == RX {
         let producer: SignalProducer<T, HttpError> = .init { [weak self] (observer, lifetime) in
             guard let self = self else {

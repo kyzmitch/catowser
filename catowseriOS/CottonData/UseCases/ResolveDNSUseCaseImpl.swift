@@ -32,13 +32,33 @@ public final class ResolveDNSUseCaseImpl: ResolveDNSUseCase {
     }
 
     public func resolveDomainNameProducer(_ url: URL) -> DNSResolvingProducer {
-        #warning("TODO: implement for RX")
-        let dummyURL = URL(string: "example.com")
-        return DNSResolvingProducer(value: dummyURL!)
-        /**
-        return strategy.domainNameResolvingProducer(url)
+        let producer: SignalProducer<SearchServiceData, AppError> = .init { [weak self] (observer, lifetime) in
+            guard let self = self else {
+                observer.send(error: .zombieSelf)
+                return
+            }
+            searchDataService.sendCommand(
+                .resolveDomainNameInURL(url),
+                nil
+            ) { result in
+                switch result {
+                case .failure(let searchError):
+                    observer.send(error: .searchDataServiceError(searchError))
+                case .success(let serviceData):
+                    observer.send(value: serviceData)
+                    observer.sendCompleted()
+                }
+            }
+        }
+        return producer
+            .attemptMap { serviceData in
+                do {
+                    return .success(try serviceData.resolvedURL)
+                } catch {
+                    return .failure(.erasedSearchDataServiceError(error))
+                }
+            }
             .observe(on: QueueScheduler.main)
-         */
     }
 
     public func resolveDomainNamePublisher(_ url: URL) -> DNSResolvingPublisher {
@@ -70,11 +90,27 @@ public final class ResolveDNSUseCaseImpl: ResolveDNSUseCase {
     }
 
     public func resolveDomainName(_ url: URL) async throws -> URL {
-        #warning("TODO: implement for Concurrency")
-        throw AppError.zombieSelf
-        /**
-        let response = try await strategy.domainNameResolvingTask(url)
-        return response
-         */
+        let resolvedURL: URL = try await withCheckedThrowingContinuation { [weak self] continuation in
+            guard let self else {
+                continuation.resume(throwing: AppError.zombieSelf)
+                return
+            }
+            searchDataService.sendCommand(
+                .resolveDomainNameInURL(url),
+                nil
+            ) { result in
+                switch result {
+                case .failure(let searchError):
+                    continuation.resume(throwing: AppError.searchDataServiceError(searchError))
+                case .success(let serviceData):
+                    do {
+                        continuation.resume(returning: try serviceData.resolvedURL)
+                    } catch {
+                        continuation.resume(throwing: error)
+                    }
+                }
+            }
+        }
+        return resolvedURL
     }
 }
