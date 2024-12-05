@@ -17,8 +17,7 @@ import FeaturesFlagsKit
 ///
 /// It doesn't need to be globalActor even tho it is a singleton,
 /// because it doesn't hold the state and vm creation is synchronous.
-@MainActor
-final class ViewModelFactory {
+@MainActor final class ViewModelFactory {
     static let shared: ViewModelFactory = .init()
 
     private let useCaseRegistry: UseCaseRegistry.StateHolder

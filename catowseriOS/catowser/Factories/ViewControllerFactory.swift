@@ -38,24 +38,30 @@ protocol ViewControllerFactory: AnyObject {
     ) -> AnyViewController
     where W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarViewModelProtocol
 
-    func searchBarViewController(_ searchBarDelegate: UISearchBarDelegate?,
-                                 _ uiFramework: UIFrameworkType) -> SearchBarBaseViewController
-    func searchSuggestionsViewController(_ delegate: SearchSuggestionsListDelegate?,
-                                         _ viewModel: any SearchSuggestionsViewModel) -> AnyViewController
+    func searchBarViewController(
+        _ searchBarDelegate: UISearchBarDelegate?,
+        _ uiFramework: UIFrameworkType
+    ) -> SearchBarBaseViewController
+    func searchSuggestionsViewController(
+        _ delegate: SearchSuggestionsListDelegate?,
+        _ viewModel: any SearchSuggestionsViewModel
+    ) -> AnyViewController
 
-    func webViewController<C: Navigating>(_ coordinator: C?,
-                                          _ viewModel: any WebViewModel,
-                                          _ mode: UIFrameworkType) -> AnyViewController & WebViewNavigatable
-    where C.R == WebContentRoute
+    func webViewController<C: Navigating>(
+        _ coordinator: C?,
+        _ viewModel: any WebViewModel,
+        _ mode: UIFrameworkType
+    ) -> AnyViewController & WebViewNavigatable where C.R == WebContentRoute
     func topSitesViewController<C: Navigating>(
         _ coordinator: C?,
         _ topSitesVM: TopSitesViewModel
     ) -> AnyViewController where C.R == TopSitesRoute
     var blankWebPageViewController: UIViewController { get }
     var loadingProgressViewController: AnyViewController { get }
-    func siteMenuViewController<C: Navigating>(_ model: MenuViewModel,
-                                               _ coordinator: C) -> UIViewController
-    where C.R == MenuScreenRoute
+    func siteMenuViewController<C: Navigating>(
+        _ model: MenuViewModel,
+        _ coordinator: C
+    ) -> UIViewController where C.R == MenuScreenRoute
 
     // MARK: - layout specific methods with optional results
 
@@ -64,19 +70,25 @@ protocol ViewControllerFactory: AnyObject {
     /// Convinience property to get a reference without input parameters
     var createdToolbaViewController: UIViewController? { get }
     /// WIll return nil on Tablet
-    func deviceSpecificSearchBarViewController(_ searchBarDelegate: UISearchBarDelegate?,
-                                               _ uiFramework: UIFrameworkType) -> AnyViewController?
+    func deviceSpecificSearchBarViewController(
+        _ searchBarDelegate: UISearchBarDelegate?,
+        _ uiFramework: UIFrameworkType
+    ) -> AnyViewController?
     /// Will return nil on Phone
-    func deviceSpecificSearchBarViewController(_ searchBarDelegate: UISearchBarDelegate?,
-                                               _ downloadDelegate: DownloadPanelPresenter?,
-                                               _ settingsDelegate: GlobalMenuDelegate?,
-                                               _ uiFramework: UIFrameworkType) -> AnyViewController?
+    func deviceSpecificSearchBarViewController(
+        _ searchBarDelegate: UISearchBarDelegate?,
+        _ downloadDelegate: DownloadPanelPresenter?,
+        _ settingsDelegate: GlobalMenuDelegate?,
+        _ uiFramework: UIFrameworkType
+    ) -> AnyViewController?
     /// WIll return nil on Tablet. Should re-create tabs every time to update them
-    func toolbarViewController<C: Navigating>(_ downloadDelegate: DownloadPanelPresenter?,
-                                              _ settingsDelegate: GlobalMenuDelegate?,
-                                              _ coordinator: C?,
-                                              // swiftlint:disable:next line_length
-                                              _ presenter: AnyViewController?) -> UIViewController? where C.R == ToolbarRoute
+    func toolbarViewController<C: Navigating>(
+        _ downloadDelegate: DownloadPanelPresenter?,
+        _ settingsDelegate: GlobalMenuDelegate?,
+        _ coordinator: C?,
+        // swiftlint:disable:next line_length
+        _ presenter: AnyViewController?
+    ) -> UIViewController? where C.R == ToolbarRoute
     /// WIll return nil on Tablet
     func tabsPreviewsViewController<C: Navigating>(
         _ coordinator: C,
@@ -121,8 +133,10 @@ extension ViewControllerFactory {
         return vc
     }
 
-    func searchBarViewController(_ searchBarDelegate: UISearchBarDelegate?,
-                                 _ uiFramework: UIFrameworkType) -> SearchBarBaseViewController {
+    func searchBarViewController(
+        _ searchBarDelegate: UISearchBarDelegate?,
+        _ uiFramework: UIFrameworkType
+    ) -> SearchBarBaseViewController {
         let vc: SearchBarBaseViewController = .init(
             searchBarDelegate,
             uiFramework,
@@ -132,8 +146,10 @@ extension ViewControllerFactory {
         return vc
     }
 
-    func searchSuggestionsViewController(_ delegate: SearchSuggestionsListDelegate?,
-                                         _ viewModel: any SearchSuggestionsViewModel) -> AnyViewController {
+    func searchSuggestionsViewController(
+        _ delegate: SearchSuggestionsListDelegate?,
+        _ viewModel: any SearchSuggestionsViewModel
+    ) -> AnyViewController {
         // It seems it should be computed property
         // to allow app. to use different view model
         // based on current feature flag's value
@@ -141,15 +157,18 @@ extension ViewControllerFactory {
         return vc
     }
 
-    func webViewController<C: Navigating>(_ coordinator: C?,
-                                          _ viewModel: any WebViewModel,
-                                          _ mode: UIFrameworkType) -> AnyViewController & WebViewNavigatable
-    where C.R == WebContentRoute {
+    func webViewController<C: Navigating>(
+        _ coordinator: C?,
+        _ viewModel: any WebViewModel,
+        _ mode: UIFrameworkType
+    ) -> AnyViewController & WebViewNavigatable where C.R == WebContentRoute {
         return WebViewController(coordinator, viewModel, mode)
     }
 
-    func siteMenuViewController<C: Navigating>(_ model: MenuViewModel, _ coordinator: C) -> UIViewController
-    where C.R == MenuScreenRoute {
+    func siteMenuViewController<C: Navigating>(
+        _ model: MenuViewModel,
+        _ coordinator: C
+    ) -> UIViewController where C.R == MenuScreenRoute {
         let vc: SiteMenuViewController = .init(model, coordinator)
         return vc
     }
@@ -159,7 +178,9 @@ extension ViewControllerFactory {
         return vc
     }
 
-    func linkTagsViewController(_ delegate: LinkTagsDelegate?) -> AnyViewController & LinkTagsPresenter {
+    func linkTagsViewController(
+        _ delegate: LinkTagsDelegate?
+    ) -> AnyViewController & LinkTagsPresenter {
         let vc = LinkTagsViewController.newFromStoryboard(delegate: delegate)
         return vc
     }
