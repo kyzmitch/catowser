@@ -528,8 +528,7 @@ private extension AppCoordinator {
     func insertWebTab(_ site: Site) {
         switch uiFramework {
         case .uiKit:
-            guard let containerView = webContentContainerCoordinator?.startedView,
-                  let plugins = jsPluginsBuilder else {
+            guard let containerView = webContentContainerCoordinator?.startedView else {
                 assertionFailure("Root view controller must have content view")
                 return
             }
@@ -540,10 +539,10 @@ private extension AppCoordinator {
                                                            containerView,
                                                            self,
                                                            site,
-                                                           plugins,
+                                                           appStartInfo.jsPluginsBuilder,
                                                            uiFramework)
             coordinator.parent = self
-            let context: WebViewContextImpl = .init(plugins)
+            let context: WebViewContextImpl = .init(appStartInfo.jsPluginsBuilder)
             /// It is fine to do async coordinator start in this specific case
             /// first because it requires new Site every time
             /// second, layout is done in scope of start, so, coordinator won't be nil during layout request

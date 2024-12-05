@@ -18,11 +18,14 @@ import CoreBrowser
     
     actor StateHolder {
         private let featureManager: FeatureManager.StateHolder
+        private let serviceRegistry: ServiceRegistry.StateHolder
 
         init (
-            featureManager: FeatureManager.StateHolder = FeatureManager.shared
+            featureManager: FeatureManager.StateHolder = FeatureManager.shared,
+            serviceRegistry: ServiceRegistry.StateHolder = ServiceRegistry.shared
         ) {
             self.featureManager = featureManager
+            self.serviceRegistry = serviceRegistry
         }
         
         func configure(
@@ -30,24 +33,23 @@ import CoreBrowser
             instagramDelegate: InstagramContentDelegate
         ) async -> AppStartInfo {
             // Register data services and use cases
-            await ServiceRegistry.shared.registerDataServices()
-            let searchDataService = await ServiceRegistry.shared.findDataService(SearchDataService.self)
-            // Init database for the tabs first
-            _ = await TabsDataServiceFactory.shared
+            await serviceRegistry.registerDataServices()
             await UseCaseRegistry.shared.registerUseCases()
             // Read main settings
             async let uiFramework = featureManager.appUIFrameworkValue()
             async let defaultTabContent = DefaultTabProvider.shared.contentState
             async let observingType = featureManager.observingApiTypeValue()
+            // Construct java script plugins
             async let pluginsSource = JSPluginsBuilder()
                 .setBase(baseDelegate)
                 .setInstagram(instagramDelegate)
+            // Init view model factory
             async let viewModelFactory = ViewModelFactory.shared
             let supplementaryData = await (
                 pluginsSource: pluginsSource,
                 viewModelFactory: viewModelFactory
             )
-
+            // Construct dependencies for the view models
             let webContext = await WebViewContextImpl(pluginsSource)
             let factory = supplementaryData.viewModelFactory
             // Init view models
@@ -61,7 +63,9 @@ import CoreBrowser
                 nil
             )
             async let searchBarVM = factory.searchBarViewModel()
-
+            // Get a reference to a data service
+            let searchDataService = await serviceRegistry.findDataService(SearchDataService.self)
+            // Wait for all the view models needed for app start
             return await AppStartInfo(
                 allTabsVM: allTabsVM,
                 topSitesVM: topSitesVM,

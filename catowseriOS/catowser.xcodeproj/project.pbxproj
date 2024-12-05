@@ -2148,9 +2148,9 @@
 			isa = PBXGroup;
 			children = (
 				75DA4C7A2C9C7F40009AE049 /* UIServiceRegistry.swift */,
+				8AA68A9E245BE47900263E22 /* ServiceRegistry.swift */,
 				753752832CF5FED8008D40CF /* AppAssembler.swift */,
 				753752852CF6F1A8008D40CF /* AppStartInfo.swift */,
-				8AA68A9E245BE47900263E22 /* ServiceRegistry.swift */,
 				753752872CF6FFB7008D40CF /* PluginsProxy.swift */,
 				60724EED220C4FDC0071BECF /* WebViewsReuseManager.swift */,
 				7570F7452B5C07E90066ABF1 /* UseCaseRegistry.swift */,
