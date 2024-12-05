@@ -109,7 +109,7 @@
 		753752C82CFEB4B8008D40CF /* GoogleDNSOverJSONResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752C72CFEB4B7008D40CF /* GoogleDNSOverJSONResponse.swift */; };
 		753752CA2CFEB51D008D40CF /* GoogleDNSEndpointError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752C92CFEB51C008D40CF /* GoogleDNSEndpointError.swift */; };
 		753752CE2CFEBE05008D40CF /* SearchServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752CD2CFEBDFF008D40CF /* SearchServiceError.swift */; };
-		753752D22CFEE086008D40CF /* StratFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752D12CFEE080008D40CF /* StratFactory.swift */; };
+		753752D22CFEE086008D40CF /* StrategyFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752D12CFEE080008D40CF /* StrategyFactory.swift */; };
 		754249D32944B3F9002D6505 /* AppUIFrameworkTypeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754249D22944B3F9002D6505 /* AppUIFrameworkTypeModel.swift */; };
 		75458E432B468FE800004581 /* ReadTabsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75458E422B468FE800004581 /* ReadTabsUseCase.swift */; };
 		75458E452B468FF800004581 /* WriteTabsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75458E442B468FF800004581 /* WriteTabsUseCase.swift */; };
@@ -248,7 +248,6 @@
 		8A745C0B247FE94000A379AD /* DefaultTabProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60724ED92204332B0071BECF /* DefaultTabProvider.swift */; };
 		8A745C0D248027C600A379AD /* TabsRepositoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60724EA621FF17C90071BECF /* TabsRepositoryImpl.swift */; };
 		8A745C0F2480287700A379AD /* TabsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A745C0E2480287700A379AD /* TabsRepository.swift */; };
-		8A745C112480295B00A379AD /* AsyncServiceRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A745C102480295B00A379AD /* AsyncServiceRegistry.swift */; };
 		8A745C1424802E4F00A379AD /* TabsObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A745C1324802E4F00A379AD /* TabsObserver.swift */; };
 		8A7A9BAC23F1C477008850B6 /* URL+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A7A9BAB23F1C477008850B6 /* URL+Extensions.swift */; };
 		8A7B1BA028EB131F004FC135 /* CottonData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A7B1B9828EB131E004FC135 /* CottonData.framework */; };
@@ -314,7 +313,7 @@
 		8A99805E28453DE900E18762 /* NearbySelectionStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A99805D28453DE900E18762 /* NearbySelectionStrategy.swift */; };
 		8A99806028453FFD00E18762 /* TabAddStates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A99805F28453FFD00E18762 /* TabAddStates.swift */; };
 		8A9980642845409100E18762 /* TabsSubject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9980632845409100E18762 /* TabsSubject.swift */; };
-		8A9980662845416500E18762 /* TabsStates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9980652845416500E18762 /* TabsStates.swift */; };
+		8A9980662845416500E18762 /* TabsStatesInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9980652845416500E18762 /* TabsStatesInterface.swift */; };
 		8A9980692845464000E18762 /* JavaScriptPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9980682845464000E18762 /* JavaScriptPlugin.swift */; };
 		8A99806B284546BA00E18762 /* InstagramContentPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A99806A284546BA00E18762 /* InstagramContentPlugin.swift */; };
 		8A99806D284546F500E18762 /* BasePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A99806C284546F500E18762 /* BasePlugin.swift */; };
@@ -828,7 +827,7 @@
 		753752C92CFEB51C008D40CF /* GoogleDNSEndpointError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleDNSEndpointError.swift; sourceTree = "<group>"; };
 		753752CD2CFEBDFF008D40CF /* SearchServiceError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchServiceError.swift; sourceTree = "<group>"; };
 		753752CF2CFED1DC008D40CF /* WebAutoCompletionSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebAutoCompletionSource.swift; sourceTree = "<group>"; };
-		753752D12CFEE080008D40CF /* StratFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StratFactory.swift; sourceTree = "<group>"; };
+		753752D12CFEE080008D40CF /* StrategyFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrategyFactory.swift; sourceTree = "<group>"; };
 		754249D22944B3F9002D6505 /* AppUIFrameworkTypeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUIFrameworkTypeModel.swift; sourceTree = "<group>"; };
 		75458E422B468FE800004581 /* ReadTabsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadTabsUseCase.swift; sourceTree = "<group>"; };
 		75458E442B468FF800004581 /* WriteTabsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteTabsUseCase.swift; sourceTree = "<group>"; };
@@ -959,7 +958,6 @@
 		8A6CD6D324585D830068ACB5 /* Combine.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Combine.framework; path = System/Library/Frameworks/Combine.framework; sourceTree = SDKROOT; };
 		8A74188B245086330019695E /* Downloadable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Downloadable.swift; sourceTree = "<group>"; };
 		8A745C0E2480287700A379AD /* TabsRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabsRepository.swift; sourceTree = "<group>"; };
-		8A745C102480295B00A379AD /* AsyncServiceRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncServiceRegistry.swift; sourceTree = "<group>"; };
 		8A745C1324802E4F00A379AD /* TabsObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabsObserver.swift; sourceTree = "<group>"; };
 		8A7A968C24462E8700E035F8 /* SearchEngine+OpenSearchParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SearchEngine+OpenSearchParser.swift"; sourceTree = "<group>"; };
 		8A7A9BAB23F1C477008850B6 /* URL+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+Extensions.swift"; sourceTree = "<group>"; };
@@ -1012,7 +1010,7 @@
 		8A99805D28453DE900E18762 /* NearbySelectionStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbySelectionStrategy.swift; sourceTree = "<group>"; };
 		8A99805F28453FFD00E18762 /* TabAddStates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabAddStates.swift; sourceTree = "<group>"; };
 		8A9980632845409100E18762 /* TabsSubject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabsSubject.swift; sourceTree = "<group>"; };
-		8A9980652845416500E18762 /* TabsStates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabsStates.swift; sourceTree = "<group>"; };
+		8A9980652845416500E18762 /* TabsStatesInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabsStatesInterface.swift; sourceTree = "<group>"; };
 		8A9980682845464000E18762 /* JavaScriptPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JavaScriptPlugin.swift; sourceTree = "<group>"; };
 		8A99806A284546BA00E18762 /* InstagramContentPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstagramContentPlugin.swift; sourceTree = "<group>"; };
 		8A99806C284546F500E18762 /* BasePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasePlugin.swift; sourceTree = "<group>"; };
@@ -1405,7 +1403,7 @@
 				8A99805D28453DE900E18762 /* NearbySelectionStrategy.swift */,
 				8A99805F28453FFD00E18762 /* TabAddStates.swift */,
 				75C412222C9544D4007E6043 /* ObservingApiType.swift */,
-				8A9980652845416500E18762 /* TabsStates.swift */,
+				8A9980652845416500E18762 /* TabsStatesInterface.swift */,
 			);
 			path = Tabs;
 			sourceTree = "<group>";
@@ -1620,7 +1618,7 @@
 			isa = PBXGroup;
 			children = (
 				8A23989228622FCA005DA801 /* ViewModelFactory.swift */,
-				753752D12CFEE080008D40CF /* StratFactory.swift */,
+				753752D12CFEE080008D40CF /* StrategyFactory.swift */,
 				753392A3291FD9A500570461 /* ViewControllerFactory.swift */,
 				753392A0291FD8DA00570461 /* PhoneViewControllerFactory.swift */,
 				753392A6291FEBFD00570461 /* TabletViewControllerFactory.swift */,
@@ -2154,7 +2152,6 @@
 				753752852CF6F1A8008D40CF /* AppStartInfo.swift */,
 				8AA68A9E245BE47900263E22 /* ServiceRegistry.swift */,
 				753752872CF6FFB7008D40CF /* PluginsProxy.swift */,
-				8A745C102480295B00A379AD /* AsyncServiceRegistry.swift */,
 				60724EED220C4FDC0071BECF /* WebViewsReuseManager.swift */,
 				7570F7452B5C07E90066ABF1 /* UseCaseRegistry.swift */,
 			);
@@ -3314,7 +3311,7 @@
 				8A745C1424802E4F00A379AD /* TabsObserver.swift in Sources */,
 				75458E452B468FF800004581 /* WriteTabsUseCase.swift in Sources */,
 				60D52D3E225F47DB00CB56F0 /* InMemoryDomainSearchProvider.swift in Sources */,
-				8A9980662845416500E18762 /* TabsStates.swift in Sources */,
+				8A9980662845416500E18762 /* TabsStatesInterface.swift in Sources */,
 				75458E5A2B471A2100004581 /* SelectedTabUseCase.swift in Sources */,
 				75EFE95F2CC1A33A001CD0E6 /* ObservingApiType.swift in Sources */,
 				75EFE97B2CD2CA15001CD0E6 /* WeakWrapper.swift in Sources */,
@@ -3464,10 +3461,9 @@
 				75DA4C7B2C9C7F4D009AE049 /* UIServiceRegistry.swift in Sources */,
 				8412FF3D1F72AF050011FDD7 /* UIConstants.swift in Sources */,
 				8AEA73602948FDDE00B2E261 /* Color+Extension.swift in Sources */,
-				753752D22CFEE086008D40CF /* StratFactory.swift in Sources */,
+				753752D22CFEE086008D40CF /* StrategyFactory.swift in Sources */,
 				754249D32944B3F9002D6505 /* AppUIFrameworkTypeModel.swift in Sources */,
 				8A4815062922A4B700F9DA1F /* SearchSuggestionsCoordinator.swift in Sources */,
-				8A745C112480295B00A379AD /* AsyncServiceRegistry.swift in Sources */,
 				8AA68A9F245BE47900263E22 /* ServiceRegistry.swift in Sources */,
 				8ABDD90827CCF4360028B9DE /* FeatureManager+SpecificEnums.swift in Sources */,
 				8ABA3CD82522623200E304E2 /* TabsResource.swift in Sources */,

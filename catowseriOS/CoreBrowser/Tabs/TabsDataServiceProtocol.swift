@@ -21,7 +21,7 @@ public class TabsDataServiceFactory {
     /// and have to create some temporary type to call static func
     public static func create(
         _ tabsRepository: TabsRepository,
-        _ positioning: TabsStates,
+        _ positioning: TabsStatesInterface,
         _ selectionStrategy: TabSelectionStrategy,
         _ tabsSubject: TabsDataSubjectProtocol?,
         _ observingType: ObservingApiType

@@ -1,5 +1,5 @@
 //
-//  StratFactory.swift
+//  StrategyFactory.swift
 //  catowser
 //
 //  Created by Andrey Ermoshin on 03.12.2024.
@@ -13,8 +13,8 @@ import CottonData
 /// No need to be main actor and at the same time
 /// It doesn't need to be globalActor even tho it is a singleton,
 /// because it doesn't hold the state and vm creation is synchronous.
-final class StratsFactory: SearchStrategiesFactoryProtocol {
-    nonisolated(unsafe) static let shared = StratsFactory()
+final class StrategyFactory: SearchStrategiesFactoryProtocol {
+    nonisolated(unsafe) static let shared = StrategyFactory()
 
     private let serviceRegistry: ServiceRegistry.StateHolder
 

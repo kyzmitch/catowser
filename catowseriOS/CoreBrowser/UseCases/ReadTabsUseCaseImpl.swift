@@ -10,11 +10,11 @@ import Foundation
 
 public final class ReadTabsUseCaseImpl: ReadTabsUseCase {
     private let tabsDataService: any TabsDataServiceProtocol
-    private let positioning: TabsStates
+    private let positioning: TabsStatesInterface
 
     public init(
         _ tabsDataService: any TabsDataServiceProtocol,
-        _ positioning: TabsStates
+        _ positioning: TabsStatesInterface
     ) {
         self.tabsDataService = tabsDataService
         self.positioning = positioning

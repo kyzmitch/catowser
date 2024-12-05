@@ -34,7 +34,7 @@ actor TabsDataService: TabsDataServiceProtocol {
     /// Database interface
     private let tabsRepository: TabsRepository
     /// Default positioning settings
-    private let positioning: TabsStates
+    private let positioning: TabsStatesInterface
     /// A list of observers, usually some views which need to observer tabs count or changes to the tabs list
     private var tabObservers: [TabsObserverProxy]
     /// A subject for observing. Should be optional to be able to support iOS < 17.0
@@ -45,7 +45,7 @@ actor TabsDataService: TabsDataServiceProtocol {
 
     init(
         _ tabsRepository: TabsRepository,
-        _ positioning: TabsStates,
+        _ positioning: TabsStatesInterface,
         _ selectionStrategy: TabSelectionStrategy,
         _ tabsSubject: TabsDataSubjectProtocol?,
         _ observingType: ObservingApiType = .observerDesignPattern

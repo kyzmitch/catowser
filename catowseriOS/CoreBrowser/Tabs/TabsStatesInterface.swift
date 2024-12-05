@@ -1,5 +1,5 @@
 //
-//  TabsStates.swift
+//  TabsStatesInterface.swift
 //  CoreBrowser
 //
 //  Created by Andrei Ermoshin on 5/30/22.
@@ -9,7 +9,7 @@
 import Foundation
 import AutoMockable
 
-public protocol TabsStates: AutoMockable, Sendable {
+public protocol TabsStatesInterface: AutoMockable, Sendable {
     var addPosition: AddedTabPosition { get async }
     var contentState: Tab.ContentType { get async }
     var addSpeed: TabAddSpeed { get }

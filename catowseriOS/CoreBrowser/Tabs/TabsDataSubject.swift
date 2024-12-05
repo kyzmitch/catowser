@@ -42,7 +42,7 @@ import Observation
     
     /// Init
     public init(
-        _ positioning: TabsStates,
+        _ positioning: TabsStatesInterface,
         _ tabs: [Tab] = []
     ) {
         self.selectedTabId = positioning.defaultSelectedTabId

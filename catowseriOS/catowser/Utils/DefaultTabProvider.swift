@@ -16,7 +16,7 @@ import CottonBase
 final class DefaultTabProvider {
     static let shared = StateHolder()
     
-    actor StateHolder: TabsStates {
+    actor StateHolder: TabsStatesInterface {
         @MainActor var selected: Bool {
             UIDevice.current.userInterfaceIdiom == .pad
         }

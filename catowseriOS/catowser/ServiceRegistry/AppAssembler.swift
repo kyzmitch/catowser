@@ -11,6 +11,8 @@ import FeaturesFlagsKit
 import CottonData
 import CoreBrowser
 
+/// Central class for application initialization
+/// Should be called in App delegate or App coordinator.
 @globalActor final class AppAssembler {
     static let shared = StateHolder()
     
