@@ -16,6 +16,10 @@ import BrowserNetworking
 import Alamofire // only needed for `JSONEncoding`
 import FeaturesFlagsKit
 
+extension String {
+    static let tabsDataServiceKey = "tabs.dataservice"
+}
+
 /// Service registry for the serial data services and other related classes
 @globalActor final class ServiceRegistry {
     static let shared = StateHolder()
@@ -114,7 +118,7 @@ import FeaturesFlagsKit
                 tabsSubject,
                 FeatureManager.shared.observingApiTypeValue()
             )
-            dataServiceLocator.register(tabsDataService)
+            dataServiceLocator.registerNamed(tabsDataService, .tabsDataServiceKey)
         }
     }
 }
@@ -140,7 +144,10 @@ extension RestClient where Server == DuckDuckGoServer {
 extension TabsDataServiceFactory {
     static var shared: any TabsDataServiceProtocol {
         get async {
-            await ServiceRegistry.shared.findDataService((any TabsDataServiceProtocol).self)
+            await ServiceRegistry.shared.findDataService(
+                (any TabsDataServiceProtocol).self,
+                .tabsDataServiceKey
+            )
         }
     }
 }

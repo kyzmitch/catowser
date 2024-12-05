@@ -29,11 +29,11 @@ import CoreBrowser
             baseDelegate: BasePluginContentDelegate,
             instagramDelegate: InstagramContentDelegate
         ) async -> AppStartInfo {
-            // Init database for the tabs first
-            _ = await TabsDataServiceFactory.shared
             // Register data services and use cases
             await ServiceRegistry.shared.registerDataServices()
             let searchDataService = await ServiceRegistry.shared.findDataService(SearchDataService.self)
+            // Init database for the tabs first
+            _ = await TabsDataServiceFactory.shared
             await UseCaseRegistry.shared.registerUseCases()
             // Read main settings
             async let uiFramework = featureManager.appUIFrameworkValue()
