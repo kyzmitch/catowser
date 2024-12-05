@@ -9,6 +9,7 @@
 import CottonRestKit
 import CottonBase
 
+/// DNS over HTTPS response for Google API
 public struct GoogleDNSOverJSONResponse: ResponseType {
     /**
      200 OK

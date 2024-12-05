@@ -61,7 +61,10 @@ final class UseCaseRegistry {
         }
 
         private func registerSearchAutocompleteUseCases() async {
-            let searchDataService = await serviceRegistry.findDataService(SearchDataService.self)
+            let searchDataService = await serviceRegistry.findDataService(
+                (any SearchDataServiceProtocol).self,
+                .searchDataServiceKey
+            )
             let googleUseCase: AutocompleteSearchUseCase = AutocompleteSearchUseCaseImpl(searchDataService)
             useCaseLocator.registerTyped(
                 googleUseCase,
@@ -70,7 +73,10 @@ final class UseCaseRegistry {
         }
 
         private func registerDnsResolveUseCases() async {
-            let searchDataService = await serviceRegistry.findDataService(SearchDataService.self)
+            let searchDataService = await serviceRegistry.findDataService(
+                (any SearchDataServiceProtocol).self,
+                .searchDataServiceKey
+            )
             let googleUseCase: ResolveDNSUseCase = ResolveDNSUseCaseImpl(searchDataService)
             useCaseLocator.registerTyped(
                 googleUseCase,

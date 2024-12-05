@@ -18,6 +18,7 @@ import FeaturesFlagsKit
 
 extension String {
     static let tabsDataServiceKey = "tabs.dataservice"
+    static let searchDataServiceKey = "search.dataservice"
 }
 
 /// Service registry for the serial data services and other related classes
@@ -85,8 +86,12 @@ extension String {
         }
         
         func registerDataServices() async {
-            let searchDataService = SearchDataService(stratsFactory: StrategyFactory.shared)
-            dataServiceLocator.register(searchDataService)
+            let searchDataService = SearchDataServiceFactory.create(
+                executionQueue: DispatchQueue.global(),
+                responseQueue: DispatchQueue.main,
+                stratsFactory: StrategyFactory.shared
+            )
+            dataServiceLocator.registerNamed(searchDataService, .searchDataServiceKey)
 
             let tabsSubject: TabsDataSubjectProtocol?
             if #available(iOS 17.0, *) {

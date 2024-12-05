@@ -6,12 +6,13 @@
 //  Copyright © 2024 Cotton (Catowser). All rights reserved.
 //
 
-public enum GoogleDNSEndpointError: LocalizedError {
+/// DNS over HTTPS google endpoint error
+enum GoogleDNSEndpointError: LocalizedError {
     case emptyAnswers
     case dnsStatusError(Int32)
     case recordTypeParsing(UInt32)
 
-    public var errorDescription: String? {
+    var errorDescription: String? {
         return "Google DSN over JSON `\(self)`"
     }
 }

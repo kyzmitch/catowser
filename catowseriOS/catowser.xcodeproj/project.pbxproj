@@ -140,6 +140,7 @@
 		75869DBF2D005A2500D981B6 /* OpenSearchParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE46353244E07E600C8E063 /* OpenSearchParser.swift */; };
 		75869DC02D005A2C00D981B6 /* SearchEngine+OpenSearchParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A7A968C24462E8700E035F8 /* SearchEngine+OpenSearchParser.swift */; };
 		75869DC12D00C0D100D981B6 /* WebAutoCompletionSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752CF2CFED1DC008D40CF /* WebAutoCompletionSource.swift */; };
+		75869DC32D01ABD500D981B6 /* SearchDataServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75869DC22D01ABD400D981B6 /* SearchDataServiceProtocol.swift */; };
 		759E3E4D2C863B3D00245B44 /* Atomics in Frameworks */ = {isa = PBXBuildFile; productRef = 759E3E4C2C863B3D00245B44 /* Atomics */; };
 		75A764302B64BBB100D9D158 /* SiteNavigationProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A510F622424ADC30070503C /* SiteNavigationProtocols.swift */; };
 		75A764312B64BBDF00D9D158 /* WebViewNavigatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8F038A293FA96200237DFF /* WebViewNavigatable.swift */; };
@@ -857,6 +858,7 @@
 		756AE6BA2CA348BF00938FCC /* DataServiceKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DataServiceKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		756AE6C32CA348BF00938FCC /* DataServiceKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DataServiceKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7570F7452B5C07E90066ABF1 /* UseCaseRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UseCaseRegistry.swift; sourceTree = "<group>"; };
+		75869DC22D01ABD400D981B6 /* SearchDataServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchDataServiceProtocol.swift; sourceTree = "<group>"; };
 		759AE09529146C96008CE4EE /* Mockfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Mockfile; sourceTree = "<group>"; };
 		75A764332B650B0A00D9D158 /* SearchAutocompleteStrategy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchAutocompleteStrategy.swift; sourceTree = "<group>"; };
 		75A764352B650C2C00D9D158 /* AutocompleteSearchUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutocompleteSearchUseCase.swift; sourceTree = "<group>"; };
@@ -1556,6 +1558,7 @@
 			isa = PBXGroup;
 			children = (
 				753752682CF59E29008D40CF /* SearchDataService.swift */,
+				75869DC22D01ABD400D981B6 /* SearchDataServiceProtocol.swift */,
 				7537526F2CF59EA1008D40CF /* SearchServiceCommand.swift */,
 				753752712CF59EFE008D40CF /* SearchServiceData.swift */,
 				753752CD2CFEBDFF008D40CF /* SearchServiceError.swift */,
@@ -3562,6 +3565,7 @@
 				75869DC02D005A2C00D981B6 /* SearchEngine+OpenSearchParser.swift in Sources */,
 				8A7B1BBB28EB15E6004FC135 /* WebViewContext.swift in Sources */,
 				75A764302B64BBB100D9D158 /* SiteNavigationProtocols.swift in Sources */,
+				75869DC32D01ABD500D981B6 /* SearchDataServiceProtocol.swift in Sources */,
 				753752722CF59F02008D40CF /* SearchServiceData.swift in Sources */,
 				8A7B1BC828EB16D4004FC135 /* SearchSuggestionsResponse.swift in Sources */,
 				8A7B1BB928EB15DD004FC135 /* WebViewModelState+Actionable.swift in Sources */,

@@ -64,7 +64,10 @@ import CoreBrowser
             )
             async let searchBarVM = factory.searchBarViewModel()
             // Get a reference to a data service
-            let searchDataService = await serviceRegistry.findDataService(SearchDataService.self)
+            let searchDataService = await serviceRegistry.findDataService(
+                (any SearchDataServiceProtocol).self,
+                .searchDataServiceKey
+            )
             // Wait for all the view models needed for app start
             return await AppStartInfo(
                 allTabsVM: allTabsVM,

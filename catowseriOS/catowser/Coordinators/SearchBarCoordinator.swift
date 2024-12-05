@@ -39,9 +39,10 @@ final class SearchBarCoordinator: NSObject, Coordinator {
     @LeadingTrimmed private var tempSearchText: String = ""
     /// Tells if coordinator was already started
     private var isSuggestionsShowed: Bool = false
-
+    /// Search data service interface
+    private let searchDataService: any SearchDataServiceProtocol
+    /// UI framework
     let uiFramework: UIFrameworkType
-    private let searchDataService: SearchDataService
 
     init(
         _ vcFactory: ViewControllerFactory,
@@ -50,7 +51,7 @@ final class SearchBarCoordinator: NSObject, Coordinator {
         _ globalMenuDelegate: GlobalMenuDelegate?,
         _ delegate: SearchBarDelegate?,
         _ uiFramework: UIFrameworkType,
-        _ searchDataService: SearchDataService
+        _ searchDataService: any SearchDataServiceProtocol
     ) {
         self.vcFactory = vcFactory
         self.presenterVC = presenter

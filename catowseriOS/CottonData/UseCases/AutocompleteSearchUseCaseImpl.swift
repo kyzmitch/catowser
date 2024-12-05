@@ -18,12 +18,12 @@ private extension String {
 
 /// Web search suggestions (search autocomplete) facade
 public final class AutocompleteSearchUseCaseImpl: AutocompleteSearchUseCase {
-    private let searchDataService: SearchDataService
+    private let searchDataService: any SearchDataServiceProtocol
 
     private let waitingQueue: DispatchQueue
     private let waitingScheduler: QueueScheduler
 
-    public init(_ searchDataService: SearchDataService) {
+    public init(_ searchDataService: any SearchDataServiceProtocol) {
         self.searchDataService = searchDataService
         waitingQueue = DispatchQueue(label: .waitingQueueName)
         waitingScheduler = QueueScheduler(

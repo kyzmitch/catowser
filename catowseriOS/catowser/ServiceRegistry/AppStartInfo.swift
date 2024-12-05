@@ -37,7 +37,7 @@ final class AppStartInfo: Sendable {
     /// UI framework type
     let uiFramework: UIFrameworkType
     /// Search data service
-    let searchDataService: SearchDataService
+    let searchDataService: any SearchDataServiceProtocol
     
     init(
         allTabsVM: AllTabsViewModel,
@@ -50,7 +50,7 @@ final class AppStartInfo: Sendable {
         defaultTabContent: CoreBrowser.Tab.ContentType,
         observingType: ObservingApiType,
         uiFramework: UIFrameworkType,
-        searchDataService: SearchDataService
+        searchDataService: any SearchDataServiceProtocol
     ) {
         self.allTabsVM = allTabsVM
         self.topSitesVM = topSitesVM

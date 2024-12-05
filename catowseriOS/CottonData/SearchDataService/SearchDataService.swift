@@ -22,16 +22,16 @@ public protocol SearchStrategiesFactoryProtocol: AnyObject {
 /// and also can resolve domain names in the URLs to have ip addresses instead.
 ///
 /// Can be unchecked sendable, because thread-safety is accomplished using recursive mutex.
-public final class SearchDataService: GenericConcurrentDataService<SearchServiceCommand, SearchServiceData, SearchServiceError>, @unchecked Sendable {
+final class SearchDataService: GenericConcurrentDataService<SearchServiceCommand, SearchServiceData, SearchServiceError>, SearchDataServiceProtocol, @unchecked Sendable {
 
     private var autocompleteHandler: AnyCancellable?
     private var domainNameResolveHandler: AnyCancellable?
     private let stratsFactory: SearchStrategiesFactoryProtocol
     
     /// Initializer
-    public init(
-        executionQueue: any DispatchQueueInterface = DispatchQueue.global(),
-        responseQueue: any DispatchQueueInterface = DispatchQueue.main,
+    init(
+        executionQueue: any DispatchQueueInterface,
+        responseQueue: any DispatchQueueInterface,
         stratsFactory: SearchStrategiesFactoryProtocol
     ) {
         self.stratsFactory = stratsFactory
