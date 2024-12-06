@@ -6,13 +6,13 @@
 //  Copyright © 2024 Cotton (former Catowser). All rights reserved.
 //
 
-import DataServiceKit
-import Foundation
 import CoreBrowser
 @preconcurrency import ReactiveSwift
 import Combine
-import CottonRestKit
 import AutoMockable
+import Foundation
+
+/// import `CoreBrowser` only for `WebAutoCompletionSource`
 
 public typealias WebSearchSuggestionsProducer = SignalProducer<[String], AppError>
 public typealias WebSearchSuggestionsPublisher = AnyPublisher<[String], AppError>

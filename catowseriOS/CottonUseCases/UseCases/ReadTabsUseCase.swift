@@ -7,7 +7,6 @@
 //
 
 import CoreBrowser
-import DataServiceKit
 import AutoMockable
 
 /// Read tabs use case.

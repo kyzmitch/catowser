@@ -10,6 +10,7 @@
 import Combine
 import CoreBrowser
 import CottonDataServices
+import Foundation
 
 private extension String {
     static let waitingQueueName: String = .queueNameWith(suffix: "searchThrottle")

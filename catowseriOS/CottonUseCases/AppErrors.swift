@@ -6,7 +6,6 @@
 //  Copyright © 2021 Cotton/Catowser Andrei Ermoshin. All rights reserved.
 //
 
-import CottonData
 import CottonDataServices
 
 /// Errors used on use case level

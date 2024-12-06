@@ -6,13 +6,10 @@
 //  Copyright © 2024 Cotton (former Catowser). All rights reserved.
 //
 
-import DataServiceKit
-import Foundation
-import CoreBrowser
 @preconcurrency import ReactiveSwift
 import Combine
-import CottonRestKit
 import AutoMockable
+import Foundation
 
 public typealias DNSResolvingProducer = SignalProducer<URL, AppError>
 public typealias DNSResolvingPublisher = AnyPublisher<URL, AppError>

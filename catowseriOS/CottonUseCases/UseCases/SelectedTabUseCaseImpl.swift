@@ -6,7 +6,7 @@
 //  Copyright © 2024 Cotton (former Catowser). All rights reserved.
 //
 
-import CoreBrowser
+import Foundation
 import CottonDataServices
 
 public final class SelectedTabUseCaseImpl: SelectedTabUseCase {

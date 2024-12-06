@@ -6,10 +6,10 @@
 //  Copyright © 2022 Cotton/Catowser Andrei Ermoshin. All rights reserved.
 //
 
-import Foundation
-@preconcurrency import ReactiveSwift
 import Combine
 import CottonDataServices
+import Foundation
+@preconcurrency import ReactiveSwift
 
 private extension String {
     static let waitingQueueName: String = .queueNameWith(suffix: "dnsResolvingThrottle")
