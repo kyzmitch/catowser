@@ -93,7 +93,6 @@
 		753392AA2920BB6700570461 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753392A92920BB6700570461 /* AppCoordinator.swift */; };
 		753392B32921613E00570461 /* GlobalMenuCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753392B22921613E00570461 /* GlobalMenuCoordinator.swift */; };
 		753392B62922C9EB00570461 /* MainToolbarCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753392B52922C9EB00570461 /* MainToolbarCoordinator.swift */; };
-		7537526A2CF59E3B008D40CF /* DataServiceKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 756AE6BA2CA348BF00938FCC /* DataServiceKit.framework */; };
 		753752842CF5FEDE008D40CF /* AppAssembler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752832CF5FED8008D40CF /* AppAssembler.swift */; };
 		753752862CF6F1A9008D40CF /* AppStartInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752852CF6F1A8008D40CF /* AppStartInfo.swift */; };
 		753752882CF6FFCA008D40CF /* PluginsProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752872CF6FFB7008D40CF /* PluginsProxy.swift */; };
@@ -117,7 +116,6 @@
 		756AE6C42CA348BF00938FCC /* DataServiceKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 756AE6BA2CA348BF00938FCC /* DataServiceKit.framework */; };
 		756AE6CF2CA348BF00938FCC /* DataServiceKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 756AE6BA2CA348BF00938FCC /* DataServiceKit.framework */; };
 		756AE6D02CA348BF00938FCC /* DataServiceKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 756AE6BA2CA348BF00938FCC /* DataServiceKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		756AE6E02CA34B1A00938FCC /* DataServiceKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 756AE6BA2CA348BF00938FCC /* DataServiceKit.framework */; };
 		756AE6E52CA34B8E00938FCC /* DataServiceKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 756AE6BA2CA348BF00938FCC /* DataServiceKit.framework */; };
 		7570F7462B5C07E90066ABF1 /* UseCaseRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7570F7452B5C07E90066ABF1 /* UseCaseRegistry.swift */; };
 		75869DBD2D0059CC00D981B6 /* SearchEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60724F76221693670071BECF /* SearchEngine.swift */; };
@@ -149,6 +147,7 @@
 		75869E942D01DDBB00D981B6 /* CottonDataServices.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 75869E7E2D01DDBB00D981B6 /* CottonDataServices.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		75869EF42D01DF4800D981B6 /* CoreBrowser.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6094E71C221FD2B9004269A2 /* CoreBrowser.framework */; };
 		75869EF92D01E15300D981B6 /* CottonData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A7B1B9828EB131E004FC135 /* CottonData.framework */; };
+		75869EFE2D02DA5300D981B6 /* CottonDataServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75869E7E2D01DDBB00D981B6 /* CottonDataServices.framework */; };
 		759E3E4D2C863B3D00245B44 /* Atomics in Frameworks */ = {isa = PBXBuildFile; productRef = 759E3E4C2C863B3D00245B44 /* Atomics */; };
 		75D81CF72B0B077200447DC7 /* JSPluginsSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60380EF622A15504007F06FB /* JSPluginsSource.swift */; };
 		75D81CFB2B0B084300447DC7 /* JSPluginsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60380EF422A1509F007F06FB /* JSPluginsBuilder.swift */; };
@@ -459,13 +458,6 @@
 			remoteGlobalIDString = 6094E71B221FD2B9004269A2;
 			remoteInfo = CoreBrowser;
 		};
-		7537526C2CF59E3B008D40CF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8435A48F1EED5E700020102F /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 756AE6B92CA348BF00938FCC;
-			remoteInfo = DataServiceKit;
-		};
 		756AE6C52CA348BF00938FCC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8435A48F1EED5E700020102F /* Project object */;
@@ -481,13 +473,6 @@
 			remoteInfo = Cotton;
 		};
 		756AE6CD2CA348BF00938FCC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8435A48F1EED5E700020102F /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 756AE6B92CA348BF00938FCC;
-			remoteInfo = DataServiceKit;
-		};
-		756AE6E22CA34B1A00938FCC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8435A48F1EED5E700020102F /* Project object */;
 			proxyType = 1;
@@ -626,6 +611,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 8A7B1B9728EB131E004FC135;
 			remoteInfo = CottonData;
+		};
+		75869F002D02DA5300D981B6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8435A48F1EED5E700020102F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 75869E7D2D01DDBB00D981B6;
+			remoteInfo = CottonDataServices;
 		};
 		8A277157268E466100D8878C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1272,7 +1264,6 @@
 				60C2C92122819AE200F5D869 /* CoreImage.framework in Frameworks */,
 				8A5E6C89290B0EAE0034A78B /* AutoMockable.framework in Frameworks */,
 				8AD4F51028F491A7009C4BDC /* ReactiveSwift in Frameworks */,
-				756AE6E02CA34B1A00938FCC /* DataServiceKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1298,6 +1289,7 @@
 				75869E0D2D01B44100D981B6 /* Combine.framework in Frameworks */,
 				75869DFB2D01B2ED00D981B6 /* CoreBrowser.framework in Frameworks */,
 				75869E0C2D01B43A00D981B6 /* ReactiveSwift in Frameworks */,
+				75869EFE2D02DA5300D981B6 /* CottonDataServices.framework in Frameworks */,
 				75869E002D01B30D00D981B6 /* AutoMockable.framework in Frameworks */,
 				75869E062D01B3D700D981B6 /* CottonData.framework in Frameworks */,
 			);
@@ -1405,7 +1397,6 @@
 			files = (
 				7517D9CA2A5F2EB800D081AD /* CottonBase.xcframework in Frameworks */,
 				8A7B1BF728EB2C80004FC135 /* WebKit.framework in Frameworks */,
-				7537526A2CF59E3B008D40CF /* DataServiceKit.framework in Frameworks */,
 				8A7B1BDC28EB1736004FC135 /* CottonPlugins.framework in Frameworks */,
 				8A7B1BD128EB16F9004FC135 /* CottonReactiveRestKit.framework in Frameworks */,
 				8AD4F51A28F49208009C4BDC /* ReactiveSwift in Frameworks */,
@@ -2633,7 +2624,6 @@
 			);
 			dependencies = (
 				8A5E6C8C290B0EAE0034A78B /* PBXTargetDependency */,
-				756AE6E32CA34B1A00938FCC /* PBXTargetDependency */,
 			);
 			name = CoreBrowser;
 			packageProductDependencies = (
@@ -2705,6 +2695,7 @@
 				75869DFE2D01B2ED00D981B6 /* PBXTargetDependency */,
 				75869E032D01B30D00D981B6 /* PBXTargetDependency */,
 				75869E092D01B3D700D981B6 /* PBXTargetDependency */,
+				75869F012D02DA5300D981B6 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				75869DCA2D01B1D400D981B6 /* CottonUseCases */,
@@ -2943,7 +2934,6 @@
 				8A7B1BE728EB1771004FC135 /* PBXTargetDependency */,
 				8AB9BE2F28FF149A002063C2 /* PBXTargetDependency */,
 				8A5E6C91290B0ED10034A78B /* PBXTargetDependency */,
-				7537526D2CF59E3B008D40CF /* PBXTargetDependency */,
 			);
 			name = CottonData;
 			packageProductDependencies = (
@@ -3996,11 +3986,6 @@
 			target = 6094E71B221FD2B9004269A2 /* CoreBrowser */;
 			targetProxy = 6094E721221FD2B9004269A2 /* PBXContainerItemProxy */;
 		};
-		7537526D2CF59E3B008D40CF /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 756AE6B92CA348BF00938FCC /* DataServiceKit */;
-			targetProxy = 7537526C2CF59E3B008D40CF /* PBXContainerItemProxy */;
-		};
 		756AE6C62CA348BF00938FCC /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 756AE6B92CA348BF00938FCC /* DataServiceKit */;
@@ -4015,11 +4000,6 @@
 			isa = PBXTargetDependency;
 			target = 756AE6B92CA348BF00938FCC /* DataServiceKit */;
 			targetProxy = 756AE6CD2CA348BF00938FCC /* PBXContainerItemProxy */;
-		};
-		756AE6E32CA34B1A00938FCC /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 756AE6B92CA348BF00938FCC /* DataServiceKit */;
-			targetProxy = 756AE6E22CA34B1A00938FCC /* PBXContainerItemProxy */;
 		};
 		756AE6E72CA34B8E00938FCC /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -4116,6 +4096,11 @@
 			isa = PBXTargetDependency;
 			target = 8A7B1B9728EB131E004FC135 /* CottonData */;
 			targetProxy = 75869EFB2D01E15300D981B6 /* PBXContainerItemProxy */;
+		};
+		75869F012D02DA5300D981B6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 75869E7D2D01DDBB00D981B6 /* CottonDataServices */;
+			targetProxy = 75869F002D02DA5300D981B6 /* PBXContainerItemProxy */;
 		};
 		8A277158268E466100D8878C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

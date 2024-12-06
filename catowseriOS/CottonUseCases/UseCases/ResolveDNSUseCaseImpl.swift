@@ -68,6 +68,9 @@ public final class ResolveDNSUseCaseImpl: ResolveDNSUseCase {
                     promise(.failure(AppError.zombieSelf))
                     return
                 }
+#if swift(>=6)
+    nonisolated(unsafe) let promise = promise
+#endif
                 searchDataService.sendCommand(
                     .resolveDomainNameInURL(url),
                     nil

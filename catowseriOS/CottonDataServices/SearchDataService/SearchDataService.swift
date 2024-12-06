@@ -8,6 +8,7 @@
 
 import Combine
 import CoreBrowser
+import CottonData
 import DataServiceKit
 
 /// An interface for a factory to be able to mock it for the unit tests
@@ -90,6 +91,8 @@ private extension SearchDataService {
             autocompleteStrategy = stratsFactory.googleSearchStrategy()
         case .duckduckgo:
             autocompleteStrategy = stratsFactory.duckDuckGoSearchStrategy()
+        @unknown default:
+            fatalError("New search engine must be handled")
         }
         autocompleteHandler = autocompleteStrategy.suggestionsPublisher(for: query)
             .map { $0.textResults }

@@ -6,6 +6,7 @@
 //  Copyright © 2019 Cotton (former Catowser). All rights reserved.
 //
 
+import CoreBrowser
 import DataServiceKit
 import Foundation
 

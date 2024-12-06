@@ -18,7 +18,7 @@ public protocol GenericDataServiceProtocol: AnyObject {
     /// Data service error type
     associatedtype ServiceError: DataServiceKitError
     /// Type of closure for response on a command
-    typealias Promise = (Result<ServiceData, ServiceError>) -> Void
+    typealias Promise = @Sendable (Result<ServiceData, ServiceError>) -> Void
 
     /// mutable service data (state)
     var serviceData: ServiceData { get set }

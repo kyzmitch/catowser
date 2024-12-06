@@ -78,6 +78,9 @@ public final class AutocompleteSearchUseCaseImpl: AutocompleteSearchUseCase {
                     promise(.failure(AppError.zombieSelf))
                     return
                 }
+#if swift(>=6)
+    nonisolated(unsafe) let promise = promise
+#endif
                 searchDataService.sendCommand(
                     .fetchAutocompleteSuggestions(source, query),
                     nil
