@@ -1,6 +1,6 @@
 //
 //  TabsServiceCommand.swift
-//  CoreBrowser
+//  CottonDataServices
 //
 //  Created by Andrey Ermoshin on 20.01.2024.
 //  Copyright © 2024 Cotton (former Catowser). All rights reserved.

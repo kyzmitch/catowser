@@ -9,6 +9,7 @@
 import Foundation
 import CoreBrowser
 import CoreData
+import CottonDataServices
 
 /**
  Declaring CoreBrowser.Tab storage type in host app instead of `CoreBrowser` framework,

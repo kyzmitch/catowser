@@ -1,13 +1,13 @@
 //
 //  SearchAutocompleteStrategy.swift
-//  catowser
+//  CottonDataServices
 //
 //  Created by Andrei Ermoshin on 6/21/22.
 //  Copyright © 2022 Cotton/Catowser Andrei Ermoshin. All rights reserved.
 //
 
 import Foundation
-import CottonRestKit
+import CottonRestKit // only for HttpError
 @preconcurrency import ReactiveSwift
 import Combine
 import AutoMockable

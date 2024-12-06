@@ -1,13 +1,12 @@
 //
 //  SearchDataServiceProtocol.swift
-//  catowser
+//  CottonDataServices
 //
 //  Created by Andrey Ermoshin on 05.12.2024.
 //  Copyright © 2024 Cotton (Catowser). All rights reserved.
 //
 
 import DataServiceKit
-import Foundation
 
 /// Search data service interface
 public protocol SearchDataServiceProtocol: GenericDataServiceProtocol, Sendable where

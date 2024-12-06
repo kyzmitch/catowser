@@ -10,6 +10,8 @@ import DataServiceKit
 import Foundation
 import CoreBrowser
 import CottonData
+import CottonDataServices
+import CottonUseCases
 
 /// A global singletone for storing all the use case classes
 @globalActor final class UseCaseRegistry {

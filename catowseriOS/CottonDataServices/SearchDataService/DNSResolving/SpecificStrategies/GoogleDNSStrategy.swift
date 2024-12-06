@@ -1,6 +1,6 @@
 //
 //  GoogleDNSStrategy.swift
-//  catowser
+//  CottonDataServices
 //
 //  Created by Andrei Ermoshin on 8/6/22.
 //  Copyright © 2022 Cotton/Catowser Andrei Ermoshin. All rights reserved.

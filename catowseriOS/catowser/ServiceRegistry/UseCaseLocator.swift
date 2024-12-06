@@ -7,6 +7,7 @@
 //
 
 import DataServiceKit
+import CottonUseCases
 
 /// Service locator for the use cases
 public final class UseCaseLocator: LazyServiceLocator {

@@ -25,8 +25,7 @@
     func webViewDidReplace(_ interface: WebViewNavigatable?)
 }
 
-@MainActor
-public protocol SiteNavigationChangable: AnyObject {
+@MainActor public protocol SiteNavigationChangable: AnyObject {
     func changeBackButton(to canGoBack: Bool)
     func changeForwardButton(to canGoForward: Bool)
 }

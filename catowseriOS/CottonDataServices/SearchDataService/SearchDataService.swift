@@ -1,6 +1,6 @@
 //
 //  SearchDataService.swift
-//  catowser
+//  CottonDataServices
 //
 //  Created by Andrey Ermoshin on 26.11.2024.
 //  Copyright © 2024 Cotton (Catowser). All rights reserved.
@@ -50,7 +50,7 @@ final class SearchDataService: GenericConcurrentDataService<SearchServiceCommand
         case let .fetchAutocompleteSuggestions(searchEngine, query):
             handleSuggestionsFetch(
                 command: command,
-                searchEngine: searchEngine,
+                searchAutocompleteSource: searchEngine,
                 query: query
             )
         case let .resolveDomainNameInURL(urlWithDomainName):
@@ -73,7 +73,7 @@ final class SearchDataService: GenericConcurrentDataService<SearchServiceCommand
 private extension SearchDataService {
     func handleSuggestionsFetch(
         command: Command,
-        searchEngine: WebAutoCompletionSource,
+        searchAutocompleteSource: WebAutoCompletionSource,
         query: String
     ) {
         if case .started(input: let existingRequest) = serviceData.fetchingSearchSuggestions,
@@ -86,7 +86,7 @@ private extension SearchDataService {
         }
         let autocompleteStrategy: any SearchAutocompleteStrategy
         // Could be improved if more search engines need to be added by using subclasses instead of an enum
-        switch searchEngine {
+        switch searchAutocompleteSource {
         case .google:
             autocompleteStrategy = stratsFactory.googleSearchStrategy()
         case .duckduckgo:
@@ -94,6 +94,8 @@ private extension SearchDataService {
         @unknown default:
             fatalError("New search engine must be handled")
         }
+        let inputRequest = SuggestionsRequest(searchAutocompleteSource, query)
+        serviceData.fetchingSearchSuggestions = .started(input: inputRequest)
         autocompleteHandler = autocompleteStrategy.suggestionsPublisher(for: query)
             .map { $0.textResults }
             .sink(receiveCompletion: { [weak self] completion in

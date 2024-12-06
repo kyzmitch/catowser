@@ -1,6 +1,6 @@
 //
 //  SearchSuggestionsViewModelImpl.swift
-//  catowser
+//  CottonViewModels
 //
 //  Created by Andrei Ermoshin on 6/22/22.
 //  Copyright © 2022 Cotton (former Catowser). All rights reserved.
@@ -15,9 +15,9 @@ import AutoMockable
 
 /// This is only needed now to not have a direct dependency on FutureManager
 public protocol SearchViewContext: AutoMockable, Sendable {
-    var appAsyncApiTypeValue: AsyncApiType { get async }
-    var webAutocompletionSourceValue: WebAutoCompletionSource { get async }
-    var knownDomainsStorage: KnownDomainsSource { get }
+    var appAsyncApiTypeValue: FeatureFlagsKit.AsyncApiType { get async }
+    var webAutocompletionSourceValue: CoreBrowser.WebAutoCompletionSource { get async }
+    var knownDomainsStorage: CoreBrowser.KnownDomainsSource { get }
 }
 
 public final class SearchSuggestionsViewModelImpl: SearchSuggestionsViewModel {

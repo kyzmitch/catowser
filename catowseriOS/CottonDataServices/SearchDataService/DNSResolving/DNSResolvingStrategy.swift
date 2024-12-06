@@ -1,6 +1,6 @@
 //
 //  DNSResolvingStrategy.swift
-//  catowser
+//  CottonDataServices
 //
 //  Created by Andrei Ermoshin on 7/29/22.
 //  Copyright © 2022 Cotton/Catowser Andrei Ermoshin. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  TabsDataServiceProtocol.swift
-//  catowser
+//  CottonDataServices
 //
 //  Created by Andrei Ermoshin on 11/21/24.
 //  Copyright © 2024 Cotton (Catowser). All rights reserved.

@@ -1,12 +1,11 @@
 //
 //  TabSelectionStrategy.swift
-//  CoreBrowser
+//  CottonDataServices
 //
 //  Created by Andrei Ermoshin on 05/03/2019.
 //  Copyright © 2019 Cotton/Catowser Andrei Ermoshin. All rights reserved.
 //
 
-import Foundation
 import AutoMockable
 
 public protocol IndexSelectionContext: AutoMockable {
@@ -21,6 +20,9 @@ public protocol TabSelectionStrategy: AutoMockable, Sendable {
      A CoreBrowser.Tab selection strategy (Compositor) defines the algorithms of tab selection in specific cases
      - when tab was removed and need to select another
      */
-    func autoSelectedIndexAfterTabRemove(_ context: IndexSelectionContext, removedIndex: Int) async -> Int
+    func autoSelectedIndexAfterTabRemove(
+        _ context: IndexSelectionContext,
+        removedIndex: Int
+    ) async -> Int
     var makeTabActiveAfterAdding: Bool { get }
 }

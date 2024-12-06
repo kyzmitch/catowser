@@ -1,6 +1,6 @@
 //
 //  SearchServiceError.swift
-//  catowser
+//  CottonDataServices
 //
 //  Created by Andrey Ermoshin on 03.12.2024.
 //  Copyright © 2024 Cotton (Catowser). All rights reserved.

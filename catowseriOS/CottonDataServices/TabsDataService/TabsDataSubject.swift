@@ -1,12 +1,11 @@
 //
 //  TabsDataSubject.swift
-//  CoreBrowser
+//  CottonDataServices
 //
 //  Created by Andrei Ermoshin on 3/17/24.
 //  Copyright © 2024 Cotton (Catowser). All rights reserved.
 //
 
-import Foundation
 #if canImport(Observation)
 import Observation
 #endif

@@ -1,6 +1,6 @@
 //
 //  TabsObserver.swift
-//  CoreBrowser
+//  CottonDataServices
 //
 //  Created by Andrei Ermoshin on 5/28/20.
 //  Copyright © 2020 Cotton (former Catowser). All rights reserved.
@@ -16,8 +16,7 @@ import CoreBrowser
 /// CoreBrowser.Tab did remove function is not needed, because we want to remove it from UI right away
 ///
 /// This can be sendable, because all actor types are, and this one is Main actor
-@MainActor
-public protocol TabsObserver: AnyObject, Sendable {
+@MainActor public protocol TabsObserver: AnyObject, Sendable {
     /// Provide necessary data to render UI on the tablets
     ///
     /// - Parameter tabs: Tabs from cache at application start.

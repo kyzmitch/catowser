@@ -7,6 +7,7 @@
 //
 
 import CottonData
+import CottonDataServices
 
 /// Strategies factory.
 ///

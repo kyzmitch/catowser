@@ -15,6 +15,7 @@ import CoreBrowser
 import CottonNetworking
 import Alamofire // only needed for `JSONEncoding`
 import FeatureFlagsKit
+import CottonDataServices
 
 extension String {
     static let tabsDataServiceKey = "tabs.dataservice"

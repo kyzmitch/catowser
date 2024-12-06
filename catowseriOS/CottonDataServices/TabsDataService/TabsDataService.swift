@@ -1,6 +1,6 @@
 //
 //  TabsListManager.swift
-//  catowser
+//  CottonDataServices
 //
 //  Created by Andrei Ermoshin on 28/01/2019.
 //  Copyright © 2019 Cotton (former Catowser). All rights reserved.
@@ -10,9 +10,7 @@ import CoreBrowser
 import DataServiceKit
 import Foundation
 
-/**
- Tabs list data service which can be used as a subject for observers.
- */
+/// Tabs list data service which can be used as a subject for observers.
 actor TabsDataService: TabsDataServiceProtocol {
     
     typealias UUIDStream = AsyncStream<Tab.ID>

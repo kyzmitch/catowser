@@ -1,6 +1,6 @@
 //
 //  SearchServiceData.swift
-//  catowser
+//  CottonDataServices
 //
 //  Created by Andrey Ermoshin on 26.11.2024.
 //  Copyright © 2024 Cotton (Catowser). All rights reserved.
@@ -9,16 +9,25 @@
 import CoreBrowser
 import DataServiceKit
 
+/// Input data for a search suggestions command
 public struct SuggestionsRequest: Sendable {
-    let searchEngine: WebAutoCompletionSource
+    let searchAutocompletionSource: WebAutoCompletionSource
     let query: String
+    /// Initializer
+    public init(
+        _ searchAutocompletionSource: WebAutoCompletionSource,
+        _ query: String
+    ) {
+        self.searchAutocompletionSource = searchAutocompletionSource
+        self.query = query
+    }
 }
 
 typealias DomainResolvingData = CommandExecutionData<URL, URL>
 typealias SearchSuggestionsData = CommandExecutionData<SuggestionsRequest, [String]>
 typealias SearchURLData = CommandExecutionData<Void, URL>
 
-/// Search data service data state
+/// Search service data state
 public struct SearchServiceData: GenericServiceData {
     /// state of domain name resolving command data
     var resolvingDomainName: DomainResolvingData = .notStarted

@@ -1,6 +1,6 @@
 //
 //  TabsListError.swift
-//  CoreBrowser
+//  CottonDataServices
 //
 //  Created by Andrey Ermoshin on 25.07.2023.
 //  Copyright © 2023 Cotton (former Catowser). All rights reserved.

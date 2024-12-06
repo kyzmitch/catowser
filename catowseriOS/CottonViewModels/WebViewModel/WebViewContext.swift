@@ -1,6 +1,6 @@
 //
 //  WebViewContext.swift
-//  catowser
+//  CottonViewModels
 //
 //  Created by Andrei Ermoshin on 8/4/22.
 //  Copyright © 2022 Cotton/Catowser Andrei Ermoshin. All rights reserved.

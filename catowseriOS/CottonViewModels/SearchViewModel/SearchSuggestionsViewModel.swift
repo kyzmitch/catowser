@@ -1,14 +1,12 @@
 //
 //  SearchSuggestionsViewModel.swift
-//  catowser
+//  CottonViewModels
 //
 //  Created by Andrei Ermoshin on 6/21/22.
 //  Copyright © 2022 Cotton/Catowser Andrei Ermoshin. All rights reserved.
 //
 
-import Foundation
 import Combine
-import CoreBrowser
 
 public typealias KnownDomains = [String]
 public typealias QuerySuggestions = [String]
@@ -84,8 +82,7 @@ public enum SearchSuggestionsViewState: Equatable {
     }
 }
 
-@MainActor
-public protocol SearchSuggestionsViewModel: ObservableObject, Sendable {
+@MainActor public protocol SearchSuggestionsViewModel: ObservableObject, Sendable {
     /// Initiate fetching only after subscribing to the async interfaces below
     func fetchSuggestions(_ query: String) async
     /// Concurrency state, also can be used as a synchronous state. A wrapped value for Published
