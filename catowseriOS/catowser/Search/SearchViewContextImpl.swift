@@ -8,8 +8,9 @@
 
 import Foundation
 import CottonData
+import CottonViewModels
 import CoreBrowser
-import FeaturesFlagsKit
+import FeatureFlagsKit
 
 struct SearchViewContextImpl: SearchViewContext {
     var knownDomainsStorage: KnownDomainsSource {

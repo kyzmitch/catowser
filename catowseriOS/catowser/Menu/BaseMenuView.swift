@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import FeaturesFlagsKit
+import FeatureFlagsKit
 
 typealias SwiftUIValueRequirements = Hashable & Identifiable & CustomStringConvertible
 

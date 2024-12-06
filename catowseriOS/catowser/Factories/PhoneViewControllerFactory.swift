@@ -6,7 +6,7 @@
 //  Copyright © 2022 Cotton (former Catowser). All rights reserved.
 //
 
-import FeaturesFlagsKit
+import FeatureFlagsKit
 import UIKit
 
 /// Implements the operations to create phone layout product objects.

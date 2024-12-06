@@ -6,7 +6,7 @@
 //  Copyright © 2022 Cotton/Catowser Andrei Ermoshin. All rights reserved.
 //
 
-import FeaturesFlagsKit
+import FeatureFlagsKit
 import UIKit
 
 /// Implements the operations to create tablet layout product objects.

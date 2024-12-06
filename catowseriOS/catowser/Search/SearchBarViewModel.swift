@@ -9,8 +9,8 @@
 import Foundation
 import SwiftUI
 import CoreBrowser
-import FeaturesFlagsKit
-import BrowserNetworking
+import FeatureFlagsKit
+import CottonNetworking
 import CottonBase
 import Combine
 import CottonData

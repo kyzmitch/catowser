@@ -11,8 +11,8 @@ import WebKit
 import CoreBrowser
 import CottonPlugins
 import CottonBase
-import BrowserNetworking
-import FeaturesFlagsKit
+import CottonNetworking
+import FeatureFlagsKit
 import ReactiveSwift
 #if canImport(Combine)
 @preconcurrency import Combine

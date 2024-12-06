@@ -41,7 +41,7 @@ open class GenericConcurrentDataService<
     public func sendCommand(
         _ command: Command,
         _ input: ServiceData?,
-        _ onComplete: @escaping Promise
+        _ onComplete: @escaping @Sendable Promise
     ) {
         executionQueue.performAsync { [weak self] in
             guard let self else {

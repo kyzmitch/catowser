@@ -9,7 +9,7 @@
 import UIKit
 import CoreBrowser
 import CottonData
-import FeaturesFlagsKit
+import FeatureFlagsKit
 
 enum WebToolbarState {
     case nothingToNavigate

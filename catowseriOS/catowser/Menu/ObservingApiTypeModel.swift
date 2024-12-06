@@ -8,7 +8,7 @@
 
 import CoreBrowser
 import Foundation
-import FeaturesFlagsKit
+import FeatureFlagsKit
 
 typealias ObservingApiTypeModel = BaseListViewModelImpl<ObservingApiType>
 

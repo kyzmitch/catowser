@@ -9,7 +9,7 @@
 import UIKit
 import CoreBrowser
 import Combine
-import FeaturesFlagsKit
+import FeatureFlagsKit
 
 final class TabsPreviewsViewController<C: Navigating>: BaseViewController,
                                                        CollectionViewInterface,

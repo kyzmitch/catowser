@@ -9,7 +9,7 @@
 import UIKit
 import CoreBrowser
 import CottonBase
-import FeaturesFlagsKit
+import FeatureFlagsKit
 import CottonPlugins
 import CottonData
 

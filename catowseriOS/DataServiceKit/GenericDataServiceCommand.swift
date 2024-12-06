@@ -10,4 +10,4 @@
 /// this type should allow to provide a common interface for any data service
 /// by using a single function in the data service API which has a command
 /// as an input parameter
-public protocol GenericDataServiceCommand: CaseIterable, Hashable { }
+public protocol GenericDataServiceCommand: CaseIterable, Hashable, Sendable { }

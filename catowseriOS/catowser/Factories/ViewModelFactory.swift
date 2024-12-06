@@ -6,11 +6,12 @@
 //  Copyright © 2022 Cotton/Catowser Andrei Ermoshin. All rights reserved.
 //
 
-import Foundation
 import CottonBase
 import CottonData
+import CottonViewModels
+import CottonUseCases
 import CoreBrowser
-import FeaturesFlagsKit
+import FeatureFlagsKit
 
 /// Creates new instances of view models.
 /// Depends on feature flags to determine VM configuration/dependencies.

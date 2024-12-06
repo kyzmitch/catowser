@@ -12,7 +12,7 @@ import CottonBase
 extension Site.Settings {
     /// This will be ignored for old WebViews because it can't be changed for existing WebView without recration.
     /// It has to be main actor because `WKWebViewConfiguration` uses it.
-    @MainActor var webViewConfig: WKWebViewConfiguration {
+    @MainActor public var webViewConfig: WKWebViewConfiguration {
         let configuration = WKWebViewConfiguration()
         if #available(iOS 14, *) {
             let preferences = WKWebpagePreferences()

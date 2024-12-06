@@ -7,7 +7,7 @@
 //
 
 import CottonPlugins
-import FeaturesFlagsKit
+import FeatureFlagsKit
 import CottonData
 import CoreBrowser
 

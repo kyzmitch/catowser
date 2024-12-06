@@ -8,7 +8,7 @@
 
 import UIKit
 import CoreBrowser
-import FeaturesFlagsKit
+import FeatureFlagsKit
 
 @MainActor protocol SearchBarControllerInterface: AnyObject {
     /* non optional */ func handleAction(_ action: SearchBarAction)

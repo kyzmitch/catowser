@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import FeaturesFlagsKit
+import FeatureFlagsKit
 
 typealias AppUIFrameworkTypeModel = BaseListViewModelImpl<UIFrameworkType>
 

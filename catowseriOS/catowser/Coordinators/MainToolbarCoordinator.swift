@@ -8,7 +8,7 @@
 
 import UIKit
 import CoreBrowser
-import FeaturesFlagsKit
+import FeatureFlagsKit
 
 @MainActor
 final class MainToolbarCoordinator: Coordinator {

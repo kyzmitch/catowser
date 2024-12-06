@@ -7,7 +7,7 @@
 //
 
 import CoreBrowser
-import FeaturesFlagsKit
+import FeatureFlagsKit
 
 extension ApplicationFeature {
     static var dnsOverHTTPSAvailable: ApplicationFeature<DoHAvailable> {

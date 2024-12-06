@@ -23,8 +23,8 @@ enum ServiceRecord {
     }
 }
 
-/// Service locator
-public class LazyServiceLocator {
+/// Lazy base service locator
+open class LazyServiceLocator {
     private lazy var idByRecord: [ObjectIdentifier: ServiceRecord] = [:]
     private lazy var stringByRecord: [String: ServiceRecord] = [:]
     

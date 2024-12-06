@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import FeaturesFlagsKit
+import FeatureFlagsKit
 import Combine
 import CottonData
 

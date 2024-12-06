@@ -9,7 +9,7 @@
 import CottonData
 import CottonPlugins
 import CottonBase
-import FeaturesFlagsKit
+import FeatureFlagsKit
 
 final class MockedWebViewContext: WebViewContext {
     let pluginsSource: any JSPluginsSource

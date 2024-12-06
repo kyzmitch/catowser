@@ -9,7 +9,7 @@
 import UIKit
 import CoreGraphics
 import CoreBrowser
-import FeaturesFlagsKit
+import FeatureFlagsKit
 
 fileprivate extension TabsViewController {
     struct Sizes {

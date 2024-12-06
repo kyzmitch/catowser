@@ -8,7 +8,7 @@
 
 import UIKit
 @preconcurrency import ReactiveSwift
-import FeaturesFlagsKit
+import FeatureFlagsKit
 import CottonData
 
 protocol SearchSuggestionsControllerInterface: AnyObject {

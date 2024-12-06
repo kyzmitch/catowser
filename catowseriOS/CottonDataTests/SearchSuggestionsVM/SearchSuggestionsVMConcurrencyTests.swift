@@ -10,9 +10,9 @@ import XCTest
 @testable import CottonData
 import CottonBase
 import CottonRestKit
-import ReactiveHttpKit
+import CottonReactiveRestKit
 @preconcurrency import ReactiveSwift
-import BrowserNetworking
+import CottonNetworking
 import Combine
 import SwiftyMocky
 

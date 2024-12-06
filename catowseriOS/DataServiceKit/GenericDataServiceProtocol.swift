@@ -36,6 +36,6 @@ public protocol GenericDataServiceProtocol: AnyObject {
     func sendCommand(
         _ command: Command,
         _ input: ServiceData?,
-        _ onComplete: @escaping Promise
+        _ onComplete: @escaping @Sendable Promise
     )
 }

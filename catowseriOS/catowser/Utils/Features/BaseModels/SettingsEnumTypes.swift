@@ -9,7 +9,7 @@
 import Foundation
 import CoreBrowser
 import CottonData
-import FeaturesFlagsKit
+import FeatureFlagsKit
 
 extension WebAutoCompletionSource: EnumDefaultValueSupportable {
     public var defaultValue: WebAutoCompletionSource {

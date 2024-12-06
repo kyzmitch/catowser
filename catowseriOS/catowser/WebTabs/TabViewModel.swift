@@ -9,7 +9,7 @@
 import Foundation
 import CottonBase
 import CoreBrowser
-import FeaturesFlagsKit
+import FeatureFlagsKit
 
 @MainActor
 final class TabViewModel {

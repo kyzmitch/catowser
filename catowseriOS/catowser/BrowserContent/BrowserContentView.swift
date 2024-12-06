@@ -9,7 +9,7 @@
 import SwiftUI
 import CoreBrowser
 import Combine
-import FeaturesFlagsKit
+import FeatureFlagsKit
 import CottonPlugins
 import CottonData
 

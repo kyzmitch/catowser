@@ -8,7 +8,7 @@
 
 import UIKit
 import CoreBrowser
-import FeaturesFlagsKit
+import FeatureFlagsKit
 
 final class PhoneTabsCoordinator: Coordinator {
     let vcFactory: any ViewControllerFactory

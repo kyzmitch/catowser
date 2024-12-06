@@ -11,11 +11,11 @@ import UIKit
 import CoreGraphics
 import CoreBrowser
 import CottonBase
-import FeaturesFlagsKit
+import FeatureFlagsKit
 #if canImport(Combine)
 import Combine
 #endif
-import BrowserNetworking
+import CottonNetworking
 
 @MainActor protocol TabDelegate: AnyObject {
     func tabViewDidClose(_ tabView: TabView) async

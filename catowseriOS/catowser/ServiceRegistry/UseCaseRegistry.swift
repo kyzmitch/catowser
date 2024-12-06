@@ -11,8 +11,8 @@ import Foundation
 import CoreBrowser
 import CottonData
 
-@globalActor
-final class UseCaseRegistry {
+/// A global singletone for storing all the use case classes
+@globalActor final class UseCaseRegistry {
     static let shared = StateHolder()
     
     actor StateHolder {
@@ -27,12 +27,15 @@ final class UseCaseRegistry {
             self.serviceRegistry = serviceRegistry
         }
         
+        /// Registers all the use cases, usually at the application start
         func registerUseCases() async {
             await registerTabsUseCases()
             await registerSearchAutocompleteUseCases()
             await registerDnsResolveUseCases()
         }
 
+        /// Searches for a specific use case based on a type or a string key
+        /// if storing by a type was to complex (if it a type was with a generic params)
         func findUseCase<T>(_ type: T.Type, _ key: String? = nil) -> T {
             // swiftlint:disable:next force_unwrapping
             useCaseLocator.findService(type, key)!

@@ -8,10 +8,12 @@
 
 import UIKit
 import CoreBrowser
-import FeaturesFlagsKit
-import BrowserNetworking
+import FeatureFlagsKit
+import CottonNetworking
 import CottonBase
 import CottonData
+import CottonDataServices
+import CottonViewModels
 
 @MainActor
 protocol SearchBarDelegate: AnyObject {

@@ -9,7 +9,7 @@
 import Foundation
 import CoreBrowser
 import CottonData
-import FeaturesFlagsKit
+import FeatureFlagsKit
 
 extension String {
     static let autoCompletionKey = "ios.browser.autocompletion.source"

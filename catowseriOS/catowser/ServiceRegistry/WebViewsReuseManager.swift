@@ -9,7 +9,7 @@
 import UIKit
 import CoreBrowser
 import CottonPlugins
-import BrowserNetworking
+import CottonNetworking
 import CottonBase
 import CottonData
 

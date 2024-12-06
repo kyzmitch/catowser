@@ -6,7 +6,7 @@
 //  Copyright © 2022 Cotton/Catowser Andrei Ermoshin. All rights reserved.
 //
 
-import FeaturesFlagsKit
+import FeatureFlagsKit
 import SwiftUI
 
 #if DEBUG

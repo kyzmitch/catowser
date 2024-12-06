@@ -9,7 +9,7 @@
 import UIKit
 import AlamofireImage
 import Alamofire
-import FeaturesFlagsKit
+import FeatureFlagsKit
 import CoreBrowser
 
 @main
