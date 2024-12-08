@@ -9,7 +9,6 @@
 import SwiftUI
 import CoreBrowser
 import FeatureFlagsKit
-import CottonData
 import CottonViewModels
 
 struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarViewModelProtocol>: View {

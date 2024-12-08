@@ -9,8 +9,6 @@
 import SwiftUI
 import CoreBrowser
 import FeatureFlagsKit
-import CottonPlugins
-import CottonData
 import CottonViewModels
 
 struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarViewModelProtocol>: View {
@@ -38,7 +36,7 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
     /// Search query string state which is set by SearchBar and used by SearchSuggestions
     @State private var searchQuery: String = ""
     /// Needs to be fetched from global actor in task to know current value
-    @State private var searchProviderType: WebAutoCompletionSource
+    @State private var searchProviderType: CoreBrowser.WebAutoCompletionSource
 
     // MARK: - web content loading state
 

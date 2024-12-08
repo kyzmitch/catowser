@@ -71,7 +71,9 @@ final class AppCoordinator: Coordinator, ContentCoordinatorsInterface, PluginsPr
     }
 
     /// UI framework type
-    let uiFramework: UIFrameworkType
+    var uiFramework: UIFrameworkType {
+        appStartInfo.uiFramework
+    }
     /// App start info (including view models and other data)
     private let appStartInfo: AppStartInfo
     /// Feature manager
@@ -83,14 +85,12 @@ final class AppCoordinator: Coordinator, ContentCoordinatorsInterface, PluginsPr
 
     init(
         _ vcFactory: ViewControllerFactory,
-        _ uiFramework: UIFrameworkType,
         _ featureManager: FeatureManager.StateHolder,
         _ uiServiceRegistry: UIServiceRegistry,
         _ pluginsDelegate: PluginsProxy,
         _ appStartInfo: AppStartInfo
     ) {
         self.vcFactory = vcFactory
-        self.uiFramework = uiFramework
         self.featureManager = featureManager
         self.uiServiceRegistry = uiServiceRegistry
         self.pluginsDelegate = pluginsDelegate
