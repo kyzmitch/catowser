@@ -10,6 +10,7 @@ import UIKit
 import CoreBrowser
 import Combine
 import FeatureFlagsKit
+import CottonDataServices
 
 final class TabsPreviewsViewController<C: Navigating>: BaseViewController,
                                                        CollectionViewInterface,

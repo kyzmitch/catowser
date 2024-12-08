@@ -9,6 +9,7 @@
 import UIKit
 import CoreBrowser
 import FeatureFlagsKit
+import CottonDataServices
 
 @MainActor protocol SearchBarControllerInterface: AnyObject {
     /* non optional */ func handleAction(_ action: SearchBarAction)

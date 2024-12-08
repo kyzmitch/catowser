@@ -26,6 +26,8 @@ enum SearchBarAction: Equatable {
             return .clearView
         case .site(let site):
             return .updateView(site.title, site.searchBarContent)
+        @unknown default:
+            fatalError("Not handled tab state")
         }
     }
 }

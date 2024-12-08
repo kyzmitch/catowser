@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreBrowser
+import CottonUseCases
 
 typealias TabsBox = Box<[CoreBrowser.Tab]>
 

@@ -10,6 +10,7 @@ import UIKit
 import CoreGraphics
 import CoreBrowser
 import FeatureFlagsKit
+import CottonDataServices
 
 fileprivate extension TabsViewController {
     struct Sizes {

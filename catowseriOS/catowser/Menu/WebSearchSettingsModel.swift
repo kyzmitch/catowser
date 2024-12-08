@@ -33,6 +33,8 @@ extension WebAutoCompletionSource: CustomStringConvertible {
             key = "Duck Duck Go"
         case .google:
             key = "Google"
+        @unknown default:
+            fatalError("Not handled search provider type")
         }
         return key
     }
