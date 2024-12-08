@@ -8,6 +8,7 @@
 
 import SwiftUI
 import CottonData
+import CottonViewModels
 
 struct SearchSuggestionsView<S: SearchSuggestionsViewModel>: View {
     private let searchQuery: String

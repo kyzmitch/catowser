@@ -13,6 +13,7 @@ import CottonBase
 import CottonData
 import CoreBrowser
 import FeatureFlagsKit
+import CottonDataServices
 
 enum BrowserMenuStyle {
     case withSiteMenu(Host, Site.Settings)

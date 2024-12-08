@@ -11,6 +11,7 @@ import CottonBase
 import CoreBrowser
 import CottonPlugins
 import CottonData
+import CottonViewModels
 
 @MainActor
 protocol WebContentDelegate: AnyObject {

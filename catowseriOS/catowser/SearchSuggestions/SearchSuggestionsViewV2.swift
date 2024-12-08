@@ -8,6 +8,7 @@
 
 import SwiftUI
 import CottonData
+import CottonViewModels
 
 struct SearchSuggestionsViewV2<S: SearchSuggestionsViewModel>: View {
     /// Used in waitingForQuery
@@ -81,6 +82,8 @@ struct SearchSuggestionsViewV2<S: SearchSuggestionsViewModel>: View {
                     Text(verbatim: suggestions.sectionTitle(section: 0) ?? "Known domains")
                 }
             }
+        @unknown default:
+            fatalError("Not handle suggestions loading state")
         } // switch
     } // construct view
 }

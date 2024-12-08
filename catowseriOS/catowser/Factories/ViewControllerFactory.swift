@@ -10,6 +10,7 @@ import UIKit
 import CottonData
 import FeatureFlagsKit
 import CoreBrowser
+import CottonViewModels
 
 /**
  Tried to make view controller factory generic and depend on one generic parameter which

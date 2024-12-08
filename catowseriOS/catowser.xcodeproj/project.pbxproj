@@ -158,6 +158,8 @@
 		75869FB52D030A8600D981B6 /* Combine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A6CD6D324585D830068ACB5 /* Combine.framework */; };
 		75869FB62D030A9300D981B6 /* CottonNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A277137268E452000D8878C /* CottonNetworking.framework */; };
 		75869FBB2D030AB900D981B6 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A7B1BF628EB2C7F004FC135 /* WebKit.framework */; };
+		7586A1C12D05C06800D981B6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7586A1C02D05C06800D981B6 /* Foundation.framework */; };
+		7586A1C22D05C08600D981B6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7586A1C02D05C06800D981B6 /* Foundation.framework */; };
 		759E3E4D2C863B3D00245B44 /* Atomics in Frameworks */ = {isa = PBXBuildFile; productRef = 759E3E4C2C863B3D00245B44 /* Atomics */; };
 		75D81CF72B0B077200447DC7 /* JSPluginsSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60380EF622A15504007F06FB /* JSPluginsSource.swift */; };
 		75D81CFB2B0B084300447DC7 /* JSPluginsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60380EF422A1509F007F06FB /* JSPluginsBuilder.swift */; };
@@ -992,6 +994,7 @@
 		75869E752D01BD4F00D981B6 /* FullSiteNavigationComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullSiteNavigationComponent.swift; sourceTree = "<group>"; };
 		75869E7E2D01DDBB00D981B6 /* CottonDataServices.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CottonDataServices.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		75869E872D01DDBB00D981B6 /* CottonDataServicesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CottonDataServicesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7586A1C02D05C06800D981B6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		759AE09529146C96008CE4EE /* Mockfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Mockfile; sourceTree = "<group>"; };
 		75DA4C7A2C9C7F40009AE049 /* UIServiceRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIServiceRegistry.swift; sourceTree = "<group>"; };
 		75EA4E6E29F7055800165A07 /* TitledImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitledImageView.swift; sourceTree = "<group>"; };
@@ -1316,6 +1319,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7586A1C12D05C06800D981B6 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1414,6 +1418,7 @@
 				8AD4F52028F49303009C4BDC /* Alamofire in Frameworks */,
 				8AF4337C248EBB2A0047452B /* CssParser.framework in Frameworks */,
 				8A5F72102826DD59008E5638 /* CottonReactiveRestKit.framework in Frameworks */,
+				7586A1C22D05C08600D981B6 /* Foundation.framework in Frameworks */,
 				75869DDE2D01B1D400D981B6 /* CottonUseCases.framework in Frameworks */,
 				6094E723221FD2B9004269A2 /* CoreBrowser.framework in Frameworks */,
 				8A5FD6A426AF31FE0019384A /* CottonRestKit.framework in Frameworks */,
@@ -1547,6 +1552,7 @@
 		5906B47E95A37FC0872DBD1A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7586A1C02D05C06800D981B6 /* Foundation.framework */,
 				8A478EBA2AEE5C9600DAD162 /* CottonBase.framework */,
 				8A478EC12AEE5CEA00DAD162 /* CottonBase.framework */,
 				7517D9C22A5F2E7A00D081AD /* CottonBase.xcframework */,
@@ -4595,6 +4601,7 @@
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
+				OTHER_SWIFT_FLAGS = "-no-verify-emitted-module-interface";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ae.DataServiceKit.debug;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -4647,6 +4654,7 @@
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
 				MTL_FAST_MATH = YES;
+				OTHER_SWIFT_FLAGS = "-no-verify-emitted-module-interface";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ae.DataServiceKit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -4760,6 +4768,7 @@
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
+				OTHER_SWIFT_FLAGS = "-no-verify-emitted-module-interface";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ae.CottonUseCases;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -4813,6 +4822,7 @@
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
 				MTL_FAST_MATH = YES;
+				OTHER_SWIFT_FLAGS = "-no-verify-emitted-module-interface";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ae.CottonUseCases;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -4923,6 +4933,7 @@
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
+				OTHER_SWIFT_FLAGS = "-no-verify-emitted-module-interface";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ae.CottonViewModels;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				REGISTER_APP_GROUPS = NO;
@@ -4974,6 +4985,7 @@
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
 				MTL_FAST_MATH = YES;
+				OTHER_SWIFT_FLAGS = "-no-verify-emitted-module-interface";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ae.CottonViewModels;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				REGISTER_APP_GROUPS = NO;
@@ -5084,6 +5096,7 @@
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
+				OTHER_SWIFT_FLAGS = "-no-verify-emitted-module-interface";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ae.CottonDataServices;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -5137,6 +5150,7 @@
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
 				MTL_FAST_MATH = YES;
+				OTHER_SWIFT_FLAGS = "-no-verify-emitted-module-interface";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ae.CottonDataServices;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

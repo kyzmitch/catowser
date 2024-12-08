@@ -10,6 +10,7 @@ import SwiftUI
 import CoreBrowser
 import FeatureFlagsKit
 import CottonData
+import CottonViewModels
 
 struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarViewModelProtocol>: View {
     // MARK: - view models of subviews
@@ -134,13 +135,15 @@ struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarV
             } else {
                 let jsPlugins = browserContentVM.jsPluginsBuilder
                 let siteNavigation: SiteExternalNavigationDelegate = toolbarVM
-                BrowserContentView(jsPlugins,
-                                   siteNavigation,
-                                   isLoading,
-                                   contentType,
-                                   $webViewNeedsUpdate,
-                                   mode,
-                                   webVM)
+                BrowserContentView(
+                    jsPlugins,
+                    siteNavigation,
+                    isLoading,
+                    contentType,
+                    $webViewNeedsUpdate,
+                    mode,
+                    webVM
+                )
             }
         }
         .ignoresSafeArea(.keyboard)

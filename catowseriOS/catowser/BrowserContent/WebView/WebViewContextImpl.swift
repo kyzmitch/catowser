@@ -12,6 +12,7 @@ import CottonData
 import CoreBrowser
 import CottonPlugins
 import FeatureFlagsKit
+import CottonViewModels
 
 public final class WebViewContextImpl: WebViewContext {
     public let pluginsSource: any JSPluginsSource

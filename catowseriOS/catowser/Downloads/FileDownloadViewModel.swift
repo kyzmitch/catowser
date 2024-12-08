@@ -86,6 +86,8 @@ final class FileDownloadViewModel {
                         self.downloadOutput.value = .in(progress: converted)
                     case .complete(let localURL):
                         self.downloadOutput.value = .finished(localURL)
+                    @unknown default:
+                        fatalError("Not handled progress case")
                     }
                 case .failure(let error):
                     print("download error: \(error)")

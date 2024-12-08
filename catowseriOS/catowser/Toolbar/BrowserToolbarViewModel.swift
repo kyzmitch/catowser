@@ -9,6 +9,7 @@
 import SwiftUI
 import CoreBrowser
 import CottonData
+import CottonViewModels
 
 @MainActor
 final class BrowserToolbarViewModel: ObservableObject {

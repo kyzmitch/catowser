@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreBrowser
+import CottonUseCases
 
 @MainActor
 final class AllTabsViewModel: ObservableObject {

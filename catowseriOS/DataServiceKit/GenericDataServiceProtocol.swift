@@ -6,8 +6,6 @@
 //  Copyright © 2024 Cotton (Catowser). All rights reserved.
 //
 
-import os
-
 /// Base interface for a generic data service using class with custom sinhronization
 /// (serial or concurrent depending on implementation)
 public protocol GenericDataServiceProtocol: AnyObject {

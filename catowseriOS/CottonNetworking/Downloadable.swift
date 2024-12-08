@@ -89,7 +89,9 @@ fileprivate extension URL {
 }
 
 /// Probably temporarily namespace (types defined in it are used to belong to HttpKit namespace)
-public enum BrowserNetworking {}
+public enum BrowserNetworking {
+    #warning("TODO: rename the namescape to reflect new module name")
+}
 
 extension BrowserNetworking {
     public enum ProgressResponse<T> {

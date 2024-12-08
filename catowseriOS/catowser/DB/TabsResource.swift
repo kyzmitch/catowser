@@ -9,6 +9,7 @@
 import Foundation
 import CoreBrowser
 import CoreData
+import CottonDataServices
 
 fileprivate extension String {
     static let threadName = "tabsStore"

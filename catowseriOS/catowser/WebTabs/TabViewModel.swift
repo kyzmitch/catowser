@@ -10,6 +10,8 @@ import Foundation
 import CottonBase
 import CoreBrowser
 import FeatureFlagsKit
+import CottonUseCases
+import CottonDataServices
 
 @MainActor
 final class TabViewModel {
@@ -59,6 +61,8 @@ final class TabViewModel {
                 state = .selected(tab.title, favicon)
             case .deselected:
                 state = .deSelected(tab.title, favicon)
+            @unknown default:
+                break
             }
         }
     }

@@ -11,6 +11,7 @@ import CoreBrowser
 import FeatureFlagsKit
 import CottonPlugins
 import CottonData
+import CottonViewModels
 
 struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarViewModelProtocol>: View {
     // MARK: - view models of subviews

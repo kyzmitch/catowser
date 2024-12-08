@@ -8,6 +8,7 @@
 
 import CottonBase
 import CoreBrowser
+import CottonUseCases
 
 @MainActor final class TopSitesViewModel: ObservableObject {
     let topSites: [Site]

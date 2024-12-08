@@ -10,6 +10,8 @@ import CottonPlugins
 import FeatureFlagsKit
 import CottonData
 import CoreBrowser
+import CottonDataServices
+import CottonViewModels
 
 /// Central class for application initialization
 /// Should be called in App delegate or App coordinator.

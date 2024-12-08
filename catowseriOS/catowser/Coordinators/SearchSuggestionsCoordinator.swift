@@ -10,6 +10,7 @@ import UIKit
 @preconcurrency import ReactiveSwift
 import FeatureFlagsKit
 import CottonData
+import CottonViewModels
 
 protocol SearchSuggestionsControllerInterface: AnyObject {
     func prepareSearch(for searchQuery: String) async
@@ -36,10 +37,12 @@ final class SearchSuggestionsCoordinator: Coordinator {
     private var disposables = [Disposable?]()
     private let viewModel: any SearchSuggestionsViewModel
 
-    init(_ vcFactory: any ViewControllerFactory,
-         _ presenter: AnyViewController,
-         _ delegate: SearchSuggestionsListDelegate,
-         _ viewModel: any SearchSuggestionsViewModel) {
+    init(
+        _ vcFactory: any ViewControllerFactory,
+        _ presenter: AnyViewController,
+        _ delegate: SearchSuggestionsListDelegate,
+        _ viewModel: any SearchSuggestionsViewModel
+    ) {
         self.vcFactory = vcFactory
         self.presenterVC = presenter
         self.delegate = delegate
