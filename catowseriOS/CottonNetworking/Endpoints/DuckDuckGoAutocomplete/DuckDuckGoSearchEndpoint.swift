@@ -94,7 +94,7 @@ extension RestClient where Server == DuckDuckGoServer {
         let adapter: AlamofireHTTPRxAdaptee<DDGoSuggestionsResponse,
                                             DuckDuckGoServer,
                                             DDGoRxInterface> = .init(.waitsForRxObserver)
-        let producer = self.rxMakePublicRequest(for: endpoint, transport: adapter, subscriber: subscriber)
+        let producer = self.makePublicRequestProducer(for: endpoint, transport: adapter, subscriber: subscriber)
         return producer
     }
 
@@ -112,7 +112,7 @@ extension RestClient where Server == DuckDuckGoServer {
         }
 
         let adapter: AlamofireHTTPAdaptee<DDGoSuggestionsResponse, DuckDuckGoServer> = .init(.waitsForCombinePromise)
-        let future = self.cMakePublicRequest(for: endpoint, transport: adapter, subscriber: subscriber)
+        let future = self.makePublicRequestFuture(for: endpoint, transport: adapter, subscriber: subscriber)
         return future.eraseToAnyPublisher()
     }
 }

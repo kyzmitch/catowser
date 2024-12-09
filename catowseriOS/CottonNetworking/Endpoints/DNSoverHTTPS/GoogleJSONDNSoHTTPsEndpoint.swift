@@ -77,7 +77,7 @@ extension RestClient where Server == GoogleDnsServer {
         let adapter: AlamofireHTTPRxAdaptee<GoogleDNSOverJSONResponse,
                                             GoogleDnsServer,
                                             GDNSjsonRxInterface> = .init(.waitsForRxObserver)
-        let producer = self.rxMakePublicRequest(for: endpoint, transport: adapter, subscriber: subscriber)
+        let producer = self.makePublicRequestProducer(for: endpoint, transport: adapter, subscriber: subscriber)
         return producer
     }
 
@@ -113,7 +113,7 @@ extension RestClient where Server == GoogleDnsServer {
 
         let adapter: AlamofireHTTPAdaptee<GoogleDNSOverJSONResponse,
                                           GoogleDnsServer> = .init(.waitsForCombinePromise)
-        let future = self.cMakePublicRequest(for: endpoint, transport: adapter, subscriber: subscriber)
+        let future = self.makePublicRequestFuture(for: endpoint, transport: adapter, subscriber: subscriber)
         return future.eraseToAnyPublisher()
     }
 

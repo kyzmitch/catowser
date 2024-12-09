@@ -9,6 +9,11 @@
 import CottonBase
 
 extension RestClient {
+    /// Makes a REST request with specific type of response
+    ///
+    /// - Parameter endpoint: An endpoint model describing the request information for specific server
+    /// - Parameter accessToken: An optional access token string needed for authorization if needed
+    /// - Parameter adapter: An HTTP adapter which is needed to genearalize the async API used to receive the response.
     public func makeRequest<T, B: HTTPAdapter>(
         for endpoint: Endpoint<Server>,
         withAccessToken accessToken: String?,
@@ -24,17 +29,17 @@ extension RestClient {
             adapter.wrapperHandler()(result)
             return
         }
-        guard reachabilityStatus.isReachable else {
-            let result: HttpTypedResult<T> = .failure(.noInternetConnectionWithHost)
-            adapter.wrapperHandler()(result)
-            return
-        }
         let codes = T.successCodes
         adapter.performRequest(httpRequest, sucessCodes: codes)
     }
 
     // MARK: - Clear RX capable functions without dependencies
 
+    /// Makes a Reactive request with specific type of response
+    ///
+    /// - Parameter endpoint: An endpoint model describing the request information for specific server
+    /// - Parameter accessToken: An optional access token string needed for authorization if needed
+    /// - Parameter adapter: An HTTP adapter which is needed to genearalize the async API used to receive the response.
     public func makeRxRequest<T, B: HTTPRxAdapter>(
         for endpoint: Endpoint<Server>,
         withAccessToken accessToken: String?,
@@ -50,15 +55,15 @@ extension RestClient {
             adapter.wrapperHandler()(result)
             return
         }
-        guard reachabilityStatus.isReachable else {
-            let result: HttpTypedResult<T> = .failure(.noInternetConnectionWithHost)
-            adapter.wrapperHandler()(result)
-            return
-        }
         let codes = T.successCodes
         adapter.performRequest(httpRequest, sucessCodes: codes)
     }
 
+    /// Makes a Reactive request, but without any response type
+    ///
+    /// - Parameter endpoint: An endpoint model describing the request information for specific server
+    /// - Parameter accessToken: An optional access token string needed for authorization if needed
+    /// - Parameter adapter: An HTTP adapter which is needed to genearalize the async API used to receive the response.
     public func makeRxVoidRequest<B: HTTPRxVoidAdapter>(
         for endpoint: Endpoint<Server>,
         withAccessToken accessToken: String?,
@@ -71,11 +76,6 @@ extension RestClient {
         )
         guard let httpRequest = requestInfo.urlRequest else {
             let result: Result<Void, HttpError> = .failure(.failedKotlinRequestConstruct)
-            adapter.wrapperHandler()(result)
-            return
-        }
-        guard reachabilityStatus.isReachable else {
-            let result: Result<Void, HttpError> = .failure(.noInternetConnectionWithHost)
             adapter.wrapperHandler()(result)
             return
         }

@@ -17,7 +17,7 @@ extension RestClient where Server == GoogleDnsServer {
         let endpoint: GDNSjsonEndpoint = try .googleDnsOverHTTPSJson(domainName)
         let adapter: AlamofireHTTPAdaptee<GoogleDNSOverJSONResponse,
                                           GoogleDnsServer> = .init(.asyncAwaitConcurrency)
-        return try await self.aaMakePublicRequest(for: endpoint, transport: adapter)
+        return try await self.makePublicRequest(for: endpoint, transport: adapter)
     }
 
     @available(swift 5.5)

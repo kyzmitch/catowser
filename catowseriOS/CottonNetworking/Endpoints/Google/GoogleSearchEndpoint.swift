@@ -59,25 +59,24 @@ extension Endpoint where S == GoogleServer {
     }
 }
 
+/// Google search suggestions response model
 public final class GSearchSuggestionsResponse: ResponseType {
     static public var successCodes: [Int] {
         [200]
     }
-
-    /*
-     ["test",["test","testrail","test drive unlimited 2",
-     "test drive unlimited","testometrika","testlink",
-     "testdisk","test yourself","tests lunn","testflight"]]
-     */
+    /// A request text or a prefix of user initiated search
     public let queryText: String
+    /// The results of auto-completion suggestions from the remote search engine or data provider
     public let textResults: [String]
 
+    /// Constructor from JSON format
     public init(from decoder: Decoder) throws {
         var container = try decoder.unkeyedContainer()
         queryText = try container.decode(String.self)
         textResults = try container.decode([String].self)
     }
 
+    /// Constructor from actual parameters
     public init(_ text: String, _ results: [String]) {
         queryText = text
         textResults = results
@@ -85,6 +84,7 @@ public final class GSearchSuggestionsResponse: ResponseType {
 }
 
 extension RestClient where Server == GoogleServer {
+    /// Reactive producer variant of google auto-completion suggestions
     public func googleSearchSuggestions(
         for text: String,
         _ subscriber: GSearchClientRxSubscriber
@@ -101,10 +101,11 @@ extension RestClient where Server == GoogleServer {
         let adapter: AlamofireHTTPRxAdaptee<GSearchSuggestionsResponse,
                                             GoogleServer,
                                             GSearchRxInterface> = .init(.waitsForRxObserver)
-        let producer = self.rxMakePublicRequest(for: endpoint, transport: adapter, subscriber: subscriber)
+        let producer = self.makePublicRequestProducer(for: endpoint, transport: adapter, subscriber: subscriber)
         return producer
     }
 
+    /// Combine publisher variant of google auto-completion sugggestions
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func cGoogleSearchSuggestions(
         for text: String,
@@ -120,7 +121,7 @@ extension RestClient where Server == GoogleServer {
         }
 
         let adapter: AlamofireHTTPAdaptee<GSearchSuggestionsResponse, GoogleServer> = .init(.waitsForCombinePromise)
-        let future = self.cMakePublicRequest(for: endpoint, transport: adapter, subscriber: subscriber)
+        let future = self.makePublicRequestFuture(for: endpoint, transport: adapter, subscriber: subscriber)
         return future.eraseToAnyPublisher()
     }
 }

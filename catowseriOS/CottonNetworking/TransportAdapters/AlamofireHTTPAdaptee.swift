@@ -52,24 +52,26 @@ final class AlamofireHTTPAdaptee<R: ResponseType, S: ServerDescription>: HTTPAda
         let dataRequest: DataRequest = AF.request(request)
         dataRequest
             .validate(statusCode: sucessCodes)
-            .responseDecodable(of: Response.self,
-                               queue: .main,
-                               decoder: JSONDecoder(),
-                               completionHandler: { [weak self] (response) in
-                                let result: Result<Response, HttpError>
-                                switch response.result {
-                                case .success(let value):
-                                    result = .success(value)
-                                case .failure(let error):
-                                    print("Http request failed: \(error.localizedDescription)")
-                                    result = .failure(.httpFailure(error: error))
-                                }
-                                guard let self = self else {
-                                    print("Networking backend was deallocated")
-                                    return
-                                }
-                                self.wrapperHandler()(result)
-                               })
+            .responseDecodable(
+                of: Response.self,
+                queue: .main,
+                decoder: JSONDecoder(),
+                completionHandler: { [weak self] (response) in
+                    let result: Result<Response, HttpError>
+                    switch response.result {
+                    case .success(let value):
+                        result = .success(value)
+                    case .failure(let error):
+                        print("Http request failed: \(error.localizedDescription)")
+                        result = .failure(.httpFailure(error: error))
+                    }
+                    guard let self else {
+                        print("Networking backend was deallocated")
+                        return
+                    }
+                    self.wrapperHandler()(result)
+                }
+            )
         if case .combine = handlerType {
             // https://github.com/kyzmitch/Cotton/issues/14
         }
@@ -83,8 +85,10 @@ final class AlamofireHTTPAdaptee<R: ResponseType, S: ServerDescription>: HTTPAda
         }
     }
 
-    func performAsyncRequest(_ request: URLRequest,
-                             sucessCodes: [Int]) async throws -> Response {
+    func performAsyncRequest(
+        _ request: URLRequest,
+        sucessCodes: [Int]
+    ) async throws -> Response {
         do {
             let value = try await AF.request(request)
                 .validate(statusCode: sucessCodes)
@@ -94,6 +98,20 @@ final class AlamofireHTTPAdaptee<R: ResponseType, S: ServerDescription>: HTTPAda
         } catch {
             throw HttpError.httpFailure(error: error)
         }
-
+    }
+    
+    func performAsyncVoidRequest(
+        _ request: URLRequest,
+        sucessCodes: [Int]
+    ) async throws {
+        #warning("TODO: figure out how to get Void response in Alamofire")
+        do {
+            _ = try await AF.request(request)
+                .validate(statusCode: sucessCodes)
+                .serializingDecodable(VoidResponse.self)
+                .value
+        } catch {
+            throw HttpError.httpFailure(error: error)
+        }
     }
 }

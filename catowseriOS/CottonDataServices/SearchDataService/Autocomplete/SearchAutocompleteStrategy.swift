@@ -7,14 +7,12 @@
 //
 
 import Foundation
-import CottonRestKit // only for HttpError
+import CottonRestKit
 @preconcurrency import ReactiveSwift
 import Combine
 import AutoMockable
 
-/// Search auto complete strat is used by the use case which doesn't have any state
-/// as any use case can't have any state, so, it should be sendable, and, this strategy
-/// must be sendable to make the use case sendable as well...
+/// Search auto complete strategy
 // swiftlint:disable comment_spacing
 //sourcery: associatedtype = "Context: RestClientContext"
 public protocol SearchAutocompleteStrategy: AnyObject, AutoMockable, Sendable {

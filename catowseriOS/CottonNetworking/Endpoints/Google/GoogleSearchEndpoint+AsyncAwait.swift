@@ -16,7 +16,7 @@ extension RestClient where Server == GoogleServer {
     public func aaGoogleSearchSuggestions(for text: String) async throws -> GSearchSuggestionsResponse {
         let endpoint: GSearchEndpoint = try .googleSearchSuggestions(query: text)
         let adapter: AlamofireHTTPAdaptee<GSearchSuggestionsResponse, GoogleServer> = .init(.asyncAwaitConcurrency)
-        return try await self.aaMakePublicRequest(for: endpoint, transport: adapter)
+        return try await self.makePublicRequest(for: endpoint, transport: adapter)
     }
 }
 

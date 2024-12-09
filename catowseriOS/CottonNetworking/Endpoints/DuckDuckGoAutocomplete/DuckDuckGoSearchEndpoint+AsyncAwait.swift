@@ -18,7 +18,7 @@ extension RestClient where Server == DuckDuckGoServer {
     public func aaDuckDuckGoSuggestions(for text: String) async throws -> DDGoSuggestionsResponse {
         let endpoint: DDGoSuggestionsEndpoint = try .duckduckgoSuggestions(query: text)
         let adapter: AlamofireHTTPAdaptee<DDGoSuggestionsResponse, DuckDuckGoServer> = .init(.asyncAwaitConcurrency)
-        return try await self.aaMakePublicRequest(for: endpoint, transport: adapter)
+        return try await self.makePublicRequest(for: endpoint, transport: adapter)
     }
 }
 
