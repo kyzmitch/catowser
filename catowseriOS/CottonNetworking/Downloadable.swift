@@ -31,6 +31,7 @@ public protocol Downloadable {
     var excludeFromBackup: Bool { get }
 }
 
+/// Protocol extension adds default implemention
 extension Downloadable {
     public var excludeFromBackup: Bool {
         return true
@@ -70,7 +71,7 @@ extension Downloadable {
         let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         assert(urls.count != 0, "Failed to find documents directory")
         guard let documentsURL = urls.first else {
-            throw BrowserNetworking.DownloadError.noDocumentsDirectory
+            throw DownloadError.noDocumentsDirectory
         }
         return documentsURL.destination(using: fileName)
     }
@@ -88,140 +89,99 @@ fileprivate extension URL {
     }
 }
 
-/// Probably temporarily namespace (types defined in it are used to belong to HttpKit namespace)
-public enum BrowserNetworking {
-    #warning("TODO: rename the namescape to reflect new module name")
+/// Progress model
+public enum ProgressResponse<T> {
+    case progress(Progress)
+    case complete(T)
 }
 
-extension BrowserNetworking {
-    public enum ProgressResponse<T> {
-        case progress(Progress)
-        case complete(T)
-    }
-}
+public typealias FileDownloadProducer = SignalProducer<ProgressResponse<URL>, DownloadError>
+public typealias RemoteFileInfoProducer = SignalProducer<Int, DownloadError>
 
-extension BrowserNetworking {
-    public enum DownloadError: LocalizedError {
-        case zombyInstance
-        case noDocumentsDirectory
-        case noAppGroupDirectory
-        case failedCreateFileProviderFolder
-        case noCorrectDownloadDestination
-        case failedExcludeFromBackup(Error)
-        case networkError(Error)
-        case noHttpHeadersInResponse
-        case noContentLengthHeader
-        case stringToIntFailed
-        case urlRequestInit(Error)
+/// Sends download request for remote file
+///
+/// - Parameter file: All info about remote file and info about how it should be saved
+/// - Returns: Signal Producer with progress
+public func download(file: Downloadable) -> FileDownloadProducer {
+    let producer = FileDownloadProducer { (observer, _) in
+        let destination: DownloadRequest.Destination
 
-        public var description: String {
-            switch self {
-            case .failedExcludeFromBackup(let error):
-                return "failed to exclude download url from backup: \(error)"
-            case .networkError(let error):
-                return "network error: \(error)"
-            case .urlRequestInit(let error):
-                return "failed to construct URLRequest: \(error)"
-            default:
-                return "\(self)"
-            }
-        }
-    }
-}
-
-extension BrowserNetworking {
-    fileprivate var appGroupIdentifier: String {
-        "group.com.ae.cotton-browser"
-    }
-
-    public typealias FileDownloadProducer = SignalProducer<ProgressResponse<URL>, DownloadError>
-    public typealias RemoteFileInfoProducer = SignalProducer<Int, DownloadError>
-
-    /// Sends download request for remote file
-    ///
-    /// - Parameter file: All info about remote file and info about how it should be saved
-    /// - Returns: Signal Producer with progress
-    public static func download(file: Downloadable) -> FileDownloadProducer {
-        let producer = FileDownloadProducer { (observer, _) in
-            let destination: DownloadRequest.Destination
-
-            do {
-                destination = try file.sandboxDestination()
-            } catch {
-                observer.send(error: .noDocumentsDirectory)
-                return
-            }
-
-            let request = AF.download(file.url, method: .get, to: destination)
-            request.downloadProgress(queue: .main) { (progress) in
-                observer.send(value: .progress(progress))
-            }.responseData(queue: .main) { (response) in
-                switch response.result {
-                case .success:
-                    guard var destinationURL = response.fileURL else {
-                        observer.send(error: .noCorrectDownloadDestination)
-                        return
-                    }
-                    var values = URLResourceValues()
-                    values.isExcludedFromBackup = file.excludeFromBackup
-                    do {
-                        try destinationURL.setResourceValues(values)
-                    } catch {
-                        observer.send(error: .failedExcludeFromBackup(error))
-                        return
-                    }
-
-                    observer.send(value: .complete(destinationURL))
-                    observer.sendCompleted()
-                case .failure(let error):
-                    observer.send(error: .networkError(error))
-                }
-            }
+        do {
+            destination = try file.sandboxDestination()
+        } catch {
+            observer.send(error: .noDocumentsDirectory)
+            return
         }
 
-        return producer
-    }
+        let request = AF.download(file.url, method: .get, to: destination)
+        request.downloadProgress(queue: .main) { (progress) in
+            observer.send(value: .progress(progress))
+        }.responseData(queue: .main) { (response) in
+            switch response.result {
+            case .success:
+                guard var destinationURL = response.fileURL else {
+                    observer.send(error: .noCorrectDownloadDestination)
+                    return
+                }
+                var values = URLResourceValues()
+                values.isExcludedFromBackup = file.excludeFromBackup
+                do {
+                    try destinationURL.setResourceValues(values)
+                } catch {
+                    observer.send(error: .failedExcludeFromBackup(error))
+                    return
+                }
 
-    /**
-     Fetches info of remote file like file size which expect to be dowloaded.
-     https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Length
-     The Content-Length entity header indicates the size of the entity-body, in bytes, sent to the recipient.
-     https://tools.ietf.org/html/rfc7230#section-3.3.2
-     A server MAY send a Content-Length header field in a response to a
-     HEAD request.
-
-     */
-    public static func fetchRemoteResourceInfo(url: URL) -> RemoteFileInfoProducer {
-        let producer = RemoteFileInfoProducer { (observer, _) in
-            let request: URLRequest
-            do {
-                request = try URLRequest(url: url, method: .head)
-            } catch {
-                observer.send(error: .urlRequestInit(error))
-                return
-            }
-            AF.request(request).response { (afResponse) in
-                if let networkError = afResponse.error {
-                    observer.send(error: .networkError(networkError))
-                    return
-                }
-                guard let headers = afResponse.response?.headers else {
-                    observer.send(error: .noHttpHeadersInResponse)
-                    return
-                }
-                let key = CottonBase.HTTPHeader.ContentLength(length: 0).key
-                guard let contentLengthValue = headers.value(for: key) else {
-                    observer.send(error: .noContentLengthHeader)
-                    return
-                }
-                guard let contentLength = Int(contentLengthValue, radix: 10) else {
-                    observer.send(error: .stringToIntFailed)
-                    return
-                }
-                observer.send(value: contentLength)
+                observer.send(value: .complete(destinationURL))
                 observer.sendCompleted()
+            case .failure(let error):
+                observer.send(error: .networkError(error))
             }
         }
-        return producer
     }
+
+    return producer
+}
+
+/**
+ Fetches info of remote file like file size which expect to be dowloaded.
+ https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Length
+ The Content-Length entity header indicates the size of the entity-body, in bytes, sent to the recipient.
+ https://tools.ietf.org/html/rfc7230#section-3.3.2
+ A server MAY send a Content-Length header field in a response to a
+ HEAD request.
+
+ */
+public func fetchRemoteResourceInfo(url: URL) -> RemoteFileInfoProducer {
+    let producer = RemoteFileInfoProducer { (observer, _) in
+        let request: URLRequest
+        do {
+            request = try URLRequest(url: url, method: .head)
+        } catch {
+            observer.send(error: .urlRequestInit(error))
+            return
+        }
+        AF.request(request).response { (afResponse) in
+            if let networkError = afResponse.error {
+                observer.send(error: .networkError(networkError))
+                return
+            }
+            guard let headers = afResponse.response?.headers else {
+                observer.send(error: .noHttpHeadersInResponse)
+                return
+            }
+            let key = CottonBase.HTTPHeader.ContentLength(length: 0).key
+            guard let contentLengthValue = headers.value(for: key) else {
+                observer.send(error: .noContentLengthHeader)
+                return
+            }
+            guard let contentLength = Int(contentLengthValue, radix: 10) else {
+                observer.send(error: .stringToIntFailed)
+                return
+            }
+            observer.send(value: contentLength)
+            observer.sendCompleted()
+        }
+    }
+    return producer
 }

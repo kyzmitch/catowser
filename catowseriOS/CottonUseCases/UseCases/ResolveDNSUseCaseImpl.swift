@@ -38,7 +38,7 @@ public final class ResolveDNSUseCaseImpl: ResolveDNSUseCase {
                 return
             }
             searchDataService.sendCommand(
-                .resolveDomainNameInURL(url),
+                .resolveDomainNameInURL(UUID(), url),
                 nil
             ) { result in
                 switch result {
@@ -72,7 +72,7 @@ public final class ResolveDNSUseCaseImpl: ResolveDNSUseCase {
     nonisolated(unsafe) let promise = promise
 #endif
                 searchDataService.sendCommand(
-                    .resolveDomainNameInURL(url),
+                    .resolveDomainNameInURL(UUID(), url),
                     nil
                 ) { result in
                     switch result {
@@ -99,7 +99,7 @@ public final class ResolveDNSUseCaseImpl: ResolveDNSUseCase {
                 return
             }
             searchDataService.sendCommand(
-                .resolveDomainNameInURL(url),
+                .resolveDomainNameInURL(UUID(), url),
                 nil
             ) { result in
                 switch result {

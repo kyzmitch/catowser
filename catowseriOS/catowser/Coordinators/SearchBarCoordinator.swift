@@ -325,6 +325,7 @@ private extension SearchBarCoordinator {
         let searchEngineName = await FeatureManager.shared.webSearchAutoCompleteValue()
         searchDataService.sendCommand(
             .fetchSearchURL(
+                identifier: UUID(),
                 suggestion: suggestion,
                 searchEngineName: searchEngineName
             ),

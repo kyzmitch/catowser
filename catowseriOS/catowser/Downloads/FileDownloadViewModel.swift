@@ -52,7 +52,7 @@ final class FileDownloadViewModel {
         resourceSizeOutput = .init(0)
         labelText = name
 
-        BrowserNetworking.fetchRemoteResourceInfo(url: batch.url)
+        fetchRemoteResourceInfo(url: batch.url)
             .observe(on: QueueScheduler.main)
             .startWithResult { [weak self] (result) in
                 guard let self = self else {
@@ -71,7 +71,7 @@ final class FileDownloadViewModel {
     func download() {
         downloadOutput.value = .started
 
-        BrowserNetworking.download(file: batch)
+        CottonNetworking.download(file: batch)
             .observe(on: QueueScheduler.main)
             .startWithResult { [weak self] (result) in
                 guard let self = self else {

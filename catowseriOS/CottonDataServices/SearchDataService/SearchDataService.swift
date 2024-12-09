@@ -18,7 +18,7 @@ public protocol SearchStrategiesFactoryProtocol: AnyObject {
     func googleSearchStrategy() -> any SearchAutocompleteStrategy
 }
 
-/// A data service needed to find search any data needed for the app.
+/// A data service needed to find/search any data needed for the app.
 /// Currently it searches for the search suggestions to support auto-completion
 /// and also can resolve domain names in the URLs to have ip addresses instead.
 ///
@@ -47,18 +47,18 @@ final class SearchDataService: GenericConcurrentDataService<SearchServiceCommand
         _ input: ServiceData?
     ) {
         switch command {
-        case let .fetchAutocompleteSuggestions(searchEngine, query):
+        case let .fetchAutocompleteSuggestions(_, searchEngine, query):
             handleSuggestionsFetch(
                 command: command,
                 searchAutocompleteSource: searchEngine,
                 query: query
             )
-        case let .resolveDomainNameInURL(urlWithDomainName):
+        case let .resolveDomainNameInURL(_, urlWithDomainName):
             handleDomainNameResolve(
                 command,
                 urlWithDomainName
             )
-        case let .fetchSearchURL(suggestion, source):
+        case let .fetchSearchURL(_, suggestion, source):
             handleConstructSearchEngineURL(
                 command,
                 source,
@@ -71,6 +71,9 @@ final class SearchDataService: GenericConcurrentDataService<SearchServiceCommand
 // MARK: - private functions
 
 private extension SearchDataService {
+    
+    // MARK: - Command handlers
+
     func handleSuggestionsFetch(
         command: Command,
         searchAutocompleteSource: WebAutoCompletionSource,
@@ -78,7 +81,8 @@ private extension SearchDataService {
     ) {
         if case .started(input: let existingRequest) = serviceData.fetchingSearchSuggestions,
            existingRequest?.query == query {
-            finishCommand(command, .failure(.sameSearchQueryAlreadyInProgress))
+            // already doing exact same request,
+            // can finish it later and return without an error
             return
         }
         if let autocompleteHandler {
@@ -103,14 +107,14 @@ private extension SearchDataService {
                 case .finished:
                     break
                 case .failure(let failure):
-                    self?.finishCommand(command, .failure(.strategyError(failure)))
+                    self?.finishSimilarCommands(command, .failure(.strategyError(failure)))
                 }
             }, receiveValue: { [weak self] suggestions in
                 guard let self else {
                     return
                 }
                 serviceData.fetchingSearchSuggestions = .finished(output: .success(suggestions))
-                finishCommand(command, .success(serviceData))
+                finishSimilarCommands(command, .success(serviceData))
             })
     }
     
@@ -128,7 +132,11 @@ private extension SearchDataService {
                 case .finished:
                     break
                 case .failure(let failure):
-                    self?.finishCommand(command, .failure(.strategyError(failure)))
+                    guard let self else {
+                        return
+                    }
+                    serviceData.resolvingDomainName = .finished(output: .failure(SearchServiceError.strategyError(failure)))
+                    finishCommand(command, .failure(.strategyError(failure)))
                 }
             }, receiveValue: { [weak self] resolvedURL in
                 guard let self else {
@@ -158,7 +166,7 @@ private extension SearchDataService {
     func parseSearchEngine(
         _ selectedPluginName: WebAutoCompletionSource
     ) -> SearchEngine {
-        let optionalXmlData = ResourceReader.readXmlSearchPlugin(
+        let optionalXmlData = XmlSearchPluginResource.read(
             with: selectedPluginName,
             on: .main
         )
@@ -175,5 +183,14 @@ private extension SearchDataService {
         }
 
         return osDescription.html
+    }
+    
+    func finishSimilarCommands(
+        _ command: Command,
+        _ output: Result<ServiceData, ServiceError>
+    ) {
+        // could be improved later by searching for all similar
+        // commands and finishing them with the same output
+        finishCommand(command, output)
     }
 }

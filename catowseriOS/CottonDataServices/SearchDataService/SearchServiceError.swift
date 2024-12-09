@@ -8,9 +8,9 @@
 
 import DataServiceKit
 
+/// Search data service error
 public enum SearchServiceError: DataServiceKitError {
     case zombyInstance
-    case sameSearchQueryAlreadyInProgress
     case strategyError(Error)
     case requestDataWhenNotCorrectState
     case xmlParsingError(Error)

@@ -10,14 +10,17 @@ import Foundation
 import CoreBrowser
 import DataServiceKit
 
-/// Search data service commands
+/// Search data service commands,
+/// each command has unique id as well to be able to cache
+/// similar commands and do request only once.
 public enum SearchServiceCommand: GenericDataServiceCommand {
     /// Search for the suggestions about how to finish the query/prefix text
-    case fetchAutocompleteSuggestions(WebAutoCompletionSource, String)
+    case fetchAutocompleteSuggestions(UUID, WebAutoCompletionSource, String)
     /// Search for an IP address of the domain name
-    case resolveDomainNameInURL(URL)
+    case resolveDomainNameInURL(UUID, URL)
     /// Fetch a search engine information and use it to construct a URL with a suggested phase
     case fetchSearchURL(
+        identifier: UUID,
         suggestion: String,
         searchEngineName: WebAutoCompletionSource
     )
@@ -26,8 +29,9 @@ public enum SearchServiceCommand: GenericDataServiceCommand {
         // swiftlint:disable:next force_unwrapping
         let dummyURL = URL(string: "www.example.com")!
         return [
-            .fetchAutocompleteSuggestions(.duckduckgo, ""),
-            .resolveDomainNameInURL(dummyURL)
+            .fetchAutocompleteSuggestions(UUID(), .duckduckgo, ""),
+            .resolveDomainNameInURL(UUID(), dummyURL),
+            .fetchSearchURL(identifier: UUID(), suggestion: "", searchEngineName: .duckduckgo)
         ]
     }
 }

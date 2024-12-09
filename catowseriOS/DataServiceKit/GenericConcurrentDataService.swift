@@ -25,7 +25,7 @@ open class GenericConcurrentDataService<
     public let responseQueue: DispatchQueueInterface
     public var serviceData: ServiceData
     public let lock: NSRecursiveLock
-    private var commandToPromise: [Command: Promise]
+    private(set) var commandToPromise: [Command: Promise]
     
     public init(
         executionQueue: DispatchQueueInterface = DispatchQueue.global(),

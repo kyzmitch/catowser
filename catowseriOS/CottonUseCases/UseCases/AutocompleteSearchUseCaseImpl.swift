@@ -40,7 +40,7 @@ public final class AutocompleteSearchUseCaseImpl: AutocompleteSearchUseCase {
                 return
             }
             searchDataService.sendCommand(
-                .fetchAutocompleteSuggestions(.duckduckgo, query),
+                .fetchAutocompleteSuggestions(UUID(), .duckduckgo, query),
                 nil
             ) { result in
                 switch result {
@@ -83,7 +83,7 @@ public final class AutocompleteSearchUseCaseImpl: AutocompleteSearchUseCase {
     nonisolated(unsafe) let promise = promise
 #endif
                 searchDataService.sendCommand(
-                    .fetchAutocompleteSuggestions(source, query),
+                    .fetchAutocompleteSuggestions(UUID(), source, query),
                     nil
                 ) { result in
                     switch result {
@@ -125,7 +125,7 @@ public final class AutocompleteSearchUseCaseImpl: AutocompleteSearchUseCase {
                 return
             }
             searchDataService.sendCommand(
-                .fetchAutocompleteSuggestions(source, query),
+                .fetchAutocompleteSuggestions(UUID(), source, query),
                 nil
             ) { result in
                 switch result {
@@ -154,6 +154,7 @@ public final class AutocompleteSearchUseCaseImpl: AutocompleteSearchUseCase {
             }
             searchDataService.sendCommand(
                 .fetchSearchURL(
+                    identifier: UUID(),
                     suggestion: suggestion,
                     searchEngineName: source
                 ),

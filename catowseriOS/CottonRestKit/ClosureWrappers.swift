@@ -70,8 +70,10 @@ public class CombinePromiseWrapper<Response: ResponseType, Server: ServerDescrip
         }
     }
 
-    public static func == (lhs: CombinePromiseWrapper<Response, Server>,
-                           rhs: CombinePromiseWrapper<Response, Server>) -> Bool {
+    public static func == (
+        lhs: CombinePromiseWrapper<Response, Server>,
+        rhs: CombinePromiseWrapper<Response, Server>
+    ) -> Bool {
         return lhs.responseType == rhs.responseType && lhs.endpoint == rhs.endpoint
     }
 }

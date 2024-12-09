@@ -160,6 +160,7 @@
 		75869FBB2D030AB900D981B6 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A7B1BF628EB2C7F004FC135 /* WebKit.framework */; };
 		7586A1C12D05C06800D981B6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7586A1C02D05C06800D981B6 /* Foundation.framework */; };
 		7586A1C22D05C08600D981B6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7586A1C02D05C06800D981B6 /* Foundation.framework */; };
+		7586A2F82D06C93100D981B6 /* DownloadError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7586A2F72D06C92F00D981B6 /* DownloadError.swift */; };
 		759E3E4D2C863B3D00245B44 /* Atomics in Frameworks */ = {isa = PBXBuildFile; productRef = 759E3E4C2C863B3D00245B44 /* Atomics */; };
 		75D81CF72B0B077200447DC7 /* JSPluginsSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60380EF622A15504007F06FB /* JSPluginsSource.swift */; };
 		75D81CFB2B0B084300447DC7 /* JSPluginsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60380EF422A1509F007F06FB /* JSPluginsBuilder.swift */; };
@@ -382,7 +383,7 @@
 		8ACE7BEE28ED6E0F001CBAED /* WebViewMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ACE7BED28ED6E0F001CBAED /* WebViewMocks.swift */; };
 		8AD18E0A2447564600224702 /* google.xml in Resources */ = {isa = PBXBuildFile; fileRef = 60724F79221695C80071BECF /* google.xml */; };
 		8AD18E0C2447564B00224702 /* duckduckgo.xml in Resources */ = {isa = PBXBuildFile; fileRef = 8AD2CEE62444DD7C00FFCBC7 /* duckduckgo.xml */; };
-		8AD18E102447580A00224702 /* ResourceReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD18E0F2447580A00224702 /* ResourceReader.swift */; };
+		8AD18E102447580A00224702 /* XmlSearchPluginResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD18E0F2447580A00224702 /* XmlSearchPluginResource.swift */; };
 		8AD4F51028F491A7009C4BDC /* ReactiveSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 8AD4F50F28F491A7009C4BDC /* ReactiveSwift */; };
 		8AD4F51228F491C8009C4BDC /* ReactiveSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 8AD4F51128F491C8009C4BDC /* ReactiveSwift */; };
 		8AD4F51428F491D9009C4BDC /* ReactiveSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 8AD4F51328F491D9009C4BDC /* ReactiveSwift */; };
@@ -995,6 +996,7 @@
 		75869E7E2D01DDBB00D981B6 /* CottonDataServices.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CottonDataServices.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		75869E872D01DDBB00D981B6 /* CottonDataServicesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CottonDataServicesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7586A1C02D05C06800D981B6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		7586A2F72D06C92F00D981B6 /* DownloadError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadError.swift; sourceTree = "<group>"; };
 		759AE09529146C96008CE4EE /* Mockfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Mockfile; sourceTree = "<group>"; };
 		75DA4C7A2C9C7F40009AE049 /* UIServiceRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIServiceRegistry.swift; sourceTree = "<group>"; };
 		75EA4E6E29F7055800165A07 /* TitledImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitledImageView.swift; sourceTree = "<group>"; };
@@ -1179,7 +1181,7 @@
 		8ACAE08E27B7DF52001D9DCD /* DummyRxInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyRxInterface.swift; sourceTree = "<group>"; };
 		8ACE7BEB28ED4FC9001CBAED /* WebViewContextMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewContextMocks.swift; sourceTree = "<group>"; };
 		8ACE7BED28ED6E0F001CBAED /* WebViewMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewMocks.swift; sourceTree = "<group>"; };
-		8AD18E0F2447580A00224702 /* ResourceReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceReader.swift; sourceTree = "<group>"; };
+		8AD18E0F2447580A00224702 /* XmlSearchPluginResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XmlSearchPluginResource.swift; sourceTree = "<group>"; };
 		8AD2CEE62444DD7C00FFCBC7 /* duckduckgo.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = duckduckgo.xml; sourceTree = "<group>"; };
 		8AD5E03F2915485200901DA2 /* SearchViewContextImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewContextImpl.swift; sourceTree = "<group>"; };
 		8AD62B6F28F547E6003F3940 /* Sourcery */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Sourcery; sourceTree = "<group>"; };
@@ -2047,6 +2049,7 @@
 				8AA4FFF227A006CD003C3BBA /* HttpClient+Alamofire.swift */,
 				8A328F3827B695490021F6B0 /* AlamofireReachabilityAdaptee.swift */,
 				8A74188B245086330019695E /* Downloadable.swift */,
+				7586A2F72D06C92F00D981B6 /* DownloadError.swift */,
 				8A277139268E452000D8878C /* BrowserNetworking.h */,
 			);
 			path = CottonNetworking;
@@ -2343,7 +2346,7 @@
 		8AD18E0E244757EC00224702 /* Filesystem */ = {
 			isa = PBXGroup;
 			children = (
-				8AD18E0F2447580A00224702 /* ResourceReader.swift */,
+				8AD18E0F2447580A00224702 /* XmlSearchPluginResource.swift */,
 			);
 			path = Filesystem;
 			sourceTree = "<group>";
@@ -3624,7 +3627,7 @@
 				8A7B1BF528EB2C08004FC135 /* Host+Extension.swift in Sources */,
 				8A9863692822441300F679D7 /* URLInfo+Extension.swift in Sources */,
 				75869DC12D00C0D100D981B6 /* WebAutoCompletionSource.swift in Sources */,
-				8AD18E102447580A00224702 /* ResourceReader.swift in Sources */,
+				8AD18E102447580A00224702 /* XmlSearchPluginResource.swift in Sources */,
 				6094E741221FE706004269A2 /* Tab.swift in Sources */,
 				8A90636924332376009D786E /* URL+CoreExtensions.swift in Sources */,
 				60D52D41225F542E00CB56F0 /* Trie.swift in Sources */,
@@ -3869,6 +3872,7 @@
 			files = (
 				8A2771CE268E4AB200D8878C /* GoogleServer.swift in Sources */,
 				8A2771AC268E4AAC00D8878C /* GoogleSearchEndpoint.swift in Sources */,
+				7586A2F82D06C93100D981B6 /* DownloadError.swift in Sources */,
 				8A328F3927B695490021F6B0 /* AlamofireReachabilityAdaptee.swift in Sources */,
 				8A2771E9268E4AC200D8878C /* GDNSRequestParams.swift in Sources */,
 				8A277192268E4AA400D8878C /* GoogleJSONDNSoHTTPsEndpoint.swift in Sources */,
