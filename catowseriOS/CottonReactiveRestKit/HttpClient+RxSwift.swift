@@ -15,7 +15,14 @@ public typealias RxProducer<R: ResponseType> = SignalProducer<R, HttpError>
 public typealias RxVoidProducer = SignalProducer<Void, HttpError>
 
 extension RestClient {
-    public func rxMakeRequest<T, B: HTTPRxAdapter, RX>(
+    /// Makes a REST request reactive signal producer with a specific return JSON type
+    ///
+    /// - Parameter endpoint: An endpoint model describing the request information for specific server
+    /// - Parameter accessToken: An optional access token string needed for authorization if needed
+    /// - Parameter adapter: An HTTP adapter which is needed to genearalize the async API used to receive the response.
+    /// - Parameter subscriber: An object from the subscribers storage needed to return the response to the request initiator.
+    /// - Returns a reactive signal producer of specific type
+    public func makeRequestProducer<T, B: HTTPRxAdapter, RX>(
         for endpoint: Endpoint<Server>,
         withAccessToken accessToken: String?,
         transport adapter: B,
@@ -42,11 +49,19 @@ extension RestClient {
         })
     }
 
-    public func rxMakeVoidRequest<B: HTTPRxVoidAdapter, RX>(for endpoint: Endpoint<Server>,
-                                                            withAccessToken accessToken: String?,
-                                                            transport adapter: B,
-                                                            subscriber: RxVoidSubscriber<Server, RX>) -> RxVoidProducer
-    where B.Server == Server, B.Observer == RX {
+    /// Makes a REST request reactive signal producer without return value
+    ///
+    /// - Parameter endpoint: An endpoint model describing the request information for specific server
+    /// - Parameter accessToken: An optional access token string needed for authorization if needed
+    /// - Parameter adapter: An HTTP adapter which is needed to genearalize the async API used to receive the response.
+    /// - Parameter subscriber: An object from the subscribers storage needed to return the response to the request initiator.
+    /// - Returns a reactive signal producer without any type (Void)
+    public func makeVoidRequestProducer<B: HTTPRxVoidAdapter, RX>(
+        for endpoint: Endpoint<Server>,
+        withAccessToken accessToken: String?,
+        transport adapter: B,
+        subscriber: RxVoidSubscriber<Server, RX>
+    ) -> RxVoidProducer where B.Server == Server, B.Observer == RX {
         let producer: SignalProducer<Void, HttpError> = .init { [weak self] (observer, lifetime) in
             guard let self = self else {
                 observer.send(error: .zombieSelf)

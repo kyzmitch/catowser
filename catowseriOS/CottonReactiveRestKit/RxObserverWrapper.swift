@@ -10,7 +10,8 @@ import CottonRestKit
 @preconcurrency import ReactiveSwift
 import CottonBase
 
-extension Signal.Observer: @retroactive RxAnyObserver where Value: ResponseType, Error == HttpError {
+extension Signal.Observer: @retroactive RxAnyObserver
+where Value: ResponseType, Error == HttpError {
     public typealias Response = Value
 
     public func newSend(value: Response) {
@@ -19,20 +20,19 @@ extension Signal.Observer: @retroactive RxAnyObserver where Value: ResponseType,
     public func newSend(error: HttpError) {
         send(error: error)
     }
-
     public func newComplete() {
         sendCompleted()
     }
 }
 
-extension Signal.Observer: @retroactive RxAnyVoidObserver where Value == Void, Error == HttpError {
+extension Signal.Observer: @retroactive RxAnyVoidObserver
+where Value == Void, Error == HttpError {
     public func newSend(value: Value) {
         send(value: value)
     }
     public func newSend(error: HttpError) {
         send(error: error)
     }
-
     public func newComplete() {
         sendCompleted()
     }
@@ -44,9 +44,11 @@ extension Lifetime: @retroactive RxAnyLifetime {
     }
 }
 
-public class RxObserverWrapper<RR,
-                               SS: ServerDescription,
-                               RX: RxAnyObserver>: RxInterface where RX.Response == RR {
+public class RxObserverWrapper<
+    RR,
+    SS: ServerDescription,
+    RX: RxAnyObserver
+>: RxInterface where RX.Response == RR {
     public typealias Server = SS
     public typealias Observer = RX
 
@@ -65,9 +67,11 @@ public class RxObserverWrapper<RR,
     public let endpoint: Endpoint<Server>
     let responseType: RR.Type
 
-    public init(_ observer: Signal<RR, HttpError>.Observer,
-                _ lifetime: Lifetime,
-                _ endpoint: Endpoint<Server>) {
+    public init(
+        _ observer: Signal<RR, HttpError>.Observer,
+        _ lifetime: Lifetime,
+        _ endpoint: Endpoint<Server>
+    ) {
         self.rxObserver = observer
         self.rxLifetime = lifetime
         self.endpoint = endpoint
@@ -104,9 +108,11 @@ public class RxObserverVoidWrapper<SS: ServerDescription>: RxVoidInterface {
     /// Don't need to use endpoint here, but it is needed to create unique hash value for the closure
     public let endpoint: Endpoint<S>
 
-    public init(_ observer: Signal<Void, HttpError>.Observer,
-                _ lifetime: Lifetime,
-                _ endpoint: Endpoint<S>) {
+    public init(
+        _ observer: Signal<Void, HttpError>.Observer,
+        _ lifetime: Lifetime,
+        _ endpoint: Endpoint<S>
+    ) {
         self.rxObserver = observer
         self.rxLifetime = lifetime
         self.endpoint = endpoint

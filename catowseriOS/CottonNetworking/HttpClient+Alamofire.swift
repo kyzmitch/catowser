@@ -54,7 +54,7 @@ extension RestClient {
         transport adapter: B,
         subscriber: RxSubscriber<T, Server, RX>
     ) -> RxProducer<T> where B.Response == T, B.Server == Server, B.ObserverWrapper == RX {
-        let producer = rxMakeRequest(
+        let producer = makeRequestProducer(
             for: endpoint,
             withAccessToken: nil,
             transport: adapter,
@@ -76,7 +76,7 @@ extension RestClient {
         transport adapter: B,
         subscriber: RxSub<T, Server, RX>
     ) -> RxProducer<T> where B.Response == T, B.Server == Server, B.ObserverWrapper == RX {
-        let producer = rxMakeRequest(
+        let producer = makeRequestProducer(
             for: endpoint,
             withAccessToken: accessToken,
             transport: adapter,
