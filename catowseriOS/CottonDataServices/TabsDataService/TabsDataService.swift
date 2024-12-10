@@ -18,14 +18,10 @@ actor TabsDataService: TabsDataServiceProtocol {
 
     /// Tabs selection strategy
     private let selectionStrategy: TabSelectionStrategy
-    /// In memory storage for the tabs
-    private var tabs: [Tab] = []
     /// Async stream for the selected tab id instead of using Combine's @Published
     private var selectedTabIdStream: UUIDStream!
     /// Async's stream continuation to notify about new id
     private var selectedTabIdInput: UUIDStream.Continuation!
-    ///  Simple variable needed for direct sync access and for async getter
-    private var selectedTabIdentifier: Tab.ID
     /// Tabs count stream
     private var tabsCountStream: IntStream!
     /// Tabs count input for the async stream
@@ -41,7 +37,9 @@ actor TabsDataService: TabsDataServiceProtocol {
     /// Type of observation, should be passed from the client app, change should require restart
     /// because subscribing usually happens in init or viewDidLoad during app start.
     private let observingType: ObservingApiType
-
+    /// Service data
+    public var serviceData: ServiceData
+    
     init(
         _ tabsRepository: TabsRepository,
         _ positioning: TabsStatesInterface,
@@ -54,8 +52,9 @@ actor TabsDataService: TabsDataServiceProtocol {
         self.selectionStrategy = selectionStrategy
         self.tabsSubject = tabsSubject
         self.tabObservers = []
-        self.selectedTabIdentifier = positioning.defaultSelectedTabId
         self.observingType = observingType
+        serviceData = .init()
+        serviceData.selectedTabId = .finished(output: .success(positioning.defaultSelectedTabId))
 
         #if swift(>=5.9)
         let (tabIdStream, tabIdContinuation) = AsyncStream.makeStream(of: Tab.ID.self)
@@ -154,19 +153,26 @@ private extension TabsDataService {
 
 private extension TabsDataService {
     func handleTabsCountCommand() -> TabsServiceData {
-        return .tabsCount(tabs.count)
+        return serviceData
     }
 
     func handleSelectedTabIdCommand() -> TabsServiceData {
-        return .selectedTabId(selectedTabIdentifier)
+        return serviceData
     }
 
     func handleFetchAllTabsCommand() -> TabsServiceData {
-        return .allTabs(tabs)
+        return serviceData
     }
 
     func handleAddTabCommand(_ tab: CoreBrowser.Tab) async -> TabsServiceData {
         let positionType = await positioning.addPosition
+        guard
+            case let .finished(value) = serviceData.allTabs,
+            case let .success(tabs) = value
+        else {
+            
+            return
+        }
         let newIndex = positionType.addTab(tab, to: &tabs, selectedTabIdentifier)
         if observingType.isSystemObservation {
             await notifyAboutNewTabs(tabs, newIndex)
@@ -517,8 +523,9 @@ private extension TabsDataService {
         guard !cachedTabs.isEmpty else {
             return
         }
-        tabs = cachedTabs
-        selectedTabIdentifier = id
+        serviceData.allTabs = .finished(output: .success(cachedTabs))
+        serviceData.tabsCount = .finished(output: .success(cachedTabs.count))
+        serviceData.selectedTabId = .finished(output: .success(id))
         if observingType.isSystemObservation {
             await notifyAboutNewTabs(cachedTabs, nil)
             await notifyAboutNewSelectedTab(id)

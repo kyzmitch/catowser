@@ -6,6 +6,8 @@
 //  Copyright © 2024 Cotton (Catowser). All rights reserved.
 //
 
+public typealias SendableEquatable = Sendable & Equatable
+
 /// Command execution state is a common data structure
 /// which combines all possible data related to specific command.
 /// Each command optionally could have an input data
@@ -14,8 +16,12 @@
 ///
 /// Should be used only inside GenericServiceData implementations.
 /// The most close system's type is `Result`, but it doesn't allow to store the input data.
-public enum CommandExecutionData<Input: Sendable, Output: Sendable>: Sendable {
+public enum CommandExecutionData<
+    Input: SendableEquatable,
+    Output: SendableEquatable,
+    E: DataServiceKitError
+>: Sendable, Equatable {
     case notStarted
     case started(input: Input?)
-    case finished(output: Result<Output, Error>)
+    case finished(output: Result<Output, E>)
 }

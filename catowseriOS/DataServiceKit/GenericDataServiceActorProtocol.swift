@@ -14,6 +14,8 @@ public protocol GenericDataServiceActorProtocol: Actor {
     associatedtype Command: GenericDataServiceCommand
     /// Type of a state for a specific domain
     associatedtype ServiceData: GenericServiceData
+    /// Service data
+    var serviceData: ServiceData { get set }
 
     /// A single entry point in data service API for read/write functionality
     /// related to specific domain of business logic.

@@ -7,7 +7,7 @@
 //
 
 /// Common interface for a data service errors
-public protocol DataServiceKitError: Error, Sendable {
+public protocol DataServiceKitError: Error, Sendable, Equatable {
     /// For convinience, each business logic domain error type
     /// should have an init which could return own zomby instance error
     init(zombyInstance: Bool)
