@@ -9,19 +9,17 @@
 import CoreBrowser
 import DataServiceKit
 
-public typealias TabsCountData = CommandExecutionData<Void, Int>
-public typealias SelectedTabData = CommandExecutionData<Void, Tab.ID>
-public typealias AllTabsData = CommandExecutionData<Void, [Tab]>
-public typealias AddTabData = CommandExecutionData<Void, Void>
-public typealias CloseTabData = CommandExecutionData<Void, Tab.ID>
-public typealias CloseAllTabsData = CommandExecutionData<Void, Void>
-public typealias SelectTabData = CommandExecutionData<Void, Void>
-public typealias ReplaceTabContentData = CommandExecutionData<Void, Void>
-public typealias UpdateTabPreviewData = CommandExecutionData<Void, Void>
+public typealias TabsCountData = CommandExecutionData<Void, Int, TabsListError>
+public typealias SelectedTabData = CommandExecutionData<Void, Tab.ID, TabsListError>
+public typealias AllTabsData = CommandExecutionData<Void, [Tab], TabsListError>
+public typealias AddTabData = CommandExecutionData<Void, Void, TabsListError>
+public typealias CloseTabData = CommandExecutionData<Void, Tab.ID, TabsListError>
+public typealias CloseAllTabsData = CommandExecutionData<Void, Void, TabsListError>
+public typealias SelectTabData = CommandExecutionData<Void, Void, TabsListError>
+public typealias ReplaceTabContentData = CommandExecutionData<Void, Void, TabsListError>
+public typealias UpdateTabPreviewData = CommandExecutionData<Void, Void, TabsListError>
 
-/**
- Tabs service data output/response type.
- */
+/// Tabs service data output/response type.
 public struct TabsServiceData: GenericServiceData, Sendable {
     public init() {
         tabsCount = .notStarted

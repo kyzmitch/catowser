@@ -23,9 +23,9 @@ public struct SuggestionsRequest: Sendable {
     }
 }
 
-typealias DomainResolvingData = CommandExecutionData<URL, URL>
-typealias SearchSuggestionsData = CommandExecutionData<SuggestionsRequest, [String]>
-typealias SearchURLData = CommandExecutionData<Void, URL>
+typealias DomainResolvingData = CommandExecutionData<URL, URL, SearchServiceError>
+typealias SearchSuggestionsData = CommandExecutionData<SuggestionsRequest, [String], SearchServiceError>
+typealias SearchURLData = CommandExecutionData<Void, URL, SearchServiceError>
 
 /// Search service data state
 public struct SearchServiceData: GenericServiceData {
@@ -47,7 +47,7 @@ public struct SearchServiceData: GenericServiceData {
             case .success(let value):
                 return value
             case .failure(let failure):
-                throw .strategyError(failure)
+                throw .strategyError(failure as NSError)
             }
         }
     }
@@ -61,7 +61,7 @@ public struct SearchServiceData: GenericServiceData {
             case .success(let value):
                 return value
             case .failure(let failure):
-                throw .strategyError(failure)
+                throw .strategyError(failure as NSError)
             }
         }
     }
@@ -75,7 +75,7 @@ public struct SearchServiceData: GenericServiceData {
             case .success(let value):
                 return value
             case .failure(let failure):
-                throw .xmlParsingError(failure)
+                throw .xmlParsingError(failure as NSError)
             }
         }
     }

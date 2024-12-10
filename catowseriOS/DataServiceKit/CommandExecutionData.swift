@@ -6,7 +6,7 @@
 //  Copyright © 2024 Cotton (Catowser). All rights reserved.
 //
 
-public typealias SendableEquatable = Sendable & Equatable
+public typealias SendableEquatable = Sendable // & Equatable
 
 /// Command execution state is a common data structure
 /// which combines all possible data related to specific command.
@@ -20,7 +20,7 @@ public enum CommandExecutionData<
     Input: SendableEquatable,
     Output: SendableEquatable,
     E: DataServiceKitError
->: Sendable, Equatable {
+>: SendableEquatable {
     case notStarted
     case started(input: Input?)
     case finished(output: Result<Output, E>)

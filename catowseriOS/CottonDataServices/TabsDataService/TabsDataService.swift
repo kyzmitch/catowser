@@ -167,11 +167,13 @@ private extension TabsDataService {
     func handleAddTabCommand(_ tab: CoreBrowser.Tab) async -> TabsServiceData {
         let positionType = await positioning.addPosition
         guard
-            case let .finished(value) = serviceData.allTabs,
-            case let .success(tabs) = value
+            case let .finished(allTabsValue) = serviceData.allTabs,
+            case var .success(tabs) = allTabsValue,
+            case let .finished(selectedTabValue) = serviceData.selectedTabId,
+            case let .success(selectedTabIdentifier) = selectedTabValue
         else {
-            
-            return
+            serviceData.tabAdded = .finished(output: .failure(.noAnyTabs))
+            return serviceData
         }
         let newIndex = positionType.addTab(tab, to: &tabs, selectedTabIdentifier)
         if observingType.isSystemObservation {
@@ -183,11 +185,14 @@ private extension TabsDataService {
         do {
             let addedTab = try await tabsRepository.add(tab, select: needSelect)
             await handleTabAdded(addedTab, index: newIndex, select: needSelect)
+            let void: Void = ()
+            serviceData.tabAdded = .finished(output: .success(void))
         } catch {
             // It doesn't matter, on view level it must be added right away
             print("Failed to add this tab to cache: \(error)")
+            serviceData.tabAdded = .finished(output: .failure(.repositoryFailure(error as NSError)))
         }
-        return .tabAdded
+        return serviceData
     }
 
     func handleCloseTabCommand(_ tab: CoreBrowser.Tab) async -> TabsServiceData {
@@ -195,16 +200,27 @@ private extension TabsDataService {
             let removedTabs = try await tabsRepository.remove(tabs: [tab])
             // swiftlint:disable:next force_unwrapping
             await handleCachedTabRemove(removedTabs.first!)
+            serviceData.tabClosed = .finished(output: .success(tab.id))
         } catch {
             // tab view should be removed immediately on view level anyway
             print("Failure to remove tab from cache: \(error)")
+            serviceData.tabClosed = .finished(output: .failure(.repositoryFailure(error as NSError)))
         }
-        return .tabClosed(tab.id)
+        return serviceData
     }
 
-    func handleCloseTabWithIdCommand(_ tabId: UUID) async -> TabsServiceData {
-        guard let tabToRemove = tabs.first(where: { $0.id == tabId }) else {
-            return .tabClosed(nil)
+    func handleCloseTabWithIdCommand(_ tabId: Tab.ID) async -> TabsServiceData {
+        guard
+            case let .finished(allTabsValue) = serviceData.allTabs,
+            case let .success(tabs) = allTabsValue
+        else {
+            serviceData.tabClosed = .finished(output: .failure(.noAnyTabs))
+            return serviceData
+        }
+        let tabToRemove = tabs.first(where: { $0.id == tabId })
+        guard let tabToRemove else {
+            serviceData.tabClosed = .finished(output: .success(tabId))
+            return serviceData
         }
         return await handleCloseTabCommand(tabToRemove)
     }

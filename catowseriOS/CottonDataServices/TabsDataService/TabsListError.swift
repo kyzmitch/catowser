@@ -7,12 +7,20 @@
 //
 
 import Foundation
+import DataServiceKit
 
-public enum TabsListError: LocalizedError {
+public enum TabsListError: DataServiceKitError {
+    public init(zombyInstance: Bool) {
+        self = .zombyInstance
+    }
+    
+    case zombyInstance
     case notInitializedYet
     case selectedNotFound
     case wrongTabContent
     case wrongTabIndexToReplace
     case tabContentAlreadySet
     case failToUpdateTabContent
+    case noAnyTabs
+    case repositoryFailure(NSError)
 }

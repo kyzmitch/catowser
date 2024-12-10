@@ -11,9 +11,9 @@ import DataServiceKit
 /// Search data service error
 public enum SearchServiceError: DataServiceKitError {
     case zombyInstance
-    case strategyError(Error)
+    case strategyError(NSError)
     case requestDataWhenNotCorrectState
-    case xmlParsingError(Error)
+    case xmlParsingError(NSError)
     case failedToCreateSearchEngine
 
     public init(zombyInstance: Bool) {

@@ -161,6 +161,7 @@
 		7586A1C12D05C06800D981B6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7586A1C02D05C06800D981B6 /* Foundation.framework */; };
 		7586A1C22D05C08600D981B6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7586A1C02D05C06800D981B6 /* Foundation.framework */; };
 		7586A2F82D06C93100D981B6 /* DownloadError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7586A2F72D06C92F00D981B6 /* DownloadError.swift */; };
+		7586A3932D08B3FB00D981B6 /* DataServiceKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 756AE6BA2CA348BF00938FCC /* DataServiceKit.framework */; };
 		759E3E4D2C863B3D00245B44 /* Atomics in Frameworks */ = {isa = PBXBuildFile; productRef = 759E3E4C2C863B3D00245B44 /* Atomics */; };
 		75D81CF72B0B077200447DC7 /* JSPluginsSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60380EF622A15504007F06FB /* JSPluginsSource.swift */; };
 		75D81CFB2B0B084300447DC7 /* JSPluginsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60380EF422A1509F007F06FB /* JSPluginsBuilder.swift */; };
@@ -666,6 +667,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 8A277136268E452000D8878C;
 			remoteInfo = CottonNetworking;
+		};
+		7586A3952D08B3FB00D981B6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8435A48F1EED5E700020102F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 756AE6B92CA348BF00938FCC;
+			remoteInfo = DataServiceKit;
 		};
 		8A277157268E466100D8878C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1383,6 +1391,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				75869FA72D02F6B100D981B6 /* Alamofire in Frameworks */,
+				7586A3932D08B3FB00D981B6 /* DataServiceKit.framework in Frameworks */,
 				75869FAB2D02F6E600D981B6 /* AutoMockable.framework in Frameworks */,
 				75869FAA2D02F6CF00D981B6 /* ReactiveSwift in Frameworks */,
 				75869EF42D01DF4800D981B6 /* CoreBrowser.framework in Frameworks */,
@@ -2866,6 +2875,7 @@
 				75869FA02D02F67A00D981B6 /* PBXTargetDependency */,
 				75869FA52D02F67F00D981B6 /* PBXTargetDependency */,
 				75869FAE2D02F6E600D981B6 /* PBXTargetDependency */,
+				7586A3962D08B3FB00D981B6 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				75869E7F2D01DDBB00D981B6 /* CottonDataServices */,
@@ -4198,6 +4208,11 @@
 			isa = PBXTargetDependency;
 			target = 8A277136268E452000D8878C /* CottonNetworking */;
 			targetProxy = 75869FB82D030A9300D981B6 /* PBXContainerItemProxy */;
+		};
+		7586A3962D08B3FB00D981B6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 756AE6B92CA348BF00938FCC /* DataServiceKit */;
+			targetProxy = 7586A3952D08B3FB00D981B6 /* PBXContainerItemProxy */;
 		};
 		8A277158268E466100D8878C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
