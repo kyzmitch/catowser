@@ -28,7 +28,7 @@ final class TabsRepositoryImpl {
 }
 
 extension TabsRepositoryImpl: TabsRepository {
-    func select(tab: CoreBrowser.Tab) async throws -> UUID {
+    func select(tab: CoreBrowser.Tab) async throws -> CoreBrowser.Tab.ID {
         do {
             try await tabsDbResource.selectTab(tab)
             return tab.id
@@ -61,7 +61,7 @@ extension TabsRepositoryImpl: TabsRepository {
         try await tabsDbResource.remember(tab: tab, andSelect: select)
     }
 
-    func fetchSelectedTabId() async throws -> UUID {
+    func fetchSelectedTabId() async throws -> CoreBrowser.Tab.ID {
         try await tabsDbResource.selectedTabId()
     }
 }

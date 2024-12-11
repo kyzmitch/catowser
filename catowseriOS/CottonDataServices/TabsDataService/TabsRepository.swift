@@ -19,13 +19,13 @@ public protocol TabsRepository: AutoMockable, Sendable {
     typealias TabIndex = Int
 
     /// The identifier of selected tab.
-    func fetchSelectedTabId() async throws -> UUID
+    func fetchSelectedTabId() async throws -> CoreBrowser.Tab.ID
     /// Changes selected tab only if it is presented in storage.
     ///
     /// - Parameter tab: The tab object to be selected.
     ///
     /// - Returns: An identifier of the selected tab.
-    func select(tab: CoreBrowser.Tab) async throws -> UUID
+    func select(tab: CoreBrowser.Tab) async throws -> CoreBrowser.Tab.ID
 
     /// Loads tabs data from storage.
     ///

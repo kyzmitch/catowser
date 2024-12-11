@@ -107,7 +107,7 @@ private extension SearchDataService {
                 case .finished:
                     break
                 case .failure(let failure):
-                    self?.finishSimilarCommands(command, .failure(.strategyError(failure)))
+                    self?.finishSimilarCommands(command, .failure(.strategyError(failure as NSError)))
                 }
             }, receiveValue: { [weak self] suggestions in
                 guard let self else {
@@ -135,8 +135,8 @@ private extension SearchDataService {
                     guard let self else {
                         return
                     }
-                    serviceData.resolvingDomainName = .finished(output: .failure(SearchServiceError.strategyError(failure)))
-                    finishCommand(command, .failure(.strategyError(failure)))
+                    serviceData.resolvingDomainName = .finished(output: .failure(SearchServiceError.strategyError(failure as NSError)))
+                    finishCommand(command, .failure(.strategyError(failure as NSError)))
                 }
             }, receiveValue: { [weak self] resolvedURL in
                 guard let self else {

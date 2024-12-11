@@ -24,8 +24,11 @@ public final class ReadTabsUseCaseImpl: ReadTabsUseCase {
     public var tabsCount: Int {
         get async {
             let response = await tabsDataService.sendCommand(.getTabsCount, nil)
-            guard case .tabsCount(let value) = response else {
-                return 1
+            guard
+                case let .finished(output: result) = response.tabsCount,
+                case let .success(value) = result
+            else {
+                return 0
             }
             return value
         }
@@ -34,7 +37,10 @@ public final class ReadTabsUseCaseImpl: ReadTabsUseCase {
     public var selectedId: CoreBrowser.Tab.ID {
         get async {
             let response = await tabsDataService.sendCommand(.getSelectedTabId, nil)
-            guard case .selectedTabId(let value) = response else {
+            guard
+                case let .finished(output: result) = response.selectedTabId,
+                case let .success(value) = result
+            else {
                 return positioning.defaultSelectedTabId
             }
             return value
@@ -44,7 +50,10 @@ public final class ReadTabsUseCaseImpl: ReadTabsUseCase {
     public var allTabs: [CoreBrowser.Tab] {
         get async {
             let response = await tabsDataService.sendCommand(.getAllTabs, nil)
-            guard case .allTabs(let value) = response else {
+            guard
+                case let .finished(output: result) = response.allTabs,
+                case let .success(value) = result
+            else {
                 return []
             }
             return value

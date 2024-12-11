@@ -33,15 +33,15 @@ public struct TabsServiceData: GenericServiceData, Sendable {
         tabPreviewUpdated = .notStarted
     }
     
-    var tabsCount: TabsCountData
-    var selectedTabId: SelectedTabData
-    var allTabs: AllTabsData
-    var tabAdded: AddTabData
-    var tabClosed: CloseTabData
-    var allTabsClosed: CloseAllTabsData
-    var tabSelected: SelectTabData
-    var tabContentReplaced: ReplaceTabContentData
-    var tabPreviewUpdated: UpdateTabPreviewData
+    public var tabsCount: TabsCountData
+    public var selectedTabId: SelectedTabData
+    public var allTabs: AllTabsData
+    public var tabAdded: AddTabData
+    public var tabClosed: CloseTabData
+    public var allTabsClosed: CloseAllTabsData
+    public var tabSelected: SelectTabData
+    public var tabContentReplaced: ReplaceTabContentData
+    public var tabPreviewUpdated: UpdateTabPreviewData
 }
 
 // extension TabsServiceData: Equatable {}

@@ -40,6 +40,30 @@ actor TabsDataService: TabsDataServiceProtocol {
     /// Service data
     public var serviceData: ServiceData
     
+    /// tabs computed property
+    var tabs: [CoreBrowser.Tab] {
+        guard
+            case let .finished(allTabsValue) = serviceData.allTabs,
+            case var .success(tabs) = allTabsValue
+        else {
+            fatalError("Fail to fetch tabs array")
+            return []
+        }
+        return tabs
+    }
+    
+    /// Selected tab id computed property
+    var selectedTabIdentifier: CoreBrowser.Tab.ID {
+        guard
+            case let .finished(value) = serviceData.selectedTabId,
+            case var .success(identifier) = value
+        else {
+            fatalError("Selected tab identifier is unknown")
+            return positioning.defaultSelectedTabId
+        }
+        return identifier
+    }
+    
     init(
         _ tabsRepository: TabsRepository,
         _ positioning: TabsStatesInterface,
@@ -227,6 +251,13 @@ private extension TabsDataService {
 
     func handleCloseAllCommand() async -> TabsServiceData {
         let contentState = await positioning.contentState
+        guard
+            case let .finished(allTabsValue) = serviceData.allTabs,
+            case let .success(tabsCopy) = allTabsValue
+        else {
+            serviceData.allTabsClosed = .finished(output: .failure(.noAnyTabs))
+            return serviceData
+        }
         do {
             // because `tabs` field isolated to data service actor
             // and observer is another actor (main)
@@ -235,9 +266,10 @@ private extension TabsDataService {
             // why-does-sending-a-sendable-value-risk-causing-data-races/73074/4
             //
             // need to create a local copy to unlink data from the actor
-            let tabsCopy = tabs
             _ = try await tabsRepository.remove(tabs: tabsCopy)
-            tabs.removeAll()
+            // removing all the tabs
+            serviceData.allTabs = .finished(output: .success([]))
+            serviceData.tabsCount = .finished(output: .success(0))
             if observingType.isSystemObservation {
                 await notifyAboutClearedTabs()
             } else {
@@ -245,20 +277,35 @@ private extension TabsDataService {
             }
             let tab: CoreBrowser.Tab = .init(contentType: contentState)
             _ = try await tabsRepository.add(tab, select: true)
+            serviceData.allTabs = .finished(output: .success([tab]))
         } catch {
             // tab view should be removed immediately on view level anyway
             print("Failure to remove tab and reset to one tab: \(error)")
         }
-        return .allTabsClosed
+        let void: Void = ()
+        serviceData.allTabsClosed = .finished(output: .success(void))
+        serviceData.tabsCount = .finished(output: .success(1))
+        return serviceData
     }
 
     func handleSelectTabCommand(_ tab: CoreBrowser.Tab) async -> TabsServiceData {
+        guard
+            case let .finished(selectedTabValue) = serviceData.selectedTabId,
+            case let .success(selectedTabIdentifier) = selectedTabValue
+        else {
+            serviceData.tabSelected = .finished(output: .failure(.selectedNotFound))
+            return serviceData
+        }
         do {
             let identifier = try await tabsRepository.select(tab: tab)
+            let void: Void = ()
             guard identifier != selectedTabIdentifier else {
-                return .tabSelected
+                print("Tab is already selected")
+                serviceData.tabSelected = .finished(output: .success(void))
+                return serviceData
             }
-            selectedTabIdentifier = identifier
+            serviceData.selectedTabId = .finished(output: .success(identifier))
+            serviceData.tabSelected = .finished(output: .success(void))
             if observingType.isSystemObservation {
                 await notifyAboutNewSelectedTab(identifier)
             } else {
@@ -266,16 +313,35 @@ private extension TabsDataService {
             }
         } catch {
             print("Failed to select tab with id \(tab.id) \(error)")
+            serviceData.tabSelected = .finished(output: .failure(.repositoryFailure(error as NSError)))
         }
-        return .tabSelected
+        return serviceData
     }
 
-    func handleReplaceTabContentCommand(_ tabContent: CoreBrowser.Tab.ContentType) async -> TabsServiceData {
+    func handleReplaceTabContentCommand(
+        _ tabContent: CoreBrowser.Tab.ContentType
+    ) async -> TabsServiceData {
+        guard
+            case let .finished(selectedTabValue) = serviceData.selectedTabId,
+            case let .success(selectedTabIdentifier) = selectedTabValue
+        else {
+            serviceData.tabContentReplaced = .finished(output: .failure(.selectedNotFound))
+            return serviceData
+        }
+        guard
+            case let .finished(allTabsValue) = serviceData.allTabs,
+            case var .success(tabs) = allTabsValue
+        else {
+            serviceData.tabContentReplaced = .finished(output: .failure(.noAnyTabs))
+            return serviceData
+        }
         guard let tabTuple = tabs.element(by: selectedTabIdentifier) else {
-            return .tabContentReplaced(TabsListError.notInitializedYet)
+            serviceData.tabContentReplaced = .finished(output: .failure(.notInitializedYet))
+            return serviceData
         }
         guard tabTuple.tab.contentType != tabContent else {
-            return .tabContentReplaced(TabsListError.tabContentAlreadySet)
+            serviceData.tabContentReplaced = .finished(output: .failure(.tabContentAlreadySet))
+            return serviceData
         }
         var newTab = tabTuple.tab
         let tabIndex = tabTuple.index
@@ -285,6 +351,7 @@ private extension TabsDataService {
         do {
             _ = try tabsRepository.update(tab: newTab)
             tabs[tabIndex] = newTab
+            serviceData.allTabs = .finished(output: .success(tabs))
             if observingType.isSystemObservation {
                 await notifyAboutReplacedTab(at: tabIndex, newTab: newTab)
             } else {
@@ -294,35 +361,57 @@ private extension TabsDataService {
                     await observer.tabDidReplace(newTab, at: tabIndex)
                 }
             }
-            return .tabContentReplaced(nil)
+            let void: Void = ()
+            serviceData.tabContentReplaced = .finished(output: .success(void))
+            return serviceData
         } catch {
             print("Failed to update tab content to storage \(error)")
-            return .tabContentReplaced(TabsListError.failToUpdateTabContent)
+            serviceData.tabContentReplaced = .finished(output: .failure(.repositoryFailure(error as NSError)))
+            return serviceData
         }
     }
 
     func handleUpdateSelectedTabPreviewCommand(_ image: Data?) async -> TabsServiceData {
+        guard
+            case let .finished(selectedTabValue) = serviceData.selectedTabId,
+            case let .success(selectedTabIdentifier) = selectedTabValue
+        else {
+            serviceData.tabContentReplaced = .finished(output: .failure(.selectedNotFound))
+            return serviceData
+        }
         let defaultValue = positioning.defaultSelectedTabId
         guard selectedTabIdentifier != defaultValue else {
-            return .tabPreviewUpdated(TabsListError.notInitializedYet)
+            serviceData.tabPreviewUpdated = .finished(output: .failure(.notInitializedYet))
+            return serviceData
+        }
+        guard
+            case let .finished(allTabsValue) = serviceData.allTabs,
+            case var .success(tabs) = allTabsValue
+        else {
+            serviceData.tabPreviewUpdated = .finished(output: .failure(.noAnyTabs))
+            return serviceData
         }
         guard let tabTuple = tabs.element(by: selectedTabIdentifier) else {
-            return .tabPreviewUpdated(TabsListError.selectedNotFound)
+            serviceData.tabPreviewUpdated = .finished(output: .failure(.selectedNotFound))
+            return serviceData
         }
         var tab = tabTuple.tab
         guard let tabTuple = tabs.element(by: selectedTabIdentifier) else {
-            return .tabPreviewUpdated(TabsListError.notInitializedYet)
+            serviceData.tabPreviewUpdated = .finished(output: .failure(.notInitializedYet))
+            return serviceData
         }
         let tabIndex = tabTuple.index
-
         if case .site = tab.contentType, image == nil {
-            return .tabPreviewUpdated(TabsListError.wrongTabContent)
+            serviceData.tabPreviewUpdated = .finished(output: .failure(.wrongTabContent))
+            return serviceData
         }
         tab.previewData = image
         guard tabIndex >= 0 && tabIndex < tabs.count else {
-            return .tabPreviewUpdated(TabsListError.wrongTabIndexToReplace)
+            serviceData.tabPreviewUpdated = .finished(output: .failure(.wrongTabIndexToReplace))
+            return serviceData
         }
         tabs[tabIndex] = tab
+        serviceData.allTabs = .finished(output: .success(tabs))
         if observingType.isSystemObservation {
             await notifyAboutReplacedTab(at: tabIndex, newTab: tab)
         } else {
@@ -332,7 +421,9 @@ private extension TabsDataService {
                 await observer.tabDidReplace(tab, at: tabIndex)
             }
         }
-        return .tabPreviewUpdated(nil)
+        let void: Void = ()
+        serviceData.tabPreviewUpdated = .finished(output: .success(void))
+        return serviceData
     }
     
     func removeWeakObserversIfNeeded() {
@@ -453,7 +544,7 @@ private extension TabsDataService {
                 await observer.tabDidAdd(tab, at: index)
             }
             if select {
-                selectedTabIdentifier = tab.id
+                serviceData.selectedTabId = .finished(output: .success(tab.id))
                 if observingType.isSystemObservation {
                     await notifyAboutNewSelectedTab(tab.id)
                 } else {
@@ -476,7 +567,7 @@ private extension TabsDataService {
                     if observingType.isSystemObservation {
                         await notifyAboutNewSelectedTab(tab.id)
                     } else {
-                        selectedTabIdentifier = tab.id
+                        serviceData.selectedTabId = .finished(output: .success(tab.id))
                         selectedTabIdInput.yield(tab.id)
                     }
                 }
@@ -490,8 +581,11 @@ private extension TabsDataService {
         /// if it is a last tab - replace it with a tab with default content
         /// browser can't function without at least one tab
         /// so, this is kind of a side effect of removing the only one last tab
+        var tabs = tabs
         if tabs.count == 1 {
             tabs.removeAll()
+            serviceData.allTabs = .finished(output: .success(tabs))
+            serviceData.tabsCount = .finished(output: .success(0))
             if observingType.isSystemObservation {
                 await notifyAboutClearedTabs()
             } else {
@@ -511,6 +605,8 @@ private extension TabsDataService {
             /// need to remove it before changing selected index
             /// otherwise in one case the handler will select closed tab
             tabs.remove(at: closedTabIndex)
+            serviceData.allTabs = .finished(output: .success(tabs))
+            serviceData.tabsCount = .finished(output: .success(tabs.count))
             if observingType.isSystemObservation {
                 await notifyAboutNewTabs(tabs, nil)
             } else {
@@ -519,7 +615,7 @@ private extension TabsDataService {
             guard let selectedTab = tabs[safe: newIndex] else {
                 fatalError("Failed to find new selected tab")
             }
-            selectedTabIdentifier = selectedTab.id
+            serviceData.selectedTabId = .finished(output: .success(selectedTab.id))
             if observingType.isSystemObservation {
                 await notifyAboutNewSelectedTab(selectedTab.id)
             } else {

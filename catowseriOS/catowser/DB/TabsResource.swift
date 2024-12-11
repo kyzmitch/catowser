@@ -119,7 +119,7 @@ final class TabsResource: @unchecked Sendable {
 
     /// Gets an identifier of a selected tab or an error if no tab is present which isn't possible
     /// at least blank tab should be present.
-    func selectedTabId() async throws -> UUID {
+    func selectedTabId() async throws -> CoreBrowser.Tab.ID {
         guard isStoreInitialized else {
             throw TabResourceError.storeNotInitializedYet
         }

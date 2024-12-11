@@ -20,7 +20,6 @@ public enum TabsListError: DataServiceKitError {
     case wrongTabContent
     case wrongTabIndexToReplace
     case tabContentAlreadySet
-    case failToUpdateTabContent
     case noAnyTabs
     case repositoryFailure(NSError)
 }
