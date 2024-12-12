@@ -72,14 +72,22 @@ final class TabViewModel {
             WebViewsReuseManager.shared.removeController(for: site)
         }
         Task {
-            await writeTabUseCase.close(tab: tab)
+            do {
+                try await writeTabUseCase.close(tab: tab)
+            } catch {
+                print("Fail to close tab: \(error)")
+            }
         }
     }
 
     func activate() {
         print("\(#function): selected tab with id: \(tab.id)")
         Task {
-            await writeTabUseCase.select(tab: tab)
+            do {
+                try await writeTabUseCase.select(tab: tab)
+            } catch {
+                print("Fail to select tab: \(error)")
+            }
         }
     }
 

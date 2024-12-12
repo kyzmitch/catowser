@@ -12,5 +12,5 @@ import Foundation
 /// Selected tabs use case.
 /// Use cases do not hold any mutable state, so that, any of them can be sendable.
 public protocol SelectedTabUseCase: BaseUseCase, AutoMockable, Sendable {
-    func setSelectedPreview(_ image: Data?) async
+    func setSelectedPreview(_ image: Data?) async throws(AppError)
 }

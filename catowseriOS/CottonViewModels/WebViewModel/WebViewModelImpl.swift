@@ -270,7 +270,11 @@ public final class WebViewModelImpl: WebViewModel {
     }
 
     public func updateTabPreview(_ screenshot: Data?) async {
-        await selectTabUseCase.setSelectedPreview(screenshot)
+        do {
+            try await selectTabUseCase.setSelectedPreview(screenshot)
+        } catch {
+            print("Fail to update tab preview: \(error)")
+        }
     }
 }
 
@@ -320,7 +324,7 @@ private extension WebViewModelImpl {
             let host = updatedInfo.host()
             await InMemoryDomainSearchProvider.shared.remember(host: host)
             context.pluginsSource.jsProgram.enable(on: subject, context: host, jsEnabled: enable)
-            await writeTabUseCase.replaceSelected(.site(site))
+            try await writeTabUseCase.replaceSelected(.site(site))
             await updateState(try state.transition(on: .startView(updatedInfo)))
         case .viewing:
             break

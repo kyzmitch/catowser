@@ -10,8 +10,7 @@ import Foundation
 import CoreBrowser
 import CottonUseCases
 
-@MainActor
-final class AllTabsViewModel: ObservableObject {
+@MainActor final class AllTabsViewModel: ObservableObject {
     private let writeTabUseCase: WriteTabsUseCase
 
     init(_ writeTabUseCase: WriteTabsUseCase) {
@@ -20,7 +19,11 @@ final class AllTabsViewModel: ObservableObject {
 
     func addTab(_ tab: CoreBrowser.Tab) {
         Task {
-            await writeTabUseCase.add(tab: tab)
+            do {
+                try await writeTabUseCase.add(tab: tab)
+            } catch {
+                print("Fail to add new tab: \(error)")
+            }
         }
     }
 }

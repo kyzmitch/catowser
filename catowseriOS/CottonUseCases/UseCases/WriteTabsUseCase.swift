@@ -16,13 +16,15 @@ public protocol WriteTabsUseCase: BaseUseCase, AutoMockable, Sendable {
     /// CoreBrowser.Tab will be added no matter what happen, so, function doesn't return any result.
     ///
     /// - Parameter tab: A tab.
-    func add(tab: CoreBrowser.Tab) async
+    func add(tab: CoreBrowser.Tab) async throws(AppError)
     /// Closes tab.
-    func close(tab: CoreBrowser.Tab) async
+    func close(tab: CoreBrowser.Tab) async throws(AppError)
     /// Closes all tabs.
-    func closeAll() async
+    func closeAll() async throws(AppError)
     /// Remembers selected tab index. Can fail silently if `tab` is not found in a list.
-    func select(tab: CoreBrowser.Tab) async
+    func select(tab: CoreBrowser.Tab) async throws(AppError)
     /// Replaces currently active tab by combining two operations
-    func replaceSelected(_ tabContent: CoreBrowser.Tab.ContentType) async
+    func replaceSelected(
+        _ tabContent: CoreBrowser.Tab.ContentType
+    ) async throws(AppError)
 }

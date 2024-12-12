@@ -24,7 +24,11 @@ import CottonUseCases
 
     func replaceSelected(tabContent: CoreBrowser.Tab.ContentType) {
         Task {
-            await writeTabUseCase.replaceSelected(tabContent)
+            do {
+                try await writeTabUseCase.replaceSelected(tabContent)
+            } catch {
+                print("Fail to replace current tab: \(error)")
+            }
         }
     }
 }

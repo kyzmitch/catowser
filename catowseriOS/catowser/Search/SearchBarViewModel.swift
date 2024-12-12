@@ -57,15 +57,21 @@ private extension SearchBarViewModel {
         _ isJSEnabled: Bool
     ) async {
         let blockPopups = DefaultTabProvider.shared.blockPopups
-        let settings = Site.Settings(isPrivate: false,
-                                     blockPopups: blockPopups,
-                                     isJSEnabled: isJSEnabled,
-                                     canLoadPlugins: true)
+        let settings = Site.Settings(
+            isPrivate: false,
+            blockPopups: blockPopups,
+            isJSEnabled: isJSEnabled,
+            canLoadPlugins: true
+        )
         guard let site = Site(url, suggestion, settings) else {
             assertionFailure("\(#function) failed to replace current tab - failed create site")
             return
         }
-        await writeTabsUseCase.replaceSelected(.site(site))
+        do {
+            try await writeTabsUseCase.replaceSelected(.site(site))
+        } catch {
+            print("Fail to replace selected tab: \(error)")
+        }
     }
 }
 

@@ -16,23 +16,73 @@ public final class WriteTabsUseCaseImpl: WriteTabsUseCase {
         self.tabsDataService = tabsDataService
     }
 
-    public func add(tab: CoreBrowser.Tab) async {
-        _ = await tabsDataService.sendCommand(.addTab(tab), nil)
+    public func add(tab: CoreBrowser.Tab) async throws(AppError) {
+        let serviceData = await tabsDataService.sendCommand(.addTab(tab), nil)
+        guard case let .finished(result) = serviceData.tabAdded else {
+            throw .commandNotFinishedYet
+        }
+        switch result {
+        case .failure(let error):
+            throw .tabsServiceError(error)
+        case .success:
+            return
+        }
     }
 
-    public func close(tab: CoreBrowser.Tab) async {
-        _ = await tabsDataService.sendCommand(.closeTab(tab), nil)
+    public func close(tab: CoreBrowser.Tab) async throws(AppError) {
+        let serviceData = await tabsDataService.sendCommand(.closeTab(tab), nil)
+        guard case let .finished(result) = serviceData.tabClosed else {
+            throw .commandNotFinishedYet
+        }
+        switch result {
+        case .failure(let error):
+            throw .tabsServiceError(error)
+        case .success:
+            return
+        }
     }
 
-    public func closeAll() async {
-        _ = await tabsDataService.sendCommand(.closeAll, nil)
+    public func closeAll() async throws(AppError) {
+        let serviceData = await tabsDataService.sendCommand(.closeAll, nil)
+        guard case let .finished(result) = serviceData.allTabsClosed else {
+            throw .commandNotFinishedYet
+        }
+        switch result {
+        case .failure(let error):
+            throw .tabsServiceError(error)
+        case .success:
+            return
+        }
     }
 
-    public func select(tab: CoreBrowser.Tab) async {
-        _ = await tabsDataService.sendCommand(.selectTab(tab), nil)
+    public func select(tab: CoreBrowser.Tab) async throws(AppError) {
+        let serviceData = await tabsDataService.sendCommand(.selectTab(tab), nil)
+        guard case let .finished(result) = serviceData.tabSelected else {
+            throw .commandNotFinishedYet
+        }
+        switch result {
+        case .failure(let error):
+            throw .tabsServiceError(error)
+        case .success:
+            return
+        }
     }
 
-    public func replaceSelected(_ tabContent: CoreBrowser.Tab.ContentType) async {
-        _ = await tabsDataService.sendCommand(.replaceContent(tabContent), nil)
+    public func replaceSelected(
+        _ tabContent: CoreBrowser.Tab.ContentType
+    ) async throws(AppError) {
+        let serviceData = await tabsDataService.sendCommand(
+            .replaceContent(tabContent),
+            nil
+        )
+        guard case let .finished(result) = serviceData.tabContentReplaced else {
+            throw .commandNotFinishedYet
+        }
+        switch result {
+        case .failure(let error):
+            throw .tabsServiceError(error)
+        case .success:
+            return
+        }
     }
 }

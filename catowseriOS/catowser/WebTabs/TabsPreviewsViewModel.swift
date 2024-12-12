@@ -69,7 +69,11 @@ enum TabsPreviewState {
             if let site = tab.site {
                 WebViewsReuseManager.shared.removeController(for: site)
             }
-            await writeTabUseCase.close(tab: tab)
+            do {
+                try await writeTabUseCase.close(tab: tab)
+            } catch {
+                print("Fail to close tab: \(error)")
+            }
             let newSelectedId = await readTabUseCase.selectedId
             uxState = .tabs(
                 dataSource: box,
@@ -80,7 +84,11 @@ enum TabsPreviewState {
     
     func selectTab(_ tab: CoreBrowser.Tab) {
         Task {
-            await writeTabUseCase.select(tab: tab)
+            do {
+                try await writeTabUseCase.select(tab: tab)
+            } catch {
+                print("Fail to select tab: \(error)")
+            }
             // no need to select anything in the view, because it will be closed
         }
     }
@@ -89,7 +97,11 @@ enum TabsPreviewState {
         Task {
             let contentState = await tabProvider.contentState
             let tab = CoreBrowser.Tab(contentType: contentState)
-            await writeTabUseCase.add(tab: tab)
+            do {
+                try await writeTabUseCase.add(tab: tab)
+            } catch {
+                print("Fail to add tab: \(error)")
+            }
             // now need to re-check selected tab in the view
             async let allNewTabs = readTabUseCase.allTabs
             async let newSelectedId = readTabUseCase.selectedId

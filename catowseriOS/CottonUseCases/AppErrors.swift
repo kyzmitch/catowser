@@ -13,4 +13,6 @@ public enum AppError: LocalizedError {
     case zombieSelf
     case searchDataServiceError(SearchServiceError)
     case erasedSearchDataServiceError(Error)
+    case commandNotFinishedYet
+    case tabsServiceError(TabsListError)
 }

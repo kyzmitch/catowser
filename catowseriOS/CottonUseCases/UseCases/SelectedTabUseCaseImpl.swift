@@ -16,7 +16,15 @@ public final class SelectedTabUseCaseImpl: SelectedTabUseCase {
         self.tabsDataService = tabsDataService
     }
 
-    public func setSelectedPreview(_ image: Data?) async {
-        _ = await tabsDataService.sendCommand(.updateSelectedTabPreview(image), nil)
+    public func setSelectedPreview(_ image: Data?) async throws(AppError) {
+        let serviceData = await tabsDataService.sendCommand(.updateSelectedTabPreview(image), nil)
+        guard case let .finished(result) = serviceData.tabPreviewUpdated else {
+            throw .commandNotFinishedYet
+        }
+        do {
+            _ = try result.get()
+        } catch {
+            throw .tabsServiceError(error)
+        }
     }
 }
