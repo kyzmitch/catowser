@@ -44,10 +44,9 @@ actor TabsDataService: TabsDataServiceProtocol {
     var tabs: [CoreBrowser.Tab] {
         guard
             case let .finished(allTabsValue) = serviceData.allTabs,
-            case var .success(tabs) = allTabsValue
+            case let .success(tabs) = allTabsValue
         else {
             fatalError("Fail to fetch tabs array")
-            return []
         }
         return tabs
     }
@@ -56,9 +55,8 @@ actor TabsDataService: TabsDataServiceProtocol {
     var selectedTabIdentifier: CoreBrowser.Tab.ID {
         guard
             case let .finished(value) = serviceData.selectedTabId,
-            case var .success(identifier) = value
+            case let .success(identifier) = value
         else {
-            fatalError("Selected tab identifier is unknown")
             return positioning.defaultSelectedTabId
         }
         return identifier
@@ -78,7 +76,11 @@ actor TabsDataService: TabsDataServiceProtocol {
         self.tabObservers = []
         self.observingType = observingType
         serviceData = .init()
-        serviceData.selectedTabId = .finished(output: .success(positioning.defaultSelectedTabId))
+        serviceData.selectedTabId = .finished(
+            output: .success(
+                positioning.defaultSelectedTabId
+            )
+        )
 
         #if swift(>=5.9)
         let (tabIdStream, tabIdContinuation) = AsyncStream.makeStream(of: Tab.ID.self)
@@ -150,8 +152,11 @@ private extension TabsDataService {
         _ tabs: [CoreBrowser.Tab],
         _ addedIndex: Int?
     ) async {
-        tabsSubject?.tabs = tabs
-        tabsSubject?.addedTabIndex = addedIndex
+        guard let tabsSubject else {
+            return
+        }
+        tabsSubject.tabs = tabs
+        tabsSubject.addedTabIndex = addedIndex
     }
 
     @MainActor func notifyAboutClearedTabs() async {
@@ -168,8 +173,11 @@ private extension TabsDataService {
         at tabIndex: Int,
         newTab: CoreBrowser.Tab
     ) async {
-        tabsSubject?.tabs[tabIndex] = newTab
-        tabsSubject?.replacedTabIndex = tabIndex
+        guard let tabsSubject else {
+            return
+        }
+        tabsSubject.tabs[tabIndex] = newTab
+        tabsSubject.replacedTabIndex = tabIndex
     }
 }
 
@@ -625,25 +633,44 @@ private extension TabsDataService {
     }
 
     func fetchTabs() async throws {
-        var cachedTabs = try await tabsRepository.fetchAllTabs()
-        if cachedTabs.isEmpty {
-            let tab = CoreBrowser.Tab(contentType: await positioning.contentState)
+        struct CachedTabsInitialInfo {
+            var cachedTabs: [Tab]
+            var id: Tab.ID
+            let defaultContentType: Tab.ContentType
+            
+            init(
+                _ cachedTabs: [Tab],
+                _ id: Tab.ID,
+                _ defaultContentType: Tab.ContentType
+            ) {
+                self.cachedTabs = cachedTabs
+                self.id = id
+                self.defaultContentType = defaultContentType
+            }
+        }
+        async let cachedTabs = tabsRepository.fetchAllTabs()
+        async let id = tabsRepository.fetchSelectedTabId()
+        async let defaultContentType = positioning.contentState
+        var cachedData = try await CachedTabsInitialInfo(
+            cachedTabs,
+            id,
+            defaultContentType
+        )
+        if cachedData.cachedTabs.isEmpty {
+            let tab = CoreBrowser.Tab(contentType: cachedData.defaultContentType)
             let savedTab = try await tabsRepository.add(tab, select: true)
-            cachedTabs = [savedTab]
+            cachedData.cachedTabs = [savedTab]
+            cachedData.id = tab.id
         }
-        let id = try await tabsRepository.fetchSelectedTabId()
-        guard !cachedTabs.isEmpty else {
-            return
-        }
-        serviceData.allTabs = .finished(output: .success(cachedTabs))
-        serviceData.tabsCount = .finished(output: .success(cachedTabs.count))
-        serviceData.selectedTabId = .finished(output: .success(id))
+        serviceData.allTabs = .finished(output: .success(cachedData.cachedTabs))
+        serviceData.tabsCount = .finished(output: .success(cachedData.cachedTabs.count))
+        serviceData.selectedTabId = .finished(output: .success(cachedData.id))
         if observingType.isSystemObservation {
-            await notifyAboutNewTabs(cachedTabs, nil)
-            await notifyAboutNewSelectedTab(id)
+            await notifyAboutNewTabs(cachedData.cachedTabs, nil)
+            await notifyAboutNewSelectedTab(cachedData.id)
         } else {
-            tabsCountInput.yield(cachedTabs.count)
-            selectedTabIdInput.yield(id)
+            tabsCountInput.yield(cachedData.cachedTabs.count)
+            selectedTabIdInput.yield(cachedData.id)
         }
     }
 
