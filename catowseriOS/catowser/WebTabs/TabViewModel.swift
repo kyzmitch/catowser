@@ -73,7 +73,7 @@ final class TabViewModel {
         }
         Task {
             do {
-                try await writeTabUseCase.close(tab: tab)
+                _ = try await writeTabUseCase.close(tab: tab)
             } catch {
                 print("Fail to close tab: \(error)")
             }

@@ -70,15 +70,17 @@ enum TabsPreviewState {
                 WebViewsReuseManager.shared.removeController(for: site)
             }
             do {
-                try await writeTabUseCase.close(tab: tab)
+                guard let newSelectedId = try await writeTabUseCase.close(tab: tab) else {
+                    print("Closed tab wasn't selected")
+                    return
+                }
+                uxState = .tabs(
+                    dataSource: box,
+                    selectedId: newSelectedId
+                )
             } catch {
                 print("Fail to close tab: \(error)")
             }
-            let newSelectedId = await readTabUseCase.selectedId
-            uxState = .tabs(
-                dataSource: box,
-                selectedId: newSelectedId
-            )
         }
     }
     

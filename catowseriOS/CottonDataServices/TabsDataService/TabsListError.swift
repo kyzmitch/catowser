@@ -22,4 +22,8 @@ public enum TabsListError: DataServiceKitError {
     case tabContentAlreadySet
     case noAnyTabs
     case repositoryFailure(NSError)
+    case failToRemoveTab
+    case failToAddDefaultTab
+    case closingNonExistingTab
+    case failToFindNewSelectedTab
 }

@@ -29,7 +29,7 @@ public final class WriteTabsUseCaseImpl: WriteTabsUseCase {
         }
     }
 
-    public func close(tab: CoreBrowser.Tab) async throws(AppError) {
+    public func close(tab: CoreBrowser.Tab) async throws(AppError) -> Tab.ID? {
         let serviceData = await tabsDataService.sendCommand(.closeTab(tab), nil)
         guard case let .finished(result) = serviceData.tabClosed else {
             throw .commandNotFinishedYet
@@ -37,8 +37,8 @@ public final class WriteTabsUseCaseImpl: WriteTabsUseCase {
         switch result {
         case .failure(let error):
             throw .tabsServiceError(error)
-        case .success:
-            return
+        case .success(let newSelectedId):
+            return newSelectedId
         }
     }
 

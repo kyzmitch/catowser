@@ -20,8 +20,11 @@ public struct NearbySelectionStrategy {
 }
 
 extension NearbySelectionStrategy: TabSelectionStrategy {
-    public func autoSelectedIndexAfterTabRemove(_ context: IndexSelectionContext, removedIndex: Int) async -> Int {
-        let value: Int
+    public func autoSelectedIndexAfterTabRemove(
+        context: IndexSelectionContext,
+        removedIndex: Int
+    ) async -> Int? {
+        let value: Int?
 
         let currentIx = await context.currentlySelectedIndex
         if currentIx == removedIndex {
@@ -33,14 +36,14 @@ extension NearbySelectionStrategy: TabSelectionStrategy {
                 // if it is not last index, then it is automatically will become next index as planned
                 // index is the same, but tab content will be different, so, need to notify observers
                 // re-settings same value will trigger observers notification
-                value = currentIx
+                value = nil
             }
         } else {
             if removedIndex < currentIx {
                 value = currentIx - 1
             } else {
                 // for opposite case it will stay the same
-                value = currentIx
+                value = nil
             }
         }
 

@@ -217,8 +217,7 @@ private extension TabsDataService {
         do {
             let addedTab = try await tabsRepository.add(tab, select: needSelect)
             await handleTabAdded(addedTab, index: newIndex, select: needSelect)
-            let void: Void = ()
-            serviceData.tabAdded = .finished(output: .success(void))
+            serviceData.tabAdded = .finished(output: .success(newIndex))
         } catch {
             // It doesn't matter, on view level it must be added right away
             print("Failed to add this tab to cache: \(error)")
@@ -230,13 +229,17 @@ private extension TabsDataService {
     func handleCloseTabCommand(_ tab: CoreBrowser.Tab) async -> TabsServiceData {
         do {
             let removedTabs = try await tabsRepository.remove(tabs: [tab])
-            // swiftlint:disable:next force_unwrapping
-            await handleCachedTabRemove(removedTabs.first!)
-            serviceData.tabClosed = .finished(output: .success(tab.id))
+            guard let removedTab = removedTabs.first else {
+                throw TabsListError.failToRemoveTab
+            }
+            let newSelectedId = try await handleCachedTabRemove(removedTab)
+            serviceData.tabClosed = .finished(output: .success(newSelectedId))
         } catch {
             // tab view should be removed immediately on view level anyway
             print("Failure to remove tab from cache: \(error)")
-            serviceData.tabClosed = .finished(output: .failure(.repositoryFailure(error as NSError)))
+            serviceData.tabClosed = .finished(
+                output: .failure(.repositoryFailure(error as NSError))
+            )
         }
         return serviceData
     }
@@ -585,13 +588,17 @@ private extension TabsDataService {
         }
     }
 
-    func handleCachedTabRemove(_ tab: CoreBrowser.Tab) async {
-        /// if it is a last tab - replace it with a tab with default content
-        /// browser can't function without at least one tab
-        /// so, this is kind of a side effect of removing the only one last tab
+    /// Handles tab removal and returns new selected tab id if needed
+    func handleCachedTabRemove(
+        _ tab: CoreBrowser.Tab
+    ) async throws(TabsListError) -> Tab.ID? {
+        // if it is a last tab - replace it with a tab with default content
+        // browser can't function without at least one tab
+        // so, this is kind of a side effect of removing the only one last tab
         var tabs = tabs
         if tabs.count == 1 {
             tabs.removeAll()
+            serviceData.selectedTabId = .finished(output: .success(positioning.defaultSelectedTabId))
             serviceData.allTabs = .finished(output: .success(tabs))
             serviceData.tabsCount = .finished(output: .success(0))
             if observingType.isSystemObservation {
@@ -600,18 +607,25 @@ private extension TabsDataService {
                 tabsCountInput.yield(0)
             }
             let contentState = await positioning.contentState
-            let tab: CoreBrowser.Tab = .init(contentType: contentState)
-            _ = await sendCommand(.addTab(tab))
+            let tab = CoreBrowser.Tab(contentType: contentState)
+            let updatedData = await sendCommand(.addTab(tab))
+            guard case let .finished(result) = updatedData.tabAdded else {
+                throw .failToAddDefaultTab
+            }
+            guard case .success = result else {
+                throw .failToAddDefaultTab
+            }
+            return tab.id
         } else {
             guard let closedTabIndex = tabs.firstIndex(of: tab) else {
-                fatalError("Closing non existing tab")
+                throw .closingNonExistingTab
             }
             let newIndex = await selectionStrategy.autoSelectedIndexAfterTabRemove(
-                self,
+                context: self,
                 removedIndex: closedTabIndex
             )
-            /// need to remove it before changing selected index
-            /// otherwise in one case the handler will select closed tab
+            // need to remove it before changing selected index
+            // otherwise in one case the handler will select closed tab
             tabs.remove(at: closedTabIndex)
             serviceData.allTabs = .finished(output: .success(tabs))
             serviceData.tabsCount = .finished(output: .success(tabs.count))
@@ -620,34 +634,27 @@ private extension TabsDataService {
             } else {
                 tabsCountInput.yield(tabs.count)
             }
-            guard let selectedTab = tabs[safe: newIndex] else {
-                fatalError("Failed to find new selected tab")
-            }
-            serviceData.selectedTabId = .finished(output: .success(selectedTab.id))
-            if observingType.isSystemObservation {
-                await notifyAboutNewSelectedTab(selectedTab.id)
+            if let newIndex {
+                // closed tab was selected, need to update the index
+                guard let selectedTab = tabs[safe: newIndex] else {
+                    throw .failToFindNewSelectedTab
+                }
+                serviceData.selectedTabId = .finished(output: .success(selectedTab.id))
+                if observingType.isSystemObservation {
+                    await notifyAboutNewSelectedTab(selectedTab.id)
+                } else {
+                    selectedTabIdInput.yield(selectedTab.id)
+                }
+                serviceData.selectedTabId = .finished(output: .success(selectedTab.id))
+                return selectedTab.id
             } else {
-                selectedTabIdInput.yield(selectedTab.id)
+                // selected tab and selected index stay the same
+                return nil
             }
         }
     }
 
     func fetchTabs() async throws {
-        struct CachedTabsInitialInfo {
-            var cachedTabs: [Tab]
-            var id: Tab.ID
-            let defaultContentType: Tab.ContentType
-            
-            init(
-                _ cachedTabs: [Tab],
-                _ id: Tab.ID,
-                _ defaultContentType: Tab.ContentType
-            ) {
-                self.cachedTabs = cachedTabs
-                self.id = id
-                self.defaultContentType = defaultContentType
-            }
-        }
         async let cachedTabs = tabsRepository.fetchAllTabs()
         async let id = tabsRepository.fetchSelectedTabId()
         async let defaultContentType = positioning.contentState
@@ -747,5 +754,21 @@ private extension AddedTabPosition {
             tabs.insert(tab, at: newIndex)
         }
         return newIndex
+    }
+}
+
+struct CachedTabsInitialInfo {
+    var cachedTabs: [Tab]
+    var id: Tab.ID
+    let defaultContentType: Tab.ContentType
+    
+    init(
+        _ cachedTabs: [Tab],
+        _ id: Tab.ID,
+        _ defaultContentType: Tab.ContentType
+    ) {
+        self.cachedTabs = cachedTabs
+        self.id = id
+        self.defaultContentType = defaultContentType
     }
 }
