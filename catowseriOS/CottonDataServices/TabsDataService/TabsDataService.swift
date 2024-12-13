@@ -535,7 +535,11 @@ extension TabsDataService: TabsSubject {
         guard let tabTuple = tabs.element(by: selectedTabIdentifier) else {
             return
         }
-        await observer.tabDidSelect(tabTuple.index, tabTuple.tab.contentType, tabTuple.tab.id)
+        await observer.tabDidSelect(
+            tabTuple.index,
+            tabTuple.tab.contentType,
+            tabTuple.tab.id
+        )
     }
 }
 
@@ -723,8 +727,8 @@ private extension TabsDataService {
 // MARK: - Array extension
 
 fileprivate extension Array where Element == CoreBrowser.Tab {
-    func element(by uuid: UUID) -> (tab: CoreBrowser.Tab, index: Int)? {
-        for (ix, tab) in self.enumerated() where tab.id == uuid {
+    func element(by id: Tab.ID) -> (tab: CoreBrowser.Tab, index: Int)? {
+        for (ix, tab) in self.enumerated() where tab.id == id {
             return (tab, ix)
         }
         return nil
