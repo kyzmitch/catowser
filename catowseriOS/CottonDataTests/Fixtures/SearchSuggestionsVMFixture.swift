@@ -7,13 +7,12 @@
 //
 
 import XCTest
-@testable import CottonData
 import CottonBase
 import CottonRestKit
-import ReactiveHttpKit
+import CottonReactiveRestKit
 @preconcurrency import ReactiveSwift
 import Combine
-import BrowserNetworking
+import CottonNetworking
 import SwiftyMocky
 
 /// A known state against which a test is running for search suggestions vm

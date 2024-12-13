@@ -6,7 +6,6 @@
 //  Copyright © 2022 Cotton (former Catowser). All rights reserved.
 //
 
-import CottonData
 import WebKit
 
 class MockedNavAction: NavigationActionable {

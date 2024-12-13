@@ -8,7 +8,8 @@
 
 import CoreBrowser
 import Foundation
-import FeaturesFlagsKit
+import FeatureFlagsKit
+import CottonDataServices
 
 typealias ObservingApiTypeModel = BaseListViewModelImpl<ObservingApiType>
 
@@ -34,6 +35,8 @@ extension ObservingApiType: @retroactive CustomStringConvertible {
             key = "txt_app_observing_api_design_pattern"
         case .systemObservation:
             key = "txt_app_observing_api_system"
+        @unknown default:
+            fatalError("Not handled observing method")
         }
         return NSLocalizedString(key, comment: "")
     }

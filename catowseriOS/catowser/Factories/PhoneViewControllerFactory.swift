@@ -6,7 +6,7 @@
 //  Copyright © 2022 Cotton (former Catowser). All rights reserved.
 //
 
-import FeaturesFlagsKit
+import FeatureFlagsKit
 import UIKit
 
 /// Implements the operations to create phone layout product objects.
@@ -28,8 +28,10 @@ final class PhoneViewControllerFactory: ViewControllerFactory {
 
     // MARK: - Phone methods
 
-    func deviceSpecificSearchBarViewController(_ searchBarDelegate: UISearchBarDelegate?,
-                                               _ uiFramework: UIFrameworkType) -> AnyViewController? {
+    func deviceSpecificSearchBarViewController(
+        _ searchBarDelegate: UISearchBarDelegate?,
+        _ uiFramework: UIFrameworkType
+    ) -> AnyViewController? {
         if let existingVC = searchBarVC {
             return existingVC
         }
@@ -38,18 +40,22 @@ final class PhoneViewControllerFactory: ViewControllerFactory {
         return vc
     }
 
-    func deviceSpecificSearchBarViewController(_ searchBarDelegate: UISearchBarDelegate?,
-                                               _ downloadDelegate: DownloadPanelPresenter?,
-                                               _ settingsDelegate: GlobalMenuDelegate?,
-                                               _ uiFramework: UIFrameworkType) -> AnyViewController? {
+    func deviceSpecificSearchBarViewController(
+        _ searchBarDelegate: UISearchBarDelegate?,
+        _ downloadDelegate: DownloadPanelPresenter?,
+        _ settingsDelegate: GlobalMenuDelegate?,
+        _ uiFramework: UIFrameworkType
+    ) -> AnyViewController? {
         return nil
     }
 
-    func toolbarViewController<C: Navigating>(_ downloadDelegate: DownloadPanelPresenter?,
-                                              _ settingsDelegate: GlobalMenuDelegate?,
-                                              _ coordinator: C?,
-                                              // swiftlint:disable:next line_length
-                                              _ presenter: AnyViewController?) -> UIViewController? where C.R == ToolbarRoute {
+    func toolbarViewController<C: Navigating>(
+        _ downloadDelegate: DownloadPanelPresenter?,
+        _ settingsDelegate: GlobalMenuDelegate?,
+        _ coordinator: C?,
+        // swiftlint:disable:next line_length
+        _ presenter: AnyViewController?
+    ) -> UIViewController? where C.R == ToolbarRoute {
         if let existingVC = toolBarVC {
             return existingVC
         }

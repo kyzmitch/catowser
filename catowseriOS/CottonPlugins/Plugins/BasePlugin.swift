@@ -9,8 +9,8 @@
 import Foundation
 import WebKit
 
-@MainActor
-public protocol BasePluginContentDelegate: AnyObject {
+/// Base plugin interface, needs to be sendable to be able to pass it to async func
+@MainActor public protocol BasePluginContentDelegate: AnyObject, Sendable {
     func didReceiveVideoTags(_ tags: [HTMLVideoTag])
 }
 

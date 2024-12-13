@@ -9,7 +9,8 @@
 import UIKit
 import CoreGraphics
 import CoreBrowser
-import FeaturesFlagsKit
+import FeatureFlagsKit
+import CottonDataServices
 
 fileprivate extension TabsViewController {
     struct Sizes {
@@ -40,7 +41,7 @@ final class TabsViewController: BaseViewController {
                 startTabsObservation()
                 await readTabsState()
             } else {
-                await TabsDataService.shared.attach(self, notify: true)
+                await TabsDataServiceFactory.shared.attach(self, notify: true)
             }
         }
     }

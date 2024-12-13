@@ -27,9 +27,11 @@ extension CottonBase.ServerDescription: @unchecked @retroactive Sendable {}
 ///
 /// It should be sendable because is used in the context for the strategy
 /// and strategy is used by the use cases which can't store any mutable state.
-public final class RestClient<S: ServerDescription,
-                              R: NetworkReachabilityAdapter,
-                              E: JSONRequestEncodable>: @unchecked Sendable, RestInterface where R.Server == S {
+public final class RestClient<
+    S: ServerDescription,
+    R: NetworkReachabilityAdapter,
+    E: JSONRequestEncodable
+>: @unchecked Sendable, RestInterface where R.Server == S {
     public typealias Server = S
     public typealias Reachability = R
     public typealias Encoder = E
@@ -44,10 +46,12 @@ public final class RestClient<S: ServerDescription,
         self?.reachabilityStatus = status
     }
 
-    public required init(server: S,
-                         jsonEncoder: E,
-                         reachability: R,
-                         httpTimeout: TimeInterval = 60) {
+    public required init(
+        server: S,
+        jsonEncoder: E,
+        reachability: R,
+        httpTimeout: TimeInterval = 60
+    ) {
         self.server = server
         self.httpTimeout = httpTimeout
         self.jsonEncoder = jsonEncoder

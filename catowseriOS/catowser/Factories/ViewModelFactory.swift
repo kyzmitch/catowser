@@ -6,51 +6,62 @@
 //  Copyright © 2022 Cotton/Catowser Andrei Ermoshin. All rights reserved.
 //
 
-import Foundation
 import CottonBase
-import CottonData
+import CottonViewModels
+import CottonUseCases
 import CoreBrowser
-import FeaturesFlagsKit
+import FeatureFlagsKit
 
 /// Creates new instances of view models.
 /// Depends on feature flags to determine VM configuration/dependencies.
 ///
 /// It doesn't need to be globalActor even tho it is a singleton,
 /// because it doesn't hold the state and vm creation is synchronous.
-@MainActor
-final class ViewModelFactory {
+@MainActor final class ViewModelFactory {
     static let shared: ViewModelFactory = .init()
 
-    private init() {}
+    private let useCaseRegistry: UseCaseRegistry.StateHolder
+    private let featureManager: FeatureManager.StateHolder
+    private let defaultTabProvider: DefaultTabProvider.StateHolder
 
-    func searchSuggestionsViewModel(_ searchProviderType: WebAutoCompletionSource) async -> any SearchSuggestionsViewModel {
-        let vmContext: SearchViewContextImpl = .init()
-        switch searchProviderType {
-        case .google:
-            let type = (any AutocompleteSearchUseCase).self
-            let autocompleteUseCase = await UseCaseRegistry.shared.findUseCase(type, .googleAutocompleteUseCase)
-            return SearchSuggestionsViewModelImpl(autocompleteUseCase, vmContext)
-        case .duckduckgo:
-            let type = (any AutocompleteSearchUseCase).self
-            let autocompleteUseCase = await UseCaseRegistry.shared.findUseCase(type, .duckDuckGoAutocompleteUseCase)
-            return SearchSuggestionsViewModelImpl(autocompleteUseCase, vmContext)
-        }
+    private init(
+        _ useCaseRegistry: UseCaseRegistry.StateHolder = UseCaseRegistry.shared,
+        _ featureManager: FeatureManager.StateHolder = FeatureManager.shared,
+        _ defaultTabProvider: DefaultTabProvider.StateHolder = DefaultTabProvider.shared
+    ) {
+        self.useCaseRegistry = useCaseRegistry
+        self.featureManager = featureManager
+        self.defaultTabProvider = defaultTabProvider
     }
 
-    func getWebViewModel(_ site: Site?,
-                         _ context: WebViewContext,
-                         _ siteNavigation: SiteExternalNavigationDelegate?) async -> any WebViewModel {
-        let type = (any ResolveDNSUseCase).self
-        let googleDnsUseCase = await UseCaseRegistry.shared.findUseCase(type, .googleResolveDnsUseCase)
-        let selectTabUseCase = await UseCaseRegistry.shared.findUseCase(SelectedTabUseCase.self)
-        let writeUseCase = await UseCaseRegistry.shared.findUseCase(WriteTabsUseCase.self)
-        return WebViewModelImpl(googleDnsUseCase, context, selectTabUseCase, writeUseCase, siteNavigation, site)
+    func searchSuggestionsViewModel() async -> any SearchSuggestionsViewModel {
+        let vmContext: SearchViewContextImpl = .init()
+        let autocompleteUseCase = await useCaseRegistry.findUseCase(AutocompleteSearchUseCase.self)
+        return SearchSuggestionsViewModelImpl(autocompleteUseCase, vmContext)
+    }
+
+    func getWebViewModel(
+        _ site: Site?,
+        _ context: WebViewContext,
+        _ siteNavigation: SiteExternalNavigationDelegate?
+    ) async -> any WebViewModel {
+        async let googleDnsUseCase = useCaseRegistry.findUseCase(ResolveDNSUseCase.self)
+        async let selectTabUseCase = useCaseRegistry.findUseCase(SelectedTabUseCase.self)
+        async let writeUseCase = useCaseRegistry.findUseCase(WriteTabsUseCase.self)
+        return await WebViewModelImpl(
+            context,
+            googleDnsUseCase,
+            selectTabUseCase,
+            writeUseCase,
+            siteNavigation,
+            site
+        )
     }
 
     func tabViewModel(_ tab: CoreBrowser.Tab) async -> TabViewModel {
-        let readUseCase = await UseCaseRegistry.shared.findUseCase(ReadTabsUseCase.self)
-        let writeUseCase = await UseCaseRegistry.shared.findUseCase(WriteTabsUseCase.self)
-        return TabViewModel(
+        async let readUseCase = useCaseRegistry.findUseCase(ReadTabsUseCase.self)
+        async let writeUseCase = useCaseRegistry.findUseCase(WriteTabsUseCase.self)
+        return await TabViewModel(
             tab,
             readUseCase,
             writeUseCase,
@@ -60,20 +71,29 @@ final class ViewModelFactory {
     }
 
     func tabsPreviewsViewModel() async -> TabsPreviewsViewModel {
-        let readUseCase = await UseCaseRegistry.shared.findUseCase(ReadTabsUseCase.self)
-        let writeUseCase = await UseCaseRegistry.shared.findUseCase(WriteTabsUseCase.self)
-        return TabsPreviewsViewModel(readUseCase, writeUseCase, DefaultTabProvider.shared)
+        async let readUseCase = useCaseRegistry.findUseCase(ReadTabsUseCase.self)
+        async let writeUseCase = useCaseRegistry.findUseCase(WriteTabsUseCase.self)
+        return await TabsPreviewsViewModel(readUseCase, writeUseCase, DefaultTabProvider.shared)
     }
 
     func allTabsViewModel() async -> AllTabsViewModel {
-        let writeUseCase = await UseCaseRegistry.shared.findUseCase(WriteTabsUseCase.self)
+        let writeUseCase = await useCaseRegistry.findUseCase(WriteTabsUseCase.self)
         return AllTabsViewModel(writeUseCase)
     }
 
     func topSitesViewModel() async -> TopSitesViewModel {
-        let isJsEnabled = await FeatureManager.shared.boolValue(of: .javaScriptEnabled)
-        let writeUseCase = await UseCaseRegistry.shared.findUseCase(WriteTabsUseCase.self)
-        let sites = await DefaultTabProvider.shared.topSites(isJsEnabled)
-        return TopSitesViewModel(sites, writeUseCase)
+        let isJsEnabled = await featureManager.boolValue(of: .javaScriptEnabled)
+        async let sites = defaultTabProvider.topSites(isJsEnabled)
+        async let writeUseCase = useCaseRegistry.findUseCase(WriteTabsUseCase.self)
+        return await TopSitesViewModel(sites, writeUseCase)
+    }
+    
+    func searchBarViewModel() async -> any SearchBarViewModelProtocol {
+        async let writeUseCase = useCaseRegistry.findUseCase(WriteTabsUseCase.self)
+        async let autocompleteUseCase = useCaseRegistry.findUseCase(AutocompleteSearchUseCase.self)
+        return await SearchBarViewModel(
+            writeUseCase,
+            autocompleteUseCase
+        )
     }
 }

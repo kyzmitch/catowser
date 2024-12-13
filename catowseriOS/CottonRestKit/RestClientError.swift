@@ -11,34 +11,54 @@ import CottonBase
 
 extension DomainName.Error: @unchecked @retroactive Sendable {}
 
+/// Cotton Rest Kit http errors
 public enum HttpError: LocalizedError, Equatable {
-    /* Comon errors related to http client */
+    // MARK: - Comon errors related to http client
 
+    /// Reference to self is deallocated
     case zombieSelf
+    /// Swift version is too low for Concurrency code
     case swiftVersionIsTooLowForAsyncAwait
+    /// Auth token seems required but missing
     case noAuthenticationToken
+    /// Not enough request parameters
     case failedConstructRequestParameters
+    /// Not correct domain name with Cotton Base error
     case invalidDomainName(error: DomainName.Error)
+    /// Not enough kotlin side request params
     case failedKotlinRequestConstruct
+    /// JSON format is not expected
     case failedEncodeEncodable
+    /// Host is unreachable
     case noInternetConnectionWithHost
+    /// Missing HTTP response
     case noHttpResponse
+    /// Not a URL response
     case notHttpUrlResponse
+    /// Not correct URL
     case invalidURL
+    /// Has response but without good status code
     case notGoodStatusCode(Int)
+    /// Missing host info in the URL
     case noHostInUrl
 
-    /* Errors specific to endpoints */
+    // MARK: - Errors specific to endpoints
 
+    /// Empty query parameter
     case emptyQueryParam
+    /// Space symbols in query parameter
     case spacesInQueryParam
 
+    /// General HTTP error
     case httpFailure(error: Error)
+    /// JSON serialization error
     case jsonSerialization(error: Error)
+    /// JSON decoding error
     case jsonDecoding(error: Error)
-    /// can add String assiciated value for missed params
+    /// Some parameters are not present
     case missingRequestParameters(String)
 
+    /// Retrieve the localized description for this error. From Error protocol.
     public var localizedDescription: String {
         switch self {
         case .httpFailure(error: let error):

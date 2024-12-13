@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreBrowser
+import CottonDataServices
 
 typealias TabAddPositionsModel = BaseListViewModelImpl<AddedTabPosition>
 
@@ -32,6 +33,8 @@ extension AddedTabPosition: @retroactive CustomStringConvertible {
             key = "txt_tab_add_list_end"
         case .afterSelected:
             key = "txt_tab_add_after_selected"
+        @unknown default:
+            fatalError("Not handled tab add position type")
         }
         return NSLocalizedString(key, comment: "")
     }

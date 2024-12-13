@@ -7,9 +7,9 @@
 //
 
 import Foundation
-import CottonData
+import CottonViewModels
 import CoreBrowser
-import FeaturesFlagsKit
+import FeatureFlagsKit
 
 struct SearchViewContextImpl: SearchViewContext {
     var knownDomainsStorage: KnownDomainsSource {
@@ -19,6 +19,12 @@ struct SearchViewContextImpl: SearchViewContext {
     var appAsyncApiTypeValue: AsyncApiType {
         get async {
             await FeatureManager.shared.appAsyncApiTypeValue()
+        }
+    }
+    
+    var webAutocompletionSourceValue: WebAutoCompletionSource {
+        get async {
+            await FeatureManager.shared.webSearchAutoCompleteValue()
         }
     }
 }

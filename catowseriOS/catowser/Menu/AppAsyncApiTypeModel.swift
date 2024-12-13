@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import FeaturesFlagsKit
+import FeatureFlagsKit
 
 typealias AppAsyncApiTypeModel = BaseListViewModelImpl<AsyncApiType>
 
@@ -33,6 +33,8 @@ extension AsyncApiType: @retroactive CustomStringConvertible {
             key = "txt_app_async_api_combine"
         case .asyncAwait:
             key = "txt_app_async_api_async_await"
+        @unknown default:
+            fatalError("Not handled async api type")
         }
         return NSLocalizedString(key, comment: "")
     }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-final class DummyDelegate: BrowserContentCoordinators {
+final class DummyDelegate: ContentCoordinatorsInterface {
     let topSitesCoordinator: TopSitesCoordinator? = nil
     let webContentCoordinator: WebContentCoordinator? =  nil
     let globalMenuDelegate: GlobalMenuDelegate? = nil

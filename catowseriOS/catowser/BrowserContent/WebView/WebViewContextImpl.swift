@@ -8,10 +8,10 @@
 
 import Foundation
 import CottonBase
-import CottonData
 import CoreBrowser
 import CottonPlugins
-import FeaturesFlagsKit
+import FeatureFlagsKit
+import CottonViewModels
 
 public final class WebViewContextImpl: WebViewContext {
     public let pluginsSource: any JSPluginsSource

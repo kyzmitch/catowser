@@ -6,6 +6,7 @@
 //  Copyright © 2022 Cotton/Catowser Andrei Ermoshin. All rights reserved.
 //
 
+import CoreBrowser
 import Foundation
 
 typealias WebSearchSettingsModel = BaseListViewModelImpl<WebAutoCompletionSource>
@@ -31,6 +32,8 @@ extension WebAutoCompletionSource: CustomStringConvertible {
             key = "Duck Duck Go"
         case .google:
             key = "Google"
+        @unknown default:
+            fatalError("Not handled search provider type")
         }
         return key
     }

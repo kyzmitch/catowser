@@ -9,7 +9,7 @@
 import UIKit
 import SwiftUI
 import CoreBrowser
-import CottonData
+import CottonViewModels
 
 /**
  A replacement for the native SwiftUI starting point:
@@ -30,28 +30,35 @@ import CottonData
 
 @available(iOS 13.0.0, *)
 final class MainBrowserV2ViewController<
-    C: Navigating & BrowserContentCoordinators,
+    C: Navigating & ContentCoordinatorsInterface,
     W: WebViewModel,
-    S: SearchSuggestionsViewModel>:
-    UIHostingController<MainBrowserView<C, W, S>> where C.R == MainScreenRoute {
+    S: SearchSuggestionsViewModel,
+    SB: SearchBarViewModelProtocol
+>: UIHostingController<MainBrowserView<C, W, S, SB>> where C.R == MainScreenRoute {
     private weak var coordinator: C?
 
-    init(_ coordinator: C,
-         _ uiFramework: UIFrameworkType,
-         _ defaultContent: CoreBrowser.Tab.ContentType,
-         _ allTabsVM: AllTabsViewModel,
-         _ topSitesVM: TopSitesViewModel,
-         _ searchSuggestionsVM: S,
-         _ webVM: W) {
+    init(
+        _ coordinator: C,
+        _ uiFramework: UIFrameworkType,
+        _ defaultContent: CoreBrowser.Tab.ContentType,
+        _ allTabsVM: AllTabsViewModel,
+        _ topSitesVM: TopSitesViewModel,
+        _ searchSuggestionsVM: S,
+        _ webVM: W,
+        _ searchBarVM: SB
+    ) {
         self.coordinator = coordinator
 
-        let view = MainBrowserView(coordinator,
-                                   uiFramework,
-                                   defaultContent,
-                                   allTabsVM,
-                                   topSitesVM,
-                                   searchSuggestionsVM,
-                                   webVM)
+        let view = MainBrowserView(
+            coordinator,
+            uiFramework,
+            defaultContent,
+            allTabsVM,
+            topSitesVM,
+            searchSuggestionsVM,
+            webVM,
+            searchBarVM
+        )
         super.init(rootView: view)
     }
 

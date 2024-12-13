@@ -9,8 +9,8 @@
 import Foundation
 import WebKit
 
-@MainActor
-public protocol InstagramContentDelegate: AnyObject {
+/// Instagram plugin interface, needs to be sendable to be able to pass it to async func
+@MainActor public protocol InstagramContentDelegate: AnyObject, Sendable {
     func didReceiveVideoNodes(_ nodes: [InstagramVideoNode])
 }
 

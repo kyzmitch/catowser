@@ -9,7 +9,8 @@
 import SwiftUI
 import CoreBrowser
 import CottonPlugins
-import FeaturesFlagsKit
+import FeatureFlagsKit
+import CottonDataServices
 
 /// Content view model which observes for the currently selected tab content type.
 /// This reference type should be used to update the view if content changes.

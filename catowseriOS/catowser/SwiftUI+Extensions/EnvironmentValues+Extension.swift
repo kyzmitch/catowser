@@ -14,11 +14,11 @@ import SwiftUI
  */
 
 private struct BrowserContentCoordinatorsKey: EnvironmentKey {
-    static let defaultValue: BrowserContentCoordinators? = nil
+    static let defaultValue: ContentCoordinatorsInterface? = nil
 }
 
 extension EnvironmentValues {
-    var browserContentCoordinators: BrowserContentCoordinators? {
+    var browserContentCoordinators: ContentCoordinatorsInterface? {
         get { self[BrowserContentCoordinatorsKey.self] }
         set { self[BrowserContentCoordinatorsKey.self] = newValue }
     }

@@ -7,9 +7,11 @@
 //
 
 import SwiftUI
+import Combine
 import CottonBase
 import CoreBrowser
-import FeaturesFlagsKit
+import FeatureFlagsKit
+import CottonDataServices
 
 struct BrowserMenuView: View {
     @ObservedObject private var model: MenuViewModel

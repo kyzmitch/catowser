@@ -9,7 +9,7 @@
 import UIKit
 import CoreBrowser
 // needed for `Downloadable`
-import BrowserNetworking
+import CottonNetworking
 import CottonPlugins
 
 @MainActor

@@ -9,21 +9,12 @@
 import UIKit
 import CoreBrowser
 import CottonBase
-import FeaturesFlagsKit
+import FeatureFlagsKit
 import CottonPlugins
-import CottonData
+import CottonViewModels
+import CottonDataServices
 
-/// Browser content related coordinators
-@MainActor
-protocol BrowserContentCoordinators: AnyObject, Sendable {
-    var topSitesCoordinator: TopSitesCoordinator? { get }
-    var webContentCoordinator: WebContentCoordinator? { get }
-    var globalMenuDelegate: GlobalMenuDelegate? { get }
-    var toolbarCoordinator: MainToolbarCoordinator? { get }
-    var toolbarPresenter: AnyViewController? { get }
-}
-
-final class AppCoordinator: Coordinator, BrowserContentCoordinators {
+final class AppCoordinator: Coordinator, ContentCoordinatorsInterface, PluginsProxyDelegate {
     /// Could be accessed using `ViewsEnvironment.shared.vcFactory` singleton as well
     let vcFactory: ViewControllerFactory
     /// Currently presented (next) coordinator, to be able to stop it
@@ -78,35 +69,65 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators {
         }
     }
 
-    let uiFramework: UIFrameworkType
-    
-    /// Tablet specific view model which has to be initialised in async way earlier
-    /// to not do async coordinator start for the tabs
-    private var allTabsVM: AllTabsViewModel?
-    /// Top sites UIKit view controller needs that view model and it is async
-    private var topSitesVM: TopSitesViewModel?
+    /// UI framework type
+    var uiFramework: UIFrameworkType {
+        appStartInfo.uiFramework
+    }
+    /// App start info (including view models and other data)
+    private let appStartInfo: AppStartInfo
     /// Feature manager
     private let featureManager: FeatureManager.StateHolder
     /// UI service registry
     private let uiServiceRegistry: UIServiceRegistry
+    /// Plugins handler
+    private let pluginsDelegate: PluginsProxy
 
     init(
         _ vcFactory: ViewControllerFactory,
-        _ uiFramework: UIFrameworkType,
         _ featureManager: FeatureManager.StateHolder,
-        _ uiServiceRegistry: UIServiceRegistry
+        _ uiServiceRegistry: UIServiceRegistry,
+        _ pluginsDelegate: PluginsProxy,
+        _ appStartInfo: AppStartInfo
     ) {
         self.vcFactory = vcFactory
-        self.uiFramework = uiFramework
         self.featureManager = featureManager
         self.uiServiceRegistry = uiServiceRegistry
+        self.pluginsDelegate = pluginsDelegate
+        self.appStartInfo = appStartInfo
+        pluginsDelegate.delegate = self
     }
 
     func start() {
-        Task {
-            await prepareBeforeStart()
-        }
+        let allTabsVM = appStartInfo.allTabsVM
+        let topSitesVM = appStartInfo.topSitesVM
+        let suggestionsVM = appStartInfo.suggestionsVM
+        let webViewModel = appStartInfo.webViewModel
+        let searchBarVM = appStartInfo.searchBarVM
+        let vc = vcFactory.rootViewController(
+            self,
+            uiFramework,
+            appStartInfo.defaultTabContent,
+            allTabsVM,
+            topSitesVM,
+            suggestionsVM,
+            webViewModel,
+            searchBarVM
+        )
+        startedVC = vc
         
+        window.rootViewController = startedVC?.viewController
+        window.makeKeyAndVisible()
+        // we need to attach observer only after adding all child coordinators
+        if case .uiKit = uiFramework {
+            Task {
+                if #available(iOS 17.0, *), appStartInfo.observingType.isSystemObservation {
+                    startTabsObservation()
+                    await readTabsState()
+                } else {
+                    await TabsDataServiceFactory.shared.attach(self, notify: true)
+                }
+            }
+        }
         if uiFramework.swiftUIBased {
             // Must do coordinators init earlier
             // to allow to use some of them in SwiftUI views
@@ -115,51 +136,6 @@ final class AppCoordinator: Coordinator, BrowserContentCoordinators {
             if uiFramework.isUIKitFree {
                 // Need to create PhoneTabs coordinator as well
                 toolbarCoordinator?.showNext(.tabs)
-            }
-        }
-    }
-    
-    private func prepareBeforeStart() async {
-        await UseCaseRegistry.shared.registerUseCases()
-        let defaultTabContent = await DefaultTabProvider.shared.contentState
-        let pluginsSource = JSPluginsBuilder()
-            .setBase(self)
-            .setInstagram(self)
-        jsPluginsBuilder = pluginsSource
-        let allTabsVM = await ViewModelFactory.shared.allTabsViewModel()
-        self.allTabsVM = allTabsVM
-        let topSitesVM = await ViewModelFactory.shared.topSitesViewModel()
-        self.topSitesVM = topSitesVM
-        let searchProvider = await FeatureManager.shared.webSearchAutoCompleteValue()
-        let suggestionsVM = await ViewModelFactory.shared.searchSuggestionsViewModel(searchProvider)
-        let webContext = WebViewContextImpl(pluginsSource)
-        let webViewModel = await ViewModelFactory.shared.getWebViewModel(
-            nil,
-            webContext,
-            nil
-        )
-        let vc = vcFactory.rootViewController(
-            self,
-            uiFramework,
-            defaultTabContent,
-            allTabsVM,
-            topSitesVM,
-            suggestionsVM,
-            webViewModel
-        )
-        startedVC = vc
-        
-        window.rootViewController = startedVC?.viewController
-        window.makeKeyAndVisible()
-        // Now, with introducing the actors model
-        // we need to attach observer only after adding all child coordinators
-        let observingType = await featureManager.observingApiTypeValue()
-        if case .uiKit = uiFramework {
-            if #available(iOS 17.0, *), observingType.isSystemObservation {
-                startTabsObservation()
-                await readTabsState()
-            } else {
-                await TabsDataService.shared.attach(self, notify: true)
             }
         }
     }
@@ -408,12 +384,12 @@ private extension AppCoordinator {
     // MARK: - insert methods to start subview coordinators
 
     func insertTabs() {
-        guard isPad, let allTabsVM else {
+        guard isPad else {
             return
         }
         // swiftlint:disable:next force_unwrapping
         let presenter = startedVC!
-        let coordinator: TabletTabsCoordinator = .init(vcFactory, presenter, allTabsVM)
+        let coordinator: TabletTabsCoordinator = .init(vcFactory, presenter, appStartInfo.allTabsVM)
         coordinator.parent = self
         coordinator.start()
         tabletTabsCoordinator = coordinator
@@ -427,12 +403,15 @@ private extension AppCoordinator {
         linkTagsCoordinator = LinkTagsCoordinator(vcFactory, presenter)
         linkTagsCoordinator?.parent = self
 
-        let coordinator: SearchBarCoordinator = .init(vcFactory,
-                                                      presenter,
-                                                      linkTagsCoordinator,
-                                                      self,
-                                                      self,
-                                                      uiFramework)
+        let coordinator = SearchBarCoordinator(
+            vcFactory,
+            presenter,
+            linkTagsCoordinator,
+            self,
+            self,
+            uiFramework,
+            appStartInfo.searchDataService
+        )
         coordinator.parent = self
         coordinator.start()
         searchBarCoordinator = coordinator
@@ -479,10 +458,14 @@ private extension AppCoordinator {
         let presenter = startedVC
         // Link tags coordinator MUST be initialized before this toolbar
         // and it is initialized before Search bar coordinator now
-        let coordinator: MainToolbarCoordinator = .init(vcFactory,
-                                                        presenter,
-                                                        linkTagsCoordinator,
-                                                        self, uiFramework)
+        let coordinator: MainToolbarCoordinator = .init(
+            vcFactory,
+            presenter,
+            linkTagsCoordinator,
+            self,
+            uiFramework,
+            appStartInfo.phoneTabPreviewsVM
+        )
         coordinator.parent = self
         coordinator.start()
         toolbarCoordinator = coordinator
@@ -498,7 +481,7 @@ private extension AppCoordinator {
     }
 
     func insertTopSites() {
-        guard topSitesCoordinator == nil, let topSitesVM else {
+        guard topSitesCoordinator == nil else {
             return
         }
         let coordinator: TopSitesCoordinator
@@ -513,7 +496,7 @@ private extension AppCoordinator {
                 startedVC,
                 containerView,
                 uiFramework,
-                topSitesVM
+                appStartInfo.topSitesVM
             )
         case .swiftUIWrapper, .swiftUI:
             coordinator = .init(
@@ -521,7 +504,7 @@ private extension AppCoordinator {
                 startedVC,
                 nil,
                 uiFramework,
-                topSitesVM
+                appStartInfo.topSitesVM
             )
         }
 
@@ -546,8 +529,7 @@ private extension AppCoordinator {
     func insertWebTab(_ site: Site) {
         switch uiFramework {
         case .uiKit:
-            guard let containerView = webContentContainerCoordinator?.startedView,
-                  let plugins = jsPluginsBuilder else {
+            guard let containerView = webContentContainerCoordinator?.startedView else {
                 assertionFailure("Root view controller must have content view")
                 return
             }
@@ -558,10 +540,10 @@ private extension AppCoordinator {
                                                            containerView,
                                                            self,
                                                            site,
-                                                           plugins,
+                                                           appStartInfo.jsPluginsBuilder,
                                                            uiFramework)
             coordinator.parent = self
-            let context: WebViewContextImpl = .init(plugins)
+            let context: WebViewContextImpl = .init(appStartInfo.jsPluginsBuilder)
             /// It is fine to do async coordinator start in this specific case
             /// first because it requires new Site every time
             /// second, layout is done in scope of start, so, coordinator won't be nil during layout request
@@ -764,9 +746,9 @@ extension AppCoordinator: GlobalMenuDelegate {
             style = .onlyGlobalMenu
         }
         Task {
-            let isDohEnabled = await FeatureManager.shared.boolValue(of: .dnsOverHTTPSAvailable)
-            let isJavaScriptEnabled = await FeatureManager.shared.boolValue(of: .javaScriptEnabled)
-            let nativeAppRedirectEnabled = await FeatureManager.shared.boolValue(of: .nativeAppRedirect)
+            let isDohEnabled = await featureManager.boolValue(of: .dnsOverHTTPSAvailable)
+            let isJavaScriptEnabled = await featureManager.boolValue(of: .javaScriptEnabled)
+            let nativeAppRedirectEnabled = await featureManager.boolValue(of: .nativeAppRedirect)
             let menuModel: MenuViewModel = .init(style, isDohEnabled, isJavaScriptEnabled, nativeAppRedirectEnabled)
             menuModel.developerMenuPresenter = self
             showNext(.menu(menuModel, sourceView, sourceRect))

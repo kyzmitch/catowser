@@ -9,7 +9,8 @@
 import UIKit
 import CoreBrowser
 import Combine
-import FeaturesFlagsKit
+import FeatureFlagsKit
+import CottonDataServices
 
 final class TabsPreviewsViewController<C: Navigating>: BaseViewController,
                                                        CollectionViewInterface,
@@ -41,7 +42,7 @@ where C.R == TabsScreenRoute {
             if #available(iOS 17.0, *), observingType.isSystemObservation {
                 startTabsObservation()
             } else {
-                await TabsDataService.shared.attach(self, notify: false)
+                await TabsDataServiceFactory.shared.attach(self, notify: false)
             }
         }
     }

@@ -8,7 +8,7 @@
 
 import UIKit
 import CottonBase
-import FeaturesFlagsKit
+import FeatureFlagsKit
 
 @MainActor protocol FaviconImageViewable: AnyObject {
     var faviconImageView: UIImageView { get }

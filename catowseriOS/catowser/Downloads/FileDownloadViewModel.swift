@@ -9,7 +9,7 @@
 import Foundation
 @preconcurrency import ReactiveSwift
 // needed for `Downloadable`
-import BrowserNetworking
+import CottonNetworking
 
 @MainActor protocol FileDownloadDelegate: AnyObject {
     func didPressOpenFile(withLocal url: URL)
@@ -52,7 +52,7 @@ final class FileDownloadViewModel {
         resourceSizeOutput = .init(0)
         labelText = name
 
-        BrowserNetworking.fetchRemoteResourceInfo(url: batch.url)
+        fetchRemoteResourceInfo(url: batch.url)
             .observe(on: QueueScheduler.main)
             .startWithResult { [weak self] (result) in
                 guard let self = self else {
@@ -71,7 +71,7 @@ final class FileDownloadViewModel {
     func download() {
         downloadOutput.value = .started
 
-        BrowserNetworking.download(file: batch)
+        CottonNetworking.download(file: batch)
             .observe(on: QueueScheduler.main)
             .startWithResult { [weak self] (result) in
                 guard let self = self else {
@@ -86,6 +86,8 @@ final class FileDownloadViewModel {
                         self.downloadOutput.value = .in(progress: converted)
                     case .complete(let localURL):
                         self.downloadOutput.value = .finished(localURL)
+                    @unknown default:
+                        fatalError("Not handled progress case")
                     }
                 case .failure(let error):
                     print("download error: \(error)")

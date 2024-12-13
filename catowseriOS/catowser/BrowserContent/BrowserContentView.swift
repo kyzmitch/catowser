@@ -9,9 +9,9 @@
 import SwiftUI
 import CoreBrowser
 import Combine
-import FeaturesFlagsKit
+import FeatureFlagsKit
 import CottonPlugins
-import CottonData
+import CottonViewModels
 
 /// Dynamic content view (could be a webview, a top sites list or something else)
 struct BrowserContentView<W: WebViewModel>: View {

@@ -7,9 +7,9 @@
 //
 
 import UIKit
-import FeaturesFlagsKit
+import FeatureFlagsKit
 import Combine
-import CottonData
+import CottonViewModels
 
 fileprivate extension String {
     static let searchSuggestionCellId = "SearchSuggestionCellId"
@@ -21,8 +21,7 @@ enum SuggestionType: Equatable {
     case looksLikeURL(String)
 }
 
-@MainActor
-protocol SearchSuggestionsListDelegate: AnyObject {
+@MainActor protocol SearchSuggestionsListDelegate: AnyObject {
     func searchSuggestionDidSelect(_ content: SuggestionType) async
 }
 
@@ -42,7 +41,10 @@ final class SearchSuggestionsViewController: UITableViewController {
     /// Delegate to handle suggestion selection
     private weak var delegate: SearchSuggestionsListDelegate?
 
-    init(_ delegate: SearchSuggestionsListDelegate?, _ viewModel: any SearchSuggestionsViewModel) {
+    init(
+        _ delegate: SearchSuggestionsListDelegate?,
+        _ viewModel: any SearchSuggestionsViewModel
+    ) {
         self.viewModel = viewModel
         self.delegate = delegate
         super.init(nibName: nil, bundle: nil)

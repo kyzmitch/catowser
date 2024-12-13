@@ -8,8 +8,9 @@
 
 import UIKit
 import CoreBrowser
-import CottonData
-import FeaturesFlagsKit
+import FeatureFlagsKit
+import CottonViewModels
+import CottonDataServices
 
 enum WebToolbarState {
     case nothingToNavigate
@@ -145,8 +146,8 @@ final class BrowserToolbarView: UIToolbar {
 
     /// Instead of `didMoveToSuperview`
     func attachToTabsListManager() async {
-        await TabsDataService.shared.attach(self, notify: false)
-        await TabsDataService.shared.attach(counterView, notify: true)
+        await TabsDataServiceFactory.shared.attach(self, notify: false)
+        await TabsDataServiceFactory.shared.attach(counterView, notify: true)
     }
 
     // MARK: - initialization

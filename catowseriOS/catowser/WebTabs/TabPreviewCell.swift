@@ -8,11 +8,11 @@
 
 import UIKit
 import CoreBrowser
-import FeaturesFlagsKit
+import FeatureFlagsKit
 #if canImport(Combine)
 import Combine
 #endif
-import BrowserNetworking
+import CottonNetworking
 import CottonBase
 
 fileprivate extension CGFloat {

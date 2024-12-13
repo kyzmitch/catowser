@@ -6,7 +6,7 @@
 //  Copyright © 2022 Cotton/Catowser Andrei Ermoshin. All rights reserved.
 //
 
-import FeaturesFlagsKit
+import FeatureFlagsKit
 
 extension ApplicationEnumFeature {
     static var tabAddPosition: ApplicationEnumFeature<TabAddPositionFeature> {

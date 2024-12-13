@@ -8,7 +8,9 @@
 
 import Foundation
 
+/// A type of response in REST request
 public protocol ResponseType: Decodable {
+    /// An array of HTTP codes which describe successfull REST request
     static var successCodes: [Int] { get }
 }
 

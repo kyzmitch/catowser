@@ -6,18 +6,29 @@
 //  Copyright © 2020 Cotton (former Catowser). All rights reserved.
 //
 
+import DataServiceKit
 import Foundation
 import CottonRestKit
+import CoreData
 import CoreBrowser
-import BrowserNetworking
+import CottonNetworking
 import Alamofire // only needed for `JSONEncoding`
-import FeaturesFlagsKit
+import FeatureFlagsKit
+import CottonDataServices
 
-@globalActor
-final class ServiceRegistry {
+extension String {
+    static let tabsDataServiceKey = "tabs.dataservice"
+    static let searchDataServiceKey = "search.dataservice"
+}
+
+/// Service registry for the serial data services and other related classes
+@globalActor final class ServiceRegistry {
     static let shared = StateHolder()
 
     actor StateHolder {
+        /// locator for the data services
+        private let dataServiceLocator: DataServiceLocator
+        
         let dnsClient: GoogleDnsClient
         let googleClient: GoogleSuggestionsClient
         let duckduckgoClient: DDGoSuggestionsClient
@@ -33,48 +44,86 @@ final class ServiceRegistry {
         let dnsClientRxSubscriber: GDNSJsonClientRxSubscriber = .init()
         let dnsClientSubscriber: GDNSJsonClientSubscriber = .init()
         let duckduckgoClientRxSubscriber: DDGoSuggestionsClientRxSubscriber = .init()
+        
+        private var database: Database?
 
         init() {
+            dataServiceLocator = DataServiceLocator()
+            
             let googleDNSserver = GoogleDnsServer()
             // swiftlint:disable:next force_unwrapping
             dnsAlReachability = .init(server: googleDNSserver)!
-            dnsClient = .init(server: googleDNSserver,
-                              jsonEncoder: JSONEncoding.default,
-                              reachability: dnsAlReachability,
-                              httpTimeout: 2)
+            dnsClient = .init(
+                server: googleDNSserver,
+                jsonEncoder: JSONEncoding.default,
+                reachability: dnsAlReachability,
+                httpTimeout: 2
+            )
             let googleServer = GoogleServer()
             // swiftlint:disable:next force_unwrapping
             googleAlReachability = .init(server: googleServer)!
-            googleClient = .init(server: googleServer,
-                                 jsonEncoder: JSONEncoding.default,
-                                 reachability: googleAlReachability,
-                                 httpTimeout: 10)
+            googleClient = .init(
+                server: googleServer,
+                jsonEncoder: JSONEncoding.default,
+                reachability: googleAlReachability,
+                httpTimeout: 10
+            )
 
             let duckduckgoServer = DuckDuckGoServer()
             // swiftlint:disable:next force_unwrapping
             ddGoAlReachability = .init(server: duckduckgoServer)!
-            duckduckgoClient = .init(server: duckduckgoServer,
-                                     jsonEncoder: JSONEncoding.default,
-                                     reachability: ddGoAlReachability,
-                                     httpTimeout: 10)
+            duckduckgoClient = .init(
+                server: duckduckgoServer,
+                jsonEncoder: JSONEncoding.default,
+                reachability: ddGoAlReachability,
+                httpTimeout: 10
+            )
         }
+        
+        func findDataService<T>(_ type: T.Type, _ key: String? = nil) -> T {
+            // swiftlint:disable:next force_unwrapping
+            dataServiceLocator.findService(type, key)!
+        }
+        
+        func registerDataServices() async {
+            let searchDataService = SearchDataServiceFactory.create(
+                executionQueue: DispatchQueue.global(),
+                responseQueue: DispatchQueue.main,
+                stratsFactory: StrategyFactory.shared
+            )
+            dataServiceLocator.registerNamed(searchDataService, .searchDataServiceKey)
 
-        func searchSuggestClient() async -> SearchEngine {
-            let selectedPluginName = await FeatureManager.shared.searchPluginName()
-            let optionalXmlData = ResourceReader.readXmlSearchPlugin(with: selectedPluginName, on: .main)
-            guard let xmlData = optionalXmlData else {
-                return .googleSearchEngine()
+            let tabsSubject: TabsDataSubjectProtocol?
+            if #available(iOS 17.0, *) {
+                tabsSubject = await UIServiceRegistry.shared().tabsSubject
+            } else {
+                tabsSubject = nil
             }
-
-            let osDescription: OpenSearch.Description
+            guard let database = Database(name: "CottonDbModel") else {
+                fatalError("Failed to initialize CoreData database")
+            }
             do {
-                osDescription = try OpenSearch.Description(data: xmlData)
+                try await database.loadStore()
             } catch {
-                print("Open search xml parser error: \(error.localizedDescription)")
-                return .googleSearchEngine()
+                fatalError("Failed to initialize Database \(error.localizedDescription)")
             }
-
-            return osDescription.html
+            self.database = database
+            let contextClosure = { @Sendable [weak database] () -> NSManagedObjectContext? in
+                guard let dbInterface = database else {
+                    fatalError("Cotton db reference is nil")
+                }
+                return dbInterface.newPrivateContext()
+            }
+            let cacheProvider = TabsRepositoryImpl(database.viewContext, contextClosure)
+            let strategy = NearbySelectionStrategy()
+            let tabsDataService = await TabsDataServiceFactory.create(
+                cacheProvider,
+                DefaultTabProvider.shared,
+                strategy,
+                tabsSubject,
+                FeatureManager.shared.observingApiTypeValue()
+            )
+            dataServiceLocator.registerNamed(tabsDataService, .tabsDataServiceKey)
         }
     }
 }
@@ -94,5 +143,16 @@ extension RestClient where Server == GoogleServer {
 extension RestClient where Server == DuckDuckGoServer {
     static var shared: DDGoSuggestionsClient {
         return ServiceRegistry.shared.duckduckgoClient
+    }
+}
+
+extension TabsDataServiceFactory {
+    static var shared: any TabsDataServiceProtocol {
+        get async {
+            await ServiceRegistry.shared.findDataService(
+                (any TabsDataServiceProtocol).self,
+                .tabsDataServiceKey
+            )
+        }
     }
 }

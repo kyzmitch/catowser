@@ -8,15 +8,16 @@
 
 import UIKit
 import CoreBrowser
-import FeaturesFlagsKit
+import FeatureFlagsKit
 import CottonBase
+import CottonDataServices
 
 /// Provides default tab related constants, no need to be global actor, because read-only
 @globalActor
 final class DefaultTabProvider {
     static let shared = StateHolder()
     
-    actor StateHolder: TabsStates {
+    actor StateHolder: TabsStatesInterface {
         @MainActor var selected: Bool {
             UIDevice.current.userInterfaceIdiom == .pad
         }

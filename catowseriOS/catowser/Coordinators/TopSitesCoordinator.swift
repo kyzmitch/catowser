@@ -9,7 +9,7 @@
 import UIKit
 import CottonBase
 import CoreBrowser
-import FeaturesFlagsKit
+import FeatureFlagsKit
 
 @MainActor
 final class TopSitesCoordinator: Coordinator {

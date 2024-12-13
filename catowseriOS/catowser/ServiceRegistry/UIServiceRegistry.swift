@@ -8,6 +8,7 @@
 
 import CoreBrowser
 import UIKit
+import CottonDataServices
 
 /// A service registry used only as a main actor for UI
 /// to be able to use it in SwiftUI or UIKit views for observing
@@ -20,7 +21,10 @@ import UIKit
             return holder
         }
 
-        let created = UIServiceRegistry(DefaultTabProvider.shared)
+        let created = UIServiceRegistry(
+            DefaultTabProvider.shared,
+            UIDevice.current.userInterfaceIdiom
+        )
         internalInstance = created
         return created
     }
@@ -29,7 +33,7 @@ import UIKit
     static private var internalInstance: UIServiceRegistry?
     
     /// Default positioning settings
-    private let positioning: TabsStates
+    private let positioning: TabsStatesInterface
     /// A workaround to be able to use available marker.
     ///
     /// Should be main actor data beacuse observed almost
@@ -53,12 +57,13 @@ import UIKit
     let vcFactory: ViewControllerFactory
     
     private init(
-        _ positioning: TabsStates
+        _ positioning: TabsStatesInterface,
+        _ uiInterface: UIUserInterfaceIdiom
     ) {
         self.positioning = positioning
         // Could read global state to inject current UIFrameworkType value right away,
         // and it will make init block this init, probably not good idea
-        if UIDevice.current.userInterfaceIdiom == .pad {
+        if uiInterface == .pad {
             vcFactory = TabletViewControllerFactory()
         } else {
             vcFactory = PhoneViewControllerFactory()

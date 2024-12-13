@@ -8,7 +8,7 @@
 
 import SwiftUI
 import CottonBase
-import FeaturesFlagsKit
+import FeatureFlagsKit
 
 struct TitledImageView: View {
     private let site: Site

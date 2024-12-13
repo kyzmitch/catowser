@@ -9,9 +9,9 @@
 import UIKit
 import CoreBrowser
 import CottonPlugins
-import BrowserNetworking
+import CottonNetworking
 import CottonBase
-import CottonData
+import CottonViewModels
 
 struct NotSelectedIndex: Error {}
 struct OutOfBoundsIndex: Error {}
@@ -54,10 +54,12 @@ final class WebViewsReuseManager {
     /// - Parameter coordinator: a navigation interface
     /// - Parameter viewModel: a view model
     /// - Returns: Web view controller configured with `Site`.
-    func controllerFor<C: Navigating>(_ site: Site,
-                                      _ coordinator: C?,
-                                      _ viewModel: any WebViewModel,
-                                      _ mode: UIFrameworkType) throws -> AnyViewController & WebViewNavigatable
+    func controllerFor<C: Navigating>(
+        _ site: Site,
+        _ coordinator: C?,
+        _ viewModel: any WebViewModel,
+        _ mode: UIFrameworkType
+    ) throws -> AnyViewController & WebViewNavigatable
     where C.R == WebContentRoute {
         // need to search web view with same url as in `site` to restore navigation history
         if useLimitedCache,

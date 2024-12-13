@@ -9,9 +9,9 @@
 import UIKit
 import CoreBrowser
 import Combine
-import BrowserNetworking
+import CottonNetworking
 import CottonBase
-import FeaturesFlagsKit
+import FeatureFlagsKit
 
 enum ImageViewSizes {
     static let imageHeight: CGFloat = 87

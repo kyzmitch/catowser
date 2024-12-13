@@ -8,13 +8,14 @@
 
 import SwiftUI
 import CoreBrowser
-import FeaturesFlagsKit
-import CottonData
+import FeatureFlagsKit
+import CottonViewModels
 
-struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel>: View {
+struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarViewModelProtocol>: View {
     // MARK: - view models of subviews
 
-    @StateObject private var searchBarVM: SearchBarViewModel = .init()
+    /// Search bar view model
+    @ObservedObject private var searchBarVM: SB
     /// A reference to created vm in main view
     @EnvironmentObject private var browserContentVM: BrowserContentViewModel
     /// Toolbar model needed by both UI modes
@@ -77,15 +78,25 @@ struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel>: View {
             style = .onlyGlobalMenu
         }
 
-        return MenuViewModel(style, isDohEnabled, isJavaScriptEnabled, nativeAppRedirectEnabled)
+        return MenuViewModel(
+            style,
+            isDohEnabled,
+            isJavaScriptEnabled,
+            nativeAppRedirectEnabled
+        )
     }
 
-    init(_ mode: SwiftUIMode,
-         _ defaultContentType: CoreBrowser.Tab.ContentType,
-         _ webVM: W,
-         _ searchVM: S) {
+    init(
+        _ mode: SwiftUIMode,
+        _ defaultContentType: CoreBrowser.Tab.ContentType,
+        _ webVM: W,
+        _ searchVM: S,
+        _ searchBarVM: SB
+    ) {
         self.webVM = webVM
+        // search suggestions vm is used as a template argument later
         self.searchSuggestionsVM = searchVM
+        self.searchBarVM = searchBarVM
         self.contentType = defaultContentType
         self.mode = mode
 
@@ -123,22 +134,24 @@ struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel>: View {
             } else {
                 let jsPlugins = browserContentVM.jsPluginsBuilder
                 let siteNavigation: SiteExternalNavigationDelegate = toolbarVM
-                BrowserContentView(jsPlugins,
-                                   siteNavigation,
-                                   isLoading,
-                                   contentType,
-                                   $webViewNeedsUpdate,
-                                   mode,
-                                   webVM)
+                BrowserContentView(
+                    jsPlugins,
+                    siteNavigation,
+                    isLoading,
+                    contentType,
+                    $webViewNeedsUpdate,
+                    mode,
+                    webVM
+                )
             }
         }
         .ignoresSafeArea(.keyboard)
         .onReceive(toolbarVM.$showProgress) { showProgress = $0 }
         .onReceive(toolbarVM.$websiteLoadProgress) { websiteLoadProgress = $0 }
         .onReceive(toolbarVM.$webViewInterface) { webViewInterface = $0 }
-        .onReceive(searchBarVM.$showSearchSuggestions) { showSearchSuggestions = $0 }
-        .onReceive(searchBarVM.$searchQuery) { searchQuery = $0 }
-        .onReceive(searchBarVM.$action.dropFirst()) { searchBarAction = $0 }
+        .onReceive(searchBarVM.showSearchSuggestions) { showSearchSuggestions = $0 }
+        .onReceive(searchBarVM.searchQuery) { searchQuery = $0 }
+        .onReceive(searchBarVM.action.dropFirst()) { searchBarAction = $0 }
         .onReceive(toolbarVM.$stopWebViewReuseAction.dropFirst()) { webViewNeedsUpdate = false }
         .onReceive(browserContentVM.$webViewNeedsUpdate.dropFirst()) { webViewNeedsUpdate = true }
         .onReceive(browserContentVM.$contentType) { value in
@@ -197,7 +210,7 @@ struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel>: View {
         .onReceive(toolbarVM.$showProgress) { showProgress = $0 }
         .onReceive(toolbarVM.$websiteLoadProgress) { websiteLoadProgress = $0 }
         .onReceive(toolbarVM.$webViewInterface) { webViewInterface = $0 }
-        .onReceive(searchBarVM.$showSearchSuggestions) { showSearchSuggestions = $0 }
+        .onReceive(searchBarVM.showSearchSuggestions) { showSearchSuggestions = $0 }
         .onChange(of: searchQuery) { value in
             let inSearchMode = searchBarAction == .startSearch
             let validQuery = !value.isEmpty && !value.looksLikeAURL()

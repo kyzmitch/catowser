@@ -11,13 +11,13 @@ import WebKit
 import CoreBrowser
 import CottonPlugins
 import CottonBase
-import BrowserNetworking
-import FeaturesFlagsKit
+import CottonNetworking
+import FeatureFlagsKit
 import ReactiveSwift
 #if canImport(Combine)
 @preconcurrency import Combine
 #endif
-import CottonData
+import CottonViewModels
 
 /// Can't retroactivly mark web view as sendable, it is a system type and protocol.
 extension WKWebView: @unchecked Sendable { }
@@ -40,9 +40,7 @@ extension WKWebView: @retroactive JavaScriptEvaluateble {
     }
 }
 
-final class WebViewController<C: Navigating>: BaseViewController,
-                                              WKUIDelegate,
-                                              WKNavigationDelegate where C.R == WebContentRoute {
+final class WebViewController<C: Navigating>: BaseViewController, WKUIDelegate, WKNavigationDelegate where C.R == WebContentRoute {
     /// A view model, optional because it is tricky to inject it in constructor in init because of async dependencies
     let viewModel: any WebViewModel
     /// A coordinator reference
@@ -158,6 +156,8 @@ final class WebViewController<C: Navigating>: BaseViewController,
             reattachWebViewObservers()
         case .openApp(let url):
             coordinator?.showNext(.openApp(url))
+        @unknown default:
+            fatalError("Not handled web page loading state")
         }
     }
 

@@ -9,29 +9,38 @@
 import UIKit
 import AlamofireImage
 import Alamofire
-import FeaturesFlagsKit
-import CoreBrowser
+import FeatureFlagsKit
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     /// Should be stored by strong reference, because it is the only owner of App coordinator
     private var appCoordinator: AppCoordinator?
+    /// Plugins delegate proxy (used to be AppCoordinator, but now the init sequence is different)
+    private var pluginsProxy: PluginsProxy?
 
-    func application(_ application: UIApplication,
-                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+    ) -> Bool {
 
         // This is to fix favicon.ico for Instagram site, calling it once
-        // https://github.com/Alamofire/AlamofireImage/issues/378#issuecomment-537275604
+        // https://github.com/Alamofire/AlamofireImage/
+        // issues/378#issuecomment-537275604
 
         ImageResponseSerializer.addAcceptableImageContentTypes(["image/vnd.microsoft.icon", "application/octet-stream"])
 
         // Disable checks for SSL for favicons, but it doesn't work for some reason
         let config: URLSessionConfiguration = ImageDownloader.defaultURLSessionConfiguration()
-        let serverTrustManager: ServerTrustManager = .init(allHostsMustBeEvaluated: false, evaluators: [:])
-        let session = Session(configuration: config,
-                              startRequestsImmediately: false,
-                              serverTrustManager: serverTrustManager)
+        let serverTrustManager: ServerTrustManager = .init(
+            allHostsMustBeEvaluated: false,
+            evaluators: [:]
+        )
+        let session = Session(
+            configuration: config,
+            startRequestsImmediately: false,
+            serverTrustManager: serverTrustManager
+        )
         UIImageView.af.sharedImageDownloader = ImageDownloader(session: session)
 
         return start()
@@ -41,17 +50,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 private extension AppDelegate {
     func start() -> Bool {
         Task {
-            // Init database for the tabs first
-            _ = await TabsDataService.shared
-            // Now can start UI
-            let value = await FeatureManager.shared.appUIFrameworkValue()
-            appCoordinator = AppCoordinator(
-                UIServiceRegistry.shared().vcFactory,
-                value,
-                FeatureManager.shared,
-                UIServiceRegistry.shared()
+            let pluginsProxy = PluginsProxy()
+            let appStartInfo = await AppAssembler.shared.configure(
+                baseDelegate: pluginsProxy,
+                instagramDelegate: pluginsProxy
             )
+            let coordinator = AppCoordinator(
+                UIServiceRegistry.shared().vcFactory,
+                FeatureManager.shared,
+                UIServiceRegistry.shared(),
+                pluginsProxy,
+                appStartInfo
+            )
+            appCoordinator = coordinator
             appCoordinator?.start()
+            self.pluginsProxy = pluginsProxy
         }
         return true
     }

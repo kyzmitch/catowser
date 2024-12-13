@@ -8,6 +8,7 @@
 
 import CottonBase
 import CoreBrowser
+import CottonUseCases
 
 @MainActor final class TopSitesViewModel: ObservableObject {
     let topSites: [Site]
@@ -23,7 +24,11 @@ import CoreBrowser
 
     func replaceSelected(tabContent: CoreBrowser.Tab.ContentType) {
         Task {
-            await writeTabUseCase.replaceSelected(tabContent)
+            do {
+                try await writeTabUseCase.replaceSelected(tabContent)
+            } catch {
+                print("Fail to replace current tab: \(error)")
+            }
         }
     }
 }

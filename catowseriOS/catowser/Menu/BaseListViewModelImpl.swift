@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import FeaturesFlagsKit
+import FeatureFlagsKit
 
 struct BaseListViewModelImpl<SourceType: FullEnumTypeConstraints>: BaseListViewModel where SourceType.RawValue == Int {
     typealias EnumDataSourceType = SourceType

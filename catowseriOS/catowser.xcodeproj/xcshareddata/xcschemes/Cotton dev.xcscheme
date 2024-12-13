@@ -39,6 +39,39 @@
                ReferencedContainer = "container:catowser.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "75869DD12D01B1D400D981B6"
+               BuildableName = "CottonUseCasesTests.xctest"
+               BlueprintName = "CottonUseCasesTests"
+               ReferencedContainer = "container:catowser.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "75869E1B2D01B4BD00D981B6"
+               BuildableName = "CottonViewModelsTests.xctest"
+               BlueprintName = "CottonViewModelsTests"
+               ReferencedContainer = "container:catowser.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "75869E862D01DDBB00D981B6"
+               BuildableName = "CottonDataServicesTests.xctest"
+               BlueprintName = "CottonDataServicesTests"
+               ReferencedContainer = "container:catowser.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

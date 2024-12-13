@@ -8,15 +8,14 @@
 
 import SwiftUI
 import CoreBrowser
-import FeaturesFlagsKit
-import CottonPlugins
-import CottonData
+import FeatureFlagsKit
+import CottonViewModels
 
-struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel>: View {
+struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarViewModelProtocol>: View {
     // MARK: - view models of subviews
 
     /// Search bar view model
-    @StateObject private var searchBarVM: SearchBarViewModel = .init()
+    @ObservedObject private var searchBarVM: SB
     /// A reference to created view model
     @EnvironmentObject private var browserContentVM: BrowserContentViewModel
     /// Toolbar view model needed by both UI modes
@@ -37,7 +36,7 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel>: View {
     /// Search query string state which is set by SearchBar and used by SearchSuggestions
     @State private var searchQuery: String = ""
     /// Needs to be fetched from global actor in task to know current value
-    @State private var searchProviderType: WebAutoCompletionSource
+    @State private var searchProviderType: CoreBrowser.WebAutoCompletionSource
 
     // MARK: - web content loading state
 
@@ -80,12 +79,25 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel>: View {
             style = .onlyGlobalMenu
         }
 
-        return MenuViewModel(style, isDohEnabled, isJavaScriptEnabled, nativeAppRedirectEnabled)
+        return MenuViewModel(
+            style,
+            isDohEnabled,
+            isJavaScriptEnabled,
+            nativeAppRedirectEnabled
+        )
     }
 
-    init(_ mode: SwiftUIMode, _ defaultContentType: CoreBrowser.Tab.ContentType, _ webVM: W, _ searchVM: S) {
+    init(
+        _ mode: SwiftUIMode,
+        _ defaultContentType: CoreBrowser.Tab.ContentType,
+        _ webVM: W,
+        _ searchVM: S,
+        _ searchBarVM: SB
+    ) {
         self.webVM = webVM
+        // search suggestions vm is used as a template argument later
         self.searchSuggestionsVM = searchVM
+        self.searchBarVM = searchBarVM
         searchBarAction = .clearView
         self.mode = mode
         self.contentType = defaultContentType
@@ -142,9 +154,9 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel>: View {
         .ignoresSafeArea(.container, edges: [.leading, .trailing])
         .onReceive(toolbarVM.$showProgress) { showProgress = $0 }
         .onReceive(toolbarVM.$websiteLoadProgress) { websiteLoadProgress = $0 }
-        .onReceive(searchBarVM.$showSearchSuggestions) { showSearchSuggestions = $0 }
-        .onReceive(searchBarVM.$searchQuery) { searchQuery = $0 }
-        .onReceive(searchBarVM.$action.dropFirst()) { searchBarAction = $0 }
+        .onReceive(searchBarVM.showSearchSuggestions) { showSearchSuggestions = $0 }
+        .onReceive(searchBarVM.searchQuery) { searchQuery = $0 }
+        .onReceive(searchBarVM.action.dropFirst()) { searchBarAction = $0 }
         .onReceive(toolbarVM.$stopWebViewReuseAction.dropFirst()) { webViewNeedsUpdate = false }
         .onReceive(browserContentVM.$webViewNeedsUpdate.dropFirst()) { webViewNeedsUpdate = true }
         .onReceive(browserContentVM.$contentType) { value in
@@ -220,7 +232,7 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel>: View {
         .ignoresSafeArea(.container, edges: [.leading, .trailing])
         .onReceive(toolbarVM.$showProgress) { showProgress = $0 }
         .onReceive(toolbarVM.$websiteLoadProgress) { websiteLoadProgress = $0 }
-        .onReceive(searchBarVM.$showSearchSuggestions) { showSearchSuggestions = $0 }
+        .onReceive(searchBarVM.showSearchSuggestions) { showSearchSuggestions = $0 }
         .onChange(of: searchQuery) { value in
             let inSearchMode = searchBarAction == .startSearch
             let validQuery = !value.isEmpty && !value.looksLikeAURL()

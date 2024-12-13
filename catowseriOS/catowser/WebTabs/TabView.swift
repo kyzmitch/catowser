@@ -11,11 +11,12 @@ import UIKit
 import CoreGraphics
 import CoreBrowser
 import CottonBase
-import FeaturesFlagsKit
+import FeatureFlagsKit
 #if canImport(Combine)
 import Combine
 #endif
-import BrowserNetworking
+import CottonNetworking
+import CottonDataServices
 
 @MainActor protocol TabDelegate: AnyObject {
     func tabViewDidClose(_ tabView: TabView) async
@@ -88,7 +89,7 @@ final class TabView: UIView {
         super.willMove(toSuperview: newSuperview)
 
         Task {
-            await TabsDataService.shared.attach(viewModel, notify: false)
+            await TabsDataServiceFactory.shared.attach(viewModel, notify: false)
         }
         stateHandler?.cancel()
         stateHandler = viewModel.$state.sink(receiveValue: onStateChange)

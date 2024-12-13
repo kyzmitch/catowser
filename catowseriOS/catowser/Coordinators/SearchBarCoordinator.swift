@@ -8,10 +8,11 @@
 
 import UIKit
 import CoreBrowser
-import FeaturesFlagsKit
-import BrowserNetworking
+import FeatureFlagsKit
+import CottonNetworking
 import CottonBase
-import CottonData
+import CottonDataServices
+import CottonViewModels
 
 @MainActor
 protocol SearchBarDelegate: AnyObject {
@@ -39,21 +40,27 @@ final class SearchBarCoordinator: NSObject, Coordinator {
     @LeadingTrimmed private var tempSearchText: String = ""
     /// Tells if coordinator was already started
     private var isSuggestionsShowed: Bool = false
-
+    /// Search data service interface
+    private let searchDataService: any SearchDataServiceProtocol
+    /// UI framework
     let uiFramework: UIFrameworkType
 
-    init(_ vcFactory: ViewControllerFactory,
-         _ presenter: AnyViewController,
-         _ downloadPanelDelegate: DownloadPanelPresenter?,
-         _ globalMenuDelegate: GlobalMenuDelegate?,
-         _ delegate: SearchBarDelegate?,
-         _ uiFramework: UIFrameworkType) {
+    init(
+        _ vcFactory: ViewControllerFactory,
+        _ presenter: AnyViewController,
+        _ downloadPanelDelegate: DownloadPanelPresenter?,
+        _ globalMenuDelegate: GlobalMenuDelegate?,
+        _ delegate: SearchBarDelegate?,
+        _ uiFramework: UIFrameworkType,
+        _ searchDataService: any SearchDataServiceProtocol
+    ) {
         self.vcFactory = vcFactory
         self.presenterVC = presenter
         self.downloadPanelDelegate = downloadPanelDelegate
         self.globalMenuDelegate = globalMenuDelegate
         self.delegate = delegate
         self.uiFramework = uiFramework
+        self.searchDataService = searchDataService
     }
 
     func start() {
@@ -224,8 +231,7 @@ extension SearchBarCoordinator: UISearchBarDelegate {
         } else {
             /// Async layout is fine for this case because both insert & show operations are together in one closure
             Task {
-                let searchProviderType = await FeatureManager.shared.webSearchAutoCompleteValue()
-                let viewModel = await ViewModelFactory.shared.searchSuggestionsViewModel(searchProviderType)
+                let viewModel = await ViewModelFactory.shared.searchSuggestionsViewModel()
                 insertNext(.suggestions(viewModel))
                 /// Use delegate and not a direct call
                 /// because it requires layout info
@@ -311,26 +317,32 @@ extension SearchBarCoordinator: SearchSuggestionsListDelegate {
     }
 }
 
-extension FeatureManager.StateHolder {
-    func searchPluginName() async -> KnownSearchPluginName {
-        switch await webSearchAutoCompleteValue() {
-        case .google:
-            return .google
-        case .duckduckgo:
-            return .duckduckgo
-        }
-    }
-}
-
 // MARK: - Async private methods
 
 private extension SearchBarCoordinator {
     func handleSuggestion(_ suggestion: String) async {
-        let client = await ServiceRegistry.shared.searchSuggestClient()
-        guard let url = client.searchURLForQuery(suggestion) else {
-            assertionFailure("Failed construct search engine url from suggestion string")
-            return
+        let searchEngineName = await FeatureManager.shared.webSearchAutoCompleteValue()
+        searchDataService.sendCommand(
+            .fetchSearchURL(
+                identifier: UUID(),
+                suggestion: suggestion,
+                searchEngineName: searchEngineName
+            ),
+            nil
+        ) { [weak self] result in
+            switch result {
+            case .failure(let failure):
+                print("Fail to fetch search engine: \(failure)")
+            case .success(let serviceData):
+                do {
+                    let url = try serviceData.searchURL
+                    Task {
+                        await self?.replaceTab(with: url, with: suggestion)
+                    }
+                } catch {
+                    print("Fail to construct search URL: \(error)")
+                }
+            }
         }
-        await replaceTab(with: url, with: suggestion)
     }
 }

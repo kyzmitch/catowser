@@ -7,7 +7,8 @@
 //
 
 import CoreBrowser
-import FeaturesFlagsKit
+import FeatureFlagsKit
+import CottonDataServices
 
 // MARK: - generic GETTER method
 
