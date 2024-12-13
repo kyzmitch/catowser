@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import CottonData
 import CottonViewModels
 
 struct SearchSuggestionsView<S: SearchSuggestionsViewModel>: View {

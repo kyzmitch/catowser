@@ -8,7 +8,6 @@
 
 import SwiftUI
 import CoreBrowser
-import CottonData
 import FeatureFlagsKit
 import CottonDataServices
 import CottonViewModels

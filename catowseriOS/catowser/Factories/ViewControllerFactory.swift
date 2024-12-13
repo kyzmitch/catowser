@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import CottonData
 import FeatureFlagsKit
 import CoreBrowser
 import CottonViewModels

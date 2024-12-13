@@ -1,6 +1,6 @@
 //
 //  SearchEngine+OpenSearchParser.swift
-//  BrowserNetworking
+//  CoreBrowser
 //
 //  Created by Andrei Ermoshin on 4/14/20.
 //  Copyright © 2020 Cotton/Catowser Andrei Ermoshin. All rights reserved.
@@ -32,10 +32,12 @@ extension String {
 }
 
 extension SearchEngine {
-    init(xml element: SWXMLHash.XMLElement,
-         indexer: XMLIndexer,
-         shortName: String,
-         imageData: OpenSearch.ImageParseResult) throws {
+    init(
+        xml element: SWXMLHash.XMLElement,
+        indexer: XMLIndexer,
+        shortName: String,
+        imageData: OpenSearch.ImageParseResult
+    ) throws {
 
         self.shortName = shortName
         self.imageData = imageData

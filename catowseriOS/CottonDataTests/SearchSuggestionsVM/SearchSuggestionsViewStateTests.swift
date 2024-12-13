@@ -7,7 +7,6 @@
 //
 
 import XCTest
-@testable import CottonData
 
 final class SearchSuggestionsViewStateTests: XCTestCase {
     let known1 = ["google.com", "gmail.com"]

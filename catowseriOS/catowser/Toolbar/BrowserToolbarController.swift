@@ -16,7 +16,6 @@
 
 import UIKit
 import CoreBrowser
-import CottonData
 import FeatureFlagsKit
 import CottonViewModels
 

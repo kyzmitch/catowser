@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import CottonData
 import CottonViewModels
 
 struct SearchSuggestionsLegacyView<S: SearchSuggestionsViewModel>: CatowserUIVCRepresentable {

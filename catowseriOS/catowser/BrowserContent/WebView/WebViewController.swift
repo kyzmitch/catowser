@@ -17,7 +17,6 @@ import ReactiveSwift
 #if canImport(Combine)
 @preconcurrency import Combine
 #endif
-import CottonData
 import CottonViewModels
 
 /// Can't retroactivly mark web view as sendable, it is a system type and protocol.

@@ -1,6 +1,6 @@
 //
 //  SiteSettings+Extensions.swift
-//  catowser
+//  CoreBrowser
 //
 //  Created by Andrei Ermoshin on 6/2/20.
 //  Copyright © 2020 Cotton (former Catowser). All rights reserved.

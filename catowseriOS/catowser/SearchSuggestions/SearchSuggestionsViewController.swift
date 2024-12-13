@@ -9,7 +9,6 @@
 import UIKit
 import FeatureFlagsKit
 import Combine
-import CottonData
 import CottonViewModels
 
 fileprivate extension String {

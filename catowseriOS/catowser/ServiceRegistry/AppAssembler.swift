@@ -8,7 +8,6 @@
 
 import CottonPlugins
 import FeatureFlagsKit
-import CottonData
 import CoreBrowser
 import CottonDataServices
 import CottonViewModels

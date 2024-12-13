@@ -7,7 +7,6 @@
 //
 
 import CottonBase
-import CottonData
 import CottonViewModels
 import CottonUseCases
 import CoreBrowser

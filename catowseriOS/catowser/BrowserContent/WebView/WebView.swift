@@ -8,7 +8,6 @@
 
 import SwiftUI
 import CottonBase
-import CottonData
 import CottonViewModels
 
 /// A special case web view interface only for SwiftUI

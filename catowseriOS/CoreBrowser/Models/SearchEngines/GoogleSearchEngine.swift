@@ -1,6 +1,6 @@
 //
 //  GoogleSearchEngine.swift
-//  BrowserNetworking
+//  CoreBrowser
 //
 //  Created by Andrei Ermoshin on 4/13/20.
 //  Copyright © 2020 Cotton (former Catowser). All rights reserved.

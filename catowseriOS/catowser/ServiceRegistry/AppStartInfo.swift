@@ -6,7 +6,6 @@
 //  Copyright © 2024 Cotton (Catowser). All rights reserved.
 //
 
-import CottonData
 import CottonPlugins
 import CoreBrowser
 import CottonViewModels

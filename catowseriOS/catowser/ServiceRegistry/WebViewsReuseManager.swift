@@ -11,7 +11,6 @@ import CoreBrowser
 import CottonPlugins
 import CottonNetworking
 import CottonBase
-import CottonData
 import CottonViewModels
 
 struct NotSelectedIndex: Error {}

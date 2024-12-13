@@ -8,7 +8,6 @@
 
 import Foundation
 import CottonBase
-import CottonData
 import CottonViewModels
 
 /// A proxy type around WebViewController for SwiftUI mode only when

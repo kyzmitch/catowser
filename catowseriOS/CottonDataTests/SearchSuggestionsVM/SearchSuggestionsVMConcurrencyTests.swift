@@ -7,7 +7,6 @@
 //
 
 import XCTest
-@testable import CottonData
 import CottonBase
 import CottonRestKit
 import CottonReactiveRestKit

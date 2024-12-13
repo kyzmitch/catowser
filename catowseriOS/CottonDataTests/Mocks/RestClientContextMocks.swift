@@ -6,7 +6,6 @@
 //  Copyright © 2022 Cotton (former Catowser). All rights reserved.
 //
 
-import CottonData
 
 final class MockedDNSContext: RestClientContext {
     public typealias Response = MockedDNSResponse

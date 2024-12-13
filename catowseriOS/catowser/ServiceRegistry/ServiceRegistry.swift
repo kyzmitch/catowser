@@ -9,7 +9,6 @@
 import DataServiceKit
 import Foundation
 import CottonRestKit
-import CottonData
 import CoreData
 import CoreBrowser
 import CottonNetworking

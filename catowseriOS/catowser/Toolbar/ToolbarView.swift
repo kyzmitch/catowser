@@ -8,7 +8,6 @@
 
 import UIKit
 import SwiftUI
-import CottonData
 import CottonViewModels
 
 /// Only UIKit wrapper which needs less amout of parameters than full SwiftUI view

@@ -6,7 +6,6 @@
 //  Copyright © 2022 Cotton/Catowser Andrei Ermoshin. All rights reserved.
 //
 
-import CottonData
 import CottonPlugins
 import CottonBase
 import FeatureFlagsKit

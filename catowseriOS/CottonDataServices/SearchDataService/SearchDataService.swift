@@ -8,7 +8,6 @@
 
 import Combine
 import CoreBrowser
-import CottonData
 import DataServiceKit
 
 /// An interface for a factory to be able to mock it for the unit tests

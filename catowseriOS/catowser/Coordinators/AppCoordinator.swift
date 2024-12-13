@@ -11,7 +11,6 @@ import CoreBrowser
 import CottonBase
 import FeatureFlagsKit
 import CottonPlugins
-import CottonData
 import CottonViewModels
 import CottonDataServices
 
