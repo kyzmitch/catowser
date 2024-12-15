@@ -15,7 +15,10 @@ import Combine
 #endif
 import CottonBase
 
-final class AlamofireHTTPAdaptee<R: ResponseType, S: ServerDescription>: HTTPAdapter {
+final class AlamofireHTTPAdaptee<
+    R: ResponseType,
+    S: ServerDescription
+>: HTTPAdapter {
     typealias Response = R
     typealias Server = S
 
@@ -77,8 +80,10 @@ final class AlamofireHTTPAdaptee<R: ResponseType, S: ServerDescription>: HTTPAda
         }
     }
 
-    func transferToCombineState(_ promise: @escaping Future<Response, HttpError>.Promise,
-                                _ endpoint: Endpoint<Server>) {
+    func transferToCombineState(
+        _ promise: @escaping Future<Response, HttpError>.Promise,
+        _ endpoint: Endpoint<Server>
+    ) {
         if case .waitsForCombinePromise = handlerType {
             let promiseWrapper: CombinePromiseWrapper<Response, Server> = .init(promise, endpoint)
             handlerType = .combine(promiseWrapper)

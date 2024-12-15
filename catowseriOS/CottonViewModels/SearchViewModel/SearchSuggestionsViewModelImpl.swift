@@ -15,9 +15,9 @@ import AutoMockable
 
 /// This is only needed now to not have a direct dependency on FutureManager
 public protocol SearchViewContext: AutoMockable, Sendable {
-    var appAsyncApiTypeValue: FeatureFlagsKit.AsyncApiType { get async }
-    var webAutocompletionSourceValue: CoreBrowser.WebAutoCompletionSource { get async }
-    var knownDomainsStorage: CoreBrowser.KnownDomainsSource { get }
+    var appAsyncApiTypeValue: AsyncApiType { get async }
+    var webAutocompletionSourceValue: WebAutoCompletionSource { get async }
+    var knownDomainsStorage: KnownDomainsSource { get }
 }
 
 public final class SearchSuggestionsViewModelImpl: SearchSuggestionsViewModel {

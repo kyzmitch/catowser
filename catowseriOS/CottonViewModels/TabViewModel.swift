@@ -1,58 +1,78 @@
 //
 //  TabViewModel.swift
-//  catowser
+//  CottonViewModels
 //
 //  Created by Andrei Ermoshin on 7/22/23.
 //  Copyright © 2023 Cotton/Catowser Andrei Ermoshin. All rights reserved.
 //
 
 import Foundation
+import Combine
 import CottonBase
 import CoreBrowser
 import FeatureFlagsKit
 import CottonUseCases
 import CottonDataServices
 
-@MainActor
-final class TabViewModel {
+/// Tab view model context to abstract out some app dependencies
+public protocol TabViewModelContext: AnyObject, Sendable {
+    /// Observing API method
+    var observingApiTypeValue: ObservingApiType { get async }
+    /// Remove a view for a site
+    @MainActor @discardableResult func removeController(for site: Site) -> Bool
+    /// Dns over HTTPs enabled or nah
+    func isDohEnabled() async -> Bool
+    /// Provides only local cached URL for favicon, nil if ipAddress is nil.
+    func faviconURL(
+        _ site: Site,
+        _ resolve: Bool
+    ) async throws -> URL
+    /// Reference to the tabs subject observartion
+    @available(iOS 17.0, *)
+    var tabsSubject: TabsDataSubject { get async }
+}
+
+/// Tab view model
+@MainActor public final class TabViewModel {
     private var tab: CoreBrowser.Tab
     private let readTabUseCase: ReadTabsUseCase
     private let writeTabUseCase: WriteTabsUseCase
+    private let context: TabViewModelContext
     private let featureManager: FeatureManager.StateHolder
-    private let uiServiceRegistry: UIServiceRegistry
 
-    @Published var state: TabViewState
+    @Published public var state: TabViewState
 
-    init(_ tab: CoreBrowser.Tab,
-         _ readTabUseCase: ReadTabsUseCase,
-         _ writeTabUseCase: WriteTabsUseCase,
-         _ featureManager: FeatureManager.StateHolder,
-         _ uiServiceRegistry: UIServiceRegistry
+    init(
+        _ tab: CoreBrowser.Tab,
+        _ readTabUseCase: ReadTabsUseCase,
+        _ writeTabUseCase: WriteTabsUseCase,
+        _ context: TabViewModelContext,
+        _ featureManager: FeatureManager.StateHolder
     ) {
         self.tab = tab
         self.readTabUseCase = readTabUseCase
         self.writeTabUseCase = writeTabUseCase
+        self.context = context
         self.featureManager = featureManager
-        self.uiServiceRegistry = uiServiceRegistry
         _state = .init(initialValue: .deSelected(tab.title, nil))
         
         Task {
-            let observingType = await featureManager.observingApiTypeValue()
+            let observingType = await context.observingApiTypeValue
             if #available(iOS 17.0, *), observingType.isSystemObservation {
-                startTabsObservation()
+                startTabsObservation(await context.tabsSubject)
             }
         }
     }
 
     // MARK: - public functions
 
-    func load() {
+    public func load() {
         Task {
             let selectedTabId = await readTabUseCase.selectedId
             let visualState = tab.getVisualState(selectedTabId)
             let favicon: ImageSource?
             if let site = tab.site {
-                favicon = await TabViewModel.loadFavicon(site)
+                favicon = await loadFavicon(site)
             } else {
                 favicon = nil
             }
@@ -67,9 +87,9 @@ final class TabViewModel {
         }
     }
 
-    func close() {
+    public func close() {
         if let site = tab.site {
-            WebViewsReuseManager.shared.removeController(for: site)
+            context.removeController(for: site)
         }
         Task {
             do {
@@ -80,7 +100,7 @@ final class TabViewModel {
         }
     }
 
-    func activate() {
+    public func activate() {
         print("\(#function): selected tab with id: \(tab.id)")
         Task {
             do {
@@ -94,14 +114,14 @@ final class TabViewModel {
     // MARK: - private
 
     /// Loading of favicon doesn't depend on `self`
-    private static func loadFavicon(_ site: Site) async -> ImageSource? {
+    private func loadFavicon(_ site: Site) async -> ImageSource? {
         if let hqImage = site.favicon() {
             return .image(hqImage)
         }
-        let resolveNeeded = await FeatureManager.shared.boolValue(of: .dnsOverHTTPSAvailable)
+        let resolveNeeded = await context.isDohEnabled()
         let url: URL?
         do {
-            url = try await site.faviconURL(resolveNeeded)
+            url = try await context.faviconURL(site, resolveNeeded)
         } catch {
             print("Fail to resolve favicon url: \(error)")
             url = nil
@@ -123,51 +143,49 @@ final class TabViewModel {
     
     @available(iOS 17.0, *)
     @MainActor
-    func startTabsObservation() {
+    func startTabsObservation(_ tabsSubject: TabsDataSubject) {
         withObservationTracking {
-            _ = uiServiceRegistry.tabsSubject.selectedTabId
+            _ = tabsSubject.selectedTabId
         } onChange: {
             Task { [weak self] in
-                await self?.handleSelectedTabChange()
+                await self?.handleSelectedTabChange(tabsSubject)
             }
         }
         withObservationTracking {
-            _ = uiServiceRegistry.tabsSubject.replacedTabIndex
+            _ = tabsSubject.replacedTabIndex
         } onChange: {
             Task { [weak self] in
-                await self?.observeReplacedTab()
+                await self?.observeReplacedTab(tabsSubject)
             }
         }
     }
     
     @available(iOS 17.0, *)
     @MainActor
-    func handleSelectedTabChange() async {
-        let subject = uiServiceRegistry.tabsSubject
-        let tabId = subject.selectedTabId
-        guard let index = subject.tabs
+    func handleSelectedTabChange(_ tabsSubject: TabsDataSubject) async {
+        let tabId = tabsSubject.selectedTabId
+        guard let index = tabsSubject.tabs
             .firstIndex(where: { $0.id == tabId }) else {
             return
         }
-        await tabDidSelect(index, subject.tabs[index].contentType, tabId)
+        await tabDidSelect(index, tabsSubject.tabs[index].contentType, tabId)
 
     }
     
     @available(iOS 17.0, *)
     @MainActor
-    private func observeReplacedTab() async {
-        let subject = uiServiceRegistry.tabsSubject
-        guard let index = subject.replacedTabIndex else {
+    private func observeReplacedTab(_ tabsSubject: TabsDataSubject) async {
+        guard let index = tabsSubject.replacedTabIndex else {
             return
         }
-        await tabDidReplace(subject.tabs[index], at: index)
+        await tabDidReplace(tabsSubject.tabs[index], at: index)
     }
 }
 
 // MARK: - TabsObserver
 
 extension TabViewModel: TabsObserver {
-    func tabDidSelect(
+    public func tabDidSelect(
         _ index: Int,
         _ content: CoreBrowser.Tab.ContentType,
         _ identifier: UUID
@@ -184,7 +202,7 @@ extension TabViewModel: TabsObserver {
         }
     }
 
-    func tabDidReplace(
+    public func tabDidReplace(
         _ tab: CoreBrowser.Tab,
         at index: Int
     ) async {
@@ -194,7 +212,7 @@ extension TabViewModel: TabsObserver {
         self.tab = tab
         let favicon: ImageSource?
         if let site = tab.site {
-            favicon = await TabViewModel.loadFavicon(site)
+            favicon = await loadFavicon(site)
         } else {
             favicon = nil
         }

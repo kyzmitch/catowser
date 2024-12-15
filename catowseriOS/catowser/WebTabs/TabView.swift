@@ -17,6 +17,7 @@ import Combine
 #endif
 import CottonNetworking
 import CottonDataServices
+import CottonViewModels
 
 @MainActor protocol TabDelegate: AnyObject {
     func tabViewDidClose(_ tabView: TabView) async

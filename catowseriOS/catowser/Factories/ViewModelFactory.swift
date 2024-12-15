@@ -58,22 +58,28 @@ import FeatureFlagsKit
         )
     }
 
-    func tabViewModel(_ tab: CoreBrowser.Tab) async -> TabViewModel {
+    func tabViewModel(
+        _ tab: CoreBrowser.Tab,
+        _ context: TabViewModelContext
+    ) async -> TabViewModel {
         async let readUseCase = useCaseRegistry.findUseCase(ReadTabsUseCase.self)
         async let writeUseCase = useCaseRegistry.findUseCase(WriteTabsUseCase.self)
         return await TabViewModel(
             tab,
             readUseCase,
             writeUseCase,
+            context,
             FeatureManager.shared,
             UIServiceRegistry.shared()
         )
     }
 
-    func tabsPreviewsViewModel() async -> TabsPreviewsViewModel {
+    func tabsPreviewsViewModel(
+        _ context: TabPreviewsContext
+    ) async -> TabsPreviewsViewModel {
         async let readUseCase = useCaseRegistry.findUseCase(ReadTabsUseCase.self)
         async let writeUseCase = useCaseRegistry.findUseCase(WriteTabsUseCase.self)
-        return await TabsPreviewsViewModel(readUseCase, writeUseCase, DefaultTabProvider.shared)
+        return await TabsPreviewsViewModel(readUseCase, writeUseCase, context)
     }
 
     func allTabsViewModel() async -> AllTabsViewModel {

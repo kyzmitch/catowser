@@ -9,6 +9,7 @@
 import UIKit
 import CottonBase
 import FeatureFlagsKit
+import CottonViewModels
 
 @MainActor protocol FaviconImageViewable: AnyObject {
     var faviconImageView: UIImageView { get }

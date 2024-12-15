@@ -16,9 +16,11 @@ import Combine
 #endif
 import CottonBase
 
-final class AlamofireHTTPRxAdaptee<R,
-                                   S,
-                                   RX: RxInterface>: HTTPRxAdapter where
+final class AlamofireHTTPRxAdaptee<
+    R,
+    S,
+    RX: RxInterface
+>: HTTPRxAdapter where
     RX.Observer.Response == R, RX.Server == S {
     typealias Response = R
     typealias Server = S
@@ -59,7 +61,10 @@ final class AlamofireHTTPRxAdaptee<R,
         return closure
     }
 
-    func performRequest(_ request: URLRequest, sucessCodes: [Int]) {
+    func performRequest(
+        _ request: URLRequest,
+        sucessCodes: [Int]
+    ) {
         let dataRequest: DataRequest = AF.request(request)
         dataRequest
             .validate(statusCode: sucessCodes)
@@ -84,13 +89,15 @@ final class AlamofireHTTPRxAdaptee<R,
             observerWrapper.lifetime.newObserveEnded({
                 dataRequest.cancel()
             })
-        } else if case .combine = handlerType {
-            // https://github.com/kyzmitch/Cotton/issues/14
+        } else if case let .combine(publisherWrapper) = handlerType {
+            // publisherWrapper.
         }
     }
 
-    func transferToCombineState(_ promise: @escaping Future<Response, HttpError>.Promise,
-                                _ endpoint: Endpoint<Server>) {
+    func transferToCombineState(
+        _ promise: @escaping Future<Response, HttpError>.Promise,
+        _ endpoint: Endpoint<Server>
+    ) {
         if case .waitsForCombinePromise = handlerType {
             let promiseWrapper: CombinePromiseWrapper<Response, Server> = .init(promise, endpoint)
             handlerType = .combine(promiseWrapper)
@@ -114,7 +121,10 @@ extension JSONEncoding: @unchecked Sendable {}
 extension JSONEncoding: @retroactive AutoMockable {}
 /// Can be retroactivly conforming to JSONRequestEncodable because Alamofire devs won't know that protocol for sure.
 extension JSONEncoding: @retroactive JSONRequestEncodable {
-    public func encodeRequest(_ urlRequest: URLRequestCreatable, with parameters: [String: Any]?) throws -> URLRequest {
+    public func encodeRequest(
+        _ urlRequest: URLRequestCreatable,
+        with parameters: [String: Any]?
+    ) throws -> URLRequest {
         return try encode(urlRequest.convertToURLRequest(), with: parameters)
     }
 }

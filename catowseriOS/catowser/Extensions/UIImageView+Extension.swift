@@ -8,12 +8,7 @@
 
 import AlamofireImage
 import UIKit
-
-enum ImageSource {
-    case url(URL)
-    case image(UIImage)
-    case urlWithPlaceholder(URL, UIImage)
-}
+import CottonViewModels
 
 extension UIImageView {
     func updateImage(from source: ImageSource, calculateAverageColor: Bool = true) {
@@ -27,6 +22,8 @@ extension UIImageView {
             loadImageFrom(url: imageURL, calculateAverageColor: calculateAverageColor)
         case .urlWithPlaceholder(let imageURL, let cachedImage):
             loadImageFrom(url: imageURL, cachedImage: cachedImage, calculateAverageColor: calculateAverageColor)
+        @unknown default:
+            fatalError("Unhandled image source case")
         }
     }
 

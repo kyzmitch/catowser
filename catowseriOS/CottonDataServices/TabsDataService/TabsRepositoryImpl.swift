@@ -9,7 +9,6 @@
 import Foundation
 import CoreBrowser
 import CoreData
-import CottonDataServices
 
 /**
  Declaring CoreBrowser.Tab storage type in host app instead of `CoreBrowser` framework,
@@ -20,10 +19,8 @@ import CottonDataServices
 final class TabsRepositoryImpl {
     private let tabsDbResource: TabsResource
 
-    init(_ temporaryContext: NSManagedObjectContext,
-         _ privateContextCreator: @escaping @Sendable () -> NSManagedObjectContext?) {
-        tabsDbResource = .init(temporaryContext: temporaryContext,
-                               privateContextCreator: privateContextCreator)
+    init(_ tabsDbResource: TabsResource) {
+        self.tabsDbResource = tabsDbResource
     }
 }
 

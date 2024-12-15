@@ -14,7 +14,10 @@ import Combine
 #endif
 import CottonBase
 
-final class AlamofireHTTPRxVoidAdaptee<S, RX: RxVoidInterface>: HTTPRxVoidAdapter where RX.Server == S {
+final class AlamofireHTTPRxVoidAdaptee<
+    S,
+    RX: RxVoidInterface
+>: HTTPRxVoidAdapter where RX.Server == S {
     typealias Server = S
     typealias ObserverWrapper = RX
 
@@ -54,7 +57,10 @@ final class AlamofireHTTPRxVoidAdaptee<S, RX: RxVoidInterface>: HTTPRxVoidAdapte
         return closure
     }
 
-    func performVoidRequest(_ request: URLRequest, sucessCodes: [Int]) {
+    func performVoidRequest(
+        _ request: URLRequest,
+        sucessCodes: [Int]
+    ) {
         let dataRequest: DataRequest = AF.request(request)
         dataRequest
             .validate(statusCode: sucessCodes)
@@ -73,13 +79,15 @@ final class AlamofireHTTPRxVoidAdaptee<S, RX: RxVoidInterface>: HTTPRxVoidAdapte
             observerWrapper.lifetime.newObserveEnded({
                 dataRequest.cancel()
             })
-        } else if case .combine = handlerType {
-            // https://github.com/kyzmitch/Cotton/issues/14
+        } else if case let .combine(publisherWrapper) = handlerType {
+            // publisherWrapper.
         }
     }
 
-    func transferToCombineState(_ promise: @escaping Future<Void, HttpError>.Promise,
-                                _ endpoint: Endpoint<Server>) {
+    func transferToCombineState(
+        _ promise: @escaping Future<Void, HttpError>.Promise,
+        _ endpoint: Endpoint<Server>
+    ) {
         if case .waitsForCombinePromise = handlerType {
             let promiseWrapper: CombinePromiseVoidWrapper<Server> = .init(promise, endpoint)
             handlerType = .combine(promiseWrapper)

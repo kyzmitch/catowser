@@ -9,6 +9,7 @@
 import UIKit
 import CoreBrowser
 import FeatureFlagsKit
+import CottonViewModels
 
 final class PhoneTabsCoordinator: Coordinator {
     let vcFactory: any ViewControllerFactory
@@ -16,7 +17,7 @@ final class PhoneTabsCoordinator: Coordinator {
     weak var parent: CoordinatorOwner?
     var startedVC: AnyViewController?
     weak var presenterVC: AnyViewController?
-    private let vm: TabsPreviewsViewModel
+    private let viewModel: TabsPreviewsViewModel
     var navigationStack: UINavigationController?
 
     let uiFramework: UIFrameworkType
@@ -29,11 +30,11 @@ final class PhoneTabsCoordinator: Coordinator {
         self.vcFactory = vcFactory
         self.presenterVC = presenter
         self.uiFramework = uiFramework
-        self.vm = viewModel
+        self.viewModel = viewModel
     }
 
     func start() {
-        guard let vc = vcFactory.tabsPreviewsViewController(self, vm) else {
+        guard let vc = vcFactory.tabsPreviewsViewController(self, viewModel) else {
             assertionFailure("Tabs previews screen is only for Phone layout")
             return
         }
