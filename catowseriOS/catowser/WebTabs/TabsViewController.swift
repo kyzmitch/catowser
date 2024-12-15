@@ -25,7 +25,7 @@ final class TabsViewController: BaseViewController {
     private let viewModel: AllTabsViewModel
     private let featureManager: FeatureManager.StateHolder
     private let uiServiceRegistry: UIServiceRegistry
-    private let context = TabViewModelContextImpl()
+    private let context = TabViewContextImpl()
 
     init(
         _ viewModel: AllTabsViewModel,

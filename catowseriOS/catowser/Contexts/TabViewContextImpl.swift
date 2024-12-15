@@ -11,7 +11,7 @@ import CottonDataServices
 import CottonViewModels
 import FeatureFlagsKit
 
-final class TabViewModelContextImpl: TabViewModelContext {
+final class TabViewContextImpl: TabViewModelContext {
     var observingApiTypeValue: ObservingApiType {
         get async {
             await FeatureManager.shared.observingApiTypeValue()
@@ -22,8 +22,10 @@ final class TabViewModelContextImpl: TabViewModelContext {
         WebViewsReuseManager.shared.removeController(for: site)
     }
     
-    func isDohEnabled() async -> Bool {
-        await FeatureManager.shared.boolValue(of: .dnsOverHTTPSAvailable)
+    var isDohEnabled: Bool {
+        get async {
+            await FeatureManager.shared.boolValue(of: .dnsOverHTTPSAvailable)
+        }
     }
     
     func faviconURL(

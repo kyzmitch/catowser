@@ -49,7 +49,7 @@ final class MockedWebViewContext: WebViewContext {
         return enableJS
     }
 
-    public func isDohEnabled() async -> Bool {
+    public var isDohEnabled: Bool {
         return enableDoH
     }
 

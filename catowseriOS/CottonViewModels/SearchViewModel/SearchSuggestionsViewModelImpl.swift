@@ -13,13 +13,6 @@ import CoreBrowser
 import CottonUseCases
 import AutoMockable
 
-/// This is only needed now to not have a direct dependency on FutureManager
-public protocol SearchViewContext: AutoMockable, Sendable {
-    var appAsyncApiTypeValue: AsyncApiType { get async }
-    var webAutocompletionSourceValue: WebAutoCompletionSource { get async }
-    var knownDomainsStorage: KnownDomainsSource { get }
-}
-
 public final class SearchSuggestionsViewModelImpl: SearchSuggestionsViewModel {
     /// Autocomplete client, probably need to depend on all possible use case (google, duckduckgo, etc.)
     private let autocompleteUseCase: AutocompleteSearchUseCase

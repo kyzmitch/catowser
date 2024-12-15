@@ -12,13 +12,6 @@ import CottonBase
 import CoreBrowser
 import CottonUseCases
 
-/// A tab previews view model context interface
-/// to be able to abstract out application stuff.
-public protocol TabPreviewsContext: AnyObject, Sendable {
-    var contentState: Tab.ContentType { get async }
-    @MainActor @discardableResult func removeController(for site: Site) -> Bool
-}
-
 /// A typealias for a Box with the tabs
 public typealias TabsBox = Box<[CoreBrowser.Tab]>
 

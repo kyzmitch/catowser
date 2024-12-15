@@ -31,8 +31,10 @@ final class WebViewContextImpl: WebViewContext {
         await FeatureManager.shared.boolValue(of: .javaScriptEnabled)
     }
 
-    func isDohEnabled() async -> Bool {
-        await FeatureManager.shared.boolValue(of: .dnsOverHTTPSAvailable)
+    var isDohEnabled: Bool {
+        get async {
+            await FeatureManager.shared.boolValue(of: .dnsOverHTTPSAvailable)
+        }
     }
 
     func allowNativeAppRedirects() async -> Bool {

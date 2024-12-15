@@ -300,7 +300,7 @@ private extension WebViewModelImpl {
                                   canInject: canInject)
             await updateState(try state.transition(on: .fetchDoHStatus))
         case .pendingDoHStatus:
-            let enabled = await context.isDohEnabled()
+            let enabled = await context.isDohEnabled
             await updateState(try state.transition(on: .resolveDomainName(enabled)))
         case .checkingDNResolveSupport(let urlData, _):
             let dohWillWork = urlData.host().isDoHSupported
@@ -313,7 +313,7 @@ private extension WebViewModelImpl {
             await updateState(try state.transition(on: .loadWebView))
         case .updatingWebView(_, let urlInfo):
             /// Not storing DoH state in vm state, can fetch it from context
-            let useIPaddress = await context.isDohEnabled()
+            let useIPaddress = await context.isDohEnabled
             updateLoadingState(.load(urlInfo.urlRequest(useIPaddress)))
         case .waitingForNavigation:
             break
@@ -333,7 +333,7 @@ private extension WebViewModelImpl {
             updateLoadingState(.recreateView(true))
             updateLoadingState(.reattachViewObservers)
             // Not storing DoH state in vm state, can fetch it from context
-            let useIPaddress = await context.isDohEnabled()
+            let useIPaddress = await context.isDohEnabled
             updateLoadingState(.load(urlInfo.urlRequest(useIPaddress)))
         }
     }

@@ -14,24 +14,6 @@ import FeatureFlagsKit
 import CottonUseCases
 import CottonDataServices
 
-/// Tab view model context to abstract out some app dependencies
-public protocol TabViewModelContext: AnyObject, Sendable {
-    /// Observing API method
-    var observingApiTypeValue: ObservingApiType { get async }
-    /// Remove a view for a site
-    @MainActor @discardableResult func removeController(for site: Site) -> Bool
-    /// Dns over HTTPs enabled or nah
-    func isDohEnabled() async -> Bool
-    /// Provides only local cached URL for favicon, nil if ipAddress is nil.
-    func faviconURL(
-        _ site: Site,
-        _ resolve: Bool
-    ) async throws -> URL
-    /// Reference to the tabs subject observartion
-    @available(iOS 17.0, *)
-    var tabsSubject: TabsDataSubject { get async }
-}
-
 /// Tab view model
 @MainActor public final class TabViewModel {
     private var tab: CoreBrowser.Tab
@@ -118,7 +100,7 @@ public protocol TabViewModelContext: AnyObject, Sendable {
         if let hqImage = site.favicon() {
             return .image(hqImage)
         }
-        let resolveNeeded = await context.isDohEnabled()
+        let resolveNeeded = await context.isDohEnabled
         let url: URL?
         do {
             url = try await context.faviconURL(site, resolveNeeded)

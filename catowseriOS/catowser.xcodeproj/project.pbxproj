@@ -161,7 +161,7 @@
 		7586A39E2D0C158C00D981B6 /* SWXMLHash in Frameworks */ = {isa = PBXBuildFile; productRef = 7586A39D2D0C158C00D981B6 /* SWXMLHash */; };
 		7586A39F2D0C159100D981B6 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A7B1BF628EB2C7F004FC135 /* WebKit.framework */; };
 		7586A4452D0EA9FA00D981B6 /* TabPreviewsContextImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7586A4442D0EA9F600D981B6 /* TabPreviewsContextImpl.swift */; };
-		7586A44A2D0EB4B500D981B6 /* TabViewModelContextImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7586A4492D0EB4B300D981B6 /* TabViewModelContextImpl.swift */; };
+		7586A44A2D0EB4B500D981B6 /* TabViewContextImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7586A4492D0EB4B300D981B6 /* TabViewContextImpl.swift */; };
 		7586A44B2D0EB94700D981B6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 607CC66622A5505F0037E5EC /* UIKit.framework */; platformFilter = ios; };
 		759E3E4D2C863B3D00245B44 /* Atomics in Frameworks */ = {isa = PBXBuildFile; productRef = 759E3E4C2C863B3D00245B44 /* Atomics */; };
 		75D81CF72B0B077200447DC7 /* JSPluginsSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60380EF622A15504007F06FB /* JSPluginsSource.swift */; };
@@ -905,7 +905,7 @@
 		7586A1C02D05C06800D981B6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		7586A2F72D06C92F00D981B6 /* DownloadError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadError.swift; sourceTree = "<group>"; };
 		7586A4442D0EA9F600D981B6 /* TabPreviewsContextImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabPreviewsContextImpl.swift; sourceTree = "<group>"; };
-		7586A4492D0EB4B300D981B6 /* TabViewModelContextImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabViewModelContextImpl.swift; sourceTree = "<group>"; };
+		7586A4492D0EB4B300D981B6 /* TabViewContextImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabViewContextImpl.swift; sourceTree = "<group>"; };
 		759AE09529146C96008CE4EE /* Mockfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Mockfile; sourceTree = "<group>"; };
 		75DA4C7A2C9C7F40009AE049 /* UIServiceRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIServiceRegistry.swift; sourceTree = "<group>"; };
 		75EA4E6E29F7055800165A07 /* TitledImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitledImageView.swift; sourceTree = "<group>"; };
@@ -1648,7 +1648,7 @@
 			children = (
 				7586A4442D0EA9F600D981B6 /* TabPreviewsContextImpl.swift */,
 				8AD5E03F2915485200901DA2 /* SearchViewContextImpl.swift */,
-				7586A4492D0EB4B300D981B6 /* TabViewModelContextImpl.swift */,
+				7586A4492D0EB4B300D981B6 /* TabViewContextImpl.swift */,
 				8A7B1BFB28EB2E59004FC135 /* WebViewContextImpl.swift */,
 			);
 			path = Contexts;
@@ -3614,7 +3614,7 @@
 				8AEEBBB929F7B63A00F23A02 /* TappableTextOverlayView.swift in Sources */,
 				8AFDBB0629F93A05006C0E47 /* MenuButton.swift in Sources */,
 				753752842CF5FEDE008D40CF /* AppAssembler.swift in Sources */,
-				7586A44A2D0EB4B500D981B6 /* TabViewModelContextImpl.swift in Sources */,
+				7586A44A2D0EB4B500D981B6 /* TabViewContextImpl.swift in Sources */,
 				8A95D942226E0E5200862E8D /* TagsSiteDataSource.swift in Sources */,
 				8AEEBBB329F7AA9300F23A02 /* ClearCancelPairButton.swift in Sources */,
 				841022BD224785340021516F /* LinksBadgeView.swift in Sources */,
