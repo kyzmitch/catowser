@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Combine
 import CottonBase
 import CoreBrowser
 import CottonUseCases
@@ -28,7 +29,8 @@ public enum TabsPreviewState {
     /// Actual collection for tabs, at least one tab always will be in it
     case tabs(dataSource: TabsBox, selectedId: UUID?)
 
-    var itemsNumber: Int {
+    /// Number of items for each state
+    public var itemsNumber: Int {
         switch self {
         case .loading:
             return 0
@@ -40,7 +42,7 @@ public enum TabsPreviewState {
 
 /// Tab previews view model
 @MainActor final public class TabsPreviewsViewModel {
-    @Published var uxState: TabsPreviewState = .loading
+    @Published public var uxState: TabsPreviewState = .loading
     private let readTabUseCase: ReadTabsUseCase
     private let writeTabUseCase: WriteTabsUseCase
     private let context: TabPreviewsContext

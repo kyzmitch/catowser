@@ -114,7 +114,13 @@ extension String {
                 }
                 return dbInterface.newPrivateContext()
             }
-            let cacheProvider = TabsRepositoryImpl(database.viewContext, contextClosure)
+            let tabsResource = TabsResourceImpl(
+                temporaryContext: database.viewContext,
+                privateContextCreator: contextClosure
+            )
+            let cacheProvider = TabsRepositoryFactory.create(
+                dbResource: tabsResource
+            )
             let strategy = NearbySelectionStrategy()
             let tabsDataService = await TabsDataServiceFactory.create(
                 cacheProvider,

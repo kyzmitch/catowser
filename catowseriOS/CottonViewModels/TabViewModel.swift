@@ -42,7 +42,7 @@ public protocol TabViewModelContext: AnyObject, Sendable {
 
     @Published public var state: TabViewState
 
-    init(
+    public init(
         _ tab: CoreBrowser.Tab,
         _ readTabUseCase: ReadTabsUseCase,
         _ writeTabUseCase: WriteTabsUseCase,

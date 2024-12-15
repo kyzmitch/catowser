@@ -10,12 +10,7 @@ import Foundation
 import CoreBrowser
 import CoreData
 
-/**
- Declaring CoreBrowser.Tab storage type in host app instead of `CoreBrowser` framework,
- to allow use app settings like default tab content which only can be stored in host app.
- 
- Later need to add tabs rest/firebase client dependency to use it as a 2nd (remote) data source.
- */
+/// Tabs repository implementation
 final class TabsRepositoryImpl {
     private let tabsDbResource: TabsResource
 

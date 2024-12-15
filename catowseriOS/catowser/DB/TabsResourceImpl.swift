@@ -23,7 +23,11 @@ final class TabsResourceImpl: TabsResource, @unchecked Sendable {
     /// functions can return empty data if it's not initialized state
     private var isStoreInitialized = false
 
-    private let queue: DispatchQueue = .init(label: .queueNameWith(suffix: .threadName))
+    private let queue: DispatchQueue = .init(
+        label: .queueNameWith(
+            suffix: .threadName
+        )
+    )
 
     /// Creates an instance of TabsResource which is a wrapper around CoreData Store class
     ///

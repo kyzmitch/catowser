@@ -11,13 +11,15 @@ import CoreBrowser
 import Combine
 import FeatureFlagsKit
 import CottonDataServices
+import CottonViewModels
 
-final class TabsPreviewsViewController<C: Navigating>: BaseViewController,
-                                                       CollectionViewInterface,
-                                                       UICollectionViewDelegateFlowLayout,
-                                                       UICollectionViewDataSource,
-                                                       UICollectionViewDelegate
-where C.R == TabsScreenRoute {
+final class TabsPreviewsViewController<
+    C: Navigating
+>: BaseViewController,
+   CollectionViewInterface,
+   UICollectionViewDelegateFlowLayout,
+   UICollectionViewDataSource,
+   UICollectionViewDelegate where C.R == TabsScreenRoute {
 
     private weak var coordinator: C?
 

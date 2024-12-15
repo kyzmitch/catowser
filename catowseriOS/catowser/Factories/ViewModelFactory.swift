@@ -69,8 +69,7 @@ import FeatureFlagsKit
             readUseCase,
             writeUseCase,
             context,
-            FeatureManager.shared,
-            UIServiceRegistry.shared()
+            FeatureManager.shared
         )
     }
 
