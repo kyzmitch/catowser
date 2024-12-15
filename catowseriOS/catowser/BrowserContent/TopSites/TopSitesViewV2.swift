@@ -9,6 +9,7 @@
 import SwiftUI
 import CottonBase
 import CoreBrowser
+import CottonViewModels
 
 @available(iOS 14.0, *)
 struct TopSitesViewV2: View {

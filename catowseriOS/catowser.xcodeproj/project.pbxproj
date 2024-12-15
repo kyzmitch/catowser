@@ -270,7 +270,6 @@
 		8A81C6FC2945C8050075BEF9 /* ToolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A81C6FB2945C8050075BEF9 /* ToolbarView.swift */; };
 		8A825947294E2E1A007B97CF /* TopSitesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A825946294E2E1A007B97CF /* TopSitesView.swift */; };
 		8A82594A294E40F5007B97CF /* BrowserContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A825949294E40F5007B97CF /* BrowserContentViewModel.swift */; };
-		8A82594D294E47F9007B97CF /* TopSitesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A82594C294E47F9007B97CF /* TopSitesViewModel.swift */; };
 		8A82CDF02351095700607162 /* RestClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A82CDEF2351095700607162 /* RestClient.swift */; };
 		8A89E22B29F4FA5D00FE5543 /* SearchBarState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A89E22A29F4FA5D00FE5543 /* SearchBarState.swift */; };
 		8A8EB007245EA1BA0028D35C /* WebViewAuthChallengeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8EB006245EA1B90028D35C /* WebViewAuthChallengeHandler.swift */; };
@@ -1009,7 +1008,6 @@
 		8A81C6FB2945C8050075BEF9 /* ToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarView.swift; sourceTree = "<group>"; };
 		8A825946294E2E1A007B97CF /* TopSitesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopSitesView.swift; sourceTree = "<group>"; };
 		8A825949294E40F5007B97CF /* BrowserContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserContentViewModel.swift; sourceTree = "<group>"; };
-		8A82594C294E47F9007B97CF /* TopSitesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopSitesViewModel.swift; sourceTree = "<group>"; };
 		8A82CDEF2351095700607162 /* RestClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestClient.swift; sourceTree = "<group>"; };
 		8A89E22A29F4FA5D00FE5543 /* SearchBarState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarState.swift; sourceTree = "<group>"; };
 		8A8EB006245EA1B90028D35C /* WebViewAuthChallengeHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewAuthChallengeHandler.swift; sourceTree = "<group>"; };
@@ -1550,7 +1548,6 @@
 				60C2C8CF226DAB1700F5D869 /* TopSitesViewController.swift */,
 				60C2C90422801F3400F5D869 /* SiteCollectionViewCell.swift */,
 				8A825946294E2E1A007B97CF /* TopSitesView.swift */,
-				8A82594C294E47F9007B97CF /* TopSitesViewModel.swift */,
 				8AEFAF7629F5538A00EF430A /* TopSitesLegacyView.swift */,
 				8A10C77429F64A79002A429A /* TopSitesViewV2.swift */,
 				75EA4E6E29F7055800165A07 /* TitledImageView.swift */,
@@ -3584,7 +3581,6 @@
 				6010ECCD21F7529400972E28 /* ThemeProvider.swift in Sources */,
 				8AEFAF7729F5538A00EF430A /* TopSitesLegacyView.swift in Sources */,
 				755E107427BC3E0800D90AD0 /* AppAsyncApiTypeModel.swift in Sources */,
-				8A82594D294E47F9007B97CF /* TopSitesViewModel.swift in Sources */,
 				8ADB51F4292A1A0F00E9F66F /* TopSitesCoordinator.swift in Sources */,
 				75664D6B2C93531C0025BE77 /* Theme.swift in Sources */,
 				8AEEBBB629F7AEA500F23A02 /* SearchFieldView.swift in Sources */,

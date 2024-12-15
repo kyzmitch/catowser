@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import CottonViewModels
 
 struct TopSitesView: View {
     @EnvironmentObject private var vm: TopSitesViewModel

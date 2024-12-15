@@ -105,8 +105,28 @@ public struct TabViewState {
 }
 
 extension UIColor {
-    static let superLightGray = UIColor(displayP3Red: 0.96, green: 0.96, blue: 0.96, alpha: 1.0)
-    static let normallyLightGray = UIColor(displayP3Red: 0.71, green: 0.71, blue: 0.71, alpha: 1.0)
-    static let darkGrayText = UIColor(displayP3Red: 0.32, green: 0.32, blue: 0.32, alpha: 1.0)
-    static let lightGrayText = UIColor(displayP3Red: 0.14, green: 0.14, blue: 0.14, alpha: 1.0)
+    static let superLightGray = UIColor(
+        displayP3Red: 0.96,
+        green: 0.96,
+        blue: 0.96,
+        alpha: 1.0
+    )
+    static let normallyLightGray = UIColor(
+        displayP3Red: 0.71,
+        green: 0.71,
+        blue: 0.71,
+        alpha: 1.0
+    )
+    static let darkGrayText = UIColor(
+        displayP3Red: 0.32,
+        green: 0.32,
+        blue: 0.32,
+        alpha: 1.0
+    )
+    static let lightGrayText = UIColor(
+        displayP3Red: 0.14,
+        green: 0.14,
+        blue: 0.14,
+        alpha: 1.0
+    )
 }
