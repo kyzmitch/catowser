@@ -9,8 +9,9 @@
 import CottonPlugins
 import CottonBase
 import FeatureFlagsKit
+import CottonViewModels
 
-final class MockedWebViewContext: WebViewContext {
+final class MockedWebViewContext: WebViewContext, @unchecked Sendable {
     let pluginsSource: any JSPluginsSource
     private var enableDoH: Bool
     private let enableJS: Bool
@@ -18,11 +19,13 @@ final class MockedWebViewContext: WebViewContext {
     private let asyncApiType: AsyncApiType
     private let appName: String?
 
-    init(doh: Bool,
-         js: Bool,
-         nativeAppRedirect: Bool,
-         asyncApiType: AsyncApiType,
-         appName: String? = nil) {
+    init(
+        doh: Bool,
+        js: Bool,
+        nativeAppRedirect: Bool,
+        asyncApiType: AsyncApiType,
+        appName: String? = nil
+    ) {
         pluginsSource = MockedJSPluginsSource()
         enableDoH = doh
         enableJS = js
@@ -50,6 +53,10 @@ final class MockedWebViewContext: WebViewContext {
     }
 
     public var isDohEnabled: Bool {
+        return enableDoH
+    }
+    
+    func isDohEnabled() async -> Bool {
         return enableDoH
     }
 

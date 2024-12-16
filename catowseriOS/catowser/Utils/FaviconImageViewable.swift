@@ -22,7 +22,7 @@ extension FaviconImageViewable {
         let source: ImageSource
         let url: URL?
         do {
-            url = try await site.faviconURL(useDoH)
+            url = try await site.faviconURL(useDoH, any URLDomainNameResolve)
         } catch {
             print("Fail to resolve favicon url: \(error)")
             url = nil

@@ -15,16 +15,6 @@ fileprivate extension String {
     static let searchSuggestionCellId = "SearchSuggestionCellId"
 }
 
-enum SuggestionType: Equatable {
-    case suggestion(String)
-    case knownDomain(String)
-    case looksLikeURL(String)
-}
-
-@MainActor protocol SearchSuggestionsListDelegate: AnyObject {
-    func searchSuggestionDidSelect(_ content: SuggestionType) async
-}
-
 /// View controller for suggestions view
 /// Looks similar to the one in Safari
 final class SearchSuggestionsViewController: UITableViewController {

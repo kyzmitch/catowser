@@ -28,7 +28,7 @@ final class AppStartInfo: Sendable {
     /// web view model
     let webViewModel: any WebViewModel
     /// Search bar view model
-    let searchBarVM: any SearchBarViewModelProtocol
+    let searchBarVM: any SearchBarViewModel
     /// Java script plugins source
     let jsPluginsBuilder: (any JSPluginsSource)
     /// default tab content
@@ -46,7 +46,7 @@ final class AppStartInfo: Sendable {
         phoneTabPreviewsVM: TabsPreviewsViewModel,
         suggestionsVM: any SearchSuggestionsViewModel,
         webViewModel: any WebViewModel,
-        searchBarVM: any SearchBarViewModelProtocol,
+        searchBarVM: any SearchBarViewModel,
         jsPluginsBuilder: (any JSPluginsSource),
         defaultTabContent: CoreBrowser.Tab.ContentType,
         observingType: ObservingApiType,

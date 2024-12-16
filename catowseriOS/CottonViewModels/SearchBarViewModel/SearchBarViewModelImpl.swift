@@ -7,19 +7,19 @@
 //
 
 import Foundation
-import SwiftUI
+import CottonBase
 import CoreBrowser
 import FeatureFlagsKit
 import CottonNetworking
-import CottonBase
 import Combine
 import CottonUseCases
+import UIKit
 
 /// An analog of existing SearchBar coordinator, but for SwiftUI
 /// and at the same time it implements `SearchSuggestionsListDelegate`
 /// and `UISearchBarDelegate` which couldn't be implemented in SwiftUI view.
 /// This class is only needed for SwiftUI mode when it uses old UKit view controller.
-@MainActor final class SearchBarViewModel: NSObject, ObservableObject {
+@MainActor final class SearchBarViewModelImpl: NSObject, ObservableObject {
     /// Based on values from observed delegates and search bar state it is possible to tell
     /// if search suggestions view can be showed or no.
     @Published var showSearchSuggestionsState: Bool
@@ -32,15 +32,19 @@ import CottonUseCases
     @LeadingTrimmed private var tempSearchText: String
     /// Write tabs use case
     private let writeTabsUseCase: WriteTabsUseCase
-    /// Autocomplete search use case
+    /// Search autocomplete use case
     private let autocompletionUseCase: AutocompleteSearchUseCase
+    /// Context
+    private let context: SearchBarContext
 
     init(
         _ writeTabsUseCase: WriteTabsUseCase,
-        _ autocompletionUseCase: AutocompleteSearchUseCase
+        _ autocompletionUseCase: AutocompleteSearchUseCase,
+        _ context: SearchBarContext
     ) {
         self.writeTabsUseCase = writeTabsUseCase
         self.autocompletionUseCase = autocompletionUseCase
+        self.context = context
         showSearchSuggestionsState = false
         searchQueryState = ""
         tempSearchText = ""
@@ -49,16 +53,15 @@ import CottonUseCases
     }
 }
 
-private extension SearchBarViewModel {
+private extension SearchBarViewModelImpl {
     func replaceTab(
         with url: URL,
         with suggestion: String? = nil,
         _ isJSEnabled: Bool
     ) async {
-        let blockPopups = DefaultTabProvider.shared.blockPopups
         let settings = Site.Settings(
             isPrivate: false,
-            blockPopups: blockPopups,
+            blockPopups: context.blockPopups,
             isJSEnabled: isJSEnabled,
             canLoadPlugins: true
         )
@@ -74,11 +77,11 @@ private extension SearchBarViewModel {
     }
 }
 
-extension SearchBarViewModel: SearchSuggestionsListDelegate {
+extension SearchBarViewModelImpl: SearchSuggestionsListDelegate {
     func searchSuggestionDidSelect(_ content: SuggestionType) async {
         showSearchSuggestionsState = false
 
-        let isJSEnabled = await FeatureManager.shared.boolValue(of: .javaScriptEnabled)
+        let isJSEnabled = await context.isJSEnabled
         switch content {
         case .looksLikeURL(let likeURL):
             guard let url = URL(string: likeURL) else {
@@ -93,8 +96,11 @@ extension SearchBarViewModel: SearchSuggestionsListDelegate {
             }
             await replaceTab(with: url, with: nil, isJSEnabled)
         case .suggestion(let suggestion):
-            let source = await FeatureManager.shared.webSearchAutoCompleteValue()
-            guard let url = try? await autocompletionUseCase.createSearchURL(source, suggestion) else {
+            let source = await context.webAutocompletionSourceValue
+            guard let url = try? await autocompletionUseCase.createSearchURL(
+                source,
+                suggestion
+            ) else {
                 assertionFailure("Failed construct search engine url from suggestion string")
                 return
             }
@@ -103,7 +109,7 @@ extension SearchBarViewModel: SearchSuggestionsListDelegate {
     }
 }
 
-extension SearchBarViewModel: UISearchBarDelegate {
+extension SearchBarViewModelImpl: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchQuery: String) {
         if searchQuery.isEmpty || searchQuery.looksLikeAURL() {
             showSearchSuggestionsState = false
@@ -165,14 +171,7 @@ extension SearchBarViewModel: UISearchBarDelegate {
     }
 }
 
-@MainActor
-protocol SearchBarViewModelProtocol: ObservableObject, UISearchBarDelegate, SearchSuggestionsListDelegate, Sendable {
-    var showSearchSuggestions: Published<Bool>.Publisher { get }
-    var searchQuery: Published<String>.Publisher { get }
-    var action: Published<SearchBarAction>.Publisher { get }
-}
-
-extension SearchBarViewModel: SearchBarViewModelProtocol {
+extension SearchBarViewModelImpl: SearchBarViewModel {
     var showSearchSuggestions: Published<Bool>.Publisher {
         $showSearchSuggestionsState
     }

@@ -11,7 +11,7 @@ import CoreBrowser
 import FeatureFlagsKit
 import CottonViewModels
 
-struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarViewModelProtocol>: View {
+struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarViewModel>: View {
     // MARK: - view models of subviews
 
     /// Search bar view model
