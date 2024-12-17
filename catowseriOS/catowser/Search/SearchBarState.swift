@@ -10,28 +10,6 @@ import Foundation
 import CoreBrowser
 import CottonBase
 
-enum SearchBarAction: Equatable {
-    /// When search bar is in view mode - this is a request to move it to edit state
-    case startSearch
-    /// When search bar is in edit mode - this is a request to move it back to view mode
-    case cancelTapped
-    /// Update on new tab site content
-    case updateView(_ title: String, _ searchBarContent: String)
-    /// Update to clear state
-    case clearView
-
-    static func create(_ value: CoreBrowser.Tab.ContentType) -> SearchBarAction {
-        switch value {
-        case .blank, .favorites, .topSites, .homepage:
-            return .clearView
-        case .site(let site):
-            return .updateView(site.title, site.searchBarContent)
-        @unknown default:
-            fatalError("Not handled tab state")
-        }
-    }
-}
-
 /// The sate of search bar
 enum SearchBarState: Equatable {
     /// Initial state for a new blank tab.

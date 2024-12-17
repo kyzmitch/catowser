@@ -8,12 +8,18 @@
 
 import UIKit
 import CottonBase
+import CoreBrowser
 import FeatureFlagsKit
+import CottonNetworking
+import CottonViewModels
 
 @MainActor protocol FaviconImageViewable: AnyObject {
     var faviconImageView: UIImageView { get }
 
-    func reloadImageWith(_ site: Site, _ useDoH: Bool) async
+    func reloadImageWith(
+        _ site: Site,
+        _ useDoH: Bool
+    ) async
 }
 
 extension FaviconImageViewable {
@@ -21,7 +27,7 @@ extension FaviconImageViewable {
         let source: ImageSource
         let url: URL?
         do {
-            url = try await site.faviconURL(useDoH)
+            url = try await site.faviconURL(useDoH, GoogleDnsClient.shared)
         } catch {
             print("Fail to resolve favicon url: \(error)")
             url = nil

@@ -9,6 +9,7 @@
 import UIKit
 import CoreBrowser
 import FeatureFlagsKit
+import CottonViewModels
 
 @MainActor
 final class MainToolbarCoordinator: Coordinator {

@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreBrowser
+import CottonViewModels
 
 final class SmartphoneSearchBarViewController: BaseViewController {
 

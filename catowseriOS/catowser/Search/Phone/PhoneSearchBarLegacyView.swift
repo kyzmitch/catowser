@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import CottonViewModels
 
 struct PhoneSearchBarLegacyView: CatowserUIVCRepresentable {
     private weak var searchBarDelegate: UISearchBarDelegate?

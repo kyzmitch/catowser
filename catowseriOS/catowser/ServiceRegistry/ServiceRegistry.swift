@@ -86,7 +86,7 @@ extension String {
         }
         
         func registerDataServices() async {
-            let searchDataService = SearchDataServiceFactory.create(
+            let searchDataService = DataServiceFactory.createSearchService(
                 executionQueue: DispatchQueue.global(),
                 responseQueue: DispatchQueue.main,
                 stratsFactory: StrategyFactory.shared
@@ -114,9 +114,15 @@ extension String {
                 }
                 return dbInterface.newPrivateContext()
             }
-            let cacheProvider = TabsRepositoryImpl(database.viewContext, contextClosure)
+            let tabsResource = TabsResourceImpl(
+                temporaryContext: database.viewContext,
+                privateContextCreator: contextClosure
+            )
+            let cacheProvider = TabsRepositoryFactory.create(
+                dbResource: tabsResource
+            )
             let strategy = NearbySelectionStrategy()
-            let tabsDataService = await TabsDataServiceFactory.create(
+            let tabsDataService = await DataServiceFactory.createTabsService(
                 cacheProvider,
                 DefaultTabProvider.shared,
                 strategy,
@@ -146,8 +152,8 @@ extension RestClient where Server == DuckDuckGoServer {
     }
 }
 
-extension TabsDataServiceFactory {
-    static var shared: any TabsDataServiceProtocol {
+extension ServiceRegistry.StateHolder {
+    var tabsService: any TabsDataServiceProtocol {
         get async {
             await ServiceRegistry.shared.findDataService(
                 (any TabsDataServiceProtocol).self,

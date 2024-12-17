@@ -17,8 +17,7 @@ struct NotSelectedIndex: Error {}
 struct OutOfBoundsIndex: Error {}
 
 /// The class to control memory usage by managing reusage of web views
-@MainActor
-final class WebViewsReuseManager {
+@MainActor final class WebViewsReuseManager {
     /// Web view controllers array, array is used to have ordering and current index
     /// But NSMapTable could be better by using Sites as keys for web views.
     private var views: [AnyViewController & WebViewNavigatable] = []
@@ -106,8 +105,7 @@ final class WebViewsReuseManager {
         return vc
     }
 
-    @discardableResult
-    func removeController(for site: Site) -> Bool {
+    func removeWebView(for site: Site) -> Bool {
         guard let index = searchWebViewIndex(for: site) else { return false }
         views.remove(at: index)
         return true

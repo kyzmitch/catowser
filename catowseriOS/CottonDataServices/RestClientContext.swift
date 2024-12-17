@@ -48,8 +48,11 @@ public protocol RestClientContext: AnyObject, AutoMockable, Sendable {
     /// Alias for a real type, no need to hide it under protocol
     typealias HttpKitSubscriber = Sub<Response, Server>
 
+    /// Rest client with certain server (domain name)
     var client: Client { get }
+    /// Reactive subscriber for any producers
     var rxSubscriber: HttpKitRxSubscriber { get }
+    /// Any other type of subscriber
     var subscriber: HttpKitSubscriber { get }
 
     init(_ client: Client,

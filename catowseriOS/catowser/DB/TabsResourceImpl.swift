@@ -16,14 +16,18 @@ fileprivate extension String {
 }
 
 /// Класс обертка над клиентом базы данных, имеет синхронизацию через DispatchQueue
-final class TabsResource: @unchecked Sendable {
+final class TabsResourceImpl: TabsResource, @unchecked Sendable {
     private var dbClient: TabsDBClient
 
     /// Needs to be checked on every access to `dbClient` to not use wrong context
     /// functions can return empty data if it's not initialized state
     private var isStoreInitialized = false
 
-    private let queue: DispatchQueue = .init(label: .queueNameWith(suffix: .threadName))
+    private let queue: DispatchQueue = .init(
+        label: .queueNameWith(
+            suffix: .threadName
+        )
+    )
 
     /// Creates an instance of TabsResource which is a wrapper around CoreData Store class
     ///
@@ -33,8 +37,10 @@ final class TabsResource: @unchecked Sendable {
     ///   specific thread to keep using it only with this thread.
     ///   - privateContextCreator: We have to call this closure on specific thread and
     ///    use same thread for any other usages of this context.
-    init(temporaryContext: NSManagedObjectContext,
-         privateContextCreator: @escaping @Sendable () -> NSManagedObjectContext?) {
+    init(
+        temporaryContext: NSManagedObjectContext,
+        privateContextCreator: @escaping @Sendable () -> NSManagedObjectContext?
+    ) {
         // Creating temporary instance to be able to use background thread
         // to properly create private CoreData context
         let dummyStore: TabsDBClient = .init(temporaryContext)
@@ -106,7 +112,10 @@ final class TabsResource: @unchecked Sendable {
         return try await dbClient.fetchAllTabs()
     }
 
-    func remember(tab: CoreBrowser.Tab, andSelect select: Bool) async throws -> CoreBrowser.Tab {
+    func remember(
+        tab: CoreBrowser.Tab,
+        andSelect select: Bool
+    ) async throws -> CoreBrowser.Tab {
         guard isStoreInitialized else {
             throw TabResourceError.storeNotInitializedYet
         }

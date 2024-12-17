@@ -8,6 +8,7 @@
 
 import SwiftUI
 import UIKit
+import CottonViewModels
 
 struct TopSitesLegacyView: CatowserUIVCRepresentable {
     @EnvironmentObject private var vm: TopSitesViewModel
@@ -24,5 +25,8 @@ struct TopSitesLegacyView: CatowserUIVCRepresentable {
         return vc.viewController
     }
 
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
+    func updateUIViewController(
+        _ uiViewController: UIViewControllerType,
+        context: Context
+    ) {}
 }

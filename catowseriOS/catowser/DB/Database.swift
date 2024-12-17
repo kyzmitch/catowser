@@ -10,6 +10,10 @@ import Atomics
 import Foundation
 import CoreData
 
+enum DbError: Error {
+    case zombieInstance
+}
+
 /// A Database class, can't be an actor for now because,
 /// private core data managed context must be initialised and used
 /// on the same dispatch queue or thread and not clear how to
@@ -201,7 +205,7 @@ final class Database: Sendable {
 
         let result: Void = try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self else {
-                continuation.resume(with: .failure(CottonError.zombieSelf))
+                continuation.resume(with: .failure(DbError.zombieInstance))
                 return
             }
             persistentContainer.loadPersistentStores { [weak self] (_, error) in

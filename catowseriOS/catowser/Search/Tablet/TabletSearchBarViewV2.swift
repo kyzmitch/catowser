@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import CottonViewModels
 
 struct TabletSearchBarViewV2: View {
     @Binding private var showSearchSuggestions: Bool

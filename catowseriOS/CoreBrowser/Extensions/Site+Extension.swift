@@ -1,23 +1,28 @@
 //
 //  Site+Extension.swift
-//  catowser
+//  CoreBrowser
 //
 //  Created by Andrei Ermoshin on 6/11/19.
 //  Copyright © 2019 Cotton/Catowser Andrei Ermoshin. All rights reserved.
 //
 
-import CoreBrowser
-import FeatureFlagsKit
 import CottonNetworking
 import CottonBase
 import UIKit
 
+/// Abstract interface for the domain name resolver
+public protocol URLDomainNameResolve {
+    func resolvedDomainName(in url: URL) async throws -> URL
+}
+
 /// Client side extension for `CoreBrowser` `Site` type to be able to detect DoH usage
 /// and hide real domain name for favicon http requests.
 extension Site {
-    convenience init?(_ urlString: String,
-                      _ customTitle: String? = nil,
-                      _ settings: Settings) {
+    public convenience init?(
+        _ urlString: String,
+        _ customTitle: String? = nil,
+        _ settings: Settings
+    ) {
         guard let decodedUrl = URL(string: urlString) else {
             return nil
         }
@@ -25,26 +30,37 @@ extension Site {
             return nil
         }
 
-        self.init(urlInfo: urlInfo,
-                  settings: settings,
-                  faviconData: nil,
-                  searchSuggestion: nil,
-                  userSpecifiedTitle: customTitle)
+        self.init(
+            urlInfo: urlInfo,
+            settings: settings,
+            faviconData: nil,
+            searchSuggestion: nil,
+            userSpecifiedTitle: customTitle
+        )
     }
 
-    convenience init?(_ url: URL, _ suggestion: String?, _ settings: Settings) {
+    public convenience init?(
+        _ url: URL,
+        _ suggestion: String?,
+        _ settings: Settings
+    ) {
         guard let urlInfo = URLInfo(url) else {
             return nil
         }
-        self.init(urlInfo: urlInfo,
-                  settings: settings,
-                  faviconData: nil,
-                  searchSuggestion: suggestion,
-                  userSpecifiedTitle: nil)
+        self.init(
+            urlInfo: urlInfo,
+            settings: settings,
+            faviconData: nil,
+            searchSuggestion: suggestion,
+            userSpecifiedTitle: nil
+        )
     }
 
     /// Provides only local cached URL for favicon, nil if ipAddress is nil.
-    func faviconURL(_ resolve: Bool) async throws -> URL {
+    public func faviconURL(
+        _ resolve: Bool,
+        _ domainNameResolver: URLDomainNameResolve
+    ) async throws -> URL {
         guard resolve else {
             // swiftlint:disable:next force_unwrapping
             return URL(string: urlInfo.faviconURLFromDomain)!
@@ -55,16 +71,18 @@ extension Site {
         guard let faviconDomainURL = URL(string: urlInfo.faviconURLFromDomain) else {
             throw CottonError.invalidFaviconUrl
         }
-        return try await GoogleDnsClient.shared.aaResolvedDomainName(in: faviconDomainURL)
+        return try await domainNameResolver.resolvedDomainName(in: faviconDomainURL)
     }
 
-    func withUpdated(_ newSettings: Site.Settings) -> Site {
+    public func withUpdated(_ newSettings: Site.Settings) -> Site {
         // Can't figure out how to pass favicon data again
-        return Site(urlInfo: urlInfo,
-                    settings: newSettings,
-                    faviconData: nil,
-                    searchSuggestion: searchSuggestion,
-                    userSpecifiedTitle: userSpecifiedTitle)
+        return Site(
+            urlInfo: urlInfo,
+            settings: newSettings,
+            faviconData: nil,
+            searchSuggestion: searchSuggestion,
+            userSpecifiedTitle: userSpecifiedTitle
+        )
     }
 }
 

@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import CottonViewModels
 
 struct TabletTabsLegacyView: CatowserUIVCRepresentable {
     typealias UIViewControllerType = UIViewController

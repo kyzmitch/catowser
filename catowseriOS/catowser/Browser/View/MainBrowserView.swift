@@ -40,7 +40,7 @@ struct MainBrowserView<
     C: ContentCoordinatorsInterface,
     W: WebViewModel,
     S: SearchSuggestionsViewModel,
-    SB: SearchBarViewModelProtocol
+    SB: SearchBarViewModel
 >: View {
     /// Store main view model in this main view to not have generic parameter in phone/tablet views
     @StateObject private var viewModel: MainBrowserViewModel<C>
@@ -118,7 +118,10 @@ struct MainBrowserView<
         .environmentObject(searchSuggestionsVM)
         .onAppear {
             Task {
-                await TabsDataServiceFactory.shared.attach(browserContentVM, notify: true)
+                await ServiceRegistry.shared.tabsService.attach(
+                    browserContentVM,
+                    notify: true
+                )
             }
         }
     }

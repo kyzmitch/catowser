@@ -9,6 +9,7 @@
 import UIKit
 import CoreBrowser
 import FeatureFlagsKit
+import CottonViewModels
 
 enum SearchBarConstants {
     static let animationDuration = 0.3

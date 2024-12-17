@@ -37,7 +37,10 @@ import FeatureFlagsKit
     func searchSuggestionsViewModel() async -> any SearchSuggestionsViewModel {
         let vmContext: SearchViewContextImpl = .init()
         let autocompleteUseCase = await useCaseRegistry.findUseCase(AutocompleteSearchUseCase.self)
-        return SearchSuggestionsViewModelImpl(autocompleteUseCase, vmContext)
+        return ModuleVMFactory.createSearchSuggestionsVM(
+            autocompleteUseCase,
+            vmContext
+        )
     }
 
     func getWebViewModel(
@@ -48,7 +51,7 @@ import FeatureFlagsKit
         async let googleDnsUseCase = useCaseRegistry.findUseCase(ResolveDNSUseCase.self)
         async let selectTabUseCase = useCaseRegistry.findUseCase(SelectedTabUseCase.self)
         async let writeUseCase = useCaseRegistry.findUseCase(WriteTabsUseCase.self)
-        return await WebViewModelImpl(
+        return await ModuleVMFactory.createWebViewVM(
             context,
             googleDnsUseCase,
             selectTabUseCase,
@@ -58,22 +61,27 @@ import FeatureFlagsKit
         )
     }
 
-    func tabViewModel(_ tab: CoreBrowser.Tab) async -> TabViewModel {
+    func tabViewModel(
+        _ tab: CoreBrowser.Tab,
+        _ context: TabViewModelContext
+    ) async -> TabViewModel {
         async let readUseCase = useCaseRegistry.findUseCase(ReadTabsUseCase.self)
         async let writeUseCase = useCaseRegistry.findUseCase(WriteTabsUseCase.self)
-        return await TabViewModel(
+        return await ModuleVMFactory.createTabVM(
             tab,
             readUseCase,
             writeUseCase,
-            FeatureManager.shared,
-            UIServiceRegistry.shared()
+            context,
+            FeatureManager.shared
         )
     }
 
-    func tabsPreviewsViewModel() async -> TabsPreviewsViewModel {
+    func tabsPreviewsViewModel(
+        _ context: TabPreviewsContext
+    ) async -> TabsPreviewsViewModel {
         async let readUseCase = useCaseRegistry.findUseCase(ReadTabsUseCase.self)
         async let writeUseCase = useCaseRegistry.findUseCase(WriteTabsUseCase.self)
-        return await TabsPreviewsViewModel(readUseCase, writeUseCase, DefaultTabProvider.shared)
+        return await TabsPreviewsViewModel(readUseCase, writeUseCase, context)
     }
 
     func allTabsViewModel() async -> AllTabsViewModel {
@@ -88,12 +96,15 @@ import FeatureFlagsKit
         return await TopSitesViewModel(sites, writeUseCase)
     }
     
-    func searchBarViewModel() async -> any SearchBarViewModelProtocol {
+    func searchBarViewModel(
+        _ context: SearchBarContext
+    ) async -> any SearchBarViewModel {
         async let writeUseCase = useCaseRegistry.findUseCase(WriteTabsUseCase.self)
         async let autocompleteUseCase = useCaseRegistry.findUseCase(AutocompleteSearchUseCase.self)
-        return await SearchBarViewModel(
+        return await SearchBarViewModelImpl(
             writeUseCase,
-            autocompleteUseCase
+            autocompleteUseCase,
+            context
         )
     }
 }

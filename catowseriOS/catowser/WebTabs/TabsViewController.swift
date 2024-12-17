@@ -11,6 +11,7 @@ import CoreGraphics
 import CoreBrowser
 import FeatureFlagsKit
 import CottonDataServices
+import CottonViewModels
 
 fileprivate extension TabsViewController {
     struct Sizes {
@@ -24,6 +25,7 @@ final class TabsViewController: BaseViewController {
     private let viewModel: AllTabsViewModel
     private let featureManager: FeatureManager.StateHolder
     private let uiServiceRegistry: UIServiceRegistry
+    private let context = TabViewContextImpl()
 
     init(
         _ viewModel: AllTabsViewModel,
@@ -41,7 +43,7 @@ final class TabsViewController: BaseViewController {
                 startTabsObservation()
                 await readTabsState()
             } else {
-                await TabsDataServiceFactory.shared.attach(self, notify: true)
+                await ServiceRegistry.shared.tabsService.attach(self, notify: true)
             }
         }
     }
@@ -142,7 +144,8 @@ private extension TabsViewController {
         print("\(#function): add pressed")
 
         Task {
-            let tab = CoreBrowser.Tab(contentType: await DefaultTabProvider.shared.contentState)
+            let defaultContent = await DefaultTabProvider.shared.contentState
+            let tab = CoreBrowser.Tab(contentType: defaultContent)
             viewModel.addTab(tab)
         }
     }
@@ -321,20 +324,30 @@ extension TabsViewController: TabsObserver {
 
     func initializeObserver(with tabs: [CoreBrowser.Tab]) async {
         for tab in tabs {
-            let vm = await ViewModelFactory.shared.tabViewModel(tab)
+            let vm = await ViewModelFactory.shared.tabViewModel(tab, context)
             viewModels.append(vm)
         }
         for i in (0..<tabs.count) {
-            let tabView = TabView(calculateNextTabFrame(), viewModels[i], self)
+            let tabView = TabView(
+                calculateNextTabFrame(),
+                viewModels[i],
+                self,
+                await ServiceRegistry.shared.tabsService
+            )
             tabsStackView.insertArrangedSubview(tabView, at: i)
         }
         view.layoutIfNeeded()
     }
 
     func tabDidAdd(_ tab: CoreBrowser.Tab, at index: Int) async {
-        let vm = await ViewModelFactory.shared.tabViewModel(tab)
+        let vm = await ViewModelFactory.shared.tabViewModel(tab, context)
         viewModels.insert(vm, at: index)
-        let tabView = TabView(calculateNextTabFrame(), vm, self)
+        let tabView = TabView(
+            calculateNextTabFrame(),
+            vm,
+            self,
+            await ServiceRegistry.shared.tabsService
+        )
         add(tabView, at: index)
     }
 }

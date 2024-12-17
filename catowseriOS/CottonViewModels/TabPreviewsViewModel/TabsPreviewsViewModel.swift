@@ -1,50 +1,35 @@
 //
 //  TabsPreviewsViewModel.swift
-//  catowser
+//  CottonViewModels
 //
 //  Created by Andrey Ermoshin on 21.01.2024.
 //  Copyright © 2024 Cotton (former Catowser). All rights reserved.
 //
 
 import Foundation
+import Combine
+import CottonBase
 import CoreBrowser
 import CottonUseCases
 
-typealias TabsBox = Box<[CoreBrowser.Tab]>
-
-enum TabsPreviewState {
-    /// Maybe it is not needed state, but it is required for scalability when some user will have 100 tabs
-    case loading
-    /// Actual collection for tabs, at least one tab always will be in it
-    case tabs(dataSource: TabsBox, selectedId: UUID?)
-
-    var itemsNumber: Int {
-        switch self {
-        case .loading:
-            return 0
-        case .tabs(let box, _):
-            return box.value.count
-        }
-    }
-}
-
-@MainActor final class TabsPreviewsViewModel {
-    @Published var uxState: TabsPreviewState = .loading
+/// Tab previews view model
+@MainActor final public class TabsPreviewsViewModel {
+    @Published public var uxState: TabsPreviewState = .loading
     private let readTabUseCase: ReadTabsUseCase
     private let writeTabUseCase: WriteTabsUseCase
-    private let tabProvider: DefaultTabProvider.StateHolder
+    private let context: TabPreviewsContext
 
-    init(
+    public init(
         _ readTabUseCase: ReadTabsUseCase,
         _ writeTabUseCase: WriteTabsUseCase,
-        _ tabProvider: DefaultTabProvider.StateHolder
+        _ context: TabPreviewsContext
     ) {
         self.readTabUseCase = readTabUseCase
         self.writeTabUseCase = writeTabUseCase
-        self.tabProvider = tabProvider
+        self.context = context
     }
 
-    func load() {
+    public func load() {
         Task {
             async let tabs = readTabUseCase.allTabs
             async let selectedTabId = readTabUseCase.selectedId
@@ -55,7 +40,7 @@ enum TabsPreviewState {
         }
     }
 
-    func closeTab(at index: Int) {
+    public func closeTab(at index: Int) {
         Task {
             guard case let .tabs(box, _) = uxState else {
                 return
@@ -67,7 +52,7 @@ enum TabsPreviewState {
                 selectedId: nil
             )
             if let site = tab.site {
-                WebViewsReuseManager.shared.removeController(for: site)
+                context.removeWebView(for: site)
             }
             do {
                 guard let newSelectedId = try await writeTabUseCase.close(tab: tab) else {
@@ -84,7 +69,7 @@ enum TabsPreviewState {
         }
     }
     
-    func selectTab(_ tab: CoreBrowser.Tab) {
+    public func selectTab(_ tab: CoreBrowser.Tab) {
         Task {
             do {
                 try await writeTabUseCase.select(tab: tab)
@@ -95,9 +80,9 @@ enum TabsPreviewState {
         }
     }
     
-    func addTab() {
+    public func addTab() {
         Task {
-            let contentState = await tabProvider.contentState
+            let contentState = await context.contentState
             let tab = CoreBrowser.Tab(contentType: contentState)
             do {
                 try await writeTabUseCase.add(tab: tab)

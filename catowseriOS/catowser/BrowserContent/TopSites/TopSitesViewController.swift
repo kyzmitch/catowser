@@ -8,11 +8,13 @@
 
 import UIKit
 import CottonBase
+import CottonViewModels
 
-final class TopSitesViewController<C: Navigating>: BaseViewController,
-                                                   UICollectionViewDataSource,
-                                                   UICollectionViewDelegateFlowLayout
-where C.R == TopSitesRoute {
+final class TopSitesViewController<
+    C: Navigating
+>: BaseViewController,
+   UICollectionViewDataSource,
+   UICollectionViewDelegateFlowLayout where C.R == TopSitesRoute {
 
     @IBOutlet fileprivate weak var collectionView: UICollectionView!
     weak var coordinator: C?

@@ -46,7 +46,7 @@ import CottonUseCases
         /// a reference to data service and also because this
         /// factory should be a singleton as well
         private func registerTabsUseCases() async {
-            let dataService = await TabsDataServiceFactory.shared
+            let dataService = await ServiceRegistry.shared.tabsService
             let readUseCase: ReadTabsUseCase = ReadTabsUseCaseImpl(
                 dataService,
                 DefaultTabProvider.shared

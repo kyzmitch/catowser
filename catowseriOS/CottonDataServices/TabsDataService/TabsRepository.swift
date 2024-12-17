@@ -10,6 +10,16 @@ import CoreBrowser
 import Foundation
 import AutoMockable
 
+/// Tabs repository factory
+public final class TabsRepositoryFactory {
+    /// Hide implementation and create repository instance
+    public static func create(
+        dbResource: TabsResource
+    ) -> TabsRepository {
+        TabsRepositoryImpl(dbResource)
+    }
+}
+
 /// Tabs repository protocol can be sendable, because implementation
 /// doesn't hold any state, only interface to the DB for now
 /// so that, no need any synhronization.

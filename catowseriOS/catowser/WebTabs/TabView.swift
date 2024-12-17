@@ -17,6 +17,7 @@ import Combine
 #endif
 import CottonNetworking
 import CottonDataServices
+import CottonViewModels
 
 @MainActor protocol TabDelegate: AnyObject {
     func tabViewDidClose(_ tabView: TabView) async
@@ -28,6 +29,7 @@ final class TabView: UIView {
     private let viewModel: TabViewModel
     private var stateHandler: AnyCancellable?
     private weak var delegate: TabDelegate?
+    private let tabsSubject: TabsSubject
 
     private lazy var centerBackground: UIView = {
         let centerBackground = UIView()
@@ -78,9 +80,15 @@ final class TabView: UIView {
         fatalError("\(#function): has not been implemented")
     }
 
-    init(_ frame: CGRect, _ viewModel: TabViewModel, _ delegate: TabDelegate) {
+    init(
+        _ frame: CGRect,
+        _ viewModel: TabViewModel,
+        _ delegate: TabDelegate,
+        _ tabsSubject: TabsSubject
+    ) {
         self.viewModel = viewModel
         self.delegate = delegate
+        self.tabsSubject = tabsSubject
         super.init(frame: frame)
         layout()
     }
@@ -89,10 +97,10 @@ final class TabView: UIView {
         super.willMove(toSuperview: newSuperview)
 
         Task {
-            await TabsDataServiceFactory.shared.attach(viewModel, notify: false)
+            await tabsSubject.attach(viewModel, notify: false)
         }
         stateHandler?.cancel()
-        stateHandler = viewModel.$state.sink(receiveValue: onStateChange)
+        stateHandler = viewModel.statePublisher.sink(receiveValue: onStateChange)
         viewModel.load()
     }
 

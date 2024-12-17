@@ -1,20 +1,21 @@
 //
 //  TopSitesViewModel.swift
-//  catowser
+//  CottonViewModels
 //
 //  Created by Andrei Ermoshin on 12/17/22.
 //  Copyright © 2022 Cotton/Catowser Andrei Ermoshin. All rights reserved.
 //
 
+import Combine
 import CottonBase
 import CoreBrowser
 import CottonUseCases
 
-@MainActor final class TopSitesViewModel: ObservableObject {
-    let topSites: [Site]
+@MainActor public final class TopSitesViewModel: ObservableObject {
+    public let topSites: [Site]
     private let writeTabUseCase: WriteTabsUseCase
 
-    init(
+    public init(
         _ topSites: [Site],
         _ writeTabUseCase: WriteTabsUseCase
     ) {
@@ -22,7 +23,9 @@ import CottonUseCases
         self.writeTabUseCase = writeTabUseCase
     }
 
-    func replaceSelected(tabContent: CoreBrowser.Tab.ContentType) {
+    public func replaceSelected(
+        tabContent: CoreBrowser.Tab.ContentType
+    ) {
         Task {
             do {
                 try await writeTabUseCase.replaceSelected(tabContent)

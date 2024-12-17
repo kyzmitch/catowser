@@ -11,13 +11,15 @@ import CoreBrowser
 import Combine
 import FeatureFlagsKit
 import CottonDataServices
+import CottonViewModels
 
-final class TabsPreviewsViewController<C: Navigating>: BaseViewController,
-                                                       CollectionViewInterface,
-                                                       UICollectionViewDelegateFlowLayout,
-                                                       UICollectionViewDataSource,
-                                                       UICollectionViewDelegate
-where C.R == TabsScreenRoute {
+final class TabsPreviewsViewController<
+    C: Navigating
+>: BaseViewController,
+   CollectionViewInterface,
+   UICollectionViewDelegateFlowLayout,
+   UICollectionViewDataSource,
+   UICollectionViewDelegate where C.R == TabsScreenRoute {
 
     private weak var coordinator: C?
 
@@ -42,7 +44,7 @@ where C.R == TabsScreenRoute {
             if #available(iOS 17.0, *), observingType.isSystemObservation {
                 startTabsObservation()
             } else {
-                await TabsDataServiceFactory.shared.attach(self, notify: false)
+                await ServiceRegistry.shared.tabsService.attach(self, notify: false)
             }
         }
     }

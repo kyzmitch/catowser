@@ -11,18 +11,29 @@ import WebKit
 import CottonBase
 
 final class MockedJSPluginsProgram: JSPluginsProgram {
-    let plugins: [any JavaScriptPlugin] = []
+    var plugins: [CottonPlugins.HandlablePlugin] = []
 
-    static func == (lhs: MockedJSPluginsProgram, rhs: MockedJSPluginsProgram) -> Bool {
+    static func == (
+        lhs: MockedJSPluginsProgram,
+        rhs: MockedJSPluginsProgram
+    ) -> Bool {
         // JFYI: Comparison could be better
         return lhs.plugins.count == rhs.plugins.count
     }
 
-    func inject(to visitor: WKUserContentController, context: CottonBase.Host, canInject: Bool) {
+    func inject(
+        to visitor: WKUserContentController,
+        context: CottonBase.Host,
+        canInject: Bool
+    ) {
 
     }
 
-    func enable(on webView: JavaScriptEvaluateble, context: CottonBase.Host, jsEnabled: Bool) {
+    func enable(
+        on webView: JavaScriptEvaluateble,
+        context: CottonBase.Host,
+        jsEnabled: Bool
+    ) {
 
     }
 }

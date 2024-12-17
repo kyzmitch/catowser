@@ -8,6 +8,7 @@
 
 import FeatureFlagsKit
 import UIKit
+import CottonViewModels
 
 /// Implements the operations to create phone layout product objects.
 final class PhoneViewControllerFactory: ViewControllerFactory {

@@ -33,7 +33,7 @@ final class MainBrowserV2ViewController<
     C: Navigating & ContentCoordinatorsInterface,
     W: WebViewModel,
     S: SearchSuggestionsViewModel,
-    SB: SearchBarViewModelProtocol
+    SB: SearchBarViewModel
 >: UIHostingController<MainBrowserView<C, W, S, SB>> where C.R == MainScreenRoute {
     private weak var coordinator: C?
 

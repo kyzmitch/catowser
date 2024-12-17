@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import CottonViewModels
 
 /**
  A search bar fully implemented in SwiftUI.

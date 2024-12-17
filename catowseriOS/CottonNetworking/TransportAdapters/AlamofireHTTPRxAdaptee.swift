@@ -16,9 +16,11 @@ import Combine
 #endif
 import CottonBase
 
-final class AlamofireHTTPRxAdaptee<R,
-                                   S,
-                                   RX: RxInterface>: HTTPRxAdapter where
+final class AlamofireHTTPRxAdaptee<
+    R,
+    S,
+    RX: RxInterface
+>: HTTPRxAdapter where
     RX.Observer.Response == R, RX.Server == S {
     typealias Response = R
     typealias Server = S
@@ -59,38 +61,46 @@ final class AlamofireHTTPRxAdaptee<R,
         return closure
     }
 
-    func performRequest(_ request: URLRequest, sucessCodes: [Int]) {
+    func performRequest(
+        _ request: URLRequest,
+        sucessCodes: [Int]
+    ) {
         let dataRequest: DataRequest = AF.request(request)
         dataRequest
             .validate(statusCode: sucessCodes)
-            .responseDecodable(of: Response.self,
-                               queue: .main,
-                               decoder: JSONDecoder(),
-                               completionHandler: { [weak self] (response) in
-                                let result: Result<Response, HttpError>
-                                switch response.result {
-                                case .success(let value):
-                                    result = .success(value)
-                                case .failure(let error):
-                                    result = .failure(.httpFailure(error: error))
-                                }
-                                guard let self = self else {
-                                    print("Networking backend was deallocated")
-                                    return
-                                }
-                                self.wrapperHandler()(result)
-                               })
+            .responseDecodable(
+                of: Response.self,
+                queue: .main,
+                decoder: JSONDecoder(),
+                completionHandler: { [weak self] (response) in
+                    let result: Result<Response, HttpError>
+                    switch response.result {
+                    case .success(let value):
+                        result = .success(value)
+                    case .failure(let error):
+                        result = .failure(.httpFailure(error: error))
+                    }
+                    guard let self else {
+                        print("Networking backend was deallocated")
+                        return
+                    }
+                    wrapperHandler()(result)
+                }
+            )
         if case let .rxObserver(observerWrapper) = handlerType {
             observerWrapper.lifetime.newObserveEnded({
                 dataRequest.cancel()
             })
-        } else if case .combine = handlerType {
-            // https://github.com/kyzmitch/Cotton/issues/14
+        } else if case let .combine(publisherWrapper) = handlerType {
+            // publisherWrapper.
+            #warning("Cancel request https://github.com/kyzmitch/Cotton/issues/14")
         }
     }
 
-    func transferToCombineState(_ promise: @escaping Future<Response, HttpError>.Promise,
-                                _ endpoint: Endpoint<Server>) {
+    func transferToCombineState(
+        _ promise: @escaping Future<Response, HttpError>.Promise,
+        _ endpoint: Endpoint<Server>
+    ) {
         if case .waitsForCombinePromise = handlerType {
             let promiseWrapper: CombinePromiseWrapper<Response, Server> = .init(promise, endpoint)
             handlerType = .combine(promiseWrapper)
@@ -110,11 +120,14 @@ extension URLRequest /* : URLRequestCreatable */ {
 /// Wrapper around Alamofire method.
 /// Can't be retroactive because it is from 3rd party Alamofire lib.
 extension JSONEncoding: @unchecked Sendable {}
-/// Can be retroactivly Auto mockable because it is our own protocol which can't be known by Alamofire devs.
+/// Can be retroactively Auto mockable because it is our own protocol which can't be known by Alamofire devs.
 extension JSONEncoding: @retroactive AutoMockable {}
-/// Can be retroactivly conforming to JSONRequestEncodable because Alamofire devs won't know that protocol for sure.
+/// Can be retroactively conforming to `JSONRequestEncodable` because Alamofire devs won't know that protocol for sure.
 extension JSONEncoding: @retroactive JSONRequestEncodable {
-    public func encodeRequest(_ urlRequest: URLRequestCreatable, with parameters: [String: Any]?) throws -> URLRequest {
+    public func encodeRequest(
+        _ urlRequest: URLRequestCreatable,
+        with parameters: [String: Any]?
+    ) throws -> URLRequest {
         return try encode(urlRequest.convertToURLRequest(), with: parameters)
     }
 }

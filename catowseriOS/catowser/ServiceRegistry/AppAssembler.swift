@@ -57,13 +57,15 @@ import CottonViewModels
             async let allTabsVM = factory.allTabsViewModel()
             async let topSitesVM = factory.topSitesViewModel()
             async let suggestionsVM = factory.searchSuggestionsViewModel()
-            async let phoneTabPreviewsVM = factory.tabsPreviewsViewModel()
+            let previewsContext = TabPreviewsContextImpl()
+            async let phoneTabPreviewsVM = factory.tabsPreviewsViewModel(previewsContext)
             async let webViewModel = factory.getWebViewModel(
                 nil,
                 webContext,
                 nil
             )
-            async let searchBarVM = factory.searchBarViewModel()
+            let searchBarContext = SearchBarContextImpl()
+            async let searchBarVM = factory.searchBarViewModel(searchBarContext)
             // Get a reference to a data service
             let searchDataService = await serviceRegistry.findDataService(
                 (any SearchDataServiceProtocol).self,

@@ -10,6 +10,7 @@ import UIKit
 import CoreBrowser
 import FeatureFlagsKit
 import CottonDataServices
+import CottonViewModels
 
 @MainActor protocol SearchBarControllerInterface: AnyObject {
     /* non optional */ func handleAction(_ action: SearchBarAction)
@@ -44,7 +45,7 @@ final class SearchBarBaseViewController: BaseViewController {
             if #available(iOS 17.0, *), observingType.isSystemObservation {
                 startTabsObservation()
             } else {
-                await TabsDataServiceFactory.shared.attach(self, notify: false)
+                await ServiceRegistry.shared.tabsService.attach(self, notify: false)
             }
         }
     }

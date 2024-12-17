@@ -8,6 +8,7 @@
 
 import FeatureFlagsKit
 import UIKit
+import CottonViewModels
 
 /// Implements the operations to create tablet layout product objects.
 final class TabletViewControllerFactory: ViewControllerFactory {

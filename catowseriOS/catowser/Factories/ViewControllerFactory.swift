@@ -36,7 +36,7 @@ protocol ViewControllerFactory: AnyObject {
         _ webVM: W,
         _ searchBarVM: SB
     ) -> AnyViewController
-    where W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarViewModelProtocol
+    where W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarViewModel
 
     func searchBarViewController(
         _ searchBarDelegate: UISearchBarDelegate?,
@@ -113,7 +113,7 @@ extension ViewControllerFactory {
         _ webVM: W,
         _ searchBarVM: SB
     ) -> AnyViewController
-    where W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarViewModelProtocol {
+    where W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarViewModel {
         let vc: AnyViewController
         switch uiFramework {
         case .uiKit:

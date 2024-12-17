@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CottonViewModels
 
 final class TabletTabsCoordinator: Coordinator {
     let vcFactory: any ViewControllerFactory
@@ -15,21 +16,21 @@ final class TabletTabsCoordinator: Coordinator {
     var startedVC: AnyViewController?
     weak var presenterVC: AnyViewController?
     var navigationStack: UINavigationController?
-    private let vm: AllTabsViewModel
+    private let viewModel: AllTabsViewModel
 
     init(_ vcFactory: any ViewControllerFactory,
          _ presenter: AnyViewController,
-         _ vm: AllTabsViewModel) {
+         _ viewModel: AllTabsViewModel) {
         self.vcFactory = vcFactory
         self.presenterVC = presenter
-        self.vm = vm
+        self.viewModel = viewModel
     }
 
     func start() {
         guard isPad else {
             return
         }
-        guard let vc = vcFactory.tabsViewController(vm), let superView = presenterVC?.controllerView else {
+        guard let vc = vcFactory.tabsViewController(viewModel), let superView = presenterVC?.controllerView else {
             return
         }
         startedVC = vc
