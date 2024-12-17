@@ -8,6 +8,7 @@
 
 import SwiftUI
 import CottonBase
+import CottonNetworking
 import FeatureFlagsKit
 
 struct TitledImageView: View {
@@ -47,7 +48,7 @@ struct TitledImageView: View {
         .task {
             let useDoH = await FeatureManager.shared.boolValue(of: .dnsOverHTTPSAvailable)
             do {
-                url = try await site.faviconURL(useDoH)
+                url = try await site.faviconURL(useDoH, GoogleDnsClient.shared)
             } catch {
                 print("Fail to resolve favicon URL: \(error)")
             }

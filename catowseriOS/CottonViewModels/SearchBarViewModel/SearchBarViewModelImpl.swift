@@ -19,7 +19,7 @@ import UIKit
 /// and at the same time it implements `SearchSuggestionsListDelegate`
 /// and `UISearchBarDelegate` which couldn't be implemented in SwiftUI view.
 /// This class is only needed for SwiftUI mode when it uses old UKit view controller.
-@MainActor final class SearchBarViewModelImpl: NSObject, ObservableObject {
+@MainActor public final class SearchBarViewModelImpl: NSObject, ObservableObject {
     /// Based on values from observed delegates and search bar state it is possible to tell
     /// if search suggestions view can be showed or no.
     @Published var showSearchSuggestionsState: Bool
@@ -37,7 +37,7 @@ import UIKit
     /// Context
     private let context: SearchBarContext
 
-    init(
+    public init(
         _ writeTabsUseCase: WriteTabsUseCase,
         _ autocompletionUseCase: AutocompleteSearchUseCase,
         _ context: SearchBarContext
@@ -78,7 +78,7 @@ private extension SearchBarViewModelImpl {
 }
 
 extension SearchBarViewModelImpl: SearchSuggestionsListDelegate {
-    func searchSuggestionDidSelect(_ content: SuggestionType) async {
+    public func searchSuggestionDidSelect(_ content: SuggestionType) async {
         showSearchSuggestionsState = false
 
         let isJSEnabled = await context.isJSEnabled
@@ -110,7 +110,7 @@ extension SearchBarViewModelImpl: SearchSuggestionsListDelegate {
 }
 
 extension SearchBarViewModelImpl: UISearchBarDelegate {
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchQuery: String) {
+    public func searchBar(_ searchBar: UISearchBar, textDidChange searchQuery: String) {
         if searchQuery.isEmpty || searchQuery.looksLikeAURL() {
             showSearchSuggestionsState = false
         } else {
@@ -119,7 +119,7 @@ extension SearchBarViewModelImpl: UISearchBarDelegate {
         }
     }
 
-    func searchBar(_ searchBar: UISearchBar,
+    public func searchBar(_ searchBar: UISearchBar,
                    shouldChangeTextIn range: NSRange,
                    replacementText text: String) -> Bool {
         guard let value = searchBar.text else {
@@ -139,17 +139,17 @@ extension SearchBarViewModelImpl: UISearchBarDelegate {
         return tempSearchText == future
     }
 
-    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+    public func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         actionState = .startSearch
     }
 
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+    public func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         actionState = .cancelTapped
         showSearchSuggestionsState = false
         searchBar.resignFirstResponder()
     }
 
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+    public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let text = searchBar.text else {
             return
         }
@@ -166,21 +166,21 @@ extension SearchBarViewModelImpl: UISearchBarDelegate {
         }
     }
 
-    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+    public func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         // called when `Cancel` pressed or search bar no more a first responder
     }
 }
 
 extension SearchBarViewModelImpl: SearchBarViewModel {
-    var showSearchSuggestions: Published<Bool>.Publisher {
+    public var showSearchSuggestions: Published<Bool>.Publisher {
         $showSearchSuggestionsState
     }
     
-    var searchQuery: Published<String>.Publisher {
+    public var searchQuery: Published<String>.Publisher {
         $searchQueryState
     }
     
-    var action: Published<SearchBarAction>.Publisher {
+    public var action: Published<SearchBarAction>.Publisher {
         $actionState
     }
 }

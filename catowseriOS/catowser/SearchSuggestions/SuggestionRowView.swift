@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import CottonViewModels
 
 struct SuggestionRowView: View {
     enum Mode {

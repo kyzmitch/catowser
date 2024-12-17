@@ -93,12 +93,15 @@ import FeatureFlagsKit
         return await TopSitesViewModel(sites, writeUseCase)
     }
     
-    func searchBarViewModel() async -> any SearchBarViewModel {
+    func searchBarViewModel(
+        _ context: SearchBarContext
+    ) async -> any SearchBarViewModel {
         async let writeUseCase = useCaseRegistry.findUseCase(WriteTabsUseCase.self)
         async let autocompleteUseCase = useCaseRegistry.findUseCase(AutocompleteSearchUseCase.self)
         return await SearchBarViewModelImpl(
             writeUseCase,
-            autocompleteUseCase
+            autocompleteUseCase,
+            context
         )
     }
 }

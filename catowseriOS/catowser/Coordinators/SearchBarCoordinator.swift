@@ -313,6 +313,8 @@ extension SearchBarCoordinator: SearchSuggestionsListDelegate {
             await replaceTab(with: url)
         case .suggestion(let suggestion):
             await handleSuggestion(suggestion)
+        @unknown default:
+            fatalError("Unhandled suggestion type")
         }
     }
 }

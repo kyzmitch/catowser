@@ -146,8 +146,9 @@ final class BrowserToolbarView: UIToolbar {
 
     /// Instead of `didMoveToSuperview`
     func attachToTabsListManager() async {
-        await TabsDataServiceFactory.shared.attach(self, notify: false)
-        await TabsDataServiceFactory.shared.attach(counterView, notify: true)
+        let dataService = await ServiceRegistry.shared.tabsService
+        await dataService.attach(self, notify: false)
+        await dataService.attach(counterView, notify: true)
     }
 
     // MARK: - initialization

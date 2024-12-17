@@ -64,7 +64,8 @@ import CottonViewModels
                 webContext,
                 nil
             )
-            async let searchBarVM = factory.searchBarViewModel()
+            let searchBarContext = SearchBarContextImpl()
+            async let searchBarVM = factory.searchBarViewModel(searchBarContext)
             // Get a reference to a data service
             let searchDataService = await serviceRegistry.findDataService(
                 (any SearchDataServiceProtocol).self,

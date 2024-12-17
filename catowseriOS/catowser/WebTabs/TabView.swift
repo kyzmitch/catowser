@@ -90,7 +90,7 @@ final class TabView: UIView {
         super.willMove(toSuperview: newSuperview)
 
         Task {
-            await TabsDataServiceFactory.shared.attach(viewModel, notify: false)
+            await ServiceRegistry.shared.tabsService.attach(viewModel, notify: false)
         }
         stateHandler?.cancel()
         stateHandler = viewModel.$state.sink(receiveValue: onStateChange)

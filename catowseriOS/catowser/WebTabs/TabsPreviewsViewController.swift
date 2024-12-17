@@ -44,7 +44,7 @@ final class TabsPreviewsViewController<
             if #available(iOS 17.0, *), observingType.isSystemObservation {
                 startTabsObservation()
             } else {
-                await TabsDataServiceFactory.shared.attach(self, notify: false)
+                await ServiceRegistry.shared.tabsService.attach(self, notify: false)
             }
         }
     }

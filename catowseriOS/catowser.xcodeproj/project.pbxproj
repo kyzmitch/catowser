@@ -165,6 +165,7 @@
 		7586A5B62D101DFD00D981B6 /* Site+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7509BF9122AF832200F4D701 /* Site+Extension.swift */; };
 		7586A5B72D10290E00D981B6 /* CottonErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF305152A6D40720080C93D /* CottonErrors.swift */; };
 		7586A5BB2D10984400D981B6 /* SearchBarContextImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7586A5BA2D10984100D981B6 /* SearchBarContextImpl.swift */; };
+		7586A5BD2D109ED300D981B6 /* RestClient+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7586A5BC2D109ECF00D981B6 /* RestClient+Extension.swift */; };
 		759E3E4D2C863B3D00245B44 /* Atomics in Frameworks */ = {isa = PBXBuildFile; productRef = 759E3E4C2C863B3D00245B44 /* Atomics */; };
 		75D81CF72B0B077200447DC7 /* JSPluginsSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60380EF622A15504007F06FB /* JSPluginsSource.swift */; };
 		75D81CFB2B0B084300447DC7 /* JSPluginsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60380EF422A1509F007F06FB /* JSPluginsBuilder.swift */; };
@@ -907,6 +908,7 @@
 		7586A4442D0EA9F600D981B6 /* TabPreviewsContextImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabPreviewsContextImpl.swift; sourceTree = "<group>"; };
 		7586A4492D0EB4B300D981B6 /* TabViewContextImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabViewContextImpl.swift; sourceTree = "<group>"; };
 		7586A5BA2D10984100D981B6 /* SearchBarContextImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarContextImpl.swift; sourceTree = "<group>"; };
+		7586A5BC2D109ECF00D981B6 /* RestClient+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RestClient+Extension.swift"; sourceTree = "<group>"; };
 		759AE09529146C96008CE4EE /* Mockfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Mockfile; sourceTree = "<group>"; };
 		75DA4C7A2C9C7F40009AE049 /* UIServiceRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIServiceRegistry.swift; sourceTree = "<group>"; };
 		75EA4E6E29F7055800165A07 /* TitledImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitledImageView.swift; sourceTree = "<group>"; };
@@ -1578,6 +1580,7 @@
 			children = (
 				8AB9BE2128FF0D5C002063C2 /* Tab+Extension.swift */,
 				8A97EF24245B44D4003AC9D7 /* UIImageView+Extension.swift */,
+				7586A5BC2D109ECF00D981B6 /* RestClient+Extension.swift */,
 				8A437DA4247E7210001C1E8B /* UIHostingController+Extension.swift */,
 				6094E712221EC8D4004269A2 /* UIViewController+CatowserExtensions.swift */,
 				60D52CED22572F2300CB56F0 /* CollectionViewInterface.swift */,
@@ -3625,6 +3628,7 @@
 				75196D0D2944AF8B00B3A45B /* SiteMenuViewController.swift in Sources */,
 				8AEA735D2948FDB900B2E261 /* UIColor+Extension.swift in Sources */,
 				841A2D80203AD0B50050A996 /* BrowserToolbarController.swift in Sources */,
+				7586A5BD2D109ED300D981B6 /* RestClient+Extension.swift in Sources */,
 				8AED419D292BFE9900A00DB2 /* WebContentCoordinator.swift in Sources */,
 				C22599671F7BF301000E4C3A /* MainBrowserViewController.swift in Sources */,
 				750EDEBE294924A800212A4E /* BrowserContentView.swift in Sources */,

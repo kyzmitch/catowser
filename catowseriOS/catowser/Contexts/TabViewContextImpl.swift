@@ -9,6 +9,7 @@
 import CottonBase
 import CottonDataServices
 import CottonViewModels
+import CottonNetworking
 import FeatureFlagsKit
 
 final class TabViewContextImpl: TabViewModelContext {
@@ -32,7 +33,7 @@ final class TabViewContextImpl: TabViewModelContext {
         _ site: Site,
         _ resolve: Bool
     ) async throws -> URL {
-        try await site.faviconURL(resolve)
+        try await site.faviconURL(resolve, GoogleDnsClient.shared)
     }
     
     @available(iOS 17.0, *)

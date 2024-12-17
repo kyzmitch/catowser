@@ -43,7 +43,7 @@ final class TabsViewController: BaseViewController {
                 startTabsObservation()
                 await readTabsState()
             } else {
-                await TabsDataServiceFactory.shared.attach(self, notify: true)
+                await ServiceRegistry.shared.tabsService.attach(self, notify: true)
             }
         }
     }
