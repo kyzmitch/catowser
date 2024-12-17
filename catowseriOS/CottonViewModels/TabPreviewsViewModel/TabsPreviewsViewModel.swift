@@ -52,7 +52,7 @@ import CottonUseCases
                 selectedId: nil
             )
             if let site = tab.site {
-                context.removeController(for: site)
+                context.removeWebView(for: site)
             }
             do {
                 guard let newSelectedId = try await writeTabUseCase.close(tab: tab) else {

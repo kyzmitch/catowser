@@ -72,7 +72,7 @@ import CottonDataServices
 
     public func close() {
         if let site = tab.site {
-            context.removeController(for: site)
+            _ = context.removeWebView(for: site)
         }
         Task {
             do {

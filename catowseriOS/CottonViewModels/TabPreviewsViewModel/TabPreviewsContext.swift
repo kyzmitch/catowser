@@ -15,5 +15,5 @@ public protocol TabPreviewsContext: AnyObject, Sendable {
     /// Default tab content
     var contentState: Tab.ContentType { get async }
     /// Remove web view controller for a specific site from the cache
-    @MainActor @discardableResult func removeController(for site: Site) -> Bool
+    @MainActor func removeWebView(for site: Site) -> Bool
 }

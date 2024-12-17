@@ -19,8 +19,8 @@ final class TabViewContextImpl: TabViewModelContext {
         }
     }
     
-    func removeController(for site: Site) -> Bool {
-        WebViewsReuseManager.shared.removeController(for: site)
+    func removeWebView(for site: Site) -> Bool {
+        WebViewsReuseManager.shared.removeWebView(for: site)
     }
     
     var isDohEnabled: Bool {

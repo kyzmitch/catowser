@@ -17,7 +17,7 @@ final class TabPreviewsContextImpl: TabPreviewsContext {
         }
     }
 
-    @MainActor @discardableResult func removeController(for site: Site) -> Bool {
-        WebViewsReuseManager.shared.removeController(for: site)
+    @MainActor func removeWebView(for site: Site) -> Bool {
+        WebViewsReuseManager.shared.removeWebView(for: site)
     }
 }

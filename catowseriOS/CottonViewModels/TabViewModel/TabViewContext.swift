@@ -16,7 +16,7 @@ public protocol TabViewModelContext: AnyObject, Sendable {
     /// DNS over HTTPs enabled or nah
     var isDohEnabled: Bool { get async }
     /// Remove a view for a site
-    @MainActor @discardableResult func removeController(for site: Site) -> Bool
+    @MainActor func removeWebView(for site: Site) -> Bool
     /// Provides only local cached URL for favicon, nil if ipAddress is nil.
     func faviconURL(
         _ site: Site,
