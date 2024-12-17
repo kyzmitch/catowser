@@ -67,7 +67,7 @@ import FeatureFlagsKit
     ) async -> TabViewModel {
         async let readUseCase = useCaseRegistry.findUseCase(ReadTabsUseCase.self)
         async let writeUseCase = useCaseRegistry.findUseCase(WriteTabsUseCase.self)
-        return await TabViewModel(
+        return await ModuleVMFactory.createTabVM(
             tab,
             readUseCase,
             writeUseCase,

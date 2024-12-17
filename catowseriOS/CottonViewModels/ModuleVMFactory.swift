@@ -7,7 +7,9 @@
 //
 
 import CottonBase
+import CoreBrowser
 import CottonUseCases
+import FeatureFlagsKit
 
 /// Factory for the view models in this framework to hide actual implementations
 @MainActor public final class ModuleVMFactory {
@@ -36,6 +38,23 @@ import CottonUseCases
             writeTabUseCase,
             siteNavigation,
             site
+        )
+    }
+    
+    /// tab view model
+    public static func createTabVM(
+        _ tab: CoreBrowser.Tab,
+        _ readTabUseCase: ReadTabsUseCase,
+        _ writeTabUseCase: WriteTabsUseCase,
+        _ context: TabViewModelContext,
+        _ featureManager: FeatureManager.StateHolder
+    ) -> TabViewModel {
+        TabViewModelImpl(
+            tab,
+            readTabUseCase,
+            writeTabUseCase,
+            context,
+            FeatureManager.shared
         )
     }
 }

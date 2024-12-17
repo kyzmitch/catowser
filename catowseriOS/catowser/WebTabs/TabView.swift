@@ -93,7 +93,7 @@ final class TabView: UIView {
             await ServiceRegistry.shared.tabsService.attach(viewModel, notify: false)
         }
         stateHandler?.cancel()
-        stateHandler = viewModel.$state.sink(receiveValue: onStateChange)
+        stateHandler = viewModel.statePublisher.sink(receiveValue: onStateChange)
         viewModel.load()
     }
 
