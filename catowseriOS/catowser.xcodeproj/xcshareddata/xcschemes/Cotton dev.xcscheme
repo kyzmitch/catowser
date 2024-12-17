@@ -72,6 +72,17 @@
                ReferencedContainer = "container:catowser.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "7586A9012D11CA9C00D981B6"
+               BuildableName = "ViewModelKitTests.xctest"
+               BlueprintName = "ViewModelKitTests"
+               ReferencedContainer = "container:catowser.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
