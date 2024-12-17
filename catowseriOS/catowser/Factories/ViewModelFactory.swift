@@ -37,7 +37,10 @@ import FeatureFlagsKit
     func searchSuggestionsViewModel() async -> any SearchSuggestionsViewModel {
         let vmContext: SearchViewContextImpl = .init()
         let autocompleteUseCase = await useCaseRegistry.findUseCase(AutocompleteSearchUseCase.self)
-        return SearchSuggestionsViewModelImpl(autocompleteUseCase, vmContext)
+        return ModuleVMFactory.createSearchSuggestionsVM(
+            autocompleteUseCase,
+            vmContext
+        )
     }
 
     func getWebViewModel(
