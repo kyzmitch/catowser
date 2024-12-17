@@ -40,8 +40,7 @@ import FeatureFlagsKit
  - pending navigation request is related to initial host or similar host used by user (search bar url)
  */
 
-@MainActor
-public final class WebViewModelImpl: WebViewModel {
+@MainActor final class WebViewModelImpl: WebViewModel {
     /// Domain name resolver with specific strategy
     private let resolveDnsUseCase: any ResolveDNSUseCase
 
@@ -100,7 +99,7 @@ public final class WebViewModelImpl: WebViewModel {
 
      @param site Can be nil when you are using just one same web view model because can't create new one every time in SwiftUI mode
      */
-    public init(
+    init(
         _ context: any WebViewContext,
         _ resolveDnsUseCase: any ResolveDNSUseCase,
         _ selectTabUseCase: SelectedTabUseCase,
