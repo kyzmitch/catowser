@@ -10,7 +10,7 @@
 open class BaseViewModel<
     S: ViewModelState,
     A: ViewModelAction
->: ViewModelInterface where S.Action == A {
+>: ViewModelInterface, StateContext where S.Action == A {
     public typealias Action = A
     public typealias State = S
     
