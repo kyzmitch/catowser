@@ -331,7 +331,8 @@ extension TabsViewController: TabsObserver {
             let tabView = TabView(
                 calculateNextTabFrame(),
                 viewModels[i],
-                self
+                self,
+                await ServiceRegistry.shared.tabsService
             )
             tabsStackView.insertArrangedSubview(tabView, at: i)
         }
@@ -341,7 +342,12 @@ extension TabsViewController: TabsObserver {
     func tabDidAdd(_ tab: CoreBrowser.Tab, at index: Int) async {
         let vm = await ViewModelFactory.shared.tabViewModel(tab, context)
         viewModels.insert(vm, at: index)
-        let tabView = TabView(calculateNextTabFrame(), vm, self)
+        let tabView = TabView(
+            calculateNextTabFrame(),
+            vm,
+            self,
+            await ServiceRegistry.shared.tabsService
+        )
         add(tabView, at: index)
     }
 }
