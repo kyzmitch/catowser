@@ -8,6 +8,7 @@
 
 import Combine
 
+/// Search suggestions view model, provides auto-completion results
 @MainActor public protocol SearchSuggestionsViewModel: ObservableObject, Sendable {
     /// Initiate fetching only after subscribing to the async interfaces below
     func fetchSuggestions(_ query: String) async

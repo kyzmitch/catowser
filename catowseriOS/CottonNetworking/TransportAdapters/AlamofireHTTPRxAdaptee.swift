@@ -68,29 +68,32 @@ final class AlamofireHTTPRxAdaptee<
         let dataRequest: DataRequest = AF.request(request)
         dataRequest
             .validate(statusCode: sucessCodes)
-            .responseDecodable(of: Response.self,
-                               queue: .main,
-                               decoder: JSONDecoder(),
-                               completionHandler: { [weak self] (response) in
-                                let result: Result<Response, HttpError>
-                                switch response.result {
-                                case .success(let value):
-                                    result = .success(value)
-                                case .failure(let error):
-                                    result = .failure(.httpFailure(error: error))
-                                }
-                                guard let self = self else {
-                                    print("Networking backend was deallocated")
-                                    return
-                                }
-                                self.wrapperHandler()(result)
-                               })
+            .responseDecodable(
+                of: Response.self,
+                queue: .main,
+                decoder: JSONDecoder(),
+                completionHandler: { [weak self] (response) in
+                    let result: Result<Response, HttpError>
+                    switch response.result {
+                    case .success(let value):
+                        result = .success(value)
+                    case .failure(let error):
+                        result = .failure(.httpFailure(error: error))
+                    }
+                    guard let self else {
+                        print("Networking backend was deallocated")
+                        return
+                    }
+                    wrapperHandler()(result)
+                }
+            )
         if case let .rxObserver(observerWrapper) = handlerType {
             observerWrapper.lifetime.newObserveEnded({
                 dataRequest.cancel()
             })
         } else if case let .combine(publisherWrapper) = handlerType {
             // publisherWrapper.
+            #warning("Cancel request https://github.com/kyzmitch/Cotton/issues/14")
         }
     }
 
@@ -117,9 +120,9 @@ extension URLRequest /* : URLRequestCreatable */ {
 /// Wrapper around Alamofire method.
 /// Can't be retroactive because it is from 3rd party Alamofire lib.
 extension JSONEncoding: @unchecked Sendable {}
-/// Can be retroactivly Auto mockable because it is our own protocol which can't be known by Alamofire devs.
+/// Can be retroactively Auto mockable because it is our own protocol which can't be known by Alamofire devs.
 extension JSONEncoding: @retroactive AutoMockable {}
-/// Can be retroactivly conforming to JSONRequestEncodable because Alamofire devs won't know that protocol for sure.
+/// Can be retroactively conforming to `JSONRequestEncodable` because Alamofire devs won't know that protocol for sure.
 extension JSONEncoding: @retroactive JSONRequestEncodable {
     public func encodeRequest(
         _ urlRequest: URLRequestCreatable,

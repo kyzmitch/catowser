@@ -8,6 +8,7 @@
 
 import CoreBrowser
 
+/// Search bar action for view model to change the state
 public enum SearchBarAction: Equatable {
     /// When search bar is in view mode - this is a request to move it to edit state
     case startSearch
@@ -18,6 +19,7 @@ public enum SearchBarAction: Equatable {
     /// Update to clear state
     case clearView
 
+    /// Create enum case based on parameter of content type of a tab
     public static func create(
         _ value: CoreBrowser.Tab.ContentType
     ) -> SearchBarAction {

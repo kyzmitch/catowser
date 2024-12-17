@@ -81,6 +81,7 @@ final class AlamofireHTTPRxVoidAdaptee<
             })
         } else if case let .combine(publisherWrapper) = handlerType {
             // publisherWrapper.
+            #warning("Cancel request https://github.com/kyzmitch/Cotton/issues/14")
         }
     }
 
