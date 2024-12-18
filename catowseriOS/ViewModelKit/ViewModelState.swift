@@ -7,14 +7,20 @@
 //
 
 /// View model action marker interface
-public protocol ViewModelAction: CaseIterable { }
+public protocol ViewModelAction: CaseIterable, Sendable { }
 
 /// View model state marker interface
-public protocol ViewModelState {
+public protocol ViewModelState: Sendable {
+    /// Action type
     associatedtype Action: ViewModelAction
-    
-    /// Converts current state to another valid state based on input action
-    func handleAction(_ action: Action) -> Self
+    /// Context
+    associatedtype Context: StateContext
+
     /// Create an initial state which is needed for View Model init
     static func createInitial() -> Self
+    /// Converts current state to another valid state based on input action
+    @MainActor func handleAction(
+        _ action: Action,
+        context: Context
+    ) throws -> Self
 }

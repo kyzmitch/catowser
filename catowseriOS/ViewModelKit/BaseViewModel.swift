@@ -6,17 +6,23 @@
 //  Copyright © 2024 Cotton (Catowser). All rights reserved.
 //
 
+import Combine
+
 /// Base view model class for inheritance
 open class BaseViewModel<
     S: ViewModelState,
     A: ViewModelAction
->: ViewModelInterface, StateContext where S.Action == A {
+>: ViewModelInterface, ObservableObject where S.Action == A {
     public typealias Action = A
     public typealias State = S
     
     public var state: State
     
-    public init(state: State) {
-        self.state = state
+    public init() {
+        self.state = .createInitial()
     }
+    
+    open func sendAction(
+        _ action: Action
+    ) throws { }
 }

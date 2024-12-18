@@ -6,33 +6,21 @@
 //  Copyright © 2024 Cotton (Catowser). All rights reserved.
 //
 
-/// A context marker protocol for a state which receives an action to be able
-/// to get an additional information for state conversion.
-///
-/// Usually context is a view model itself.
-public protocol StateContext: AnyObject { }
+public protocol StateContext: AnyObject {
+    associatedtype State: ViewModelState
+}
 
 /// Base view model interface always has to be a reference type (AnyObject)
 @MainActor public protocol ViewModelInterface: AnyObject {
-    /// Type of a state
-    associatedtype State: ViewModelState where State.Action == Action
+    /// Type of the associated state to have the context matched to the used state type
+    associatedtype State: ViewModelState
     /// Type of an action
-    associatedtype Action: ViewModelAction
-    
+    associatedtype Action: ViewModelAction where Action == State.Action
+
     /// UI state of view model
     var state: State { get set }
     /// Apply an action to view model state to get a new valid state
     func sendAction(
-        _ action: Action,
-        with context: StateContext
+        _ action: Action
     ) throws
-}
-
-extension ViewModelInterface {
-    public func sendAction(
-        _ action: Action,
-        with context: StateContext
-    ) throws {
-        state = state.handleAction(action)
-    }
 }

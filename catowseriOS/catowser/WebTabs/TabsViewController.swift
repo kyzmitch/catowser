@@ -22,13 +22,13 @@ fileprivate extension TabsViewController {
 /// The tabs controller for landscape mode (tablets)
 final class TabsViewController: BaseViewController {
     private var viewModels = [TabViewModel]()
-    private let viewModel: AllTabsViewModel
+    private let viewModel: BaseAllTabsViewModel
     private let featureManager: FeatureManager.StateHolder
     private let uiServiceRegistry: UIServiceRegistry
     private let context = TabViewContextImpl()
 
     init(
-        _ viewModel: AllTabsViewModel,
+        _ viewModel: BaseAllTabsViewModel,
         _ featureManager: FeatureManager.StateHolder,
         _ uiServiceRegistry: UIServiceRegistry
     ) {
@@ -146,7 +146,11 @@ private extension TabsViewController {
         Task {
             let defaultContent = await DefaultTabProvider.shared.contentState
             let tab = CoreBrowser.Tab(contentType: defaultContent)
-            viewModel.addTab(tab)
+            do {
+                try viewModel.sendAction(.addTab(tab))
+            } catch {
+                print("Fail to add a tab: \(error)")
+            }
         }
     }
 

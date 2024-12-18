@@ -84,7 +84,7 @@ final class PhoneViewControllerFactory: ViewControllerFactory {
         return vc
     }
 
-    func tabsViewController(_ vm: AllTabsViewModel) -> AnyViewController? {
+    func tabsViewController(_ vm: BaseAllTabsViewModel) -> AnyViewController? {
         return nil
     }
 

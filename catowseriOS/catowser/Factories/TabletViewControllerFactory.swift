@@ -58,7 +58,7 @@ final class TabletViewControllerFactory: ViewControllerFactory {
     ) -> UIViewController? where C.R == TabsScreenRoute {
         return nil
     }
-    func tabsViewController(_ vm: AllTabsViewModel) -> AnyViewController? {
+    func tabsViewController(_ vm: BaseAllTabsViewModel) -> AnyViewController? {
         let vc = TabsViewController(
             vm,
             FeatureManager.shared,

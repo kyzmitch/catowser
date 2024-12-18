@@ -170,6 +170,8 @@
 		7586A90E2D11CA9C00D981B6 /* ViewModelKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7586A8F92D11CA9C00D981B6 /* ViewModelKit.framework */; };
 		7586A90F2D11CA9C00D981B6 /* ViewModelKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7586A8F92D11CA9C00D981B6 /* ViewModelKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7586A9172D11CACB00D981B6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7586A1C02D05C06800D981B6 /* Foundation.framework */; };
+		7586A91F2D11F90500D981B6 /* ViewModelKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7586A8F92D11CA9C00D981B6 /* ViewModelKit.framework */; };
+		7586A9242D11FEF600D981B6 /* Combine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A6CD6D324585D830068ACB5 /* Combine.framework */; };
 		759E3E4D2C863B3D00245B44 /* Atomics in Frameworks */ = {isa = PBXBuildFile; productRef = 759E3E4C2C863B3D00245B44 /* Atomics */; };
 		75D81CF72B0B077200447DC7 /* JSPluginsSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60380EF622A15504007F06FB /* JSPluginsSource.swift */; };
 		75D81CFB2B0B084300447DC7 /* JSPluginsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60380EF422A1509F007F06FB /* JSPluginsBuilder.swift */; };
@@ -661,6 +663,13 @@
 			remoteInfo = Cotton;
 		};
 		7586A90C2D11CA9C00D981B6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8435A48F1EED5E700020102F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7586A8F82D11CA9C00D981B6;
+			remoteInfo = ViewModelKit;
+		};
+		7586A9212D11F90500D981B6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8435A48F1EED5E700020102F /* Project object */;
 			proxyType = 1;
@@ -1312,6 +1321,7 @@
 				75869FB52D030A8600D981B6 /* Combine.framework in Frameworks */,
 				75869FB02D030A7A00D981B6 /* AutoMockable.framework in Frameworks */,
 				7586A44B2D0EB94700D981B6 /* UIKit.framework in Frameworks */,
+				7586A91F2D11F90500D981B6 /* ViewModelKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1350,6 +1360,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7586A9242D11FEF600D981B6 /* Combine.framework in Frameworks */,
 				7586A9172D11CACB00D981B6 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2752,6 +2763,7 @@
 				75869E652D01BAC100D981B6 /* PBXTargetDependency */,
 				75869FB32D030A7A00D981B6 /* PBXTargetDependency */,
 				75869FB92D030A9300D981B6 /* PBXTargetDependency */,
+				7586A9222D11F90500D981B6 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				75869E142D01B4BD00D981B6 /* CottonViewModels */,
@@ -4179,6 +4191,11 @@
 			isa = PBXTargetDependency;
 			target = 7586A8F82D11CA9C00D981B6 /* ViewModelKit */;
 			targetProxy = 7586A90C2D11CA9C00D981B6 /* PBXContainerItemProxy */;
+		};
+		7586A9222D11F90500D981B6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7586A8F82D11CA9C00D981B6 /* ViewModelKit */;
+			targetProxy = 7586A9212D11F90500D981B6 /* PBXContainerItemProxy */;
 		};
 		8A277158268E466100D8878C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

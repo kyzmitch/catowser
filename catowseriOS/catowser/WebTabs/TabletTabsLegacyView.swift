@@ -12,7 +12,7 @@ import CottonViewModels
 struct TabletTabsLegacyView: CatowserUIVCRepresentable {
     typealias UIViewControllerType = UIViewController
 
-    @EnvironmentObject private var viewModel: AllTabsViewModel
+    @EnvironmentObject private var viewModel: BaseAllTabsViewModel
 
     init() {}
 
