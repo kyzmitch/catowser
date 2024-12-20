@@ -172,6 +172,7 @@
 		7586A9172D11CACB00D981B6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7586A1C02D05C06800D981B6 /* Foundation.framework */; };
 		7586A91F2D11F90500D981B6 /* ViewModelKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7586A8F92D11CA9C00D981B6 /* ViewModelKit.framework */; };
 		7586A9242D11FEF600D981B6 /* Combine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A6CD6D324585D830068ACB5 /* Combine.framework */; };
+		7586AA042D16019100D981B6 /* CottonNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A277137268E452000D8878C /* CottonNetworking.framework */; };
 		759E3E4D2C863B3D00245B44 /* Atomics in Frameworks */ = {isa = PBXBuildFile; productRef = 759E3E4C2C863B3D00245B44 /* Atomics */; };
 		75D81CF72B0B077200447DC7 /* JSPluginsSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60380EF622A15504007F06FB /* JSPluginsSource.swift */; };
 		75D81CFB2B0B084300447DC7 /* JSPluginsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60380EF422A1509F007F06FB /* JSPluginsBuilder.swift */; };
@@ -675,6 +676,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 7586A8F82D11CA9C00D981B6;
 			remoteInfo = ViewModelKit;
+		};
+		7586AA062D16019100D981B6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8435A48F1EED5E700020102F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8A277136268E452000D8878C;
+			remoteInfo = CottonNetworking;
 		};
 		8A277157268E466100D8878C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1262,6 +1270,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7586AA042D16019100D981B6 /* CottonNetworking.framework in Frameworks */,
 				7517D9C72A5F2E9F00D081AD /* CottonBase.xcframework in Frameworks */,
 				60C2C92122819AE200F5D869 /* CoreImage.framework in Frameworks */,
 				7586A39F2D0C159100D981B6 /* WebKit.framework in Frameworks */,
@@ -2637,6 +2646,7 @@
 			);
 			dependencies = (
 				8A5E6C8C290B0EAE0034A78B /* PBXTargetDependency */,
+				7586AA072D16019100D981B6 /* PBXTargetDependency */,
 			);
 			name = CoreBrowser;
 			packageProductDependencies = (
@@ -4196,6 +4206,11 @@
 			isa = PBXTargetDependency;
 			target = 7586A8F82D11CA9C00D981B6 /* ViewModelKit */;
 			targetProxy = 7586A9212D11F90500D981B6 /* PBXContainerItemProxy */;
+		};
+		7586AA072D16019100D981B6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8A277136268E452000D8878C /* CottonNetworking */;
+			targetProxy = 7586AA062D16019100D981B6 /* PBXContainerItemProxy */;
 		};
 		8A277158268E466100D8878C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

@@ -8,7 +8,7 @@
 
 import Combine
 
-/// Base view model class for inheritance
+/// Base view model type
 open class BaseViewModel<
     S: ViewModelState,
     A: ViewModelAction

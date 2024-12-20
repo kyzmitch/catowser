@@ -17,10 +17,13 @@ public typealias BaseAllTabsViewModel = BaseViewModel<
     AllTabsAction
 >
 
+/// All tabs view model implementation, has to be public for now
+/// due to base view model requirements
 @MainActor public final class AllTabsViewModelImpl: BaseAllTabsViewModel {
     private let writeTabUseCase: WriteTabsUseCase
 
-    public init(_ writeTabUseCase: WriteTabsUseCase) {
+    /// Internal initializer
+    init(_ writeTabUseCase: WriteTabsUseCase) {
         self.writeTabUseCase = writeTabUseCase
         super.init()
     }

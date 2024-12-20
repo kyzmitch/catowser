@@ -6,12 +6,14 @@
 //  Copyright © 2024 Cotton (Catowser). All rights reserved.
 //
 
-public protocol StateContext: AnyObject {
-    associatedtype State: ViewModelState
+@MainActor public protocol StateContext: AnyObject, Sendable {
+    associatedtype State: ViewModelState where State.Context == Self
+    
+    var state: State { get set }
 }
 
 /// Base view model interface always has to be a reference type (AnyObject)
-@MainActor public protocol ViewModelInterface: AnyObject {
+@MainActor public protocol ViewModelInterface: AnyObject, Sendable {
     /// Type of the associated state to have the context matched to the used state type
     associatedtype State: ViewModelState
     /// Type of an action

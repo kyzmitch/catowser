@@ -14,7 +14,7 @@ public protocol ViewModelState: Sendable {
     /// Action type
     associatedtype Action: ViewModelAction
     /// Context
-    associatedtype Context: StateContext
+    associatedtype Context: StateContext where Context.State.Action == Action
 
     /// Create an initial state which is needed for View Model init
     static func createInitial() -> Self
