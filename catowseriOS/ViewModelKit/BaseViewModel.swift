@@ -24,13 +24,13 @@ open class BaseViewModel<
     public typealias State = S
     public typealias Context = C
     
-    /// UI state
-    public var state: State
+    /// UI state of view model
+    @Published public var state: State
+    /// Combine publisher for the UI state
+    public var statePublisher: Published<State>.Publisher { $state }
     /// State context computed property, it is nil for the base view model
     /// because the actual context type is not determined yet.
-    open var context: Context? {
-        nil
-    }
+    open var context: Context? { nil }
     
     /// Creates a base view model with initial UI state
     public init() {
@@ -41,6 +41,7 @@ open class BaseViewModel<
         _ action: Action
     ) throws {
         // Can't provide default implementation
-        // because state context type is not determined yet
+        // because state context type is a generic parameter
+        // which is not set, since it is a base class
     }
 }

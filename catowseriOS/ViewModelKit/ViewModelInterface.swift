@@ -6,6 +6,8 @@
 //  Copyright © 2024 Cotton (Catowser). All rights reserved.
 //
 
+import Combine
+
 /// View model state context type,
 /// It is optional for the state, but could be usefull to
 /// determine how to convert from one state value to another.
@@ -27,7 +29,10 @@
 
     /// UI state of view model
     var state: State { get set }
-    /// State context which is actually just this view model, but with a wrapper type
+    /// Combine publisher for the UI state
+    var statePublisher: Published<State>.Publisher { get }
+    /// State context which could help to convert the state on incoming action.
+    /// Usually it should be a wrapper around view model implementation.
     var context: Context? { get }
     /// Apply an action to a view model state to get a new valid state
     /// - Parameter action: an action to apply to the state
