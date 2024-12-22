@@ -9,6 +9,7 @@
 import CoreBrowser
 import ViewModelKit
 
+/// All tabs view model actions
 public enum AllTabsAction: ViewModelAction {
     case addTab(CoreBrowser.Tab)
     

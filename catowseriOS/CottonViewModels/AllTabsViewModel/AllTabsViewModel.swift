@@ -13,13 +13,13 @@ import CottonUseCases
 import ViewModelKit
 
 public typealias BaseAllTabsViewModel = BaseViewModel<
-    AllTabsState<AllTabsViewModelImpl>,
-    AllTabsAction
+    AllTabsState<AllTabsStateContextProxy>,
+    AllTabsAction,
+    AllTabsStateContextProxy
 >
 
-/// All tabs view model implementation, has to be public for now
-/// due to base view model requirements
-@MainActor public final class AllTabsViewModelImpl: BaseAllTabsViewModel {
+/// All tabs view model implementation
+@MainActor final class AllTabsViewModelImpl: BaseAllTabsViewModel {
     private let writeTabUseCase: WriteTabsUseCase
 
     /// Internal initializer
@@ -28,8 +28,12 @@ public typealias BaseAllTabsViewModel = BaseViewModel<
         super.init()
     }
     
+    public override var context: Context? {
+        AllTabsStateContextProxy(subject: self)
+    }
+    
     public override func sendAction(_ action: Action) throws {
-        state = try state.handleAction(action, context: self)
+        state = try state.handleAction(action, with: context)
     }
 }
 
