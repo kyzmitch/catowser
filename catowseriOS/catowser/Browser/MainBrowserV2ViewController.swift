@@ -41,7 +41,7 @@ final class MainBrowserV2ViewController<
         _ coordinator: C,
         _ uiFramework: UIFrameworkType,
         _ defaultContent: CoreBrowser.Tab.ContentType,
-        _ allTabsVM: BaseAllTabsViewModel,
+        _ allTabsVM: AllTabsViewModel,
         _ topSitesVM: TopSitesViewModel,
         _ searchSuggestionsVM: S,
         _ webVM: W,

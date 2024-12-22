@@ -22,13 +22,13 @@ fileprivate extension TabsViewController {
 /// The tabs controller for landscape mode (tablets)
 final class TabsViewController: BaseViewController {
     private var viewModels = [TabViewModel]()
-    private let viewModel: BaseAllTabsViewModel
+    private let viewModel: AllTabsViewModel
     private let featureManager: FeatureManager.StateHolder
     private let uiServiceRegistry: UIServiceRegistry
     private let context = TabViewContextImpl()
 
     init(
-        _ viewModel: BaseAllTabsViewModel,
+        _ viewModel: AllTabsViewModel,
         _ featureManager: FeatureManager.StateHolder,
         _ uiServiceRegistry: UIServiceRegistry
     ) {

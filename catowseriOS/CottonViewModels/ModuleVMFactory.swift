@@ -62,7 +62,7 @@ import ViewModelKit
     /// all tabs view model
     public static func createAllTabsVM(
         _ writeTabUseCase: WriteTabsUseCase
-    ) -> BaseAllTabsViewModel {
+    ) -> AllTabsViewModel {
         AllTabsViewModelImpl(writeTabUseCase)
     }
 }

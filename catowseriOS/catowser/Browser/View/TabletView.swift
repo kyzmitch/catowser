@@ -27,7 +27,7 @@ struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarV
     /// Web view model without a specific site
     @ObservedObject private var webVM: W
     /// All tabs view model specific only to table layout
-    @EnvironmentObject private var allTabsVM: BaseAllTabsViewModel
+    @EnvironmentObject private var allTabsVM: AllTabsViewModel
 
     // MARK: - Tablet search bar state
 

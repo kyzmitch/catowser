@@ -12,14 +12,14 @@ import CoreBrowser
 import CottonUseCases
 import ViewModelKit
 
-public typealias BaseAllTabsViewModel = BaseViewModel<
+public typealias AllTabsViewModel = BaseViewModel<
     AllTabsState<AllTabsStateContextProxy>,
     AllTabsAction,
     AllTabsStateContextProxy
 >
 
 /// All tabs view model implementation
-@MainActor final class AllTabsViewModelImpl: BaseAllTabsViewModel {
+@MainActor final class AllTabsViewModelImpl: AllTabsViewModel {
     private let writeTabUseCase: WriteTabsUseCase
 
     /// Internal initializer

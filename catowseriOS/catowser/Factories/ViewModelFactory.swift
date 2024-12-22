@@ -84,7 +84,7 @@ import FeatureFlagsKit
         return await TabsPreviewsViewModel(readUseCase, writeUseCase, context)
     }
 
-    func allTabsViewModel() async -> BaseAllTabsViewModel {
+    func allTabsViewModel() async -> AllTabsViewModel {
         let writeUseCase = await useCaseRegistry.findUseCase(WriteTabsUseCase.self)
         return ModuleVMFactory.createAllTabsVM(writeUseCase)
     }

@@ -30,7 +30,7 @@ protocol ViewControllerFactory: AnyObject {
         _ coordinator: AppCoordinator,
         _ uiFramework: UIFrameworkType,
         _ defaultContentType: CoreBrowser.Tab.ContentType,
-        _ allTabsVM: BaseAllTabsViewModel,
+        _ allTabsVM: AllTabsViewModel,
         _ topSitesVM: TopSitesViewModel,
         _ searchSuggestionsVM: S,
         _ webVM: W,
@@ -95,7 +95,7 @@ protocol ViewControllerFactory: AnyObject {
         _ viewModel: TabsPreviewsViewModel
     ) -> UIViewController? where C.R == TabsScreenRoute
     /// Tablet specific tabs
-    func tabsViewController(_ vm: BaseAllTabsViewModel) -> AnyViewController?
+    func tabsViewController(_ vm: AllTabsViewModel) -> AnyViewController?
     /// Download link tags
     func linkTagsViewController(_ delegate: LinkTagsDelegate?) -> AnyViewController & LinkTagsPresenter
     /// The files grid controller to display links for downloads
@@ -107,7 +107,7 @@ extension ViewControllerFactory {
         _ coordinator: AppCoordinator,
         _ uiFramework: UIFrameworkType,
         _ defaultContentType: CoreBrowser.Tab.ContentType,
-        _ allTabsVM: BaseAllTabsViewModel,
+        _ allTabsVM: AllTabsViewModel,
         _ topSitesVM: TopSitesViewModel,
         _ searchSuggestionsVM: S,
         _ webVM: W,

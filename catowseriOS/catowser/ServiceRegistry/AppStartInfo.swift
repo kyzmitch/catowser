@@ -16,7 +16,7 @@ import CottonDataServices
 final class AppStartInfo: Sendable {
     /// Tablet specific view model which has to be initialised in async way earlier
     /// to not do async coordinator start for the tabs
-    let allTabsVM: BaseAllTabsViewModel
+    let allTabsVM: AllTabsViewModel
     /// Top sites UIKit view controller needs that view model and it is async
     let topSitesVM: TopSitesViewModel
     /// Search suggestions view model
@@ -41,7 +41,7 @@ final class AppStartInfo: Sendable {
     let searchDataService: any SearchDataServiceProtocol
     
     init(
-        allTabsVM: BaseAllTabsViewModel,
+        allTabsVM: AllTabsViewModel,
         topSitesVM: TopSitesViewModel,
         phoneTabPreviewsVM: TabsPreviewsViewModel,
         suggestionsVM: any SearchSuggestionsViewModel,

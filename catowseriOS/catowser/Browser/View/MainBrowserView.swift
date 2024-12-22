@@ -52,7 +52,7 @@ struct MainBrowserView<
     /// At the moment app will crash if User selects new UI mode.
     private let mode: SwiftUIMode
     /// All tabs view model which can be injected only in async way, so, has to pass it from outside
-    @StateObject private var allTabsVM: BaseAllTabsViewModel
+    @StateObject private var allTabsVM: AllTabsViewModel
     /// Top sites view model has async dependencies and has to be injected
     @StateObject private var topSitesVM: TopSitesViewModel
     /// Search suggestions view model has async dependencies and has to be injected
@@ -67,7 +67,7 @@ struct MainBrowserView<
     init(_ coordinatorsInterface: C,
          _ uiFrameworkType: UIFrameworkType,
          _ defaultContentType: CoreBrowser.Tab.ContentType,
-         _ allTabsVM: BaseAllTabsViewModel,
+         _ allTabsVM: AllTabsViewModel,
          _ topSitesVM: TopSitesViewModel,
          _ searchSuggestionsVM: S,
          _ webVM: W,
