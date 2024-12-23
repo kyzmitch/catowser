@@ -16,11 +16,6 @@ public typealias BrowserToolbarViewModelV2 = BaseViewModel<
     BrowserToolbarStateContextProxy
 >
 
-/// External dependency for the toolbar view model
-@MainActor public protocol BrowserToolbarViewContext: AnyObject {
-    var siteNavigationDelegate: SiteNavigationChangable? { get }
-}
-
 /// Browser toolbar internal view model implementation
 final class BrowserToolbarViewModelImpl: BrowserToolbarViewModelV2 {
     /// View model context but from the app side, not related to the state
@@ -54,12 +49,17 @@ extension BrowserToolbarViewModelImpl: BrowserToolbarStateContext {
 
 extension BrowserToolbarViewModelImpl: SiteExternalNavigationDelegate {
     public func didBackNavigationUpdate(to canGoBack: Bool) {
-        try? sendAction(.updateBackNavigation(canGoBack: canGoBack))
+        try? sendAction(.updateNavigation(
+            canGoBack: canGoBack,
+            canGoForward: nil
+        ))
     }
 
     public func didForwardNavigationUpdate(to canGoForward: Bool) {
-        state.goForwardDisabled = !canGoForward
-        siteNavigationDelegate?.changeForwardButton(to: canGoForward)
+        try? sendAction(.updateNavigation(
+            canGoBack: nil,
+            canGoForward: canGoForward
+        ))
     }
 
     public func provisionalNavigationDidStart() {}
@@ -67,11 +67,11 @@ extension BrowserToolbarViewModelImpl: SiteExternalNavigationDelegate {
     public func didSiteOpen(appName: String) {}
 
     public func loadingProgressdDidChange(_ progress: Float) {
-        state.websiteLoadProgress = Double(progress)
+        try? sendAction(.updateProgress(show: nil, value: progress))
     }
 
     public func showLoadingProgress(_ show: Bool) {
-        state.showProgress = show
+        try? sendAction(.updateProgress(show: show, value: nil))
     }
 
     public func webViewDidHandleReuseAction() {
@@ -80,13 +80,6 @@ extension BrowserToolbarViewModelImpl: SiteExternalNavigationDelegate {
     }
 
     public func webViewDidReplace(_ interface: WebViewNavigatable?) {
-        // This will be called every time web view changes
-        // in re-usable web view controller
-        // so, it will be the same reference actually
-        // that is why no need to check for dublication.
-        state.webViewInterface = interface
-        state.reloadDisabled = interface == nil
-        state.goBackDisabled = !(interface?.canGoBack ?? false)
-        state.goForwardDisabled = !(interface?.canGoForward ?? false)
+        try? sendAction(.replaceWebInterface(interface))
     }
 }

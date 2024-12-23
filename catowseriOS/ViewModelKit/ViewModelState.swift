@@ -6,9 +6,6 @@
 //  Copyright © 2024 Cotton (Catowser). All rights reserved.
 //
 
-/// View model action marker interface
-public protocol ViewModelAction: CaseIterable, Sendable { }
-
 /// View model state marker interface
 public protocol ViewModelState: Sendable {
     /// Action type

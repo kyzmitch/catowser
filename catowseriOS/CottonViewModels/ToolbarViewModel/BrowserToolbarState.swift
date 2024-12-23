@@ -8,6 +8,11 @@
 
 import ViewModelKit
 
+enum BrowserToolbarError: Error {
+    case navigationUpdateWithoutData
+    case progressUpdateWithoutData
+}
+
 /// Toolbar view model state
 public struct BrowserToolbarState<C: BrowserToolbarStateContext>: ViewModelState {
     public typealias Context = C
@@ -50,10 +55,35 @@ public struct BrowserToolbarState<C: BrowserToolbarStateContext>: ViewModelState
             webViewInterface?.goForward()
         case .reload:
             webViewInterface?.reload()
-        case .updateBackNavigation(let canGoBack):
+        case .updateNavigation(let canGoBack?, _):
             copy.goBackDisabled = !canGoBack
             context?.siteNavigationDelegate?.changeBackButton(to: canGoBack)
+        case .updateNavigation(_, let canGoForward?):
+            copy.goForwardDisabled = !canGoForward
+            context?.siteNavigationDelegate?.changeForwardButton(to: canGoForward)
+        case .updateNavigation(nil, nil):
+            throw BrowserToolbarError.navigationUpdateWithoutData
+        case let .updateProgress(_, progress?):
+            copy.websiteLoadProgress = Double(progress)
+        case let .updateProgress(show?, _):
+            copy.showProgress = show
+        case .updateProgress(nil, nil):
+            throw BrowserToolbarError.progressUpdateWithoutData
+        case .replaceWebInterface(let interface):
+            // This will be called every time web view changes
+            // in re-usable web view controller
+            // so, it will be the same reference actually
+            // that is why no need to check for dublication.
+            copy.update(with: interface)
         }
         return copy
+    }
+    
+    /// Separate function to update several fields and trigger the update only once
+    @MainActor mutating func update(with interface: WebViewNavigatable?) {
+        webViewInterface = interface
+        reloadDisabled = interface == nil
+        goBackDisabled = !(interface?.canGoBack ?? false)
+        goForwardDisabled = !(interface?.canGoForward ?? false)
     }
 }

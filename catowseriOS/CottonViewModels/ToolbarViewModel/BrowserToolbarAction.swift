@@ -8,19 +8,35 @@
 
 import ViewModelKit
 
-/// All tabs view model actions
+/// Browser toolbar view model actions
 public enum BrowserToolbarAction: ViewModelAction {
+    /// User tapped forward in toolbar for the web view content
     case goForward
+    /// User tapped back in toolbar for the web view content
     case goBack
+    /// User tapped reload in toolbar for the web view content, to reload web page
     case reload
-    case updateBackNavigation(canGoBack: Bool)
+    /// Web view notified about new states of the navigation buttons
+    case updateNavigation(
+        canGoBack: Bool?,
+        canGoForward: Bool?
+    )
+    /// Web view notified about progress of web page loading
+    case updateProgress(
+        show: Bool?,
+        value: Float?
+    )
+    /// New web page was loaded which means that
+    /// the navigation buttons must be updated
+    case replaceWebInterface(WebViewNavigatable?)
     
-    public static var allCases: [BrowserToolbarAction] {
-        [
-            .goForward,
-            .goBack,
-            .reload,
-            .updateBackNavigation(canGoBack: true)
-        ]
-    }
+    /// All enum cases
+    public static let allCases: [BrowserToolbarAction] = [
+        .goForward,
+        .goBack,
+        .reload,
+        .updateNavigation(canGoBack: nil, canGoForward: nil),
+        .updateProgress(show: nil, value: nil),
+        .replaceWebInterface(nil)
+    ]
 }
