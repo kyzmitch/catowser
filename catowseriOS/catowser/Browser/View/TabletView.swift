@@ -19,7 +19,7 @@ struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarV
     /// A reference to created vm in main view
     @EnvironmentObject private var browserContentVM: BrowserContentViewModel
     /// Toolbar model needed by both UI modes
-    @StateObject private var toolbarVM: BrowserToolbarViewModel = .init()
+    @EnvironmentObject private var toolbarVM: BrowserToolbarViewModel
     /// Top sites view model is async dependency, so, can only be injected from outside
     @EnvironmentObject private var topSitesVM: TopSitesViewModel
     /// Search suggestions view model has async init

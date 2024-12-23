@@ -11,7 +11,7 @@ import CoreBrowser
 
 #if swift(<6.0)
 struct ToolbarViewV2: ToolbarContent {
-    @ObservedObject var vm: BrowserToolbarViewModel
+    @EnvironmentObject var vm: BrowserToolbarViewModel
     private var tabsCount: Int
     @Binding private var showingMenu: Bool
     @Binding private var showingTabs: Bool
@@ -21,11 +21,12 @@ struct ToolbarViewV2: ToolbarContent {
     @State private var isGoForwardDisabled: Bool
     @State private var isRefreshDisabled: Bool
 
-    init(_ vm: BrowserToolbarViewModel,
-         _ tabsCount: Int,
-         _ showingMenu: Binding<Bool>,
-         _ showingTabs: Binding<Bool>,
-         _ showSearchSuggestions: Binding<Bool>) {
+    init(
+        _ tabsCount: Int,
+        _ showingMenu: Binding<Bool>,
+        _ showingTabs: Binding<Bool>,
+        _ showSearchSuggestions: Binding<Bool>
+    ) {
         self.vm = vm
         self.tabsCount = tabsCount
         _showingMenu = showingMenu

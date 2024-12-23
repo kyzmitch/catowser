@@ -18,8 +18,8 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
     @ObservedObject private var searchBarVM: SB
     /// A reference to created view model
     @EnvironmentObject private var browserContentVM: BrowserContentViewModel
-    /// Toolbar view model needed by both UI modes
-    @StateObject private var toolbarVM: BrowserToolbarViewModel = .init()
+    /// Toolbar model needed by both UI modes
+    @EnvironmentObject private var toolbarVM: BrowserToolbarViewModel
     /// Top sites view model is async dependency, so, can only be injected from outside
     @EnvironmentObject private var topSitesVM: TopSitesViewModel
     /// Search suggestions view model has async init
@@ -148,7 +148,7 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
                                    mode,
                                    webVM)
             }
-            ToolbarView(toolbarVM, $webViewInterface)
+            ToolbarView($webViewInterface)
         }
         .ignoresSafeArea(.keyboard, edges: [.bottom])
         .ignoresSafeArea(.container, edges: [.leading, .trailing])
@@ -211,7 +211,6 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
 #if swift(<6.0)
             .toolbar {
                 ToolbarViewV2(
-                    toolbarVM,
                     tabsCount,
                     $showingMenu,
                     $showingTabs,

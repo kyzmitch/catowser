@@ -12,11 +12,12 @@ import CottonViewModels
 
 /// Only UIKit wrapper which needs less amout of parameters than full SwiftUI view
 struct ToolbarView: View {
-    @ObservedObject private var model: BrowserToolbarViewModel
+    @EnvironmentObject var model: BrowserToolbarViewModel
     @Binding private var webViewInterface: WebViewNavigatable?
 
-    init(_ model: BrowserToolbarViewModel, _ webViewInterface: Binding<WebViewNavigatable?>) {
-        self.model = model
+    init(
+        _ webViewInterface: Binding<WebViewNavigatable?>
+    ) {
         _webViewInterface = webViewInterface
     }
 
@@ -43,13 +44,12 @@ private struct DummyView: View {
 #if DEBUG
 struct ToolbarView_Previews: PreviewProvider {
     static var previews: some View {
-        let model = BrowserToolbarViewModel()
         let state: Binding<WebViewNavigatable?> = .init {
             nil
         } set: { _ in
             //
         }
-        ToolbarView(model, state)
+        ToolbarView(state)
             .previewDevice(PreviewDevice(rawValue: "iPhone 14"))
     }
 }
