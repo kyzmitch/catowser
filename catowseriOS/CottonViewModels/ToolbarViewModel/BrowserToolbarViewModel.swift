@@ -75,8 +75,7 @@ extension BrowserToolbarViewModelImpl: SiteExternalNavigationDelegate {
     }
 
     public func webViewDidHandleReuseAction() {
-        // web view was re-created, so, all next SwiftUI view updates can be ignored
-        state.stopWebViewReuseAction = ()
+        try? sendAction(.stopWebViewReusage)
     }
 
     public func webViewDidReplace(_ interface: WebViewNavigatable?) {

@@ -75,6 +75,10 @@ public struct BrowserToolbarState<C: BrowserToolbarStateContext>: ViewModelState
             // so, it will be the same reference actually
             // that is why no need to check for dublication.
             copy.update(with: interface)
+        case .stopWebViewReusage:
+            // web view was re-created, so that,
+            // all next SwiftUI view updates can be ignored
+            copy.stopWebViewReuseAction = ()
         }
         return copy
     }

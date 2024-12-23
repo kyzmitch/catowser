@@ -29,6 +29,8 @@ public enum BrowserToolbarAction: ViewModelAction {
     /// New web page was loaded which means that
     /// the navigation buttons must be updated
     case replaceWebInterface(WebViewNavigatable?)
+    /// Stop web view reusage
+    case stopWebViewReusage
     
     /// All enum cases
     public static let allCases: [BrowserToolbarAction] = [
@@ -37,6 +39,7 @@ public enum BrowserToolbarAction: ViewModelAction {
         .reload,
         .updateNavigation(canGoBack: nil, canGoForward: nil),
         .updateProgress(show: nil, value: nil),
-        .replaceWebInterface(nil)
+        .replaceWebInterface(nil),
+        .stopWebViewReusage
     ]
 }
