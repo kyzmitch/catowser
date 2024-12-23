@@ -22,18 +22,6 @@ public final class BrowserToolbarStateContextProxy: BrowserToolbarStateContext {
     }
     
     public var siteNavigationDelegate: SiteNavigationChangable? {
-        nil
+        subject.siteNavigationDelegate
     }
 }
-
-/**
- private var vcFactory: ViewControllerFactory {
-     UIServiceRegistry.shared().vcFactory
- }
- 
- if UIDevice.current.userInterfaceIdiom == .phone {
-     return vcFactory.createdToolbaViewController as? SiteNavigationChangable
- } else {
-     return vcFactory.createdDeviceSpecificSearchBarVC as? SiteNavigationChangable
- }
- */

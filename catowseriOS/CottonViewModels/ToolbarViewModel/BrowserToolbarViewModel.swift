@@ -16,7 +16,23 @@ public typealias BrowserToolbarViewModelV2 = BaseViewModel<
     BrowserToolbarStateContextProxy
 >
 
+/// External dependency for the toolbar view model
+@MainActor public protocol BrowserToolbarViewContext: AnyObject {
+    var siteNavigationDelegate: SiteNavigationChangable? { get }
+}
+
+/// Browser toolbar internal view model implementation
 final class BrowserToolbarViewModelImpl: BrowserToolbarViewModelV2 {
+    /// View model context but from the app side, not related to the state
+    private let appContext: BrowserToolbarViewContext
+    
+    init(
+        _ appContext: BrowserToolbarViewContext
+    ) {
+        self.appContext = appContext
+        super.init()
+    }
+    
     public override var context: Context? {
         BrowserToolbarStateContextProxy(subject: self)
     }
@@ -26,17 +42,19 @@ final class BrowserToolbarViewModelImpl: BrowserToolbarViewModelV2 {
     }
 }
 
+// MARK: - BrowserToolbarStateContext
+
 extension BrowserToolbarViewModelImpl: BrowserToolbarStateContext {
     var siteNavigationDelegate: (any SiteNavigationChangable)? {
-        #warning("TODO: implement and see state context commented code for that")
-        return nil
+        appContext.siteNavigationDelegate
     }
 }
 
+// MARK: - SiteExternalNavigationDelegate
+
 extension BrowserToolbarViewModelImpl: SiteExternalNavigationDelegate {
     public func didBackNavigationUpdate(to canGoBack: Bool) {
-        state.goBackDisabled = !canGoBack
-        siteNavigationDelegate?.changeBackButton(to: canGoBack)
+        try? sendAction(.updateBackNavigation(canGoBack: canGoBack))
     }
 
     public func didForwardNavigationUpdate(to canGoForward: Bool) {

@@ -172,6 +172,7 @@
 		7586A9242D11FEF600D981B6 /* Combine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A6CD6D324585D830068ACB5 /* Combine.framework */; };
 		7586AA042D16019100D981B6 /* CottonNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A277137268E452000D8878C /* CottonNetworking.framework */; };
 		7586AA102D19431B00D981B6 /* FullEnumTypeConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7586AA0F2D19431A00D981B6 /* FullEnumTypeConstraints.swift */; };
+		7586ABF12D197F9300D981B6 /* BrowserToolbarViewContextImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7586ABF02D197F9000D981B6 /* BrowserToolbarViewContextImpl.swift */; };
 		759E3E4D2C863B3D00245B44 /* Atomics in Frameworks */ = {isa = PBXBuildFile; productRef = 759E3E4C2C863B3D00245B44 /* Atomics */; };
 		75D81CF72B0B077200447DC7 /* JSPluginsSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60380EF622A15504007F06FB /* JSPluginsSource.swift */; };
 		75D81CFB2B0B084300447DC7 /* JSPluginsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60380EF422A1509F007F06FB /* JSPluginsBuilder.swift */; };
@@ -952,6 +953,7 @@
 		7586A8F92D11CA9C00D981B6 /* ViewModelKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ViewModelKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7586A9022D11CA9C00D981B6 /* ViewModelKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ViewModelKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7586AA0F2D19431A00D981B6 /* FullEnumTypeConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullEnumTypeConstraints.swift; sourceTree = "<group>"; };
+		7586ABF02D197F9000D981B6 /* BrowserToolbarViewContextImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserToolbarViewContextImpl.swift; sourceTree = "<group>"; };
 		759AE09529146C96008CE4EE /* Mockfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Mockfile; sourceTree = "<group>"; };
 		75DA4C7A2C9C7F40009AE049 /* UIServiceRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIServiceRegistry.swift; sourceTree = "<group>"; };
 		75EA4E6E29F7055800165A07 /* TitledImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitledImageView.swift; sourceTree = "<group>"; };
@@ -1725,6 +1727,7 @@
 				8AD5E03F2915485200901DA2 /* SearchViewContextImpl.swift */,
 				7586A5BA2D10984100D981B6 /* SearchBarContextImpl.swift */,
 				7586A4492D0EB4B300D981B6 /* TabViewContextImpl.swift */,
+				7586ABF02D197F9000D981B6 /* BrowserToolbarViewContextImpl.swift */,
 				8A7B1BFB28EB2E59004FC135 /* WebViewContextImpl.swift */,
 			);
 			path = Contexts;
@@ -3732,6 +3735,7 @@
 				60C2C8D0226DAB1700F5D869 /* TopSitesViewController.swift in Sources */,
 				8A917CB129D4A39B00404256 /* SearchSuggestionsViewV2.swift in Sources */,
 				8A1C1C172484E5900098F2F1 /* TabDefaultContentModel.swift in Sources */,
+				7586ABF12D197F9300D981B6 /* BrowserToolbarViewContextImpl.swift in Sources */,
 				8A81C6F92945C72F0075BEF9 /* View+Extension.swift in Sources */,
 				8A825947294E2E1A007B97CF /* TopSitesView.swift in Sources */,
 				753752882CF6FFCA008D40CF /* PluginsProxy.swift in Sources */,

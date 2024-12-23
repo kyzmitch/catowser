@@ -42,6 +42,7 @@ public struct BrowserToolbarState<C: BrowserToolbarStateContext>: ViewModelState
         _ action: Action,
         with context: Context?
     ) throws -> Self {
+        var copy = self
         switch action {
         case .goBack:
             webViewInterface?.goBack()
@@ -49,7 +50,10 @@ public struct BrowserToolbarState<C: BrowserToolbarStateContext>: ViewModelState
             webViewInterface?.goForward()
         case .reload:
             webViewInterface?.reload()
+        case .updateBackNavigation(let canGoBack):
+            copy.goBackDisabled = !canGoBack
+            context?.siteNavigationDelegate?.changeBackButton(to: canGoBack)
         }
-        return self
+        return copy
     }
 }

@@ -13,12 +13,14 @@ public enum BrowserToolbarAction: ViewModelAction {
     case goForward
     case goBack
     case reload
+    case updateBackNavigation(canGoBack: Bool)
     
     public static var allCases: [BrowserToolbarAction] {
         [
             .goForward,
             .goBack,
-            .reload
+            .reload,
+            .updateBackNavigation(canGoBack: true)
         ]
     }
 }

@@ -65,4 +65,11 @@ import ViewModelKit
     ) -> AllTabsViewModel {
         AllTabsViewModelImpl(writeTabUseCase)
     }
+    
+    /// Toolbar view model
+    public static func createToolbarVM(
+        _ appContext: BrowserToolbarViewContext
+    ) -> BrowserToolbarViewModelV2 {
+        BrowserToolbarViewModelImpl(appContext)
+    }
 }
