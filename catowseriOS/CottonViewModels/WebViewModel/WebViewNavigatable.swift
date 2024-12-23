@@ -10,7 +10,7 @@ import CottonBase
 
 /// This protocol is used by SiteExternalNavigationDelegate which is required by
 /// web view model which is in separate CottonViewModels module.
-@MainActor public protocol WebViewNavigatable: AnyObject {
+@MainActor public protocol WebViewNavigatable: AnyObject, Sendable {
     var canGoBack: Bool { get }
     var canGoForward: Bool { get }
     func goForward()
