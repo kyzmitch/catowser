@@ -7,6 +7,8 @@
 //
 
 import SwiftUI
+import CoreBrowser
+import CottonViewModels
 import FeatureFlagsKit
 
 typealias SwiftUIValueRequirements = Hashable & Identifiable & CustomStringConvertible

@@ -103,8 +103,6 @@
 		755E107A27C0FBC600D90AD0 /* DuckDuckGoSearchEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755E107927C0FBC600D90AD0 /* DuckDuckGoSearchEndpoint.swift */; };
 		755E107C27C1241000D90AD0 /* DuckDuckGoServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755E107B27C1241000D90AD0 /* DuckDuckGoServer.swift */; };
 		755E108027C1668A00D90AD0 /* WebSearchSettingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755E107D27C1660200D90AD0 /* WebSearchSettingsModel.swift */; };
-		755E108227C169AC00D90AD0 /* BaseListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755E108127C169AC00D90AD0 /* BaseListViewModel.swift */; };
-		755E108527C16AB100D90AD0 /* BaseListViewModelImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755E108427C16AB100D90AD0 /* BaseListViewModelImpl.swift */; };
 		755E109D27CA3A3100D90AD0 /* SettingsEnumTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755E109C27CA3A3100D90AD0 /* SettingsEnumTypes.swift */; };
 		755E10A527CA3FC300D90AD0 /* SpecificEnumFeatures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755E10A427CA3FC300D90AD0 /* SpecificEnumFeatures.swift */; };
 		755E10B727CA81B600D90AD0 /* SpecificApplicationEnumFeatures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755E10B627CA81B600D90AD0 /* SpecificApplicationEnumFeatures.swift */; };
@@ -173,6 +171,7 @@
 		7586A91F2D11F90500D981B6 /* ViewModelKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7586A8F92D11CA9C00D981B6 /* ViewModelKit.framework */; };
 		7586A9242D11FEF600D981B6 /* Combine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A6CD6D324585D830068ACB5 /* Combine.framework */; };
 		7586AA042D16019100D981B6 /* CottonNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A277137268E452000D8878C /* CottonNetworking.framework */; };
+		7586AA102D19431B00D981B6 /* FullEnumTypeConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7586AA0F2D19431A00D981B6 /* FullEnumTypeConstraints.swift */; };
 		759E3E4D2C863B3D00245B44 /* Atomics in Frameworks */ = {isa = PBXBuildFile; productRef = 759E3E4C2C863B3D00245B44 /* Atomics */; };
 		75D81CF72B0B077200447DC7 /* JSPluginsSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60380EF622A15504007F06FB /* JSPluginsSource.swift */; };
 		75D81CFB2B0B084300447DC7 /* JSPluginsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60380EF422A1509F007F06FB /* JSPluginsBuilder.swift */; };
@@ -921,8 +920,6 @@
 		755E107927C0FBC600D90AD0 /* DuckDuckGoSearchEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuckDuckGoSearchEndpoint.swift; sourceTree = "<group>"; };
 		755E107B27C1241000D90AD0 /* DuckDuckGoServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuckDuckGoServer.swift; sourceTree = "<group>"; };
 		755E107D27C1660200D90AD0 /* WebSearchSettingsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSearchSettingsModel.swift; sourceTree = "<group>"; };
-		755E108127C169AC00D90AD0 /* BaseListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseListViewModel.swift; sourceTree = "<group>"; };
-		755E108427C16AB100D90AD0 /* BaseListViewModelImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseListViewModelImpl.swift; sourceTree = "<group>"; };
 		755E108A27CA377B00D90AD0 /* RawFeatureValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawFeatureValue.swift; sourceTree = "<group>"; };
 		755E108D27CA379B00D90AD0 /* BasicFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicFeature.swift; sourceTree = "<group>"; };
 		755E109027CA37F900D90AD0 /* AnyFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyFeature.swift; sourceTree = "<group>"; };
@@ -954,6 +951,7 @@
 		7586A5BC2D109ECF00D981B6 /* RestClient+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RestClient+Extension.swift"; sourceTree = "<group>"; };
 		7586A8F92D11CA9C00D981B6 /* ViewModelKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ViewModelKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7586A9022D11CA9C00D981B6 /* ViewModelKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ViewModelKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7586AA0F2D19431A00D981B6 /* FullEnumTypeConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullEnumTypeConstraints.swift; sourceTree = "<group>"; };
 		759AE09529146C96008CE4EE /* Mockfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Mockfile; sourceTree = "<group>"; };
 		75DA4C7A2C9C7F40009AE049 /* UIServiceRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIServiceRegistry.swift; sourceTree = "<group>"; };
 		75EA4E6E29F7055800165A07 /* TitledImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitledImageView.swift; sourceTree = "<group>"; };
@@ -1605,6 +1603,7 @@
 				608DA73E2237DA33009F75BD /* Models */,
 				6094E71E221FD2B9004269A2 /* CoreBrowser.h */,
 				8AF305152A6D40720080C93D /* CottonErrors.swift */,
+				7586AA0F2D19431A00D981B6 /* FullEnumTypeConstraints.swift */,
 			);
 			path = CoreBrowser;
 			sourceTree = "<group>";
@@ -2371,8 +2370,6 @@
 				75EFE9682CC4C9C8001CD0E6 /* ObservingApiTypeModel.swift */,
 				754249D22944B3F9002D6505 /* AppUIFrameworkTypeModel.swift */,
 				755E107D27C1660200D90AD0 /* WebSearchSettingsModel.swift */,
-				755E108127C169AC00D90AD0 /* BaseListViewModel.swift */,
-				755E108427C16AB100D90AD0 /* BaseListViewModelImpl.swift */,
 				8AB8018927C3E597002D6628 /* BaseMenuView.swift */,
 				8A8F038D293FAB3200237DFF /* GlobalMenuDelegate.swift */,
 				75196D0C2944AF8B00B3A45B /* SiteMenuViewController.swift */,
@@ -3622,6 +3619,7 @@
 				8AD18E102447580A00224702 /* XmlSearchPluginResource.swift in Sources */,
 				6094E741221FE706004269A2 /* Tab.swift in Sources */,
 				7586A5B72D10290E00D981B6 /* CottonErrors.swift in Sources */,
+				7586AA102D19431B00D981B6 /* FullEnumTypeConstraints.swift in Sources */,
 				8A90636924332376009D786E /* URL+CoreExtensions.swift in Sources */,
 				60D52D41225F542E00CB56F0 /* Trie.swift in Sources */,
 				7586A39B2D0C157500D981B6 /* OpenSearchParser.swift in Sources */,
@@ -3744,7 +3742,6 @@
 				75869E052D01B38B00D981B6 /* UseCaseLocator.swift in Sources */,
 				605C54F521F8A8A100B3DC73 /* TabsPreviewsViewController.swift in Sources */,
 				8ADC4971293A589200F37BF2 /* BottomViewCoordinator.swift in Sources */,
-				755E108527C16AB100D90AD0 /* BaseListViewModelImpl.swift in Sources */,
 				755E107127BC3DC500D90AD0 /* AppAsyncApiTypeViewPreview.swift in Sources */,
 				7537528A2CF798B9008D40CF /* ContentCoordinatorsInterface.swift in Sources */,
 				753392A1291FD8DA00570461 /* PhoneViewControllerFactory.swift in Sources */,
@@ -3858,7 +3855,6 @@
 				753752862CF6F1A9008D40CF /* AppStartInfo.swift in Sources */,
 				8A55351A247D740900E3B330 /* MenuViewModel.swift in Sources */,
 				8A0319DC29FE71A500AF3BE3 /* UIViewControllerRepresentable+Extension.swift in Sources */,
-				755E108227C169AC00D90AD0 /* BaseListViewModel.swift in Sources */,
 				841A2D7E203ACC220050A996 /* BlankWebPageViewController.swift in Sources */,
 				60724EA921FF1BD80071BECF /* CounterView.swift in Sources */,
 				8A82594A294E40F5007B97CF /* BrowserContentViewModel.swift in Sources */,

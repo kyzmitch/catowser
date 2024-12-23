@@ -7,6 +7,7 @@
 //
 
 import CoreBrowser
+import CottonViewModels
 
 typealias TabDefaultContentModel = BaseListViewModelImpl<CoreBrowser.Tab.ContentType>
 

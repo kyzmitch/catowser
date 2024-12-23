@@ -6,13 +6,8 @@
 //  Copyright © 2022 Cotton (former Catowser). All rights reserved.
 //
 
+import CoreBrowser
 import Foundation
-
-public protocol EnumDefaultValueSupportable where Self: CaseIterable {
-    var defaultValue: Self { get }
-}
-
-public typealias FullEnumTypeConstraints = CaseIterable & RawRepresentable & EnumDefaultValueSupportable & Sendable
 
 public struct GenericEnumFeature<E: FullEnumTypeConstraints>: EnumFeature, Sendable where E.RawValue == Int {
     public typealias RawValue = E.RawValue

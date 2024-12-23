@@ -9,6 +9,7 @@
 import CoreBrowser
 import Foundation
 import FeatureFlagsKit
+import CottonViewModels
 import CottonDataServices
 
 typealias ObservingApiTypeModel = BaseListViewModelImpl<ObservingApiType>
