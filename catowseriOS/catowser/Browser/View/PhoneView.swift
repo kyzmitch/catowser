@@ -127,7 +127,7 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
             PhoneSearchBarLegacyView(searchBarDelegate, searchBarAction)
                 .frame(minWidth: 0, maxWidth: .infinity, maxHeight: CGFloat.searchViewHeight)
             if toolbarVM.state.showProgress {
-                ProgressView(value: toolbarVM.state.websiteLoadProgress)
+                ProgressView(value: toolbarVM.state.loadingProgress)
             }
             if showSearchSuggestions {
                 let delegate: SearchSuggestionsListDelegate = searchBarVM
@@ -154,7 +154,7 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
         .onReceive(searchBarVM.searchQuery) { searchQuery = $0 }
         .onReceive(searchBarVM.action.dropFirst()) { searchBarAction = $0 }
         .onReceive(toolbarVM.$state) { value in
-            if value.stopWebViewReuseAction {
+            if value.stopWebViewReusage {
                 webViewNeedsUpdate = false
             }
         }
@@ -189,7 +189,7 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
                 SearchBarViewV2($searchQuery, $searchBarAction)
                     .frame(minWidth: 0, maxWidth: .infinity)
                 if toolbarVM.state.showProgress {
-                    ProgressView(value: toolbarVM.state.websiteLoadProgress)
+                    ProgressView(value: toolbarVM.state.loadingProgress)
                 }
                 if showSearchSuggestions {
                     let delegate: SearchSuggestionsListDelegate = searchBarVM
@@ -236,7 +236,7 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
             showSearchSuggestions = inSearchMode && validQuery
         }
         .onReceive(toolbarVM.$state) { value in
-            if value.stopWebViewReuseAction {
+            if value.stopWebViewReusage {
                 webViewNeedsUpdate = false
             }
         }

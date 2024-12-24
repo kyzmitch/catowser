@@ -121,7 +121,7 @@ struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarV
                 .frame(height: .toolbarViewHeight)
             // this should be the same with the value in `SearchBarBaseViewController`
             if toolbarVM.state.showProgress {
-                ProgressView(value: toolbarVM.state.websiteLoadProgress)
+                ProgressView(value: toolbarVM.state.loadingProgress)
             }
             if showSearchSuggestions {
                 let delegate: SearchSuggestionsListDelegate = searchBarVM
@@ -145,7 +145,7 @@ struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarV
         .onReceive(searchBarVM.searchQuery) { searchQuery = $0 }
         .onReceive(searchBarVM.action.dropFirst()) { searchBarAction = $0 }
         .onReceive(toolbarVM.$state) { value in
-            if value.stopWebViewReuseAction {
+            if value.stopWebViewReusage {
                 webViewNeedsUpdate = false
             }
         }
@@ -182,7 +182,7 @@ struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarV
                 .frame(height: .toolbarViewHeight)
                 .environmentObject(toolbarVM)
             if toolbarVM.state.showProgress {
-                ProgressView(value: toolbarVM.state.websiteLoadProgress)
+                ProgressView(value: toolbarVM.state.loadingProgress)
             }
             if showSearchSuggestions {
                 let delegate: SearchSuggestionsListDelegate = searchBarVM
@@ -212,7 +212,7 @@ struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarV
             showSearchSuggestions = inSearchMode && validQuery
         }
         .onReceive(toolbarVM.$state) { value in
-            if value.stopWebViewReuseAction {
+            if value.stopWebViewReusage {
                 webViewNeedsUpdate = false
             }
         }

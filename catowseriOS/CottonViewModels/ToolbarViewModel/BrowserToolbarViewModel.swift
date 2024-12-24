@@ -34,7 +34,7 @@ final class BrowserToolbarViewModelImpl: BrowserToolbarViewModel {
     
     public override func sendAction(_ action: Action) throws {
         try super.sendAction(action)
-        state.stopWebViewReuseAction = false
+        state.stopWebViewReusage = false
     }
 }
 
