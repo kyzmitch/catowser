@@ -7,4 +7,6 @@
 //
 
 /// View model action marker interface
+///
+/// It is better to be value type to be thread-safe from the scratch.
 public protocol ViewModelAction: CaseIterable, Sendable { }

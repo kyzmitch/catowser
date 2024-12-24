@@ -34,3 +34,11 @@ import Combine
         _ action: Action
     ) throws
 }
+
+extension ViewModelInterface {
+    public func sendAction(
+        _ action: Action
+    ) throws {
+        state = try state.handleAction(action, with: context)
+    }
+}

@@ -325,14 +325,17 @@ private extension WebViewController {
         // Whats-new-in-Swift-4.playground/Pages/Key%20paths.xcplaygroundpage/Contents.swift#L53-L95
 
         loadingProgressObservation?.invalidate()
-        loadingProgressObservation = webView?.observe(\.estimatedProgress,
-                                                      options: [.new]) { [weak self] (_, change) in
-            guard let self, let value = change.newValue else {
-                return
-            }
-            Task {
-                await viewModel.siteNavigation?.loadingProgressdDidChange(Float(value))
-            }
+        loadingProgressObservation = webView?.observe(
+            \.estimatedProgress,
+             options: [.new]) { [weak self] (_, change) in
+                 guard let self, let value = change.newValue else {
+                     return
+                 }
+                 Task {
+                     await viewModel
+                         .siteNavigation?
+                         .loadingProgressdDidChange(Float(value))
+                 }
         }
     }
 

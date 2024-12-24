@@ -7,21 +7,25 @@
 //
 
 /// View model state marker interface
+///
+/// Should be value type (struct or enum) to be thread-safe out of the box.
 public protocol ViewModelState: Sendable {
     /// Action type
     associatedtype Action: ViewModelAction
-    /// Context
-    ///
-    /// It is without any type constraints for now
-    /// so that, potentially can be for a different state type.
+    /// Context of the state to be able to get any additional data
+    /// required for action handling or state conversion.
     associatedtype Context: StateContext
 
     /// Create an initial state which is needed for View Model init
+    ///
+    /// e.g. it could be loading state at the beginning
     static func createInitial() -> Self
-    /// Converts current state to another valid state based on input action
-    /// - Parameter action: An action which tells how to convert the state or ignore that action if it doesn't apply
-    /// - Parameter context: An optional state context if it is needed for state conversion
-    /// - Returns same type or modified/same state if action was valid for current state
+
+    /// Converts current state to another valid state based on input action.
+    ///
+    /// - Parameter action: An action which tells how to convert the state
+    /// - Parameter context: An optional state context if it is needed for state conversion/handling
+    /// - Returns same or modified state value, depending if action was valid or not for the current state
     @MainActor func handleAction(
         _ action: Action,
         with context: Context?
