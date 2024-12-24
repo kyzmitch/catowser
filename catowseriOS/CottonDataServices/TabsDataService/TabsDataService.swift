@@ -660,28 +660,29 @@ private extension TabsDataService {
 
     func fetchTabs() async throws {
         async let cachedTabs = tabsRepository.fetchAllTabs()
-        async let id = tabsRepository.fetchSelectedTabId()
         async let defaultContentType = positioning.contentState
         var cachedData = try await CachedTabsInitialInfo(
             cachedTabs,
-            id,
             defaultContentType
         )
+        let selectedTabId: Tab.ID
         if cachedData.cachedTabs.isEmpty {
             let tab = CoreBrowser.Tab(contentType: cachedData.defaultContentType)
             let savedTab = try await tabsRepository.add(tab, select: true)
             cachedData.cachedTabs = [savedTab]
-            cachedData.id = tab.id
+            selectedTabId = tab.id
+        } else {
+            selectedTabId = try await tabsRepository.fetchSelectedTabId()
         }
         serviceData.allTabs = .finished(output: .success(cachedData.cachedTabs))
         serviceData.tabsCount = .finished(output: .success(cachedData.cachedTabs.count))
-        serviceData.selectedTabId = .finished(output: .success(cachedData.id))
+        serviceData.selectedTabId = .finished(output: .success(selectedTabId))
         if observingType.isSystemObservation {
             await notifyAboutNewTabs(cachedData.cachedTabs, nil)
-            await notifyAboutNewSelectedTab(cachedData.id)
+            await notifyAboutNewSelectedTab(selectedTabId)
         } else {
             tabsCountInput.yield(cachedData.cachedTabs.count)
-            selectedTabIdInput.yield(cachedData.id)
+            selectedTabIdInput.yield(selectedTabId)
         }
     }
 
@@ -763,16 +764,13 @@ private extension AddedTabPosition {
 
 struct CachedTabsInitialInfo {
     var cachedTabs: [Tab]
-    var id: Tab.ID
     let defaultContentType: Tab.ContentType
     
     init(
         _ cachedTabs: [Tab],
-        _ id: Tab.ID,
         _ defaultContentType: Tab.ContentType
     ) {
         self.cachedTabs = cachedTabs
-        self.id = id
         self.defaultContentType = defaultContentType
     }
 }
