@@ -31,10 +31,6 @@ public typealias AllTabsViewModel = BaseViewModel<
     public override var context: Context? {
         AllTabsStateContextProxy(subject: self)
     }
-    
-    public override func sendAction(_ action: Action) throws {
-        state = try state.handleAction(action, with: context)
-    }
 }
 
 extension AllTabsViewModelImpl: AllTabsStateContext {

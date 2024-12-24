@@ -19,7 +19,7 @@ open class BaseViewModel<
     S: ViewModelState,
     A: ViewModelAction,
     C: StateContext
->: ViewModelInterface, ObservableObject where S.Action == A {
+>: ViewModelInterface, ObservableObject where S.Action == A, S.Context == C {
     public typealias Action = A
     public typealias State = S
     public typealias Context = C
@@ -40,8 +40,6 @@ open class BaseViewModel<
     open func sendAction(
         _ action: Action
     ) throws {
-        // Can't provide default implementation
-        // because state context type is a generic parameter
-        // which is not set, since it is a base class
+        state = try state.handleAction(action, with: context)
     }
 }
