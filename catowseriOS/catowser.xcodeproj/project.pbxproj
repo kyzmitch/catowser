@@ -178,7 +178,6 @@
 		75D81CFB2B0B084300447DC7 /* JSPluginsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60380EF422A1509F007F06FB /* JSPluginsBuilder.swift */; };
 		75DA4C7B2C9C7F4D009AE049 /* UIServiceRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75DA4C7A2C9C7F40009AE049 /* UIServiceRegistry.swift */; };
 		75EA4E6F29F7055800165A07 /* TitledImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75EA4E6E29F7055800165A07 /* TitledImageView.swift */; };
-		75EA5425296436C900EEF533 /* BrowserToolbarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75EA5424296436C900EEF533 /* BrowserToolbarViewModel.swift */; };
 		75EFE9692CC4C9C8001CD0E6 /* ObservingApiTypeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75EFE9682CC4C9C8001CD0E6 /* ObservingApiTypeModel.swift */; };
 		75EFE97B2CD2CA15001CD0E6 /* WeakWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75EFE97A2CD2CA0E001CD0E6 /* WeakWrapper.swift */; };
 		75F342472A6063A400E66192 /* AuthChallenge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F342462A6063A400E66192 /* AuthChallenge.swift */; };
@@ -957,7 +956,6 @@
 		759AE09529146C96008CE4EE /* Mockfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Mockfile; sourceTree = "<group>"; };
 		75DA4C7A2C9C7F40009AE049 /* UIServiceRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIServiceRegistry.swift; sourceTree = "<group>"; };
 		75EA4E6E29F7055800165A07 /* TitledImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitledImageView.swift; sourceTree = "<group>"; };
-		75EA5424296436C900EEF533 /* BrowserToolbarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserToolbarViewModel.swift; sourceTree = "<group>"; };
 		75EFE9682CC4C9C8001CD0E6 /* ObservingApiTypeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservingApiTypeModel.swift; sourceTree = "<group>"; };
 		75EFE97A2CD2CA0E001CD0E6 /* WeakWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakWrapper.swift; sourceTree = "<group>"; };
 		75F342462A6063A400E66192 /* AuthChallenge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthChallenge.swift; sourceTree = "<group>"; };
@@ -1808,7 +1806,6 @@
 				8A81C6FB2945C8050075BEF9 /* ToolbarView.swift */,
 				8A0FC1A829F259D20044829A /* ToolbarLegacyView.swift */,
 				8A0FC1A529F2586B0044829A /* ToolbarViewV2.swift */,
-				75EA5424296436C900EEF533 /* BrowserToolbarViewModel.swift */,
 				8AFDBB0529F93A05006C0E47 /* MenuButton.swift */,
 				8AFDBB0829F979D8006C0E47 /* DisableableButton.swift */,
 			);
@@ -3727,7 +3724,6 @@
 				841A2D86203B1FA50050A996 /* SearchBarBaseViewController.swift in Sources */,
 				847D7C8D1EF6C8AC00291B87 /* TabsViewController.swift in Sources */,
 				84704FC21EEE769800F89F6B /* TabView.swift in Sources */,
-				75EA5425296436C900EEF533 /* BrowserToolbarViewModel.swift in Sources */,
 				8AD857E02939425400DD5F49 /* WebContentContainerCoordinator.swift in Sources */,
 				75EFE9692CC4C9C8001CD0E6 /* ObservingApiTypeModel.swift in Sources */,
 				753392B32921613E00570461 /* GlobalMenuCoordinator.swift in Sources */,

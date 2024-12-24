@@ -92,7 +92,7 @@ struct MainBrowserView<
         _searchSuggestionsVM = StateObject(wrappedValue: searchSuggestionsVM)
         _webVM = StateObject(wrappedValue: webVM)
         _searchBarVM = StateObject(wrappedValue: searchBarVM)
-        _toolbarVM = StateObject(wrappedValue: .init())
+        _toolbarVM = StateObject(wrappedValue: ViewModelFactory.shared.toolbarViewModel())
     }
 
     var body: some View {

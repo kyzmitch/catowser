@@ -30,7 +30,7 @@ public struct BrowserToolbarState<C: BrowserToolbarStateContext>: ViewModelState
     /// Tells if there is a web view content loading is in progress
     public var showProgress: Bool = false
     /// Tells that web view has handled re-use action and it is not needed anymore.
-    public var stopWebViewReuseAction: Void = ()
+    public var stopWebViewReuseAction: Bool = false
     /// Max value should be 1.0 because total is equals to that by default
     public var websiteLoadProgress: Double = 0.0
     
@@ -78,7 +78,7 @@ public struct BrowserToolbarState<C: BrowserToolbarStateContext>: ViewModelState
         case .stopWebViewReusage:
             // web view was re-created, so that,
             // all next SwiftUI view updates can be ignored
-            copy.stopWebViewReuseAction = ()
+            copy.stopWebViewReuseAction = true
         }
         return copy
     }

@@ -69,7 +69,7 @@ import ViewModelKit
     /// Toolbar view model
     public static func createToolbarVM(
         _ appContext: BrowserToolbarViewContext
-    ) -> BrowserToolbarViewModelV2 {
+    ) -> BrowserToolbarViewModel {
         BrowserToolbarViewModelImpl(appContext)
     }
 }

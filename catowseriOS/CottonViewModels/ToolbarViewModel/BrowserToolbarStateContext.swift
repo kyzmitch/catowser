@@ -11,6 +11,7 @@ import ViewModelKit
 /// Browser toolbar state context interface
 public protocol BrowserToolbarStateContext: StateContext {
     var siteNavigationDelegate: SiteNavigationChangable? { get }
+    var siteExternalDelegate: SiteExternalNavigationDelegate? { get }
 }
 
 /// Browser toolbar state context
@@ -23,5 +24,9 @@ public final class BrowserToolbarStateContextProxy: BrowserToolbarStateContext {
     
     public var siteNavigationDelegate: SiteNavigationChangable? {
         subject.siteNavigationDelegate
+    }
+    
+    public var siteExternalDelegate: SiteExternalNavigationDelegate? {
+        subject.siteExternalDelegate
     }
 }

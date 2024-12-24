@@ -26,10 +26,12 @@ struct TabletSearchBarViewV2: View {
         GridItem(.flexible(), spacing: 2, alignment: .center)
     ]
 
-    init(_ showingMenu: Binding<Bool>,
-         _ showSearchSuggestions: Binding<Bool>,
-         _ query: Binding<String>,
-         _ action: Binding<SearchBarAction>) {
+    init(
+        _ showingMenu: Binding<Bool>,
+        _ showSearchSuggestions: Binding<Bool>,
+        _ query: Binding<String>,
+        _ action: Binding<SearchBarAction>
+    ) {
         _showingMenu = showingMenu
         _showSearchSuggestions = showSearchSuggestions
         _query = query
@@ -40,9 +42,24 @@ struct TabletSearchBarViewV2: View {
         ScrollView {
             LazyVGrid(columns: columns) {
                 MenuButton($showSearchSuggestions, $showingMenu).padding()
-                DisableableButton("nav-back", toolbarVM.goBackDisabled, toolbarVM.goBack).padding()
-                DisableableButton("nav-forward", toolbarVM.goForwardDisabled, toolbarVM.goForward).padding()
-                DisableableButton("nav-refresh", toolbarVM.reloadDisabled, toolbarVM.reload).padding()
+                DisableableButton(
+                    "nav-back",
+                    toolbarVM.state.goBackDisabled, {
+                        try? toolbarVM.sendAction(.goBack)
+                    }
+                ).padding()
+                DisableableButton(
+                    "nav-forward",
+                    toolbarVM.state.goForwardDisabled, {
+                        try? toolbarVM.sendAction(.goForward)
+                    }
+                ).padding()
+                DisableableButton(
+                    "nav-refresh",
+                    toolbarVM.state.reloadDisabled, {
+                        try? toolbarVM.sendAction(.reload)
+                    }
+                ).padding()
                 SearchBarViewV2($query, $action)
             }
         }

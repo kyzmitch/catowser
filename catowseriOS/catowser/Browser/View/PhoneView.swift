@@ -41,7 +41,6 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
     // MARK: - web content loading state
 
     @State private var showProgress: Bool = false
-    @State private var websiteLoadProgress: Double = 0.0
 
     // MARK: - browser content state
 
@@ -49,10 +48,6 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
     @State private var contentType: CoreBrowser.Tab.ContentType
     /// A workaround to avoid unnecessary web view updates
     @State private var webViewNeedsUpdate: Bool = false
-
-    // MARK: - web view related
-
-    @State private var webViewInterface: WebViewNavigatable?
 
     // MARK: - constants
 
@@ -73,7 +68,7 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
 
     private var menuModel: MenuViewModel {
         let style: BrowserMenuStyle
-        if let interface = webViewInterface {
+        if let interface = toolbarVM.state.webViewInterface {
             style = .withSiteMenu(interface.host, interface.siteSettings)
         } else {
             style = .onlyGlobalMenu
@@ -131,33 +126,38 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
             let searchBarDelegate: UISearchBarDelegate = searchBarVM
             PhoneSearchBarLegacyView(searchBarDelegate, searchBarAction)
                 .frame(minWidth: 0, maxWidth: .infinity, maxHeight: CGFloat.searchViewHeight)
-            if showProgress {
-                ProgressView(value: websiteLoadProgress)
+            if toolbarVM.state.showProgress {
+                ProgressView(value: toolbarVM.state.websiteLoadProgress)
             }
             if showSearchSuggestions {
                 let delegate: SearchSuggestionsListDelegate = searchBarVM
                 SearchSuggestionsView<S>(searchQuery, delegate, mode)
             } else {
                 let jsPlugins = browserContentVM.jsPluginsBuilder
-                let siteNavigation: SiteExternalNavigationDelegate = toolbarVM
-                BrowserContentView(jsPlugins,
-                                   siteNavigation,
-                                   isLoading,
-                                   contentType,
-                                   $webViewNeedsUpdate,
-                                   mode,
-                                   webVM)
+                // swiftlint:disable:next force_cast
+                let siteNavigation = toolbarVM as! SiteExternalNavigationDelegate
+                BrowserContentView(
+                    jsPlugins,
+                    siteNavigation,
+                    isLoading,
+                    contentType,
+                    $webViewNeedsUpdate,
+                    mode,
+                    webVM
+                )
             }
-            ToolbarView($webViewInterface)
+            ToolbarView()
         }
         .ignoresSafeArea(.keyboard, edges: [.bottom])
         .ignoresSafeArea(.container, edges: [.leading, .trailing])
-        .onReceive(toolbarVM.$showProgress) { showProgress = $0 }
-        .onReceive(toolbarVM.$websiteLoadProgress) { websiteLoadProgress = $0 }
         .onReceive(searchBarVM.showSearchSuggestions) { showSearchSuggestions = $0 }
         .onReceive(searchBarVM.searchQuery) { searchQuery = $0 }
         .onReceive(searchBarVM.action.dropFirst()) { searchBarAction = $0 }
-        .onReceive(toolbarVM.$stopWebViewReuseAction.dropFirst()) { webViewNeedsUpdate = false }
+        .onReceive(toolbarVM.$state) { value in
+            if value.stopWebViewReuseAction {
+                webViewNeedsUpdate = false
+            }
+        }
         .onReceive(browserContentVM.$webViewNeedsUpdate.dropFirst()) { webViewNeedsUpdate = true }
         .onReceive(browserContentVM.$contentType) { value in
             showSearchSuggestions = false
@@ -179,7 +179,7 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
             self.isDohEnabled = combinedValue.isDohEnabled
             self.isJavaScriptEnabled = combinedValue.isJavaScriptEnabled
             self.nativeAppRedirectEnabled = combinedValue.nativeAppRedirectEnabled
-            webVM.siteNavigation = toolbarVM
+            webVM.siteNavigation = toolbarVM as? SiteExternalNavigationDelegate
         }
     }
 
@@ -188,15 +188,15 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
             VStack {
                 SearchBarViewV2($searchQuery, $searchBarAction)
                     .frame(minWidth: 0, maxWidth: .infinity)
-                if showProgress {
-                    ProgressView(value: websiteLoadProgress)
+                if toolbarVM.state.showProgress {
+                    ProgressView(value: toolbarVM.state.websiteLoadProgress)
                 }
                 if showSearchSuggestions {
                     let delegate: SearchSuggestionsListDelegate = searchBarVM
                     SearchSuggestionsView<S>(searchQuery, delegate, mode)
                 } else {
                     let jsPlugins = browserContentVM.jsPluginsBuilder
-                    let siteNavigation: SiteExternalNavigationDelegate = toolbarVM
+                    let siteNavigation = toolbarVM.context?.siteExternalDelegate
                     BrowserContentView(
                         jsPlugins,
                         siteNavigation,
@@ -229,15 +229,17 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
         }
         .ignoresSafeArea(.keyboard, edges: [.bottom])
         .ignoresSafeArea(.container, edges: [.leading, .trailing])
-        .onReceive(toolbarVM.$showProgress) { showProgress = $0 }
-        .onReceive(toolbarVM.$websiteLoadProgress) { websiteLoadProgress = $0 }
         .onReceive(searchBarVM.showSearchSuggestions) { showSearchSuggestions = $0 }
         .onChange(of: searchQuery) { value in
             let inSearchMode = searchBarAction == .startSearch
             let validQuery = !value.isEmpty && !value.looksLikeAURL()
             showSearchSuggestions = inSearchMode && validQuery
         }
-        .onReceive(toolbarVM.$stopWebViewReuseAction.dropFirst()) { webViewNeedsUpdate = false }
+        .onReceive(toolbarVM.$state) { value in
+            if value.stopWebViewReuseAction {
+                webViewNeedsUpdate = false
+            }
+        }
         .onReceive(browserContentVM.$webViewNeedsUpdate.dropFirst()) { webViewNeedsUpdate = true }
         .onReceive(browserContentVM.$contentType.dropFirst()) { value in
             showSearchSuggestions = false
@@ -268,7 +270,7 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
             self.isDohEnabled = combinedValue.isDohEnabled
             self.isJavaScriptEnabled = combinedValue.isJavaScriptEnabled
             self.nativeAppRedirectEnabled = combinedValue.nativeAppRedirectEnabled
-            webVM.siteNavigation = toolbarVM
+            webVM.siteNavigation = toolbarVM.context?.siteExternalDelegate
         }
     }
 
@@ -280,8 +282,9 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
         ToolbarItem(placement: .bottomBar) {
             DisableableButton(
                 "nav-back",
-                toolbarVM.goBackDisabled,
-                toolbarVM.goBack
+                toolbarVM.state.goBackDisabled, {
+                    try? toolbarVM.sendAction(.goBack)
+                }
             )
         }
         ToolbarItem(placement: .bottomBar) {
@@ -290,8 +293,9 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
         ToolbarItem(placement: .bottomBar) {
             DisableableButton(
                 "nav-forward",
-                toolbarVM.goForwardDisabled,
-                toolbarVM.goForward
+                toolbarVM.state.goForwardDisabled, {
+                    try? toolbarVM.sendAction(.goForward)
+                }
             )
         }
         ToolbarItem(placement: .bottomBar) {
@@ -300,8 +304,9 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
         ToolbarItem(placement: .bottomBar) {
             DisableableButton(
                 "nav-refresh",
-                toolbarVM.reloadDisabled,
-                toolbarVM.reload
+                toolbarVM.state.reloadDisabled, {
+                    try? toolbarVM.sendAction(.reload)
+                }
             )
         }
         ToolbarItem(placement: .bottomBar) {

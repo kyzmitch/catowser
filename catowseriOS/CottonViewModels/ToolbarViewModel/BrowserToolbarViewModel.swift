@@ -10,14 +10,14 @@ import Combine
 import CoreBrowser
 import ViewModelKit
 
-public typealias BrowserToolbarViewModelV2 = BaseViewModel<
+public typealias BrowserToolbarViewModel = BaseViewModel<
     BrowserToolbarState<BrowserToolbarStateContextProxy>,
     BrowserToolbarAction,
     BrowserToolbarStateContextProxy
 >
 
 /// Browser toolbar internal view model implementation
-final class BrowserToolbarViewModelImpl: BrowserToolbarViewModelV2 {
+final class BrowserToolbarViewModelImpl: BrowserToolbarViewModel {
     /// View model context but from the app side, not related to the state
     private let appContext: BrowserToolbarViewContext
     
@@ -34,6 +34,8 @@ final class BrowserToolbarViewModelImpl: BrowserToolbarViewModelV2 {
     
     public override func sendAction(_ action: Action) throws {
         state = try state.handleAction(action, with: context)
+        // reset specific fields
+        state.stopWebViewReuseAction = false
     }
 }
 
@@ -42,6 +44,10 @@ final class BrowserToolbarViewModelImpl: BrowserToolbarViewModelV2 {
 extension BrowserToolbarViewModelImpl: BrowserToolbarStateContext {
     var siteNavigationDelegate: (any SiteNavigationChangable)? {
         appContext.siteNavigationDelegate
+    }
+    
+    var siteExternalDelegate: SiteExternalNavigationDelegate? {
+        self
     }
 }
 

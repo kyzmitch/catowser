@@ -108,7 +108,7 @@ import FeatureFlagsKit
         )
     }
     
-    func toolbarViewModel() -> BrowserToolbarViewModelV2 {
+    func toolbarViewModel() -> BrowserToolbarViewModel {
         let context = BrowserToolbarViewContextImpl()
         return ModuleVMFactory.createToolbarVM(context)
     }
