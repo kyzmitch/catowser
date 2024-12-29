@@ -153,7 +153,7 @@ import FeatureFlagsKit
             await updateState(try state.transition(on: .resetToSite(site)))
             await updateState(try state.transition(on: .loadSite))
         } catch {
-            print("Wrong state on reset to site: " + error.localizedDescription)
+            print(error.localizedDescription)
         }
     }
 

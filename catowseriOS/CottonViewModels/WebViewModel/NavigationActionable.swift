@@ -14,6 +14,8 @@ import WebKit
 /// Also,`WKNavigationAction` which has these fields and confirms to this protocol,
 /// it is marked as a main actor, so that, this protocol should be marked as main actor as well.
 @MainActor public protocol NavigationActionable: AnyObject, Sendable {
+    /// Type of web kit navigation
     var navigationType: WKNavigationType { get }
+    /// URL request
     var request: URLRequest { get }
 }

@@ -53,14 +53,14 @@ extension BrowserToolbarViewModelImpl: BrowserToolbarStateContext {
 // MARK: - SiteExternalNavigationDelegate
 
 extension BrowserToolbarViewModelImpl: SiteExternalNavigationDelegate {
-    public func didBackNavigationUpdate(to canGoBack: Bool) {
+    public func backNavigationDidUpdate(to canGoBack: Bool) {
         try? sendAction(.updateNavigation(
             canGoBack: canGoBack,
             canGoForward: nil
         ))
     }
 
-    public func didForwardNavigationUpdate(to canGoForward: Bool) {
+    public func forwardNavigationDidUpdate(to canGoForward: Bool) {
         try? sendAction(.updateNavigation(
             canGoBack: nil,
             canGoForward: canGoForward
@@ -69,9 +69,9 @@ extension BrowserToolbarViewModelImpl: SiteExternalNavigationDelegate {
 
     public func provisionalNavigationDidStart() {}
 
-    public func didSiteOpen(appName: String) {}
+    public func siteDidOpen(appName: String) {}
 
-    public func loadingProgressdDidChange(_ progress: Float) {
+    public func loadingProgressDidChange(_ progress: Float) {
         try? sendAction(.updateProgress(show: nil, value: progress))
     }
 

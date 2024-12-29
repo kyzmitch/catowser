@@ -177,7 +177,7 @@ final class WebViewController<C: Navigating>: BaseViewController, WKUIDelegate, 
                  decidePolicyFor navigationAction: WKNavigationAction,
                  decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if let domain = viewModel.nativeAppDomainNameString {
-            viewModel.siteNavigation?.didSiteOpen(appName: domain)
+            viewModel.siteNavigation?.siteDidOpen(appName: domain)
             // no need to interrupt
         }
         Task {
@@ -334,7 +334,7 @@ private extension WebViewController {
                  Task {
                      await viewModel
                          .siteNavigation?
-                         .loadingProgressdDidChange(Float(value))
+                         .loadingProgressDidChange(Float(value))
                  }
         }
     }
@@ -346,7 +346,7 @@ private extension WebViewController {
                 return
             }
             Task {
-                await viewModel.siteNavigation?.didBackNavigationUpdate(to: value)
+                await viewModel.siteNavigation?.backNavigationDidUpdate(to: value)
             }
         }
     }
@@ -358,7 +358,7 @@ private extension WebViewController {
                 return
             }
             Task {
-                await viewModel.siteNavigation?.didForwardNavigationUpdate(to: value)
+                await viewModel.siteNavigation?.forwardNavigationDidUpdate(to: value)
             }
         }
     }
