@@ -20,7 +20,6 @@ public enum TabsListError: DataServiceKitError {
     case selectedNotFound
     case wrongTabContent
     case wrongTabIndexToReplace
-    case tabContentAlreadySet
     case noAnyTabs
     case repositoryFailure(NSError)
     case failToRemoveTab
@@ -40,8 +39,6 @@ public enum TabsListError: DataServiceKitError {
             "Unexpected tab content"
         case .wrongTabIndexToReplace:
             "Unexpected tab index to replace (out of bounds)"
-        case .tabContentAlreadySet:
-            "Exactly same tab content is already set"
         case .noAnyTabs:
             "No any tabs found (expect at least 1)"
         case .repositoryFailure(let nsError):

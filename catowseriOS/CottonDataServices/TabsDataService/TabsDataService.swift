@@ -350,8 +350,9 @@ private extension TabsDataService {
             serviceData.tabContentReplaced = .finished(output: .failure(.notInitializedYet))
             return serviceData
         }
+        let void: Void = ()
         guard tabTuple.tab.contentType != tabContent else {
-            serviceData.tabContentReplaced = .finished(output: .failure(.tabContentAlreadySet))
+            serviceData.tabContentReplaced = .finished(output: .success(void))
             return serviceData
         }
         var newTab = tabTuple.tab
@@ -372,7 +373,6 @@ private extension TabsDataService {
                     await observer.tabDidReplace(newTab, at: tabIndex)
                 }
             }
-            let void: Void = ()
             serviceData.tabContentReplaced = .finished(output: .success(void))
             return serviceData
         } catch {

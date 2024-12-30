@@ -27,7 +27,7 @@ public enum AppError: LocalizedError {
         case .commandNotFinishedYet:
             "Same command not finished yet"
         case .tabsServiceError(let tabsListError):
-            "Tabs data service failure (\(tabsListError.errorDescription ?? "")"
+            "Tabs data service failure (\(tabsListError.errorDescription ?? ""))"
         }
     }
 }
