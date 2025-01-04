@@ -123,14 +123,14 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
 
     private var uiKitWrapperView: some View {
         VStack {
-            let searchBarDelegate: UISearchBarDelegate = searchBarVM
+            let searchBarDelegate = searchBarVM.searchBarDelegate
             PhoneSearchBarLegacyView(searchBarDelegate, searchBarAction)
                 .frame(minWidth: 0, maxWidth: .infinity, maxHeight: CGFloat.searchViewHeight)
             if toolbarVM.state.showProgress {
                 ProgressView(value: toolbarVM.state.loadingProgress)
             }
             if showSearchSuggestions {
-                let delegate: SearchSuggestionsListDelegate = searchBarVM
+                let delegate = searchBarVM.searchSuggestionsDelegate
                 SearchSuggestionsView<S>(searchQuery, delegate, mode)
             } else {
                 let jsPlugins = browserContentVM.jsPluginsBuilder
@@ -192,7 +192,7 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
                     ProgressView(value: toolbarVM.state.loadingProgress)
                 }
                 if showSearchSuggestions {
-                    let delegate: SearchSuggestionsListDelegate = searchBarVM
+                    let delegate = searchBarVM.searchSuggestionsDelegate
                     SearchSuggestionsView<S>(searchQuery, delegate, mode)
                 } else {
                     let jsPlugins = browserContentVM.jsPluginsBuilder
@@ -251,7 +251,7 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
             // Reset the search bar from editing mode
             // when new modal screen is about to get shown
             if newValue {
-                searchBarAction = .cancelTapped
+                searchBarAction = .cancelSearch
             }
         }
         .onReceive(browserContentVM.$loading.dropFirst()) { isLoading = $0 }

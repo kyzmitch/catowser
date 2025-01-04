@@ -111,7 +111,7 @@ struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarV
 
     private var uiKitWrapperView: some View {
         VStack {
-            let searchBarDelegate: UISearchBarDelegate = searchBarVM
+            let searchBarDelegate = searchBarVM.searchBarDelegate
             TabletTabsView(mode)
             TabletSearchBarLegacyView(
                 searchBarDelegate,
@@ -124,7 +124,7 @@ struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarV
                 ProgressView(value: toolbarVM.state.loadingProgress)
             }
             if showSearchSuggestions {
-                let delegate: SearchSuggestionsListDelegate = searchBarVM
+                let delegate = searchBarVM.searchSuggestionsDelegate
                 SearchSuggestionsView<S>(searchQuery, delegate, mode)
             } else {
                 let jsPlugins = browserContentVM.jsPluginsBuilder
@@ -185,7 +185,7 @@ struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarV
                 ProgressView(value: toolbarVM.state.loadingProgress)
             }
             if showSearchSuggestions {
-                let delegate: SearchSuggestionsListDelegate = searchBarVM
+                let delegate = searchBarVM.searchSuggestionsDelegate
                 SearchSuggestionsView<S>(searchQuery, delegate, mode)
             } else {
                 let jsPlugins = browserContentVM.jsPluginsBuilder

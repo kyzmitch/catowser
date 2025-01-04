@@ -43,7 +43,7 @@ public struct BrowserToolbarState<C: BrowserToolbarStateContext>: ViewModelState
         .init()
     }
     
-    @MainActor public func handleAction(
+    @MainActor public func transitionOn(
         _ action: Action,
         with context: Context?
     ) throws -> Self {

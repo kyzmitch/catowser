@@ -38,7 +38,7 @@ struct SearchSuggestionsViewV2<S: SearchSuggestionsViewModel>: View {
                     return
                 }
                 Task {
-                    await delegate?.searchSuggestionDidSelect(newValue)
+                    try? await delegate?.searchSuggestionDidSelect(newValue)
                 }
             }
             .onReceive(viewModel.statePublisher, perform: { state in

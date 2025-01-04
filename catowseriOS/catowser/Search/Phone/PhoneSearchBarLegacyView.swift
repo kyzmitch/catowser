@@ -14,8 +14,10 @@ struct PhoneSearchBarLegacyView: CatowserUIVCRepresentable {
     /// Model also has action property
     private let action: SearchBarAction
 
-    init(_ searchBarDelegate: UISearchBarDelegate?,
-         _ action: SearchBarAction) {
+    init(
+        _ searchBarDelegate: UISearchBarDelegate?,
+        _ action: SearchBarAction
+    ) {
         self.searchBarDelegate = searchBarDelegate
         self.action = action
     }

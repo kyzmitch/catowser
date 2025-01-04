@@ -1,0 +1,88 @@
+//
+//  SearchBarDelegateImpl.swift
+//  catowser
+//
+//  Created by Andrey Ermoshin on 04.01.2025.
+//  Copyright © 2025 Cotton (Catowser). All rights reserved.
+//
+
+import UIKit
+import CoreBrowser
+
+final class SearchBarDelegateImpl: NSObject {
+    /// Temporary property which automatically removes leading spaces.
+    /// Can't declare it private due to compiler error.
+    @LeadingTrimmed private var tempSearchText: String
+    /// View model
+    private let viewModel: SearchBarViewModel
+    
+    init(viewModel: SearchBarViewModel) {
+        self.viewModel = viewModel
+        tempSearchText = ""
+    }
+}
+
+// MARK: - UISearchBarDelegate
+
+extension SearchBarDelegateImpl: UISearchBarDelegate {
+    public func searchBar(
+        _ searchBar: UISearchBar,
+        textDidChange searchQuery: String
+    ) {
+        if searchQuery.isEmpty || searchQuery.looksLikeAURL() {
+            try? viewModel.sendAction(.cancelSearch)
+        } else {
+            try? viewModel.sendAction(.startSearch(searchQuery))
+        }
+    }
+
+    public func searchBar(
+        _ searchBar: UISearchBar,
+        shouldChangeTextIn range: NSRange,
+        replacementText text: String
+    ) -> Bool {
+        guard let value = searchBar.text else {
+            return text != " "
+        }
+        // UIKit's searchbar delegate uses modern String type
+        // but at the same time legacy NSRange type
+        // which can't be used in String API,
+        // since it requires modern Range<String.Index>
+        // https://exceptionshub.com/nsrange-to-rangestring-index.html
+        let future = (value as NSString).replacingCharacters(in: range, with: text)
+        // Only need to check that no leading spaces
+        // trailing space is allowed to be able to construct
+        // query requests with more than one word.
+        tempSearchText = future
+        // 400 IQ approach
+        return tempSearchText == future
+    }
+
+    public func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        try? viewModel.sendAction(.startSearch(nil))
+    }
+
+    public func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        try? viewModel.sendAction(.cancelSearch)
+        searchBar.resignFirstResponder()
+    }
+
+    public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let text = searchBar.text else {
+            return
+        }
+        let content: SuggestionType
+        if text.looksLikeAURL() {
+            content = .looksLikeURL(text)
+        } else {
+            // need to open web view with url of search engine
+            // and specific search queue
+            content = .suggestion(text)
+        }
+        try? viewModel.sendAction(.selectSuggestion(content))
+    }
+
+    public func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        // called when `Cancel` pressed or search bar no more a first responder
+    }
+}

@@ -40,6 +40,6 @@ open class BaseViewModel<
     open func sendAction(
         _ action: Action
     ) throws {
-        state = try state.handleAction(action, with: context)
+        state = try state.transitionOn(action, with: context)
     }
 }

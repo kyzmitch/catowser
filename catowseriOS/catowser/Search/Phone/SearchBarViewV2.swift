@@ -34,8 +34,10 @@ struct SearchBarViewV2: View {
 
     private let overlayHidden: CGFloat = -UIScreen.main.bounds.width
 
-    init(_ query: Binding<String>,
-         _ action: Binding<SearchBarAction>) {
+    init(
+        _ query: Binding<String>,
+        _ action: Binding<SearchBarAction>
+    ) {
         _query = query
         _action = action
     }
@@ -59,7 +61,7 @@ struct SearchBarViewV2: View {
             switch newValue {
             case .startSearch:
                 state = .inSearchMode(state.title, state.content)
-            case .cancelTapped:
+            case .cancelSearch:
                 if state.title.isEmpty {
                     state = .blankViewMode
                 } else {
@@ -93,8 +95,8 @@ struct SearchBarViewV2: View {
         }
         .onChange(of: query) { showClearButton = !$0.isEmpty }
         .onReceive(cancelBtnVM.$clearTapped.dropFirst()) { query = "" }
-        .onReceive(cancelBtnVM.$cancelTapped.dropFirst()) { action = .cancelTapped }
-        .onReceive(textFieldVM.$submitTapped.dropFirst()) { action = .cancelTapped }
+        .onReceive(cancelBtnVM.$cancelTapped.dropFirst()) { action = .cancelSearch }
+        .onReceive(textFieldVM.$submitTapped.dropFirst()) { action = .cancelSearch }
         .onReceive(textFieldVM.$isFocused.dropFirst()) { newValue in
             if newValue {
                 action = .startSearch

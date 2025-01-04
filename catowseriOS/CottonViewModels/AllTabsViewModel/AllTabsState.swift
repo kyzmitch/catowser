@@ -18,7 +18,7 @@ public struct AllTabsState<C: AllTabsStateContext>: ViewModelState {
         .init()
     }
     
-    @MainActor public func handleAction(
+    @MainActor public func transitionOn(
         _ action: Action,
         with context: Context?
     ) throws -> Self {

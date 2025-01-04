@@ -10,6 +10,7 @@ import Combine
 import CoreBrowser
 import ViewModelKit
 
+/// Browser toolbar base view model
 public typealias BrowserToolbarViewModel = BaseViewModel<
     BrowserToolbarState<BrowserToolbarStateContextProxy>,
     BrowserToolbarAction,

@@ -208,16 +208,20 @@ private extension SearchBarCoordinator {
         searhSuggestionsCoordinator?.stop()
     }
 
-    func replaceTab(with url: URL, with suggestion: String? = nil) async {
+    func replaceTab(
+        with url: URL,
+        with suggestion: String? = nil
+    ) async throws {
         let blockPopups = DefaultTabProvider.shared.blockPopups
         let isJSEnabled = await FeatureManager.shared.boolValue(of: .javaScriptEnabled)
-        let settings = Site.Settings(isPrivate: false,
-                                     blockPopups: blockPopups,
-                                     isJSEnabled: isJSEnabled,
-                                     canLoadPlugins: true)
+        let settings = Site.Settings(
+            isPrivate: false,
+            blockPopups: blockPopups,
+            isJSEnabled: isJSEnabled,
+            canLoadPlugins: true
+        )
         guard let site = Site(url, suggestion, settings) else {
-            assertionFailure("\(#function) failed to replace current tab - failed create site")
-            return
+            throw SearchBarError.failToInitNewSiteValue
         }
         // tab content replacing will happen in `didCommit`
         delegate?.openTab(.site(site))
@@ -263,13 +267,13 @@ extension SearchBarCoordinator: UISearchBarDelegate {
     }
 
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        showNext(.handleAction(.startSearch))
+        showNext(.handleAction(.startSearch(nil)))
     }
 
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         showNext(.hideSuggestions)
         searchBar.resignFirstResponder()
-        showNext(.handleAction(.cancelTapped))
+        showNext(.handleAction(.cancelSearch))
     }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -285,7 +289,7 @@ extension SearchBarCoordinator: UISearchBarDelegate {
             content = .suggestion(text)
         }
         Task {
-            await searchSuggestionDidSelect(content)
+            try? await searchSuggestionDidSelect(content)
         }
     }
 
@@ -295,7 +299,7 @@ extension SearchBarCoordinator: UISearchBarDelegate {
 }
 
 extension SearchBarCoordinator: SearchSuggestionsListDelegate {
-    func searchSuggestionDidSelect(_ content: SuggestionType) async {
+    func searchSuggestionDidSelect(_ content: SuggestionType) async throws {
         showNext(.hideSuggestions)
 
         switch content {
@@ -304,13 +308,13 @@ extension SearchBarCoordinator: SearchSuggestionsListDelegate {
                 assertionFailure("Failed construct site URL using edited URL")
                 return
             }
-            await replaceTab(with: url)
+            try await replaceTab(with: url)
         case .knownDomain(let domain):
             guard let url = URL(string: "https://\(domain)") else {
                 assertionFailure("Failed construct site URL using domain name")
                 return
             }
-            await replaceTab(with: url)
+            try await replaceTab(with: url)
         case .suggestion(let suggestion):
             await handleSuggestion(suggestion)
         @unknown default:
@@ -339,7 +343,7 @@ private extension SearchBarCoordinator {
                 do {
                     let url = try serviceData.searchURL
                     Task {
-                        await self?.replaceTab(with: url, with: suggestion)
+                        try await self?.replaceTab(with: url, with: suggestion)
                     }
                 } catch {
                     print("Fail to construct search URL: \(error)")

@@ -279,7 +279,6 @@
 		8A825947294E2E1A007B97CF /* TopSitesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A825946294E2E1A007B97CF /* TopSitesView.swift */; };
 		8A82594A294E40F5007B97CF /* BrowserContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A825949294E40F5007B97CF /* BrowserContentViewModel.swift */; };
 		8A82CDF02351095700607162 /* RestClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A82CDEF2351095700607162 /* RestClient.swift */; };
-		8A89E22B29F4FA5D00FE5543 /* SearchBarState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A89E22A29F4FA5D00FE5543 /* SearchBarState.swift */; };
 		8A8EB007245EA1BA0028D35C /* WebViewAuthChallengeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8EB006245EA1B90028D35C /* WebViewAuthChallengeHandler.swift */; };
 		8A8F038E293FAB3200237DFF /* GlobalMenuDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8F038D293FAB3200237DFF /* GlobalMenuDelegate.swift */; };
 		8A90636924332376009D786E /* URL+CoreExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A90636824332376009D786E /* URL+CoreExtensions.swift */; };
@@ -1054,7 +1053,6 @@
 		8A825946294E2E1A007B97CF /* TopSitesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopSitesView.swift; sourceTree = "<group>"; };
 		8A825949294E40F5007B97CF /* BrowserContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserContentViewModel.swift; sourceTree = "<group>"; };
 		8A82CDEF2351095700607162 /* RestClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestClient.swift; sourceTree = "<group>"; };
-		8A89E22A29F4FA5D00FE5543 /* SearchBarState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarState.swift; sourceTree = "<group>"; };
 		8A8EB006245EA1B90028D35C /* WebViewAuthChallengeHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewAuthChallengeHandler.swift; sourceTree = "<group>"; };
 		8A8F038D293FAB3200237DFF /* GlobalMenuDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalMenuDelegate.swift; sourceTree = "<group>"; };
 		8A90636824332376009D786E /* URL+CoreExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+CoreExtensions.swift"; sourceTree = "<group>"; };
@@ -1761,7 +1759,6 @@
 			isa = PBXGroup;
 			children = (
 				841A2D85203B1FA50050A996 /* SearchBarBaseViewController.swift */,
-				8A89E22A29F4FA5D00FE5543 /* SearchBarState.swift */,
 				8A3286EF294B585100ECCAEA /* SearchBarLegacyView.swift */,
 				8A0FC19E29F24A5D0044829A /* Phone */,
 				8A0FC19D29F24A540044829A /* Tablet */,
@@ -3845,7 +3842,6 @@
 				755E109D27CA3A3100D90AD0 /* SettingsEnumTypes.swift in Sources */,
 				8AD8C29B296616F40038FE5C /* WebViewController+Reusable.swift in Sources */,
 				8ADA5822293E4EA200263767 /* DownloadPanelPresenter.swift in Sources */,
-				8A89E22B29F4FA5D00FE5543 /* SearchBarState.swift in Sources */,
 				8AB9BE1128FF0C23002063C2 /* UIViewController+CatowserExtensions.swift in Sources */,
 				8A9D9D7F2971D2300047734C /* PhoneView.swift in Sources */,
 				8A96BEC92481237B00E81C38 /* SpecificBasicFeatures.swift in Sources */,

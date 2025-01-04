@@ -23,37 +23,6 @@ final class SearchBarLegacyView: UIView {
         }
     }
 
-    // MARK: - state properties
-
-    private var state: SearchBarState = .blankViewMode {
-        didSet {
-            onStateChange(state)
-        }
-    }
-
-    func handleAction(_ action: SearchBarAction) {
-        switch action {
-        case .startSearch:
-            let initialTitle = state.title
-            let initialContent = state.content
-            state = .inSearchMode(initialTitle, initialContent)
-        case .cancelTapped:
-            let initialContent = state.content
-            if initialContent.isEmpty {
-                state = .blankViewMode
-            } else {
-                state = .viewMode(state.title, initialContent, true)
-            }
-        case .updateView(let newTitle, let newContent) where !newTitle.isEmpty:
-            state = .viewMode(newTitle, newContent, false)
-        case .clearView:
-            state = .blankViewMode
-        default:
-            // just in case
-            state = .blankViewMode
-        }
-    }
-
     let uiFramework: UIFrameworkType
 
     /// Only needed for SwiftUI wrapper for phone layout
@@ -61,7 +30,10 @@ final class SearchBarLegacyView: UIView {
 
     // MARK: - initializers
 
-    init(frame: CGRect, uiFramework: UIFrameworkType) {
+    init(
+        frame: CGRect,
+        uiFramework: UIFrameworkType
+    ) {
         self.uiFramework = uiFramework
         super.init(frame: frame)
 
@@ -78,7 +50,9 @@ final class SearchBarLegacyView: UIView {
             if isPad {
                 searchBarView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
             } else {
-                searchBarView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 16).isActive = true
+                searchBarView.widthAnchor.constraint(
+                    equalToConstant: UIScreen.main.bounds.width - 16
+                ).isActive = true
             }
         } else {
             if uiFramework.swiftUIBased {
@@ -211,27 +185,31 @@ final class SearchBarLegacyView: UIView {
 private extension SearchBarLegacyView {
     // MARK: - state handler
 
-    private func onStateChange(_ nextState: SearchBarState) {
+    private func onStateChange(_ nextState: SearchBarState<SearchBarStateContextProxy>) {
         // See `diff` comment to find a difference with previos state handling
 
         switch nextState {
-        case .blankViewMode:
-            searchBarView.text = nil
-            siteNameLabel.text = .placeholderText
-            searchBarView.setShowsCancelButton(false, animated: false)
-            searchBarView.resignFirstResponder()
-            // for blank mode it is better to hide label and
-            // make search bar frontmost right away
-            prepareForEditMode()
-        case .inSearchMode:
+        case is SearchBarInViewMode:
+            guard let title = nextState.titleString, let content = nextState.searchBarContent else {
+                searchBarView.text = nil
+                siteNameLabel.text = .placeholderText
+                searchBarView.setShowsCancelButton(false, animated: false)
+                searchBarView.resignFirstResponder()
+                // for blank mode it is better to hide label and
+                // make search bar frontmost right away
+                prepareForEditMode()
+                return
+            }
+            handleViewModeState(title, content, true)
+        case is SearchBarInSearchMode:
             searchBarView.setShowsCancelButton(true, animated: true)
             guard searchBarView.text != nil else {
                 break
             }
             // need somehow select all text in search bar view
             prepareForEditMode()
-        case .viewMode(let title, let searchBarContent, let animated):
-            handleViewModeState(title, searchBarContent, animated)
+        default:
+            break
         }
     }
 
