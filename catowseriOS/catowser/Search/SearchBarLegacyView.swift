@@ -10,12 +10,18 @@ import UIKit
 import CoreBrowser
 import FeatureFlagsKit
 import CottonViewModels
+import ViewModelKit
 
 enum SearchBarConstants {
     static let animationDuration = 0.3
 }
 
-final class SearchBarLegacyView: UIView {
+final class SearchBarLegacyView<
+    VM: ViewModelInterface
+>: UIView, ViewModelConsumer {
+    typealias ViewModelType = VM
+    let viewModel: ViewModelType
+    
     /// Search bar view delegate
     weak var delegate: UISearchBarDelegate? {
         didSet {
@@ -23,7 +29,8 @@ final class SearchBarLegacyView: UIView {
         }
     }
 
-    let uiFramework: UIFrameworkType
+    /// UI framework type
+    private let uiFramework: UIFrameworkType
 
     /// Only needed for SwiftUI wrapper for phone layout
     private var phoneWidthConstraint: NSLayoutConstraint?
@@ -32,9 +39,11 @@ final class SearchBarLegacyView: UIView {
 
     init(
         frame: CGRect,
-        uiFramework: UIFrameworkType
+        uiFramework: UIFrameworkType,
+        viewModel: ViewModelType
     ) {
         self.uiFramework = uiFramework
+        self.viewModel = viewModel
         super.init(frame: frame)
 
         addSubview(searchBarView)
@@ -180,12 +189,8 @@ final class SearchBarLegacyView: UIView {
         searchBarView.becomeFirstResponder()
         prepareForEditMode()
     }
-}
-
-private extension SearchBarLegacyView {
-    // MARK: - state handler
-
-    private func onStateChange(_ nextState: SearchBarState<SearchBarStateContextProxy>) {
+    
+    func onStateChange(_ nextState: State) {
         // See `diff` comment to find a difference with previos state handling
 
         switch nextState {
@@ -212,7 +217,9 @@ private extension SearchBarLegacyView {
             break
         }
     }
+}
 
+private extension SearchBarLegacyView {
     func prepareForEditMode(and showKeyboard: Bool = false) {
         if siteNameLabel.superview == nil {
             addSubview(siteNameLabel)
@@ -296,5 +303,5 @@ private extension SearchBarLegacyView {
 }
 
 fileprivate extension Selector {
-    static let siteNameTap = #selector(SearchBarLegacyView.handleSiteNameTap(_:))
+    static let siteNameTap = #selector(SearchBarLegacyView<SearchBarViewModel>.handleSiteNameTap(_:))
 }

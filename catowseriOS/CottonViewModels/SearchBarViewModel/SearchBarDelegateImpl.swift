@@ -9,6 +9,8 @@
 import UIKit
 import CoreBrowser
 
+/// Internal delegate implementation
+/// which uses view model as a subject for this proxy.
 final class SearchBarDelegateImpl: NSObject {
     /// Temporary property which automatically removes leading spaces.
     /// Can't declare it private due to compiler error.
@@ -16,7 +18,9 @@ final class SearchBarDelegateImpl: NSObject {
     /// View model
     private let viewModel: SearchBarViewModel
     
-    init(viewModel: SearchBarViewModel) {
+    init(
+        viewModel: SearchBarViewModel
+    ) {
         self.viewModel = viewModel
         tempSearchText = ""
     }
@@ -29,10 +33,14 @@ extension SearchBarDelegateImpl: UISearchBarDelegate {
         _ searchBar: UISearchBar,
         textDidChange searchQuery: String
     ) {
-        if searchQuery.isEmpty || searchQuery.looksLikeAURL() {
-            try? viewModel.sendAction(.cancelSearch)
-        } else {
-            try? viewModel.sendAction(.startSearch(searchQuery))
+        do {
+            if searchQuery.isEmpty || searchQuery.looksLikeAURL() {
+                try viewModel.sendAction(.cancelSearch)
+            } else {
+                try viewModel.sendAction(.startSearch(searchQuery))
+            }
+        } catch {
+            print("textDidChange fail: \(error)")
         }
     }
 
@@ -59,12 +67,21 @@ extension SearchBarDelegateImpl: UISearchBarDelegate {
     }
 
     public func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        try? viewModel.sendAction(.startSearch(nil))
+        do {
+            try viewModel.sendAction(.startSearch(nil))
+        } catch {
+            print("TextDidBeginEditing error: \(error)")
+        }
     }
 
     public func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        try? viewModel.sendAction(.cancelSearch)
         searchBar.resignFirstResponder()
+        do {
+            try viewModel.sendAction(.cancelSearch)
+        } catch {
+            print("CancelButtonClicked error: \(error)")
+        }
+        
     }
 
     public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -75,11 +92,14 @@ extension SearchBarDelegateImpl: UISearchBarDelegate {
         if text.looksLikeAURL() {
             content = .looksLikeURL(text)
         } else {
-            // need to open web view with url of search engine
-            // and specific search queue
+            // need to open web view with url of search engine and specific search queue
             content = .suggestion(text)
         }
-        try? viewModel.sendAction(.selectSuggestion(content))
+        do {
+            try viewModel.sendAction(.selectSuggestion(content))
+        } catch {
+            print("SearchButtonClicked error: \(error)")
+        }
     }
 
     public func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {

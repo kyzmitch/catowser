@@ -11,7 +11,11 @@ import CoreBrowser
 import FeatureFlagsKit
 import CottonViewModels
 
-struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarViewModel>: View {
+struct PhoneView<
+    W: WebViewModel,
+    S: SearchSuggestionsViewModel,
+    SB: SearchBarViewModelWithDelegates
+>: View {
     // MARK: - view models of subviews
 
     /// Search bar view model
@@ -150,12 +154,21 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
         }
         .ignoresSafeArea(.keyboard, edges: [.bottom])
         .ignoresSafeArea(.container, edges: [.leading, .trailing])
-        .onReceive(searchBarVM.showSearchSuggestions) { showSearchSuggestions = $0 }
         .onReceive(searchBarVM.searchQuery) { searchQuery = $0 }
         .onReceive(searchBarVM.action.dropFirst()) { searchBarAction = $0 }
         .onReceive(toolbarVM.$state) { value in
             if value.stopWebViewReusage {
                 webViewNeedsUpdate = false
+            }
+        }
+        .onReceive(searchBarVM.$state) { value in
+            switch value {
+            case is SearchBarInViewMode:
+                showSearchSuggestions = false
+            case is SearchBarInSearchMode:
+                showSearchSuggestions = true
+            default:
+                break
             }
         }
         .onReceive(browserContentVM.$webViewNeedsUpdate.dropFirst()) { webViewNeedsUpdate = true }
@@ -228,8 +241,16 @@ struct PhoneView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarVi
             TabsPreviewsLegacyView()
         }
         .ignoresSafeArea(.keyboard, edges: [.bottom])
-        .ignoresSafeArea(.container, edges: [.leading, .trailing])
-        .onReceive(searchBarVM.showSearchSuggestions) { showSearchSuggestions = $0 }
+        .onReceive(searchBarVM.$state) { value in
+            switch value {
+            case is SearchBarInViewMode:
+                showSearchSuggestions = false
+            case is SearchBarInSearchMode:
+                showSearchSuggestions = true
+            default:
+                break
+            }
+        }
         .onChange(of: searchQuery) { value in
             let inSearchMode = searchBarAction == .startSearch
             let validQuery = !value.isEmpty && !value.looksLikeAURL()

@@ -40,7 +40,7 @@ struct MainBrowserView<
     C: ContentCoordinatorsInterface,
     W: WebViewModel,
     S: SearchSuggestionsViewModel,
-    SB: SearchBarViewModel
+    SB: SearchBarViewModelWithDelegates
 >: View {
     /// Store main view model in this main view to not have generic parameter in phone/tablet views
     @StateObject private var viewModel: MainBrowserViewModel<C>

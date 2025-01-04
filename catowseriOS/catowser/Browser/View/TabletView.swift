@@ -11,7 +11,11 @@ import CoreBrowser
 import FeatureFlagsKit
 import CottonViewModels
 
-struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarViewModel>: View {
+struct TabletView<
+    W: WebViewModel,
+    S: SearchSuggestionsViewModel,
+    SB: SearchBarViewModelWithDelegates
+>: View {
     // MARK: - view models of subviews
 
     /// Search bar view model
@@ -141,7 +145,16 @@ struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarV
             }
         }
         .ignoresSafeArea(.keyboard)
-        .onReceive(searchBarVM.showSearchSuggestions) { showSearchSuggestions = $0 }
+        .onReceive(searchBarVM.$state) { value in
+            switch value {
+            case is SearchBarInViewMode:
+                showSearchSuggestions = false
+            case is SearchBarInSearchMode:
+                showSearchSuggestions = true
+            default:
+                break
+            }
+        }
         .onReceive(searchBarVM.searchQuery) { searchQuery = $0 }
         .onReceive(searchBarVM.action.dropFirst()) { searchBarAction = $0 }
         .onReceive(toolbarVM.$state) { value in
@@ -205,7 +218,16 @@ struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarV
             BrowserMenuView(menuModel)
         }
         .ignoresSafeArea(.keyboard)
-        .onReceive(searchBarVM.showSearchSuggestions) { showSearchSuggestions = $0 }
+        .onReceive(searchBarVM.$state) { value in
+            switch value {
+            case is SearchBarInViewMode:
+                showSearchSuggestions = false
+            case is SearchBarInSearchMode:
+                showSearchSuggestions = true
+            default:
+                break
+            }
+        }
         .onChange(of: searchQuery) { value in
             let inSearchMode = searchBarAction == .startSearch
             let validQuery = !value.isEmpty && !value.looksLikeAURL()

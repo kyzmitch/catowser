@@ -17,6 +17,8 @@ public class SearchBarState<C: SearchBarStateContext>: ViewModelState, @unchecke
     public var titleString: String?
     /// Need to figure out if it is a search query
     public var searchBarContent: String?
+    /// Query
+    public var query: String?
     
     init() { }
     

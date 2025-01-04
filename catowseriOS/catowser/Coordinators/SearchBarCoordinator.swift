@@ -44,6 +44,8 @@ final class SearchBarCoordinator: NSObject, Coordinator {
     private let searchDataService: any SearchDataServiceProtocol
     /// UI framework
     let uiFramework: UIFrameworkType
+    /// View model
+    private let viewModel: SearchBarViewModelWithDelegates
 
     init(
         _ vcFactory: ViewControllerFactory,
@@ -52,7 +54,8 @@ final class SearchBarCoordinator: NSObject, Coordinator {
         _ globalMenuDelegate: GlobalMenuDelegate?,
         _ delegate: SearchBarDelegate?,
         _ uiFramework: UIFrameworkType,
-        _ searchDataService: any SearchDataServiceProtocol
+        _ searchDataService: any SearchDataServiceProtocol,
+        _ viewModel: SearchBarViewModelWithDelegates
     ) {
         self.vcFactory = vcFactory
         self.presenterVC = presenter
@@ -61,17 +64,25 @@ final class SearchBarCoordinator: NSObject, Coordinator {
         self.delegate = delegate
         self.uiFramework = uiFramework
         self.searchDataService = searchDataService
+        self.viewModel = viewModel
     }
 
     func start() {
         let createdVC: (any AnyViewController)?
         if isPad {
-            createdVC = vcFactory.deviceSpecificSearchBarViewController(self,
-                                                                        downloadPanelDelegate,
-                                                                        globalMenuDelegate,
-                                                                        uiFramework)
+            createdVC = vcFactory.deviceSpecificSearchBarViewController(
+                self,
+                downloadPanelDelegate,
+                globalMenuDelegate,
+                uiFramework,
+                viewModel
+            )
         } else {
-            createdVC = vcFactory.deviceSpecificSearchBarViewController(self, uiFramework)
+            createdVC = vcFactory.deviceSpecificSearchBarViewController(
+                self,
+                uiFramework,
+                viewModel
+            )
         }
         guard let vc = createdVC, let controllerView = presenterVC?.controllerView else {
             return

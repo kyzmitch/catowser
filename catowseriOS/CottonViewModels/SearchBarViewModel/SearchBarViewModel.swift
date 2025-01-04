@@ -14,12 +14,16 @@ import CottonUseCases
 import UIKit
 import ViewModelKit
 
-/// Base search bar view model
+/// Base search bar view model class
 public typealias SearchBarViewModel = BaseViewModel<
     SearchBarState<SearchBarStateContextProxy>,
     SearchBarAction,
     SearchBarStateContextProxy
-> & SearchBarDelegateHolder
+>
+
+/// Combined base class with additional protocol,
+/// because this combonation can't be used as a generic parameter (e.g. in SearchBarLegacyView)
+public typealias SearchBarViewModelWithDelegates = SearchBarViewModel & SearchBarDelegateHolder
 
 /// View model itself can't implement that delegate protocol because of NSObject inheritance,
 /// so that, using separate interface for it.
@@ -32,7 +36,7 @@ public protocol SearchBarDelegateHolder {
 /// and at the same time it implements `SearchSuggestionsListDelegate`
 /// and `UISearchBarDelegate` which couldn't be implemented in SwiftUI view.
 /// This class is only needed for SwiftUI mode when it uses old UKit view controller.
-@MainActor public final class SearchBarViewModelImpl: @preconcurrency SearchBarViewModel {
+@MainActor public final class SearchBarViewModelImpl: @preconcurrency SearchBarViewModelWithDelegates {
     /// Write tabs use case
     private let writeTabsUseCase: WriteTabsUseCase
     /// Search autocomplete use case
@@ -88,25 +92,20 @@ extension SearchBarViewModelImpl: SearchBarStateContext {
         switch content {
         case .looksLikeURL(let likeURL):
             guard let url = URL(string: likeURL) else {
-                assertionFailure("Failed construct site URL using edited URL")
-                return
+                throw SearchBarError.looksLikeUrlButNotExactly(likeURL)
             }
             try await replaceTab(with: url, with: nil, isJSEnabled)
         case .knownDomain(let domain):
             guard let url = URL(string: "https://\(domain)") else {
-                assertionFailure("Failed construct site URL using domain name")
-                return
+                throw SearchBarError.failToCreatUrlFromDomain
             }
             try await replaceTab(with: url, with: nil, isJSEnabled)
         case .suggestion(let suggestion):
             let source = await appContext.webAutocompletionSourceValue
-            guard let url = try? await autocompletionUseCase.createSearchURL(
+            let url = try await autocompletionUseCase.createSearchURL(
                 source,
                 suggestion
-            ) else {
-                assertionFailure("Failed construct search engine url from suggestion string")
-                return
-            }
+            )
             try await replaceTab(with: url, with: suggestion, isJSEnabled)
         }
     }

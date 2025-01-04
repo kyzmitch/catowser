@@ -98,7 +98,7 @@ import FeatureFlagsKit
     
     func searchBarViewModel(
         _ context: SearchBarContext
-    ) async -> SearchBarViewModel {
+    ) async -> SearchBarViewModelWithDelegates {
         async let writeUseCase = useCaseRegistry.findUseCase(WriteTabsUseCase.self)
         async let searchUseCase = useCaseRegistry.findUseCase(AutocompleteSearchUseCase.self)
         return await SearchBarViewModelImpl(
