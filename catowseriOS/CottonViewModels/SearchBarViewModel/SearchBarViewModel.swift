@@ -36,7 +36,7 @@ public protocol SearchBarDelegateHolder {
 /// and at the same time it implements `SearchSuggestionsListDelegate`
 /// and `UISearchBarDelegate` which couldn't be implemented in SwiftUI view.
 /// This class is only needed for SwiftUI mode when it uses old UKit view controller.
-@MainActor public final class SearchBarViewModelImpl: @preconcurrency SearchBarViewModelWithDelegates {
+@MainActor final class SearchBarViewModelImpl: @preconcurrency SearchBarViewModelWithDelegates {
     /// Write tabs use case
     private let writeTabsUseCase: WriteTabsUseCase
     /// Search autocomplete use case
@@ -50,7 +50,7 @@ public protocol SearchBarDelegateHolder {
         self
     }
 
-    public init(
+    init(
         _ writeTabsUseCase: WriteTabsUseCase,
         _ autocompletionUseCase: AutocompleteSearchUseCase,
         _ appContext: SearchBarContext

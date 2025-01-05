@@ -13,7 +13,6 @@ import CoreBrowser
 /// which uses view model as a subject for this proxy.
 final class SearchBarDelegateImpl: NSObject {
     /// Temporary property which automatically removes leading spaces.
-    /// Can't declare it private due to compiler error.
     @LeadingTrimmed private var tempSearchText: String
     /// View model
     private let viewModel: SearchBarViewModel

@@ -101,7 +101,7 @@ import FeatureFlagsKit
     ) async -> SearchBarViewModelWithDelegates {
         async let writeUseCase = useCaseRegistry.findUseCase(WriteTabsUseCase.self)
         async let searchUseCase = useCaseRegistry.findUseCase(AutocompleteSearchUseCase.self)
-        return await SearchBarViewModelImpl(
+        return await ModuleVMFactory.createSearchBarVM(
             writeUseCase,
             searchUseCase,
             context

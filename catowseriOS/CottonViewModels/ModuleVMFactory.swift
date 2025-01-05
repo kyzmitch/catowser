@@ -72,4 +72,17 @@ import ViewModelKit
     ) -> BrowserToolbarViewModel {
         BrowserToolbarViewModelImpl(appContext)
     }
+    
+    /// Search bar view model
+    public static func createSearchBarVM(
+        _ writeTabsUseCase: WriteTabsUseCase,
+        _ autocompletionUseCase: AutocompleteSearchUseCase,
+        _ appContext: SearchBarContext
+    ) -> SearchBarViewModelWithDelegates {
+        SearchBarViewModelImpl(
+            writeTabsUseCase,
+            autocompletionUseCase,
+            appContext
+        )
+    }
 }
