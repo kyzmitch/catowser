@@ -41,7 +41,7 @@ protocol ViewControllerFactory: AnyObject {
     func searchBarViewController(
         _ searchBarDelegate: UISearchBarDelegate?,
         _ uiFramework: UIFrameworkType,
-        _ viewModel: SearchBarViewModelWithDelegates
+        _ viewModel: SearchBarViewModel
     ) -> SearchBarBaseViewController
     func searchSuggestionsViewController(
         _ delegate: SearchSuggestionsListDelegate?,
@@ -74,7 +74,7 @@ protocol ViewControllerFactory: AnyObject {
     func deviceSpecificSearchBarViewController(
         _ searchBarDelegate: UISearchBarDelegate?,
         _ uiFramework: UIFrameworkType,
-        _ viewModel: SearchBarViewModelWithDelegates
+        _ viewModel: SearchBarViewModel
     ) -> AnyViewController?
     /// Will return nil on Phone
     func deviceSpecificSearchBarViewController(
@@ -82,7 +82,7 @@ protocol ViewControllerFactory: AnyObject {
         _ downloadDelegate: DownloadPanelPresenter?,
         _ settingsDelegate: GlobalMenuDelegate?,
         _ uiFramework: UIFrameworkType,
-        _ viewModel: SearchBarViewModelWithDelegates
+        _ viewModel: SearchBarViewModel
     ) -> AnyViewController?
     /// WIll return nil on Tablet. Should re-create tabs every time to update them
     func toolbarViewController<C: Navigating>(
@@ -139,7 +139,7 @@ extension ViewControllerFactory {
     func searchBarViewController(
         _ searchBarDelegate: UISearchBarDelegate?,
         _ uiFramework: UIFrameworkType,
-        _ viewModel: SearchBarViewModelWithDelegates
+        _ viewModel: SearchBarViewModel
     ) -> SearchBarBaseViewController {
         let vc: SearchBarBaseViewController = .init(
             searchBarDelegate,

@@ -128,7 +128,11 @@ struct PhoneView<
     private var uiKitWrapperView: some View {
         VStack {
             let searchBarDelegate = searchBarVM.searchBarDelegate
-            PhoneSearchBarLegacyView(searchBarDelegate, searchBarAction)
+            PhoneSearchBarLegacyView(
+                searchBarDelegate,
+                searchBarAction,
+                searchBarVM
+            )
                 .frame(minWidth: 0, maxWidth: .infinity, maxHeight: CGFloat.searchViewHeight)
             if toolbarVM.state.showProgress {
                 ProgressView(value: toolbarVM.state.loadingProgress)
@@ -154,8 +158,6 @@ struct PhoneView<
         }
         .ignoresSafeArea(.keyboard, edges: [.bottom])
         .ignoresSafeArea(.container, edges: [.leading, .trailing])
-        .onReceive(searchBarVM.searchQuery) { searchQuery = $0 }
-        .onReceive(searchBarVM.action.dropFirst()) { searchBarAction = $0 }
         .onReceive(toolbarVM.$state) { value in
             if value.stopWebViewReusage {
                 webViewNeedsUpdate = false
@@ -170,6 +172,7 @@ struct PhoneView<
             default:
                 break
             }
+            searchQuery = value.query
         }
         .onReceive(browserContentVM.$webViewNeedsUpdate.dropFirst()) { webViewNeedsUpdate = true }
         .onReceive(browserContentVM.$contentType) { value in
@@ -199,8 +202,11 @@ struct PhoneView<
     private var fullySwiftUIView: some View {
         NavigationView {
             VStack {
-                SearchBarViewV2($searchQuery, $searchBarAction)
-                    .frame(minWidth: 0, maxWidth: .infinity)
+                SearchBarViewV2(
+                    $searchQuery,
+                    $searchBarAction,
+                    searchBarVM
+                ).frame(minWidth: 0, maxWidth: .infinity)
                 if toolbarVM.state.showProgress {
                     ProgressView(value: toolbarVM.state.loadingProgress)
                 }
@@ -250,11 +256,6 @@ struct PhoneView<
             default:
                 break
             }
-        }
-        .onChange(of: searchQuery) { value in
-            let inSearchMode = searchBarAction == .startSearch
-            let validQuery = !value.isEmpty && !value.looksLikeAURL()
-            showSearchSuggestions = inSearchMode && validQuery
         }
         .onReceive(toolbarVM.$state) { value in
             if value.stopWebViewReusage {

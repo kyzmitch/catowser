@@ -32,7 +32,7 @@ final class PhoneViewControllerFactory: ViewControllerFactory {
     func deviceSpecificSearchBarViewController(
         _ searchBarDelegate: UISearchBarDelegate?,
         _ uiFramework: UIFrameworkType,
-        _ viewModel: SearchBarViewModelWithDelegates
+        _ viewModel: SearchBarViewModel
     ) -> AnyViewController? {
         if let existingVC = searchBarVC {
             return existingVC
@@ -51,7 +51,7 @@ final class PhoneViewControllerFactory: ViewControllerFactory {
         _ downloadDelegate: DownloadPanelPresenter?,
         _ settingsDelegate: GlobalMenuDelegate?,
         _ uiFramework: UIFrameworkType,
-        _ viewModel: SearchBarViewModelWithDelegates
+        _ viewModel: SearchBarViewModel
     ) -> AnyViewController? {
         return nil
     }

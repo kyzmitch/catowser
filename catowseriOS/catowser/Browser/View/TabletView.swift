@@ -120,7 +120,8 @@ struct TabletView<
             TabletSearchBarLegacyView(
                 searchBarDelegate,
                 searchBarAction,
-                toolbarVM.state.webViewInterface
+                toolbarVM.state.webViewInterface,
+                searchBarVM
             )
                 .frame(height: .toolbarViewHeight)
             // this should be the same with the value in `SearchBarBaseViewController`
@@ -154,9 +155,8 @@ struct TabletView<
             default:
                 break
             }
+            searchQuery = value.query
         }
-        .onReceive(searchBarVM.searchQuery) { searchQuery = $0 }
-        .onReceive(searchBarVM.action.dropFirst()) { searchBarAction = $0 }
         .onReceive(toolbarVM.$state) { value in
             if value.stopWebViewReusage {
                 webViewNeedsUpdate = false
@@ -191,7 +191,13 @@ struct TabletView<
     private var fullySwiftUIView: some View {
         VStack {
             TabletTabsView(mode)
-            TabletSearchBarViewV2($showingMenu, $showSearchSuggestions, $searchQuery, $searchBarAction)
+            TabletSearchBarViewV2(
+                $showingMenu,
+                $showSearchSuggestions,
+                $searchQuery,
+                $searchBarAction,
+                searchBarVM
+            )
                 .frame(height: .toolbarViewHeight)
                 .environmentObject(toolbarVM)
             if toolbarVM.state.showProgress {
@@ -227,11 +233,7 @@ struct TabletView<
             default:
                 break
             }
-        }
-        .onChange(of: searchQuery) { value in
-            let inSearchMode = searchBarAction == .startSearch
-            let validQuery = !value.isEmpty && !value.looksLikeAURL()
-            showSearchSuggestions = inSearchMode && validQuery
+            searchQuery = value.query
         }
         .onReceive(toolbarVM.$state) { value in
             if value.stopWebViewReusage {

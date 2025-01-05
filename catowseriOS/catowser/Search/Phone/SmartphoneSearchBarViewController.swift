@@ -24,7 +24,7 @@ final class SmartphoneSearchBarViewController: BaseViewController {
     init(
         _ searchBarDelegate: UISearchBarDelegate?,
         _ uiFramework: UIFrameworkType,
-        _ viewModel: SearchBarViewModelWithDelegates
+        _ viewModel: SearchBarViewModel
     ) {
         searchBarViewController = UIServiceRegistry.shared()
             .vcFactory

@@ -33,7 +33,7 @@ final class TabletViewControllerFactory: ViewControllerFactory {
         _ downloadDelegate: DownloadPanelPresenter?,
         _ settingsDelegate: GlobalMenuDelegate?,
         _ uiFramework: UIFrameworkType,
-        _ viewModel: SearchBarViewModelWithDelegates
+        _ viewModel: SearchBarViewModel
     ) -> AnyViewController? {
         if let existingVC = searchBarVC {
             return existingVC
@@ -51,7 +51,7 @@ final class TabletViewControllerFactory: ViewControllerFactory {
     func deviceSpecificSearchBarViewController(
         _ searchBarDelegate: UISearchBarDelegate?,
         _ uiFramework: UIFrameworkType,
-        _ viewModel: SearchBarViewModelWithDelegates
+        _ viewModel: SearchBarViewModel
     ) -> AnyViewController? {
         return nil
     }

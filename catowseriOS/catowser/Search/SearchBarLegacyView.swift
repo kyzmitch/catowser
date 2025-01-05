@@ -18,7 +18,7 @@ enum SearchBarConstants {
 
 final class SearchBarLegacyView<
     VM: ViewModelInterface
->: UIView, ViewModelConsumer {
+>: UIView, ViewModelConsumer where VM.State == SearchBarState<SearchBarStateContextProxy> {
     typealias ViewModelType = VM
     let viewModel: ViewModelType
     
@@ -89,6 +89,14 @@ final class SearchBarLegacyView<
         dohStateIcon.topAnchor.constraint(equalTo: topAnchor).isActive = true
         dohStateIcon.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         dohStateIcon.widthAnchor.constraint(equalTo: dohStateIcon.heightAnchor).isActive = true
+    }
+    
+    func handleAction(_ action: SearchBarAction) {
+        do {
+            try viewModel.sendAction(action)
+        } catch {
+            print("Fail to send action: \(error)")
+        }
     }
 
     func handleTraitCollectionChange() {

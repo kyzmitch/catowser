@@ -39,7 +39,7 @@ final class TabletSearchBarViewController: BaseViewController {
         _ settingsDelegate: GlobalMenuDelegate?,
         _ downloadDelegate: DownloadPanelPresenter?,
         _ uiFramework: UIFrameworkType,
-        _ viewModel: SearchBarViewModelWithDelegates
+        _ viewModel: SearchBarViewModel
     ) {
         searchBarViewController = UIServiceRegistry.shared()
             .vcFactory
