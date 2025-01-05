@@ -241,7 +241,7 @@ private extension SearchBarCoordinator {
 
 extension SearchBarCoordinator: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchQuery: String) {
-        if searchQuery.isEmpty || searchQuery.looksLikeAURL() {
+        if searchQuery.isEmpty || searchQuery.looksLikeURL() {
             showNext(.hideSuggestions)
         } else {
             /// Async layout is fine for this case because both insert & show operations are together in one closure
@@ -292,7 +292,7 @@ extension SearchBarCoordinator: UISearchBarDelegate {
             return
         }
         let content: SuggestionType
-        if text.looksLikeAURL() {
+        if text.looksLikeURL() {
             content = .looksLikeURL(text)
         } else {
             // need to open web view with url of search engine

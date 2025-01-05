@@ -17,11 +17,14 @@ public protocol ViewModelState: Sendable {
     /// Context of the state to be able to get any additional data
     /// required for action handling or state conversion.
     associatedtype Context: StateContext
+    /// Base state type, needed for class/ref states to be able to use base class
+    /// in initial instance and transition functions.
+    associatedtype BaseState: ViewModelState where BaseState.Action == Action, BaseState.Context == Context
 
     /// Create an initial state which is needed for View Model init
     ///
     /// e.g. it could be loading state at the beginning
-    static func createInitial() -> Self
+    static func createInitial() -> BaseState
 
     /// Converts current state to another valid state based on input action.
     ///
@@ -31,5 +34,5 @@ public protocol ViewModelState: Sendable {
     @MainActor func transitionOn(
         _ action: Action,
         with context: Context?
-    ) throws -> Self
+    ) throws -> BaseState
 }

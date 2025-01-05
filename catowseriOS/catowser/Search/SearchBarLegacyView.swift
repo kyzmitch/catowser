@@ -202,7 +202,7 @@ final class SearchBarLegacyView<
         // See `diff` comment to find a difference with previos state handling
 
         switch nextState {
-        case is SearchBarInViewMode:
+        case is SearchBarInViewMode<SearchBarStateContextProxy>:
             guard let title = nextState.titleString, let content = nextState.searchBarContent else {
                 searchBarView.text = nil
                 siteNameLabel.text = .placeholderText
@@ -214,7 +214,7 @@ final class SearchBarLegacyView<
                 return
             }
             handleViewModeState(title, content, true)
-        case is SearchBarInSearchMode:
+        case is SearchBarInSearchMode<SearchBarStateContextProxy>:
             searchBarView.setShowsCancelButton(true, animated: true)
             guard searchBarView.text != nil else {
                 break

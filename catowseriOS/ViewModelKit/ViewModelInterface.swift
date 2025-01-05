@@ -13,7 +13,7 @@ import Combine
 /// Always has to be a reference type (AnyObject)
 @MainActor public protocol ViewModelInterface: AnyObject, Sendable {
     /// Type of the associated state
-    associatedtype State: ViewModelState
+    associatedtype State: ViewModelState where State == State.BaseState
     /// Type of an action
     associatedtype Action: ViewModelAction where Action == State.Action
     /// State context to not expose the view model type.

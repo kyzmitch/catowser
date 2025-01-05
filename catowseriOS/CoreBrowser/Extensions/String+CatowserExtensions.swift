@@ -17,7 +17,7 @@ public extension String {
         return .mainBundleName() + ".\(suffix)"
     }
 
-    func looksLikeAURL() -> Bool {
+    func looksLikeURL() -> Bool {
         // The assumption here is that if the user is typing in a forward slash and there are no spaces
         // involved, it's going to be a URL. If we type a space, any url would be invalid.
         // See https://bugzilla.mozilla.org/show_bug.cgi?id=1192155 for additional details.

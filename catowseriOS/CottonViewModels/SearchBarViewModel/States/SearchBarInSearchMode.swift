@@ -7,17 +7,22 @@
 //
 
 /// Search mode state (or search suggestions mode)
-public final class SearchBarInSearchMode: SearchBarState<SearchBarStateContextProxy>, @unchecked Sendable {
+public final class SearchBarInSearchMode<C: SearchBarStateContext>: SearchBarState<C>, @unchecked Sendable {
+    public init(query: String?) {
+        super.init()
+        self.query = query
+    }
+    
     @MainActor public override func transitionOn(
         _ action: Action,
         with context: Context?
-    ) throws -> Self {
-        let nextState: SearchBarState<SearchBarStateContextProxy>
+    ) throws -> BaseState {
+        let nextState: SearchBarState<C>
         switch action {
         case .startSearch:
             throw SearchBarError.alreadyInSearchMode
         case .cancelSearch:
-            nextState = SearchBarInViewMode()
+            nextState = SearchBarInViewMode<C>()
         case let .updateView(title, searchBarContent):
             self.titleString = title
             self.searchBarContent = searchBarContent
@@ -27,12 +32,12 @@ public final class SearchBarInSearchMode: SearchBarState<SearchBarStateContextPr
             self.searchBarContent = nil
             nextState = self
         case .selectSuggestion(let suggestion):
-            nextState = SearchBarInViewMode()
+            nextState = SearchBarInViewMode<C>()
             Task {
                 try await context?.searchSuggestionDidSelect(suggestion)
             }
         }
-        return nextState as! Self
+        return nextState
     }
     
     public override var showCancelButton: Bool {

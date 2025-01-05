@@ -17,6 +17,7 @@ enum BrowserToolbarError: Error {
 public struct BrowserToolbarState<C: BrowserToolbarStateContext>: ViewModelState {
     public typealias Context = C
     public typealias Action = BrowserToolbarAction
+    public typealias BaseState = BrowserToolbarState
     
     // MARK: - States only for SwiftUI toolbar
     

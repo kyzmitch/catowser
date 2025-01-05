@@ -148,14 +148,16 @@ struct TabletView<
         .ignoresSafeArea(.keyboard)
         .onReceive(searchBarVM.$state) { value in
             switch value {
-            case is SearchBarInViewMode:
+            case is SearchBarInViewMode<SearchBarStateContextProxy>:
                 showSearchSuggestions = false
-            case is SearchBarInSearchMode:
+            case is SearchBarInSearchMode<SearchBarStateContextProxy>:
                 showSearchSuggestions = true
             default:
                 break
             }
-            searchQuery = value.query
+            if let query = value.query {
+                searchQuery = query
+            }
         }
         .onReceive(toolbarVM.$state) { value in
             if value.stopWebViewReusage {
@@ -226,14 +228,16 @@ struct TabletView<
         .ignoresSafeArea(.keyboard)
         .onReceive(searchBarVM.$state) { value in
             switch value {
-            case is SearchBarInViewMode:
+            case is SearchBarInViewMode<SearchBarStateContextProxy>:
                 showSearchSuggestions = false
-            case is SearchBarInSearchMode:
+            case is SearchBarInSearchMode<SearchBarStateContextProxy>:
                 showSearchSuggestions = true
             default:
                 break
             }
-            searchQuery = value.query
+            if let query = value.query {
+                searchQuery = query
+            }
         }
         .onReceive(toolbarVM.$state) { value in
             if value.stopWebViewReusage {

@@ -19,7 +19,7 @@ open class BaseViewModel<
     S: ViewModelState,
     A: ViewModelAction,
     C: StateContext
->: ViewModelInterface, ObservableObject where S.Action == A, S.Context == C {
+>: ViewModelInterface, ObservableObject where S.Action == A, S.Context == C, S.BaseState == S {
     public typealias Action = A
     public typealias State = S
     public typealias Context = C

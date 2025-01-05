@@ -63,7 +63,7 @@ struct SearchBarViewV2: View {
         }
         .onReceive(searchBarVM.$state) { value in
             switch value {
-            case is SearchBarInViewMode:
+            case is SearchBarInViewMode<SearchBarStateContextProxy>:
                 guard let title = value.titleString, let content = value.searchBarContent else {
                     showKeyboard = false
                     query = ""
@@ -75,7 +75,7 @@ struct SearchBarViewV2: View {
                 query = content
                 siteName = title
                 showOverlay = true
-            case is SearchBarInSearchMode:
+            case is SearchBarInSearchMode<SearchBarStateContextProxy>:
                 showOverlay = false
                 showKeyboard = true
             default:
@@ -88,10 +88,10 @@ struct SearchBarViewV2: View {
         .onReceive(textFieldVM.$submitTapped.dropFirst()) { action = .cancelSearch }
         .onReceive(textFieldVM.$isFocused.dropFirst()) { newValue in
             if newValue {
-                action = .startSearch(nil)
+                action = .startSearch(query)
             }
         }
-        .onReceive(overlayVM.$tapped.dropFirst()) { action = .startSearch(nil) }
+        .onReceive(overlayVM.$tapped.dropFirst()) { action = .startSearch(query) }
     }
 }
 

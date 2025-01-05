@@ -13,15 +13,16 @@ import ViewModelKit
 public struct AllTabsState<C: AllTabsStateContext>: ViewModelState {
     public typealias Context = C
     public typealias Action = AllTabsAction
+    public typealias BaseState = AllTabsState
     
-    public static func createInitial() -> AllTabsState {
+    public static func createInitial() -> BaseState {
         .init()
     }
     
     @MainActor public func transitionOn(
         _ action: Action,
         with context: Context?
-    ) throws -> Self {
+    ) throws -> BaseState {
         switch action {
         case .addTab(let tab):
             context?.handleTabAdd(tab)

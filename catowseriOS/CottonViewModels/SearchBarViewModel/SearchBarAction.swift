@@ -9,7 +9,7 @@
 import CoreBrowser
 import ViewModelKit
 
-/// Search bar action for view model to change the state
+/// Search bar action to change the state
 public enum SearchBarAction: Equatable, ViewModelAction {
     /// When search bar is in view mode - this is a request to move it to edit state.
     /// If search query string is not empty it also allows to set the title

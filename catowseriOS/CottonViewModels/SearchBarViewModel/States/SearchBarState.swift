@@ -12,19 +12,19 @@ import ViewModelKit
 public class SearchBarState<C: SearchBarStateContext>: ViewModelState, @unchecked Sendable {
     public typealias Context = C
     public typealias Action = SearchBarAction
+    public typealias BaseState = SearchBarState<C>
     
     /// Need to figure out if it is a search query
     public var titleString: String?
     /// Need to figure out if it is a search query
     public var searchBarContent: String?
-    /// Query
-    public var query: String = ""
+    /// search request text (query)
+    public var query: String?
     
     init() { }
     
-    public static func createInitial() -> Self {
-        // swiftlint:disable:next force_cast
-        return SearchBarInViewMode() as! Self
+    public static func createInitial() -> BaseState {
+        return SearchBarInViewMode<C>()
     }
     
     /// Title of search bar
@@ -45,7 +45,7 @@ public class SearchBarState<C: SearchBarStateContext>: ViewModelState, @unchecke
     @MainActor public func transitionOn(
         _ action: Action,
         with context: Context?
-    ) throws -> Self {
+    ) throws -> BaseState {
         throw SearchBarError.invalidDummyState
     }
 }

@@ -33,7 +33,7 @@ extension SearchBarDelegateImpl: UISearchBarDelegate {
         textDidChange searchQuery: String
     ) {
         do {
-            if searchQuery.isEmpty || searchQuery.looksLikeAURL() {
+            if searchQuery.isEmpty || searchQuery.looksLikeURL() {
                 try viewModel.sendAction(.cancelSearch)
             } else {
                 try viewModel.sendAction(.startSearch(searchQuery))
@@ -51,7 +51,7 @@ extension SearchBarDelegateImpl: UISearchBarDelegate {
         guard let value = searchBar.text else {
             return text != " "
         }
-        // UIKit's searchbar delegate uses modern String type
+        // UIKit's search bar delegate uses modern String type
         // but at the same time legacy NSRange type
         // which can't be used in String API,
         // since it requires modern Range<String.Index>
@@ -61,7 +61,7 @@ extension SearchBarDelegateImpl: UISearchBarDelegate {
         // trailing space is allowed to be able to construct
         // query requests with more than one word.
         tempSearchText = future
-        // 400 IQ approach
+        // 400 IQ approach (comparing without leading spaces and original)
         return tempSearchText == future
     }
 
@@ -88,7 +88,7 @@ extension SearchBarDelegateImpl: UISearchBarDelegate {
             return
         }
         let content: SuggestionType
-        if text.looksLikeAURL() {
+        if text.looksLikeURL() {
             content = .looksLikeURL(text)
         } else {
             // need to open web view with url of search engine and specific search queue

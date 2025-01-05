@@ -165,14 +165,16 @@ struct PhoneView<
         }
         .onReceive(searchBarVM.$state) { value in
             switch value {
-            case is SearchBarInViewMode:
+            case is SearchBarInViewMode<SearchBarStateContextProxy>:
                 showSearchSuggestions = false
-            case is SearchBarInSearchMode:
+            case is SearchBarInSearchMode<SearchBarStateContextProxy>:
                 showSearchSuggestions = true
             default:
                 break
             }
-            searchQuery = value.query
+            if let query = value.query {
+                searchQuery = query
+            }
         }
         .onReceive(browserContentVM.$webViewNeedsUpdate.dropFirst()) { webViewNeedsUpdate = true }
         .onReceive(browserContentVM.$contentType) { value in
@@ -249,9 +251,9 @@ struct PhoneView<
         .ignoresSafeArea(.keyboard, edges: [.bottom])
         .onReceive(searchBarVM.$state) { value in
             switch value {
-            case is SearchBarInViewMode:
+            case is SearchBarInViewMode<SearchBarStateContextProxy>:
                 showSearchSuggestions = false
-            case is SearchBarInSearchMode:
+            case is SearchBarInSearchMode<SearchBarStateContextProxy>:
                 showSearchSuggestions = true
             default:
                 break
