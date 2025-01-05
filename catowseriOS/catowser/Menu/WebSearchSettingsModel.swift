@@ -10,9 +10,9 @@ import CoreBrowser
 import CottonViewModels
 import Foundation
 
-typealias WebSearchSettingsModel = BaseListViewModelImpl<WebAutoCompletionSource>
+typealias WebSearchSettingsModel = BaseListViewModel<WebAutoCompletionSource>
 
-extension BaseListViewModelImpl where EnumDataSourceType == WebAutoCompletionSource {
+extension BaseListViewModel where EnumDataSourceType == WebAutoCompletionSource {
     init(
         _ selected: EnumDataSourceType?,
         _ completion: @escaping PopClosure

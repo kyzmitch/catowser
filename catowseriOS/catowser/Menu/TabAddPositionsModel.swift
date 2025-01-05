@@ -11,9 +11,9 @@ import CoreBrowser
 import CottonViewModels
 import CottonDataServices
 
-typealias TabAddPositionsModel = BaseListViewModelImpl<AddedTabPosition>
+typealias TabAddPositionsModel = BaseListViewModel<AddedTabPosition>
 
-extension BaseListViewModelImpl where EnumDataSourceType == AddedTabPosition {
+extension BaseListViewModel where EnumDataSourceType == AddedTabPosition {
     init(
         _ selected: EnumDataSourceType?,
         _ completion: @escaping PopClosure

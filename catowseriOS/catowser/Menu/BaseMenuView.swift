@@ -16,7 +16,7 @@ typealias SwiftUIValueRequirements = Hashable & Identifiable & CustomStringConve
 struct BaseMenuView<SourceType: FullEnumTypeConstraints & SwiftUIValueRequirements>: View
 where SourceType.RawValue == Int, SourceType.AllCases: RandomAccessCollection {
 
-    let viewModel: BaseListViewModelImpl<SourceType>
+    let viewModel: BaseListViewModel<SourceType>
 
     var body: some View {
         List(viewModel.dataSource) { selectedCase in

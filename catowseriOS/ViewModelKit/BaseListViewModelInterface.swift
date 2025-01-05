@@ -9,7 +9,7 @@
 /// Base list view model
 ///
 /// A view model type which can be used for the menu items
-@MainActor public protocol BaseListViewModel {
+@MainActor public protocol BaseListViewModelInterface {
     /// The type of the data, always an enumeration
     associatedtype EnumDataSourceType: CaseIterable
     /// The type of the callback which returns the selected value/case

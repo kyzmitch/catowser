@@ -9,9 +9,9 @@
 import CoreBrowser
 import CottonViewModels
 
-typealias TabDefaultContentModel = BaseListViewModelImpl<CoreBrowser.Tab.ContentType>
+typealias TabDefaultContentModel = BaseListViewModel<CoreBrowser.Tab.ContentType>
 
-extension BaseListViewModelImpl where EnumDataSourceType == CoreBrowser.Tab.ContentType {
+extension BaseListViewModel where EnumDataSourceType == CoreBrowser.Tab.ContentType {
     init(
         _ selected: EnumDataSourceType?,
         _ completion: @escaping PopClosure

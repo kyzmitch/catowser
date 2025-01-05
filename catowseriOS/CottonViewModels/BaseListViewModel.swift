@@ -10,7 +10,8 @@ import Foundation
 import CoreBrowser
 import ViewModelKit
 
-public struct BaseListViewModelImpl<SourceType: FullEnumTypeConstraints>: BaseListViewModel where SourceType.RawValue == Int {
+/// Base list view model implementation
+public struct BaseListViewModel<SourceType: FullEnumTypeConstraints>: BaseListViewModelInterface where SourceType.RawValue == Int {
     public typealias EnumDataSourceType = SourceType
 
     public let dataSource: EnumDataSourceType.AllCases = EnumDataSourceType.allCases
