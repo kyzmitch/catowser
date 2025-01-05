@@ -72,7 +72,7 @@ struct SearchBarViewV2: View {
             case is SearchBarInViewMode<SearchBarStateContextProxy>:
                 guard let title = value.titleString, let content = value.searchBarContent else {
                     showKeyboard = false
-                    query = nil
+                    query = ""
                     siteName = ""
                     showOverlay = false
                     return
@@ -88,8 +88,8 @@ struct SearchBarViewV2: View {
                 break
             }
         }
-        .onChange(of: query) { showClearButton = $0 != nil }
-        .onReceive(cancelBtnVM.$clearTapped.dropFirst()) { query = nil }
+        .onChange(of: query) { showClearButton = !$0.isEmpty }
+        .onReceive(cancelBtnVM.$clearTapped.dropFirst()) { query = "" }
         .onReceive(cancelBtnVM.$cancelTapped.dropFirst()) { action = .cancelSearch }
         .onReceive(textFieldVM.$submitTapped.dropFirst()) { action = .cancelSearch }
         .onReceive(textFieldVM.$isFocused.dropFirst()) { newValue in
@@ -126,8 +126,8 @@ struct SearchBarViewV2_Previews: PreviewProvider {
         } set: { _ in
             //
         }
-        let query: Binding<String?> = .init {
-            nil
+        let query: Binding<String> = .init {
+            ""
         } set: { _ in
             //
         }
