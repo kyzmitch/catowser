@@ -20,13 +20,19 @@ import CottonViewModels
 struct SearchBarViewV2: View {
     @Environment(\.horizontalSizeClass) var hSizeClass
 
+    /// Search query field from the super view
     @Binding private var query: String
     /// To be able to propagate gestures/taps from this view to the upper/super view
     @Binding private var action: SearchBarAction
+    /// Do we need to show clear button
     @State private var showClearButton: Bool = false
+    /// Do we need to show cancel button
     @State private var showCancelButton: Bool = false
+    /// Site name field (Figure out if it is the same with query?)
     @State private var siteName: String = ""
+    /// Determines if need to show overlay label
     @State private var showOverlay: Bool = false
+    /// Determines if need to show keyboard
     @State private var showKeyboard: Bool = false
 
     @StateObject private var cancelBtnVM: ClearCancelButtonViewModel = .init()
@@ -66,7 +72,7 @@ struct SearchBarViewV2: View {
             case is SearchBarInViewMode<SearchBarStateContextProxy>:
                 guard let title = value.titleString, let content = value.searchBarContent else {
                     showKeyboard = false
-                    query = ""
+                    query = nil
                     siteName = ""
                     showOverlay = false
                     return
@@ -82,8 +88,8 @@ struct SearchBarViewV2: View {
                 break
             }
         }
-        .onChange(of: query) { showClearButton = !$0.isEmpty }
-        .onReceive(cancelBtnVM.$clearTapped.dropFirst()) { query = "" }
+        .onChange(of: query) { showClearButton = $0 != nil }
+        .onReceive(cancelBtnVM.$clearTapped.dropFirst()) { query = nil }
         .onReceive(cancelBtnVM.$cancelTapped.dropFirst()) { action = .cancelSearch }
         .onReceive(textFieldVM.$submitTapped.dropFirst()) { action = .cancelSearch }
         .onReceive(textFieldVM.$isFocused.dropFirst()) { newValue in
@@ -120,8 +126,8 @@ struct SearchBarViewV2_Previews: PreviewProvider {
         } set: { _ in
             //
         }
-        let query: Binding<String> = .init {
-            ""
+        let query: Binding<String?> = .init {
+            nil
         } set: { _ in
             //
         }

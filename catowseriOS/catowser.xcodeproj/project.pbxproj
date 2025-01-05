@@ -173,6 +173,7 @@
 		7586AA042D16019100D981B6 /* CottonNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A277137268E452000D8878C /* CottonNetworking.framework */; };
 		7586AA102D19431B00D981B6 /* FullEnumTypeConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7586AA0F2D19431A00D981B6 /* FullEnumTypeConstraints.swift */; };
 		7586ABF12D197F9300D981B6 /* BrowserToolbarViewContextImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7586ABF02D197F9000D981B6 /* BrowserToolbarViewContextImpl.swift */; };
+		759A30102D2B1C8300109A64 /* SearchFieldViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 759A300F2D2B1C8200109A64 /* SearchFieldViewModel.swift */; };
 		759E3E4D2C863B3D00245B44 /* Atomics in Frameworks */ = {isa = PBXBuildFile; productRef = 759E3E4C2C863B3D00245B44 /* Atomics */; };
 		75D81CF72B0B077200447DC7 /* JSPluginsSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60380EF622A15504007F06FB /* JSPluginsSource.swift */; };
 		75D81CFB2B0B084300447DC7 /* JSPluginsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60380EF422A1509F007F06FB /* JSPluginsBuilder.swift */; };
@@ -952,6 +953,7 @@
 		7586A9022D11CA9C00D981B6 /* ViewModelKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ViewModelKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7586AA0F2D19431A00D981B6 /* FullEnumTypeConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullEnumTypeConstraints.swift; sourceTree = "<group>"; };
 		7586ABF02D197F9000D981B6 /* BrowserToolbarViewContextImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserToolbarViewContextImpl.swift; sourceTree = "<group>"; };
+		759A300F2D2B1C8200109A64 /* SearchFieldViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchFieldViewModel.swift; sourceTree = "<group>"; };
 		759AE09529146C96008CE4EE /* Mockfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Mockfile; sourceTree = "<group>"; };
 		75DA4C7A2C9C7F40009AE049 /* UIServiceRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIServiceRegistry.swift; sourceTree = "<group>"; };
 		75EA4E6E29F7055800165A07 /* TitledImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitledImageView.swift; sourceTree = "<group>"; };
@@ -1979,6 +1981,7 @@
 				8AE70EAB29648927007D56C1 /* SearchBarViewV2.swift */,
 				8AEEBBB229F7AA9300F23A02 /* ClearCancelPairButton.swift */,
 				8AEEBBB529F7AEA500F23A02 /* SearchFieldView.swift */,
+				759A300F2D2B1C8200109A64 /* SearchFieldViewModel.swift */,
 				8AEEBBB829F7B63A00F23A02 /* TappableTextOverlayView.swift */,
 			);
 			path = Phone;
@@ -3724,6 +3727,7 @@
 				8AD857E02939425400DD5F49 /* WebContentContainerCoordinator.swift in Sources */,
 				75EFE9692CC4C9C8001CD0E6 /* ObservingApiTypeModel.swift in Sources */,
 				753392B32921613E00570461 /* GlobalMenuCoordinator.swift in Sources */,
+				759A30102D2B1C8300109A64 /* SearchFieldViewModel.swift in Sources */,
 				841022CB2247ACF00021516F /* UIViewController+MainBundle.swift in Sources */,
 				60C2C8D0226DAB1700F5D869 /* TopSitesViewController.swift in Sources */,
 				8A917CB129D4A39B00404256 /* SearchSuggestionsViewV2.swift in Sources */,
