@@ -14,25 +14,26 @@ public class SearchBarState<C: SearchBarStateContext>: ViewModelState, @unchecke
     public typealias Action = SearchBarAction
     public typealias BaseState = SearchBarState<C>
     
-    /// Need to figure out if it is a search query
-    public var titleString: String?
-    /// Need to figure out if it is a search query
+    /// This is a text for the overlay label above the search bar
+    public var overlayContent: String?
+    /// This is a text for the search bar itself
     public var searchBarContent: String?
-    /// search request text (query)
+    /// Search request text
     public var query: String?
     
     init() { }
     
+    /// Initial state without search bar or overlay content
     public static func createInitial() -> BaseState {
         return SearchBarInViewMode<C>()
     }
     
-    /// Title of search bar
-    public var title: String {
-        titleString ?? ""
+    /// Text of overlay label
+    public var overlay: String {
+        overlayContent ?? ""
     }
     
-    /// Text content above the search bar
+    /// Text for search bar
     public var content: String {
         searchBarContent ?? ""
     }

@@ -8,14 +8,18 @@
 
 /// Search mode state (or search suggestions mode)
 public final class SearchBarInSearchMode<C: SearchBarStateContext>: SearchBarState<C>, @unchecked Sendable {
+    /// Init
+    /// - Parameter query: optional search request text
+    /// - Parameter overlayContent: text for overlay label
+    /// - Parameter searchBarContent: text for search bar
     public init(
-        query: String?,
-        titleString: String?,
-        searchBarContent: String?
+        _ query: String?,
+        _ overlayContent: String?,
+        _ searchBarContent: String?
     ) {
         super.init()
         self.query = query
-        self.titleString = titleString
+        self.overlayContent = overlayContent
         self.searchBarContent = searchBarContent
     }
     
@@ -29,15 +33,15 @@ public final class SearchBarInSearchMode<C: SearchBarStateContext>: SearchBarSta
             throw SearchBarError.alreadyInSearchMode
         case .cancelSearch:
             nextState = SearchBarInViewMode<C>(
-                titleString: titleString,
-                searchBarContent: searchBarContent
+                overlayContent,
+                searchBarContent
             )
         case let .updateView(title, searchBarContent):
-            self.titleString = title
+            self.overlayContent = title
             self.searchBarContent = searchBarContent
             nextState = self
         case .clearView:
-            self.titleString = nil
+            self.overlayContent = nil
             self.searchBarContent = nil
             nextState = self
         case .selectSuggestion(let suggestion):

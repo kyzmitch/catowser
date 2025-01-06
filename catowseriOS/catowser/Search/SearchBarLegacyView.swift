@@ -209,7 +209,7 @@ final class SearchBarLegacyView<
 
         switch nextState {
         case is SearchBarInViewMode<SearchBarStateContextProxy>:
-            guard let title = nextState.titleString, let content = nextState.searchBarContent else {
+            guard let title = nextState.overlayContent, let content = nextState.searchBarContent else {
                 searchBarView.text = nil
                 siteNameLabel.text = .placeholderText
                 searchBarView.setShowsCancelButton(false, animated: false)
@@ -309,7 +309,10 @@ private extension SearchBarLegacyView {
         _ animated: Bool
     ) {
         searchBarView.resignFirstResponder()
-        searchBarView.setShowsCancelButton(false, animated: animated)
+        searchBarView.setShowsCancelButton(
+            false,
+            animated: animated
+        )
         searchBarView.text = searchBarContent
         Task {
             let dohEnabled = await FeatureManager.shared.boolValue(of: .dnsOverHTTPSAvailable)

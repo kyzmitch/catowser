@@ -70,7 +70,7 @@ struct SearchBarViewV2: View {
         .onReceive(searchBarVM.$state) { value in
             switch value {
             case is SearchBarInViewMode<SearchBarStateContextProxy>:
-                guard let title = value.titleString, let content = value.searchBarContent else {
+                guard let title = value.overlayContent, let content = value.searchBarContent else {
                     showKeyboard = false
                     query = ""
                     siteName = ""
