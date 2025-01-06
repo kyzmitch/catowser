@@ -303,7 +303,11 @@ private extension SearchBarLegacyView {
         searchBarView.resignFirstResponder()
     }
 
-    func handleViewModeState(_ title: String, _ searchBarContent: String, _ animated: Bool) {
+    func handleViewModeState(
+        _ title: String,
+        _ searchBarContent: String,
+        _ animated: Bool
+    ) {
         searchBarView.resignFirstResponder()
         searchBarView.setShowsCancelButton(false, animated: animated)
         searchBarView.text = searchBarContent

@@ -8,9 +8,15 @@
 
 /// Search mode state (or search suggestions mode)
 public final class SearchBarInSearchMode<C: SearchBarStateContext>: SearchBarState<C>, @unchecked Sendable {
-    public init(query: String?) {
+    public init(
+        query: String?,
+        titleString: String?,
+        searchBarContent: String?
+    ) {
         super.init()
         self.query = query
+        self.titleString = titleString
+        self.searchBarContent = searchBarContent
     }
     
     @MainActor public override func transitionOn(
@@ -22,7 +28,10 @@ public final class SearchBarInSearchMode<C: SearchBarStateContext>: SearchBarSta
         case .startSearch:
             throw SearchBarError.alreadyInSearchMode
         case .cancelSearch:
-            nextState = SearchBarInViewMode<C>()
+            nextState = SearchBarInViewMode<C>(
+                titleString: titleString,
+                searchBarContent: searchBarContent
+            )
         case let .updateView(title, searchBarContent):
             self.titleString = title
             self.searchBarContent = searchBarContent
