@@ -17,7 +17,6 @@ import Combine
     /// Type of an action
     associatedtype Action: ViewModelAction where Action == State.Action
     /// State context to not expose the view model type.
-    /// It is temporarily without any type constraints, so, can potentially be for any state
     associatedtype Context: StateContext where State.Context == Context
 
     /// UI state of view model

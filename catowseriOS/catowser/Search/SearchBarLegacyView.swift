@@ -11,6 +11,7 @@ import CoreBrowser
 import FeatureFlagsKit
 import CottonViewModels
 import ViewModelKit
+import Combine
 
 enum SearchBarConstants {
     static let animationDuration = 0.3
@@ -21,6 +22,7 @@ final class SearchBarLegacyView<
 >: UIView, ViewModelConsumer where VM.State == SearchBarState<SearchBarStateContextProxy> {
     typealias ViewModelType = VM
     let viewModel: ViewModelType
+    private var stateCancellable: AnyCancellable?
     
     /// Search bar view delegate
     weak var delegate: UISearchBarDelegate? {
@@ -89,6 +91,10 @@ final class SearchBarLegacyView<
         dohStateIcon.topAnchor.constraint(equalTo: topAnchor).isActive = true
         dohStateIcon.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         dohStateIcon.widthAnchor.constraint(equalTo: dohStateIcon.heightAnchor).isActive = true
+        
+        stateCancellable = viewModel.statePublisher.sink { [weak self] state in
+            self?.onStateChange(state)
+        }
     }
     
     func handleAction(_ action: SearchBarAction) {
