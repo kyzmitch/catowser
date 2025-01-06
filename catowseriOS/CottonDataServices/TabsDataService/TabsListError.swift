@@ -26,6 +26,7 @@ public enum TabsListError: DataServiceKitError {
     case failToAddDefaultTab
     case closingNonExistingTab
     case failToFindNewSelectedTab
+    case onlyDefaultTabPresent
     
     public var errorDescription: String? {
         switch self {
@@ -51,6 +52,8 @@ public enum TabsListError: DataServiceKitError {
             "Attempt to close not existing tab"
         case .failToFindNewSelectedTab:
             "Fail to auto-select new tab"
+        case .onlyDefaultTabPresent:
+            "Tried to update custom tab, but only default present"
         }
     }
 }

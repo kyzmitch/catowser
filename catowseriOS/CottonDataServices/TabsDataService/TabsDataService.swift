@@ -347,7 +347,7 @@ private extension TabsDataService {
             return serviceData
         }
         guard let tabTuple = tabs.element(by: selectedTabIdentifier) else {
-            serviceData.tabContentReplaced = .finished(output: .failure(.notInitializedYet))
+            serviceData.tabContentReplaced = .finished(output: .failure(.selectedNotFound))
             return serviceData
         }
         let void: Void = ()
@@ -392,7 +392,7 @@ private extension TabsDataService {
         }
         let defaultValue = positioning.defaultSelectedTabId
         guard selectedTabIdentifier != defaultValue else {
-            serviceData.tabPreviewUpdated = .finished(output: .failure(.notInitializedYet))
+            serviceData.tabPreviewUpdated = .finished(output: .failure(.onlyDefaultTabPresent))
             return serviceData
         }
         guard
@@ -408,7 +408,7 @@ private extension TabsDataService {
         }
         var tab = tabTuple.tab
         guard let tabTuple = tabs.element(by: selectedTabIdentifier) else {
-            serviceData.tabPreviewUpdated = .finished(output: .failure(.notInitializedYet))
+            serviceData.tabPreviewUpdated = .finished(output: .failure(.selectedNotFound))
             return serviceData
         }
         let tabIndex = tabTuple.index

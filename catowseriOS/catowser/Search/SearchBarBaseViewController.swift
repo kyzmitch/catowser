@@ -128,6 +128,8 @@ extension SearchBarBaseViewController: TabsObserver {
         _ content: CoreBrowser.Tab.ContentType,
         _ identifier: UUID
     ) async {
+        // Cancel search mode just in case if it was active
+        handleAction(.cancelSearch)
         switch content {
         case .site(let site):
             handleAction(.updateView(site.title, site.searchBarContent))
