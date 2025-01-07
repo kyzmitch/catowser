@@ -276,7 +276,7 @@ private extension WebViewController {
         } else {
             // so, reuse of web view controller isn't ready
             // but probably not needed
-            assertionFailure("Resubscribtion for web view isn't implemented yet")
+            print("Resubscribtion for web view isn't implemented yet")
         }
 
         // Using only Concurrency (ReactiveSwift and Combine are not easy to maintain for this method)
