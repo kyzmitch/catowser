@@ -13,18 +13,16 @@ struct TabletSearchBarLegacyView: CatowserUIVCRepresentable {
     private weak var searchBarDelegate: UISearchBarDelegate?
     private let action: SearchBarAction
     private let webViewInterface: WebViewNavigatable?
-    @ObservedObject var viewModel: SearchBarViewModel
+    @EnvironmentObject var viewModel: SearchBarViewModel
 
     init(
         _ searchBarDelegate: UISearchBarDelegate?,
         _ action: SearchBarAction,
-        _ webViewInterface: WebViewNavigatable?,
-        _ viewModel: SearchBarViewModel
+        _ webViewInterface: WebViewNavigatable?
     ) {
         self.searchBarDelegate = searchBarDelegate
         self.action = action
         self.webViewInterface = webViewInterface
-        self.viewModel = viewModel
     }
 
     typealias UIViewControllerType = UIViewController

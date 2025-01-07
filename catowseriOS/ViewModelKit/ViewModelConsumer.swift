@@ -6,7 +6,9 @@
 //  Copyright © 2025 Cotton (Catowser). All rights reserved.
 //
 
-/// An interface of MVVM view model consumer (usually view controller)
+/// An interface of MVVM view model consumer (usually view controller).
+/// 
+/// It requires to have only one view model with that field name.
 @MainActor public protocol ViewModelConsumer {
     /// View model type
     associatedtype ViewModel: ViewModelInterface

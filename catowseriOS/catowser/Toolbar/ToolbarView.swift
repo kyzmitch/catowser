@@ -12,10 +12,10 @@ import CottonViewModels
 
 /// Only UIKit wrapper which needs less amout of parameters than full SwiftUI view
 struct ToolbarView: View {
-    @EnvironmentObject var model: BrowserToolbarViewModel
+    @EnvironmentObject var viewModel: BrowserToolbarViewModel
 
     var body: some View {
-        ToolbarLegacyView(model.state.webViewInterface)
+        ToolbarLegacyView(viewModel.state.webViewInterface)
             .frame(height: CGFloat.toolbarViewHeight)
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 DummyView()

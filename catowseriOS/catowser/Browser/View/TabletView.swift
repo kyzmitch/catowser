@@ -14,12 +14,14 @@ import CottonViewModels
 struct TabletView<
     W: WebViewModel,
     S: SearchSuggestionsViewModel,
-    SB: SearchBarViewModelWithDelegates
+    SB: SearchBarViewModel
 >: View {
     // MARK: - view models of subviews
 
     /// Search bar view model
-    @ObservedObject private var searchBarVM: SB
+    @EnvironmentObject private var searchBarVM: SB
+    /// Separate field for the delegate (environment object for Search bar view model can't compile with it)
+    private let delegatesHolder: SearchBarDelegateHolder
     /// A reference to created vm in main view
     @EnvironmentObject private var browserContentVM: BrowserContentViewModel
     /// Toolbar model needed by both UI modes
@@ -86,12 +88,12 @@ struct TabletView<
         _ defaultContentType: CoreBrowser.Tab.ContentType,
         _ webVM: W,
         _ searchVM: S,
-        _ searchBarVM: SB
+        _ delegatesHolder: SearchBarDelegateHolder
     ) {
         self.webVM = webVM
         // search suggestions vm is used as a template argument later
         self.searchSuggestionsVM = searchVM
-        self.searchBarVM = searchBarVM
+        self.delegatesHolder = delegatesHolder
         self.contentType = defaultContentType
         self.mode = mode
 
@@ -115,13 +117,12 @@ struct TabletView<
 
     private var uiKitWrapperView: some View {
         VStack {
-            let searchBarDelegate = searchBarVM.searchBarDelegate
+            let searchBarDelegate = delegatesHolder.searchBarDelegate
             TabletTabsView(mode)
             TabletSearchBarLegacyView(
                 searchBarDelegate,
                 searchBarAction,
-                toolbarVM.state.webViewInterface,
-                searchBarVM
+                toolbarVM.state.webViewInterface
             )
                 .frame(height: .toolbarViewHeight)
             // this should be the same with the value in `SearchBarBaseViewController`
@@ -129,7 +130,7 @@ struct TabletView<
                 ProgressView(value: toolbarVM.state.loadingProgress)
             }
             if showSearchSuggestions {
-                let delegate = searchBarVM.searchSuggestionsDelegate
+                let delegate = delegatesHolder.searchSuggestionsDelegate
                 SearchSuggestionsView<S>(searchQuery, delegate, mode)
             } else {
                 let jsPlugins = browserContentVM.jsPluginsBuilder
@@ -197,8 +198,7 @@ struct TabletView<
                 $showingMenu,
                 $showSearchSuggestions,
                 $searchQuery,
-                $searchBarAction,
-                searchBarVM
+                $searchBarAction
             )
                 .frame(height: .toolbarViewHeight)
                 .environmentObject(toolbarVM)
@@ -206,7 +206,7 @@ struct TabletView<
                 ProgressView(value: toolbarVM.state.loadingProgress)
             }
             if showSearchSuggestions {
-                let delegate = searchBarVM.searchSuggestionsDelegate
+                let delegate = delegatesHolder.searchSuggestionsDelegate
                 SearchSuggestionsView<S>(searchQuery, delegate, mode)
             } else {
                 let jsPlugins = browserContentVM.jsPluginsBuilder

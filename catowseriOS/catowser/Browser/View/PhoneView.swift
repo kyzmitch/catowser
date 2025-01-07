@@ -14,12 +14,14 @@ import CottonViewModels
 struct PhoneView<
     W: WebViewModel,
     S: SearchSuggestionsViewModel,
-    SB: SearchBarViewModelWithDelegates
+    SB: SearchBarViewModel
 >: View {
     // MARK: - view models of subviews
 
     /// Search bar view model
-    @ObservedObject private var searchBarVM: SB
+    @EnvironmentObject private var searchBarVM: SB
+    /// Separate field for the delegate (environment object for Search bar view model can't compile with it)
+    private let delegatesHolder: SearchBarDelegateHolder
     /// A reference to created view model
     @EnvironmentObject private var browserContentVM: BrowserContentViewModel
     /// Toolbar model needed by both UI modes
@@ -91,12 +93,12 @@ struct PhoneView<
         _ defaultContentType: CoreBrowser.Tab.ContentType,
         _ webVM: W,
         _ searchVM: S,
-        _ searchBarVM: SB
+        _ delegatesHolder: SearchBarDelegateHolder
     ) {
         self.webVM = webVM
         // search suggestions vm is used as a template argument later
         self.searchSuggestionsVM = searchVM
-        self.searchBarVM = searchBarVM
+        self.delegatesHolder = delegatesHolder
         searchBarAction = .clearView
         self.mode = mode
         self.contentType = defaultContentType
@@ -127,7 +129,7 @@ struct PhoneView<
 
     private var uiKitWrapperView: some View {
         VStack {
-            let searchBarDelegate = searchBarVM.searchBarDelegate
+            let searchBarDelegate = delegatesHolder.searchBarDelegate
             PhoneSearchBarLegacyView(
                 searchBarDelegate,
                 searchBarAction,
@@ -138,7 +140,7 @@ struct PhoneView<
                 ProgressView(value: toolbarVM.state.loadingProgress)
             }
             if showSearchSuggestions {
-                let delegate = searchBarVM.searchSuggestionsDelegate
+                let delegate = delegatesHolder.searchSuggestionsDelegate
                 SearchSuggestionsView<S>(searchQuery, delegate, mode)
             } else {
                 let jsPlugins = browserContentVM.jsPluginsBuilder
@@ -213,7 +215,7 @@ struct PhoneView<
                     ProgressView(value: toolbarVM.state.loadingProgress)
                 }
                 if showSearchSuggestions {
-                    let delegate = searchBarVM.searchSuggestionsDelegate
+                    let delegate = delegatesHolder.searchSuggestionsDelegate
                     SearchSuggestionsView<S>(searchQuery, delegate, mode)
                 } else {
                     let jsPlugins = browserContentVM.jsPluginsBuilder

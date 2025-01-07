@@ -121,6 +121,7 @@ struct MainBrowserView<
         .environmentObject(topSitesVM)
         .environmentObject(searchSuggestionsVM)
         .environmentObject(toolbarVM)
+        .environmentObject(searchBarVM)
         .onAppear {
             Task {
                 await ServiceRegistry.shared.tabsService.attach(

@@ -18,7 +18,7 @@ struct TabletSearchBarViewV2: View {
     /// Toolbar vm is better to be stored in Environment, because tablet view wrapper doesn't need it
     @EnvironmentObject var toolbarVM: BrowserToolbarViewModel
     /// Search bar view model
-    @ObservedObject var searchBarVM: SearchBarViewModel
+    @EnvironmentObject var searchBarVM: SearchBarViewModel
 
     private let columns: [GridItem] = [
         GridItem(.fixed(CGFloat.toolbarViewHeight)),
@@ -32,14 +32,12 @@ struct TabletSearchBarViewV2: View {
         _ showingMenu: Binding<Bool>,
         _ showSearchSuggestions: Binding<Bool>,
         _ query: Binding<String>,
-        _ action: Binding<SearchBarAction>,
-        _ searchBarVM: SearchBarViewModel
+        _ action: Binding<SearchBarAction>
     ) {
         _showingMenu = showingMenu
         _showSearchSuggestions = showSearchSuggestions
         _query = query
         _action = action
-        self.searchBarVM = searchBarVM
     }
 
     var body: some View {
