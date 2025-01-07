@@ -11,7 +11,7 @@ import ViewModelKit
 
 /// All tabs specific state context interface
 public protocol AllTabsStateContext: StateContext {
-    @MainActor func handleTabAdd(_ tab: CoreBrowser.Tab)
+    func handleTabAdd(_ tab: CoreBrowser.Tab)
 }
 
 /// All tabs state context which is actually a view model proxy
@@ -23,7 +23,7 @@ public final class AllTabsStateContextProxy: AllTabsStateContext {
         self.subject = subject
     }
     
-    @MainActor public func handleTabAdd(_ tab: Tab) {
+    public func handleTabAdd(_ tab: Tab) {
         subject.handleTabAdd(tab)
     }
 }

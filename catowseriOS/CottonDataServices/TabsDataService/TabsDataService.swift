@@ -661,27 +661,27 @@ private extension TabsDataService {
     func fetchTabs() async throws {
         async let cachedTabs = tabsRepository.fetchAllTabs()
         async let defaultContentType = positioning.contentState
-        var cachedData = try await CachedTabsInitialInfo(
+        var cachedData = try await TabsAppStartInfo(
             cachedTabs,
             defaultContentType
         )
         let selectedTabId: Tab.ID
-        if cachedData.cachedTabs.isEmpty {
+        if cachedData.tabs.isEmpty {
             let tab = CoreBrowser.Tab(contentType: cachedData.defaultContentType)
             let savedTab = try await tabsRepository.add(tab, select: true)
-            cachedData.cachedTabs = [savedTab]
+            cachedData.tabs = [savedTab]
             selectedTabId = tab.id
         } else {
             selectedTabId = try await tabsRepository.fetchSelectedTabId()
         }
-        serviceData.allTabs = .finished(output: .success(cachedData.cachedTabs))
-        serviceData.tabsCount = .finished(output: .success(cachedData.cachedTabs.count))
+        serviceData.allTabs = .finished(output: .success(cachedData.tabs))
+        serviceData.tabsCount = .finished(output: .success(cachedData.tabs.count))
         serviceData.selectedTabId = .finished(output: .success(selectedTabId))
         if observingType.isSystemObservation {
-            await notifyAboutNewTabs(cachedData.cachedTabs, nil)
+            await notifyAboutNewTabs(cachedData.tabs, nil)
             await notifyAboutNewSelectedTab(selectedTabId)
         } else {
-            tabsCountInput.yield(cachedData.cachedTabs.count)
+            tabsCountInput.yield(cachedData.tabs.count)
             selectedTabIdInput.yield(selectedTabId)
         }
     }
@@ -762,15 +762,20 @@ private extension AddedTabPosition {
     }
 }
 
-struct CachedTabsInitialInfo {
-    var cachedTabs: [Tab]
+/// App start initial tabs data, this value type
+/// is very usseful because it allows to
+/// fetch tabs & default content in parallel
+struct TabsAppStartInfo {
+    /// tabs array
+    var tabs: [Tab]
+    /// default tab content
     let defaultContentType: Tab.ContentType
     
     init(
-        _ cachedTabs: [Tab],
+        _ tabs: [Tab],
         _ defaultContentType: Tab.ContentType
     ) {
-        self.cachedTabs = cachedTabs
+        self.tabs = tabs
         self.defaultContentType = defaultContentType
     }
 }

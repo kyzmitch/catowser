@@ -11,8 +11,10 @@ import ViewModelKit
 
 /// All tabs view model actions
 public enum AllTabsAction: ViewModelAction {
+    /// Add a tab action
     case addTab(CoreBrowser.Tab)
     
+    /// All possible actions
     public static var allCases: [AllTabsAction] {
         [.addTab(.blank)]
     }

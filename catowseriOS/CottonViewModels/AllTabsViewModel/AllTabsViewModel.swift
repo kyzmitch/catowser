@@ -19,7 +19,7 @@ public typealias AllTabsViewModel = BaseViewModel<
 >
 
 /// All tabs view model implementation
-@MainActor final class AllTabsViewModelImpl: AllTabsViewModel {
+final class AllTabsViewModelImpl: AllTabsViewModel {
     private let writeTabUseCase: WriteTabsUseCase
 
     /// Internal initializer
