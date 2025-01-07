@@ -35,14 +35,12 @@ public final class SearchBarInViewMode<C: SearchBarStateContext>: SearchBarState
             nextState = searchState
         case .cancelSearch:
             throw SearchBarError.cannotCancelSearchWhenInViewMode
-        case let .updateView(title, searchBarContent):
-            self.overlayContent = title
+        case let .updateView(overlayLabel, searchBarContent):
+            self.overlayContent = overlayLabel
             self.searchBarContent = searchBarContent
             nextState = self
         case .clearView:
-            self.overlayContent = nil
-            self.searchBarContent = nil
-            nextState = self
+            nextState = SearchBarInViewMode<C>()
         case .selectSuggestion:
             throw SearchBarError.cannotSeeSuggestionsInViewMode
         }

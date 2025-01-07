@@ -18,7 +18,7 @@ public enum SearchBarAction: Equatable, ViewModelAction {
     case cancelSearch
     /// Update on new tab site content
     case updateView(
-        _ title: String,
+        _ overlayLabel: String,
         _ searchBarContent: String
     )
     /// Update to clear state

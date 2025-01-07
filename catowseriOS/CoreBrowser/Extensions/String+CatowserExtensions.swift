@@ -34,6 +34,8 @@ public extension String {
         return String(self.dropFirst(prefix.count))
     }
 
-    static let placeholderText: String = NSLocalizedString("placeholder_searchbar",
-                                                           comment: "when search bar is empty")
+    static let placeholderText: String = NSLocalizedString(
+        "placeholder_searchbar",
+        comment: "when search bar is empty"
+    )
 }

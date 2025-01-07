@@ -91,4 +91,19 @@ public struct BrowserToolbarState<C: BrowserToolbarStateContext>: ViewModelState
         goBackDisabled = !(interface?.canGoBack ?? false)
         goForwardDisabled = !(interface?.canGoForward ?? false)
     }
+    
+    public static func == (
+        lhs: BrowserToolbarState<C>,
+        rhs: BrowserToolbarState<C>
+    ) -> Bool {
+        let valueFieldsEqual = lhs.goBackDisabled == rhs.goBackDisabled &&
+        lhs.goForwardDisabled == rhs.goForwardDisabled &&
+        lhs.reloadDisabled == rhs.reloadDisabled &&
+        lhs.downloadsDisabled == rhs.downloadsDisabled &&
+        lhs.showProgress == rhs.showProgress &&
+        lhs.stopWebViewReusage == rhs.stopWebViewReusage &&
+        lhs.loadingProgress == rhs.loadingProgress
+        let refFieldsEqual = lhs.webViewInterface === rhs.webViewInterface
+        return valueFieldsEqual && refFieldsEqual
+    }
 }

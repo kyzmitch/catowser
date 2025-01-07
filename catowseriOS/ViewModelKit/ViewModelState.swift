@@ -11,7 +11,7 @@
 /// Can be value type (struct or enum) to be thread-safe out of the box.
 /// But it is not required, you can use classes and inheritance to
 /// implement canonical state design pattern as well.
-public protocol ViewModelState: Sendable {
+public protocol ViewModelState: Sendable, Equatable {
     /// Action type
     associatedtype Action: ViewModelAction
     /// Context of the state to be able to get any additional data

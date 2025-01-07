@@ -49,4 +49,15 @@ public class SearchBarState<C: SearchBarStateContext>: ViewModelState, @unchecke
     ) throws -> BaseState {
         throw SearchBarError.invalidDummyState
     }
+    
+    public static func == (lhs: SearchBarState<C>, rhs: SearchBarState<C>) -> Bool {
+        guard type(of: lhs) == type(of: rhs) else {
+            return false
+        }
+        return lhs.showCancelButton == rhs.showCancelButton &&
+            lhs.overlayContent == rhs.overlayContent &&
+            lhs.searchBarContent == rhs.searchBarContent &&
+            lhs.query == rhs.query &&
+            lhs.showCancelButton == rhs.showCancelButton
+    }
 }

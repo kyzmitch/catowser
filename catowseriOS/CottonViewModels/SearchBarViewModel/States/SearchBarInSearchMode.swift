@@ -36,14 +36,12 @@ public final class SearchBarInSearchMode<C: SearchBarStateContext>: SearchBarSta
                 overlayContent,
                 searchBarContent
             )
-        case let .updateView(title, searchBarContent):
-            self.overlayContent = title
+        case let .updateView(overlayLabel, searchBarContent):
+            self.overlayContent = overlayLabel
             self.searchBarContent = searchBarContent
             nextState = self
         case .clearView:
-            self.overlayContent = nil
-            self.searchBarContent = nil
-            nextState = self
+            nextState = SearchBarInViewMode<C>()
         case .selectSuggestion(let suggestion):
             nextState = SearchBarInViewMode<C>()
             Task {

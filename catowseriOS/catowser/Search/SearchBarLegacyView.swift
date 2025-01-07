@@ -304,7 +304,7 @@ private extension SearchBarLegacyView {
     }
 
     func handleViewModeState(
-        _ title: String,
+        _ overlayContent: String,
         _ searchBarContent: String,
         _ animated: Bool
     ) {
@@ -317,8 +317,11 @@ private extension SearchBarLegacyView {
         Task {
             let dohEnabled = await FeatureManager.shared.boolValue(of: .dnsOverHTTPSAvailable)
             dohStateIcon.text = "\(dohEnabled ? "DoH" : "")"
-            siteNameLabel.text = title
-            prepareForViewMode(animated: animated, animateSecurityView: dohEnabled)
+            siteNameLabel.text = overlayContent
+            prepareForViewMode(
+                animated: animated,
+                animateSecurityView: dohEnabled
+            )
         }
     }
 }
