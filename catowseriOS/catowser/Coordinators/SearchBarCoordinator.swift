@@ -240,11 +240,15 @@ private extension SearchBarCoordinator {
 }
 
 extension SearchBarCoordinator: UISearchBarDelegate {
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchQuery: String) {
+    func searchBar(
+        _ searchBar: UISearchBar,
+        textDidChange searchQuery: String
+    ) {
         if searchQuery.isEmpty || searchQuery.looksLikeURL() {
             showNext(.hideSuggestions)
         } else {
-            /// Async layout is fine for this case because both insert & show operations are together in one closure
+            /// Async layout is fine for this case because
+            /// both insert & show operations are together in one closure
             Task {
                 let viewModel = await ViewModelFactory.shared.searchSuggestionsViewModel()
                 insertNext(.suggestions(viewModel))
@@ -257,9 +261,11 @@ extension SearchBarCoordinator: UISearchBarDelegate {
         }
     }
 
-    func searchBar(_ searchBar: UISearchBar,
-                   shouldChangeTextIn range: NSRange,
-                   replacementText text: String) -> Bool {
+    func searchBar(
+        _ searchBar: UISearchBar,
+        shouldChangeTextIn range: NSRange,
+        replacementText text: String
+    ) -> Bool {
         guard let value = searchBar.text else {
             return text != " "
         }

@@ -20,7 +20,7 @@ import CottonDataServices
 import CottonViewModels
 
 @MainActor protocol TabDelegate: AnyObject {
-    func tabViewDidClose(_ tabView: TabView) async
+    func tabViewDidClose(_ tabView: TabView)
 }
 
 /// The tab view for tablets

@@ -14,7 +14,7 @@ struct TabletTabsLegacyView: CatowserUIVCRepresentable {
 
     @EnvironmentObject private var viewModel: AllTabsViewModel
 
-    init() {}
+    init() { }
 
     func makeUIViewController(context: Context) -> UIViewControllerType {
         let vc = vcFactory.tabsViewController(viewModel)
@@ -22,5 +22,8 @@ struct TabletTabsLegacyView: CatowserUIVCRepresentable {
         return vc!.viewController
     }
 
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
+    func updateUIViewController(
+        _ uiViewController: UIViewControllerType,
+        context: Context
+    ) { }
 }

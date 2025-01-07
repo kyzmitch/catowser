@@ -156,14 +156,16 @@ private extension TabsViewController {
 
     // MARK: Action response handlers
 
-    func add(_ tabView: TabView, at index: Int) {
+    func add(
+        _ tabView: TabView,
+        at index: Int
+    ) {
         tabsStackView.insertArrangedSubview(tabView, at: index)
         view.layoutIfNeeded()
         stackViewScrollableContainer.scrollToVeryRight()
     }
 
-    func removeTabView(_ tabView: TabView) async {
-        // TODO: this function can be sync now
+    func removeTabView(_ tabView: TabView) {
         if let removedIndex = tabsStackView.arrangedSubviews.firstIndex(of: tabView) {
             viewModels.remove(at: removedIndex)
         }
@@ -298,7 +300,11 @@ private extension TabsViewController {
 // MARK: - TabsObserver
 
 extension TabsViewController: TabsObserver {
-    func tabDidSelect(_ index: Int, _ content: CoreBrowser.Tab.ContentType, _ identifier: UUID) async {
+    func tabDidSelect(
+        _ index: Int,
+        _ content: CoreBrowser.Tab.ContentType,
+        _ identifier: UUID
+    ) async {
         guard !tabsStackView.arrangedSubviews.isEmpty else {
             assertionFailure("Tried to make tab view active but there are no any of them")
             return
@@ -343,7 +349,10 @@ extension TabsViewController: TabsObserver {
         view.layoutIfNeeded()
     }
 
-    func tabDidAdd(_ tab: CoreBrowser.Tab, at index: Int) async {
+    func tabDidAdd(
+        _ tab: CoreBrowser.Tab,
+        at index: Int
+    ) async {
         let vm = await ViewModelFactory.shared.tabViewModel(tab, context)
         viewModels.insert(vm, at: index)
         let tabView = TabView(
@@ -359,9 +368,9 @@ extension TabsViewController: TabsObserver {
 // MARK: - TabDelegate
 
 extension TabsViewController: TabDelegate {
-    func tabViewDidClose(_ tabView: TabView) async {
+    func tabViewDidClose(_ tabView: TabView) {
         print("\(#function): tab closed")
-        await removeTabView(tabView)
+        removeTabView(tabView)
     }
 }
 

@@ -205,8 +205,6 @@ final class SearchBarLegacyView<
     }
     
     func onStateChange(_ nextState: State) {
-        // See `diff` comment to find a difference with previos state handling
-
         switch nextState {
         case is SearchBarInViewMode<SearchBarStateContextProxy>:
             guard let title = nextState.overlayContent, let content = nextState.searchBarContent else {
