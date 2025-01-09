@@ -6,7 +6,6 @@
 //  Copyright © 2019 Cotton/Catowser Andrei Ermoshin. All rights reserved.
 //
 
-import CottonNetworking
 import CottonBase
 import UIKit
 
