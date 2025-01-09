@@ -86,9 +86,11 @@ final class WebViewController<C: Navigating>: BaseViewController, WKUIDelegate, 
 
      Currently it is too tricky to inject view model right away because it has to be async
      */
-    init(_ coordinator: C?,
-         _ viewModel: any WebViewModel,
-         _ mode: UIFrameworkType) {
+    init(
+        _ coordinator: C?,
+        _ viewModel: any WebViewModel,
+        _ mode: UIFrameworkType
+    ) {
         self.coordinator = coordinator
         self.viewModel = viewModel
         self.mode = mode
@@ -163,19 +165,23 @@ final class WebViewController<C: Navigating>: BaseViewController, WKUIDelegate, 
 
     // MARK: - WKUIDelegate
 
-    func webView(_ webView: WKWebView,
-                 createWebViewWith configuration: WKWebViewConfiguration,
-                 for navigationAction: WKNavigationAction,
-                 windowFeatures: WKWindowFeatures) -> WKWebView? {
+    func webView(
+        _ webView: WKWebView,
+        createWebViewWith configuration: WKWebViewConfiguration,
+        for navigationAction: WKNavigationAction,
+        windowFeatures: WKWindowFeatures
+    ) -> WKWebView? {
 
         return nil
     }
 
     // MARK: - WKNavigationDelegate
 
-    private func webView(_ webView: WKWebView,
-                 decidePolicyFor navigationAction: WKNavigationAction,
-                 decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+    private func webView(
+        _ webView: WKWebView,
+        decidePolicyFor navigationAction: WKNavigationAction,
+        decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
+    ) {
         if let domain = viewModel.nativeAppDomainNameString {
             viewModel.siteNavigation?.siteDidOpen(appName: domain)
             // no need to interrupt
@@ -185,11 +191,17 @@ final class WebViewController<C: Navigating>: BaseViewController, WKUIDelegate, 
         }
     }
 
-    func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+    func webView(
+        _ webView: WKWebView,
+        didCommit navigation: WKNavigation!
+    ) {
         viewModel.siteNavigation?.showLoadingProgress(true)
     }
 
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+    func webView(
+        _ webView: WKWebView,
+        didFinish navigation: WKNavigation!
+    ) {
         viewModel.siteNavigation?.showLoadingProgress(false)
 
         defer {
@@ -222,15 +234,26 @@ final class WebViewController<C: Navigating>: BaseViewController, WKUIDelegate, 
         }
     }
 
-    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+    func webView(
+        _ webView: WKWebView,
+        didFail navigation: WKNavigation!,
+        withError error: Error
+    ) {
         print("Error occured during a committed main frame: \(error.localizedDescription)")
         viewModel.siteNavigation?.showLoadingProgress(false)
     }
 
-    private func webView(_ webView: WKWebView,
-                         didReceive challenge: URLAuthenticationChallenge,
-                         completionHandler: @escaping @Sendable (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        let handler = WebViewAuthChallengeHandler(viewModel.urlInfo, webView, challenge, completionHandler)
+    private func webView(
+        _ webView: WKWebView,
+        didReceive challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping @Sendable (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        let handler = WebViewAuthChallengeHandler(
+            viewModel.urlInfo,
+            webView,
+            challenge,
+            completionHandler
+        )
         authHandlers.insert(handler)
         handler.solve { [weak self, weak handler] stopLoadingProgress in
             guard let self else {
@@ -246,9 +269,11 @@ final class WebViewController<C: Navigating>: BaseViewController, WKUIDelegate, 
         }
     }
 
-    func webView(_ webView: WKWebView,
-                 didFailProvisionalNavigation navigation: WKNavigation!,
-                 withError error: Error) {
+    func webView(
+        _ webView: WKWebView,
+        didFailProvisionalNavigation navigation: WKNavigation!,
+        withError error: Error
+    ) {
         print("Error occured while starting to load data: \(error.localizedDescription)")
         viewModel.siteNavigation?.showLoadingProgress(false)
         let handler = WebViewLoadingErrorHandler(error, webView)
