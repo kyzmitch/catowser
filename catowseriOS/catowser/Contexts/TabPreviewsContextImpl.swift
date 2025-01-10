@@ -10,7 +10,7 @@ import CottonBase
 import CoreBrowser
 import CottonViewModels
 
-final class TabPreviewsContextImpl: TabPreviewsContext {
+final class TabPreviewsContextImpl: TabPreviewsAppContext {
     var contentState: CoreBrowser.Tab.ContentType {
         get async {
             await DefaultTabProvider.shared.contentState

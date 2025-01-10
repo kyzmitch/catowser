@@ -77,7 +77,7 @@ import FeatureFlagsKit
     }
 
     func tabsPreviewsViewModel(
-        _ context: TabPreviewsContext
+        _ context: TabPreviewsAppContext
     ) async -> TabsPreviewsViewModel {
         async let readUseCase = useCaseRegistry.findUseCase(ReadTabsUseCase.self)
         async let writeUseCase = useCaseRegistry.findUseCase(WriteTabsUseCase.self)

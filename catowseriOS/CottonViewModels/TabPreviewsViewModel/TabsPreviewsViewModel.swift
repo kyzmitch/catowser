@@ -11,22 +11,28 @@ import Combine
 import CottonBase
 import CoreBrowser
 import CottonUseCases
+import ViewModelKit
+
+public typealias TabsPreviewsViewModel = BaseViewModel<
+    TabsPreviewState<TabsPreviewsStateContextProxy>,
+    TabsPreviewsAction,
+    TabsPreviewsStateContextProxy
+>
 
 /// Tab previews view model
-@MainActor final public class TabsPreviewsViewModel {
-    @Published public var uxState: TabsPreviewState = .loading
+final public class TabsPreviewsViewModelImpl: TabsPreviewsViewModel {
     private let readTabUseCase: ReadTabsUseCase
     private let writeTabUseCase: WriteTabsUseCase
-    private let context: TabPreviewsContext
+    private let appContext: TabPreviewsAppContext
 
-    public init(
+    init(
         _ readTabUseCase: ReadTabsUseCase,
         _ writeTabUseCase: WriteTabsUseCase,
-        _ context: TabPreviewsContext
+        _ appContext: TabPreviewsAppContext
     ) {
         self.readTabUseCase = readTabUseCase
         self.writeTabUseCase = writeTabUseCase
-        self.context = context
+        self.appContext = appContext
     }
 
     public func load() {
