@@ -22,7 +22,7 @@ public struct AllTabsState<C: AllTabsStateContext>: ViewModelState {
     @MainActor public func transitionOn(
         _ action: Action,
         with context: Context?
-    ) throws -> BaseState {
+    ) async throws -> BaseState {
         switch action {
         case .addTab(let tab):
             context?.handleTabAdd(tab)

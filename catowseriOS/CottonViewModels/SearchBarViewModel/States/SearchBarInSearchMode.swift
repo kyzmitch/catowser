@@ -26,7 +26,7 @@ public final class SearchBarInSearchMode<C: SearchBarStateContext>: SearchBarSta
     @MainActor public override func transitionOn(
         _ action: Action,
         with context: Context?
-    ) throws -> BaseState {
+    ) async throws -> BaseState {
         let nextState: SearchBarState<C>
         switch action {
         case .startSearch:
@@ -44,9 +44,7 @@ public final class SearchBarInSearchMode<C: SearchBarStateContext>: SearchBarSta
             nextState = SearchBarInViewMode<C>()
         case .selectSuggestion(let suggestion):
             nextState = SearchBarInViewMode<C>()
-            Task {
-                try await context?.searchSuggestionDidSelect(suggestion)
-            }
+            try await context?.searchSuggestionDidSelect(suggestion)
         }
         return nextState
     }

@@ -47,7 +47,7 @@ public struct BrowserToolbarState<C: BrowserToolbarStateContext>: ViewModelState
     @MainActor public func transitionOn(
         _ action: Action,
         with context: Context?
-    ) throws -> Self {
+    ) async throws -> Self {
         var copy = self
         switch action {
         case .goBack:

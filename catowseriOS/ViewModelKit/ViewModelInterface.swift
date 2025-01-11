@@ -31,13 +31,13 @@ import Combine
     /// - Throws an error if incoming action is not valid for a current state or due to other errors
     func sendAction(
         _ action: Action
-    ) throws
+    ) async throws
 }
 
 extension ViewModelInterface {
     public func sendAction(
         _ action: Action
-    ) throws {
-        state = try state.transitionOn(action, with: context)
+    ) async throws {
+        state = try await state.transitionOn(action, with: context)
     }
 }

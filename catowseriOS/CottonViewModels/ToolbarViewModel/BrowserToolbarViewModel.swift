@@ -33,8 +33,8 @@ final class BrowserToolbarViewModelImpl: BrowserToolbarViewModel {
         BrowserToolbarStateContextProxy(subject: self)
     }
     
-    public override func sendAction(_ action: Action) throws {
-        try super.sendAction(action)
+    public override func sendAction(_ action: Action) async throws {
+        try await super.sendAction(action)
         state.stopWebViewReusage = false
     }
 }
@@ -55,17 +55,21 @@ extension BrowserToolbarViewModelImpl: BrowserToolbarStateContext {
 
 extension BrowserToolbarViewModelImpl: SiteExternalNavigationDelegate {
     public func backNavigationDidUpdate(to canGoBack: Bool) {
-        try? sendAction(.updateNavigation(
-            canGoBack: canGoBack,
-            canGoForward: nil
-        ))
+        Task {
+            try? await sendAction(.updateNavigation(
+                canGoBack: canGoBack,
+                canGoForward: nil
+            ))
+        }
     }
 
     public func forwardNavigationDidUpdate(to canGoForward: Bool) {
-        try? sendAction(.updateNavigation(
-            canGoBack: nil,
-            canGoForward: canGoForward
-        ))
+        Task {
+            try? await sendAction(.updateNavigation(
+                canGoBack: nil,
+                canGoForward: canGoForward
+            ))
+        }
     }
 
     public func provisionalNavigationDidStart() {}
@@ -73,18 +77,26 @@ extension BrowserToolbarViewModelImpl: SiteExternalNavigationDelegate {
     public func siteDidOpen(appName: String) {}
 
     public func loadingProgressDidChange(_ progress: Float) {
-        try? sendAction(.updateProgress(show: nil, value: progress))
+        Task {
+            try? await sendAction(.updateProgress(show: nil, value: progress))
+        }
     }
 
     public func showLoadingProgress(_ show: Bool) {
-        try? sendAction(.updateProgress(show: show, value: nil))
+        Task {
+            try? await sendAction(.updateProgress(show: show, value: nil))
+        }
     }
 
     public func webViewDidHandleReuseAction() {
-        try? sendAction(.stopWebViewReusage)
+        Task {
+            try? await sendAction(.stopWebViewReusage)
+        }
     }
 
     public func webViewDidReplace(_ interface: WebViewNavigatable?) {
-        try? sendAction(.replaceWebInterface(interface))
+        Task {
+            try? await sendAction(.replaceWebInterface(interface))
+        }
     }
 }

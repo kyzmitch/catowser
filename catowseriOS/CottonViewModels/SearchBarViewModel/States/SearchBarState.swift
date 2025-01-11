@@ -46,7 +46,7 @@ public class SearchBarState<C: SearchBarStateContext>: ViewModelState, @unchecke
     @MainActor public func transitionOn(
         _ action: Action,
         with context: Context?
-    ) throws -> BaseState {
+    ) async throws -> BaseState {
         throw SearchBarError.invalidDummyState
     }
     

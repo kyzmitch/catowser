@@ -33,17 +33,11 @@ final public class TabsPreviewsViewModelImpl: TabsPreviewsViewModel {
         self.readTabUseCase = readTabUseCase
         self.writeTabUseCase = writeTabUseCase
         self.appContext = appContext
+        super.init()
     }
-
-    public func load() {
-        Task {
-            async let tabs = readTabUseCase.allTabs
-            async let selectedTabId = readTabUseCase.selectedId
-            uxState = await .tabs(
-                dataSource: .init(tabs),
-                selectedId: selectedTabId
-            )
-        }
+    
+    public override var context: Context? {
+        TabsPreviewsStateContextProxy(subject: self)
     }
 
     public func closeTab(at index: Int) {
@@ -103,5 +97,15 @@ final public class TabsPreviewsViewModelImpl: TabsPreviewsViewModel {
                 selectedId: newSelectedId
             )
         }
+    }
+}
+
+// MARK: - TabsPreviewsStateContext
+
+extension TabsPreviewsViewModelImpl: TabsPreviewsStateContext {
+    public func load() async -> ([CoreBrowser.Tab], UUID?) {
+        async let tabs = readTabUseCase.allTabs
+        async let selectedTabId = readTabUseCase.selectedId
+        return await (tabs, selectedTabId)
     }
 }

@@ -37,18 +37,23 @@ public enum TabsPreviewState<C: TabsPreviewsStateContext>: ViewModelState {
     @MainActor public func transitionOn(
         _ action: Action,
         with context: Context?
-    ) throws -> BaseState {
+    ) async throws -> BaseState {
+        let nextState: BaseState
         switch action {
         case .load:
-            break
+            if let data = await context?.load() {
+                nextState = .tabs(dataSource: data.0, selectedId: data.1)
+            } else {
+                throw TabsPreviewsError.failToLoad
+            }
         case .closeTab(index: let index):
-            break
+            nextState = self
         case .select(let tab):
-            break
+            nextState = self
         case .addTab:
-            break
+            nextState = self
         }
-        return self
+        return nextState
     }
     
     public static func == (

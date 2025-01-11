@@ -39,7 +39,7 @@ open class BaseViewModel<
     
     open func sendAction(
         _ action: Action
-    ) throws {
-        state = try state.transitionOn(action, with: context)
+    ) async throws {
+        state = try await state.transitionOn(action, with: context)
     }
 }

@@ -34,5 +34,5 @@ public protocol ViewModelState: Sendable, Equatable {
     @MainActor func transitionOn(
         _ action: Action,
         with context: Context?
-    ) throws -> BaseState
+    ) async throws -> BaseState
 }

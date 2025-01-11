@@ -23,7 +23,7 @@ public final class SearchBarInViewMode<C: SearchBarStateContext>: SearchBarState
     @MainActor public override func transitionOn(
         _ action: Action,
         with context: Context?
-    ) throws -> BaseState {
+    ) async throws -> BaseState {
         let nextState: SearchBarState<C>
         switch action {
         case .startSearch(let query):
