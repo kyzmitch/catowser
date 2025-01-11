@@ -27,6 +27,7 @@ public protocol ViewModelState: Sendable, Equatable {
     static func createInitial() -> BaseState
 
     /// Converts current state to another valid state based on input action.
+    /// This function should be async, because action handling usually is not serial.
     ///
     /// - Parameter action: An action which tells how to convert the state
     /// - Parameter context: An optional state context if it is needed for state conversion/handling
@@ -35,4 +36,17 @@ public protocol ViewModelState: Sendable, Equatable {
         _ action: Action,
         with context: Context?
     ) async throws -> BaseState
+    
+    /// Converts current state to another valid state or Result failure.
+    /// This function has async closure for completion, because
+    /// action handling usually depends on async operations.
+    ///
+    /// - Parameter action: An action which tells how to convert the state
+    /// - Parameter context: An optional state context if it is needed for state conversion/handling
+    /// - Parameter onComplete: Completion closure with new state or failure
+    @MainActor func transitionOn(
+        _ action: Action,
+        with context: Context?,
+        onComplete: @escaping (Result<BaseState, Error>) -> Void
+    )
 }

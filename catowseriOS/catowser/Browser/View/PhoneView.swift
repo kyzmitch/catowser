@@ -309,7 +309,7 @@ struct PhoneView<
             DisableableButton(
                 "nav-back",
                 toolbarVM.state.goBackDisabled, {
-                    try? toolbarVM.sendAction(.goBack)
+                    toolbarVM.sendAction(.goBack)
                 }
             )
         }
@@ -320,7 +320,7 @@ struct PhoneView<
             DisableableButton(
                 "nav-forward",
                 toolbarVM.state.goForwardDisabled, {
-                    try? toolbarVM.sendAction(.goForward)
+                    toolbarVM.sendAction(.goForward)
                 }
             )
         }
@@ -331,7 +331,7 @@ struct PhoneView<
             DisableableButton(
                 "nav-refresh",
                 toolbarVM.state.reloadDisabled, {
-                    try? toolbarVM.sendAction(.reload)
+                    toolbarVM.sendAction(.reload)
                 }
             )
         }

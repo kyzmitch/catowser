@@ -29,4 +29,10 @@ public struct AllTabsState<C: AllTabsStateContext>: ViewModelState {
         }
         return self
     }
+    
+    @MainActor public func transitionOn(
+        _ action: Action,
+        with context: Context?,
+        onComplete: @escaping (Result<BaseState, Error>) -> Void
+    ) { }
 }

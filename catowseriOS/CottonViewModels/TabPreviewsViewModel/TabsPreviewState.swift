@@ -41,8 +41,11 @@ public enum TabsPreviewState<C: TabsPreviewsStateContext>: ViewModelState {
         let nextState: BaseState
         switch action {
         case .load:
-            if let data = await context?.load() {
-                nextState = .tabs(dataSource: data.0, selectedId: data.1)
+            if let info = await context?.load() {
+                nextState = .tabs(
+                    dataSource: info.tabs,
+                    selectedId: info.selectedTabUUID
+                )
             } else {
                 throw TabsPreviewsError.failToLoad
             }
@@ -54,6 +57,33 @@ public enum TabsPreviewState<C: TabsPreviewsStateContext>: ViewModelState {
             nextState = self
         }
         return nextState
+    }
+    
+    @MainActor public func transitionOn(
+        _ action: Action,
+        with context: Context?,
+        onComplete: @escaping (Result<BaseState, Error>) -> Void
+    ) {
+        switch action {
+        case .load:
+            guard let context else {
+                onComplete(.failure(TabsPreviewsError.failToLoad))
+                return
+            }
+            context.load(onComplete: { info in
+                let nextState: TabsPreviewState = .tabs(
+                    dataSource: info.tabs,
+                    selectedId: info.selectedTabUUID
+                )
+                onComplete(.success(nextState))
+            })
+        case .closeTab(index: let index):
+            onComplete(.success(.loading))
+        case .select(let tab):
+            onComplete(.success(.loading))
+        case .addTab:
+            onComplete(.success(.loading))
+        }
     }
     
     public static func == (

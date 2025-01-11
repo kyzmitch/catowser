@@ -84,6 +84,12 @@ public struct BrowserToolbarState<C: BrowserToolbarStateContext>: ViewModelState
         return copy
     }
     
+    @MainActor public func transitionOn(
+        _ action: Action,
+        with context: Context?,
+        onComplete: @escaping (Result<BaseState, Error>) -> Void
+    ) { }
+    
     /// Separate function to update several fields and trigger the update only once
     @MainActor mutating func update(with interface: WebViewNavigatable?) {
         webViewInterface = interface

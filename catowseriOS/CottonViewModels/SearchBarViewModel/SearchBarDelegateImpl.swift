@@ -32,14 +32,16 @@ extension SearchBarDelegateImpl: UISearchBarDelegate {
         _ searchBar: UISearchBar,
         textDidChange searchQuery: String
     ) {
-        do {
-            if searchQuery.isEmpty || searchQuery.looksLikeURL() {
-                try viewModel.sendAction(.cancelSearch)
-            } else {
-                try viewModel.sendAction(.startSearch(searchQuery))
+        Task {
+            do {
+                if searchQuery.isEmpty || searchQuery.looksLikeURL() {
+                    try await viewModel.sendAction(.cancelSearch)
+                } else {
+                    try await viewModel.sendAction(.startSearch(searchQuery))
+                }
+            } catch {
+                print("textDidChange fail: \(error)")
             }
-        } catch {
-            print("textDidChange fail: \(error)")
         }
     }
 
@@ -66,21 +68,24 @@ extension SearchBarDelegateImpl: UISearchBarDelegate {
     }
 
     public func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        do {
-            try viewModel.sendAction(.startSearch(nil))
-        } catch {
-            print("TextDidBeginEditing error: \(error)")
+        Task {
+            do {
+                try await viewModel.sendAction(.startSearch(nil))
+            } catch {
+                print("TextDidBeginEditing error: \(error)")
+            }
         }
     }
 
     public func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
-        do {
-            try viewModel.sendAction(.cancelSearch)
-        } catch {
-            print("CancelButtonClicked error: \(error)")
+        Task {
+            do {
+                try await viewModel.sendAction(.cancelSearch)
+            } catch {
+                print("CancelButtonClicked error: \(error)")
+            }
         }
-        
     }
 
     public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -94,10 +99,12 @@ extension SearchBarDelegateImpl: UISearchBarDelegate {
             // need to open web view with url of search engine and specific search queue
             content = .suggestion(text)
         }
-        do {
-            try viewModel.sendAction(.selectSuggestion(content))
-        } catch {
-            print("SearchButtonClicked error: \(error)")
+        Task {
+            do {
+                try await viewModel.sendAction(.selectSuggestion(content))
+            } catch {
+                print("SearchButtonClicked error: \(error)")
+            }
         }
     }
 

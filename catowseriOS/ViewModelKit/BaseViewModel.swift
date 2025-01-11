@@ -42,4 +42,21 @@ open class BaseViewModel<
     ) async throws {
         state = try await state.transitionOn(action, with: context)
     }
+    
+    open func sendAction(
+        _ action: Action,
+        onComplete: CompletionCallback? = nil
+    ) {
+        state.transitionOn(action, with: context) { [weak self] result in
+            switch result {
+            case .success(let nextState):
+                self?.state = nextState
+                let void: Void = ()
+                onComplete?(.success(void))
+            case .failure(let failure):
+                onComplete?(.failure(failure))
+            }
+        }
+    }
+    
 }

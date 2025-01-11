@@ -39,35 +39,6 @@ final public class TabsPreviewsViewModelImpl: TabsPreviewsViewModel {
     public override var context: Context? {
         TabsPreviewsStateContextProxy(subject: self)
     }
-
-    public func closeTab(at index: Int) {
-        Task {
-            guard case let .tabs(box, _) = uxState else {
-                return
-            }
-            let tab = box.value.remove(at: index)
-            /// Rewrite view model state with the updated box
-            uxState = .tabs(
-                dataSource: box,
-                selectedId: nil
-            )
-            if let site = tab.site {
-                context.removeWebView(for: site)
-            }
-            do {
-                guard let newSelectedId = try await writeTabUseCase.close(tab: tab) else {
-                    print("Closed tab wasn't selected")
-                    return
-                }
-                uxState = .tabs(
-                    dataSource: box,
-                    selectedId: newSelectedId
-                )
-            } catch {
-                print("Fail to close tab: \(error)")
-            }
-        }
-    }
     
     public func selectTab(_ tab: CoreBrowser.Tab) {
         Task {
@@ -81,6 +52,7 @@ final public class TabsPreviewsViewModelImpl: TabsPreviewsViewModel {
     }
     
     public func addTab() {
+        /*
         Task {
             let contentState = await context.contentState
             let tab = CoreBrowser.Tab(contentType: contentState)
@@ -97,15 +69,53 @@ final public class TabsPreviewsViewModelImpl: TabsPreviewsViewModel {
                 selectedId: newSelectedId
             )
         }
+         */
     }
 }
 
 // MARK: - TabsPreviewsStateContext
 
 extension TabsPreviewsViewModelImpl: TabsPreviewsStateContext {
-    public func load() async -> ([CoreBrowser.Tab], UUID?) {
+    public func load() async -> PreviewsInfo {
         async let tabs = readTabUseCase.allTabs
         async let selectedTabId = readTabUseCase.selectedId
-        return await (tabs, selectedTabId)
+        return await PreviewsInfo(tabs, selectedTabId)
+    }
+    
+    public func load(onComplete: @escaping (PreviewsInfo) -> Void) {
+        
+    }
+    
+    public func close(at index: Int) async {
+        /*
+        guard case let .tabs(box, _) = uxState else {
+            return
+        }
+        let tab = box.value.remove(at: index)
+        /// Rewrite view model state with the updated box
+        uxState = .tabs(
+            dataSource: box,
+            selectedId: nil
+        )
+        if let site = tab.site {
+            appContext.removeWebView(for: site)
+        }
+        do {
+            guard let newSelectedId = try await writeTabUseCase.close(tab: tab) else {
+                print("Closed tab wasn't selected")
+                return
+            }
+            uxState = .tabs(
+                dataSource: box,
+                selectedId: newSelectedId
+            )
+        } catch {
+            print("Fail to close tab: \(error)")
+        }
+         */
+    }
+    
+    public func close(at index: Int, onComplete: @escaping () -> Void) {
+        
     }
 }
