@@ -18,7 +18,7 @@ struct TabletSearchBarViewV2: View {
     /// Toolbar vm is better to be stored in Environment, because tablet view wrapper doesn't need it
     @EnvironmentObject var toolbarVM: BrowserToolbarViewModel
     /// Search bar view model
-    @EnvironmentObject var searchBarVM: SearchBarViewModel
+    @ObservedObject var searchBarVM: SearchBarViewModel
 
     private let columns: [GridItem] = [
         GridItem(.fixed(CGFloat.toolbarViewHeight)),
@@ -32,12 +32,14 @@ struct TabletSearchBarViewV2: View {
         _ showingMenu: Binding<Bool>,
         _ showSearchSuggestions: Binding<Bool>,
         _ query: Binding<String>,
-        _ action: Binding<SearchBarAction>
+        _ action: Binding<SearchBarAction>,
+        _ searchBarVM: SearchBarViewModel
     ) {
         _showingMenu = showingMenu
         _showSearchSuggestions = showSearchSuggestions
         _query = query
         _action = action
+        self.searchBarVM = searchBarVM
     }
 
     var body: some View {
@@ -47,19 +49,19 @@ struct TabletSearchBarViewV2: View {
                 DisableableButton(
                     "nav-back",
                     toolbarVM.state.goBackDisabled, {
-                        try? toolbarVM.sendAction(.goBack)
+                        toolbarVM.sendAction(.goBack)
                     }
                 ).padding()
                 DisableableButton(
                     "nav-forward",
                     toolbarVM.state.goForwardDisabled, {
-                        try? toolbarVM.sendAction(.goForward)
+                        toolbarVM.sendAction(.goForward)
                     }
                 ).padding()
                 DisableableButton(
                     "nav-refresh",
                     toolbarVM.state.reloadDisabled, {
-                        try? toolbarVM.sendAction(.reload)
+                        toolbarVM.sendAction(.reload)
                     }
                 ).padding()
                 SearchBarViewV2($query, $action, searchBarVM)

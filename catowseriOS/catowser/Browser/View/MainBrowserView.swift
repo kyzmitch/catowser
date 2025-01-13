@@ -103,6 +103,7 @@ struct MainBrowserView<
                     defaultContentType,
                     webVM,
                     searchSuggestionsVM,
+                    searchBarVM,
                     searchBarVM
                 )
             } else {
@@ -111,6 +112,7 @@ struct MainBrowserView<
                     defaultContentType,
                     webVM,
                     searchSuggestionsVM,
+                    searchBarVM,
                     searchBarVM
                 )
             }
@@ -121,7 +123,6 @@ struct MainBrowserView<
         .environmentObject(topSitesVM)
         .environmentObject(searchSuggestionsVM)
         .environmentObject(toolbarVM)
-        .environmentObject(searchBarVM)
         .onAppear {
             Task {
                 await ServiceRegistry.shared.tabsService.attach(

@@ -18,8 +18,8 @@ struct TabletView<
 >: View {
     // MARK: - view models of subviews
 
-    /// Search bar view model
-    @EnvironmentObject private var searchBarVM: SB
+    /// Search bar view model, can't be environment object (always nil for some reason)
+    @ObservedObject private var searchBarVM: SB
     /// Separate field for the delegate (environment object for Search bar view model can't compile with it)
     private let delegatesHolder: SearchBarDelegateHolder
     /// A reference to created vm in main view
@@ -88,11 +88,13 @@ struct TabletView<
         _ defaultContentType: CoreBrowser.Tab.ContentType,
         _ webVM: W,
         _ searchVM: S,
+        _ searchBarVM: SB,
         _ delegatesHolder: SearchBarDelegateHolder
     ) {
         self.webVM = webVM
         // search suggestions vm is used as a template argument later
         self.searchSuggestionsVM = searchVM
+        self.searchBarVM = searchBarVM
         self.delegatesHolder = delegatesHolder
         self.contentType = defaultContentType
         self.mode = mode
@@ -198,7 +200,8 @@ struct TabletView<
                 $showingMenu,
                 $showSearchSuggestions,
                 $searchQuery,
-                $searchBarAction
+                $searchBarAction,
+                searchBarVM
             )
                 .frame(height: .toolbarViewHeight)
                 .environmentObject(toolbarVM)
