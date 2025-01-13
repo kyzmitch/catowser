@@ -38,8 +38,8 @@ extension ViewModelConsumer where Self: AnyObject {
         // Observe all next states
         return viewModel.statePublisher.sink { failure in
             print("Fail to start state observing: \(failure)")
-        } receiveValue: { nextState in
-            self.onStateChange(nextState)
+        } receiveValue: { [weak self] nextState in
+            self?.onStateChange(nextState)
         }
     }
 }
