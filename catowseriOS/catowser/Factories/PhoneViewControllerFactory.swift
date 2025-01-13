@@ -85,7 +85,8 @@ final class PhoneViewControllerFactory: ViewControllerFactory {
             coordinator,
             viewModel,
             FeatureManager.shared,
-            UIServiceRegistry.shared()
+            UIServiceRegistry.shared(),
+            viewModel
         )
         return vc
     }

@@ -6,12 +6,14 @@
 //  Copyright © 2025 Cotton (Catowser). All rights reserved.
 //
 
-enum TabsPreviewsError: LocalizedError {
+/// Tab previews view model errors
+public enum TabsPreviewsError: LocalizedError {
     case failToLoad
     case tabsNotLoadedToClose
     case nilStateContext
+    case useCaseFailure(Error)
     
-    var errorDescription: String? {
+    public var errorDescription: String? {
         switch self {
         case .failToLoad:
             return "Fail to load tabs or selected tab identifier"
@@ -19,6 +21,8 @@ enum TabsPreviewsError: LocalizedError {
             return "Tabs not loaded to close"
         case .nilStateContext:
             return "Nil state context"
+        case .useCaseFailure(let error):
+            return "Use case failure: \(error)"
         }
     }
 }

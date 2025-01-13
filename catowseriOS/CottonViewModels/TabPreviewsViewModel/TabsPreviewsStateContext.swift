@@ -34,15 +34,19 @@ public protocol TabsPreviewsStateContext: StateContext {
         from tabs: [CoreBrowser.Tab]
     ) async throws -> PreviewsInfo
     func select(_ tab: CoreBrowser.Tab) async throws
-    func addTab() async throws -> PreviewsInfo
+    func addDefaultTab() async throws -> PreviewsInfo
     
     // MARK: - closure based API
     
     func load(onComplete: @escaping (PreviewsInfo) -> Void)
-    func close(at index: Int, onComplete: @escaping () -> Void)
+    func close(
+        at index: Int,
+        from tabs: [CoreBrowser.Tab],
+        onComplete: @escaping (Result<PreviewsInfo, TabsPreviewsError>) -> Void
+    )
     func select(
         _ tab: CoreBrowser.Tab,
-        onComplete: @escaping (Result<Void, Error>) -> Void
+        onComplete: @escaping (Result<Void, TabsPreviewsError>) -> Void
     )
 }
 
@@ -54,7 +58,7 @@ public final class TabsPreviewsStateContextProxy: TabsPreviewsStateContext {
         self.subject = subject
     }
     
-    public func load() async -> (PreviewsInfo) {
+    public func load() async -> PreviewsInfo {
         await subject.load()
     }
     
@@ -65,26 +69,30 @@ public final class TabsPreviewsStateContextProxy: TabsPreviewsStateContext {
         try await subject.close(at: index, from: tabs)
     }
     
-    public func load(onComplete: @escaping (PreviewsInfo) -> Void) {
-        
-    }
-    
-    public func close(at index: Int, onComplete: @escaping () -> Void) {
-        
-    }
-    
     public func select(_ tab: CoreBrowser.Tab) async throws {
         try await subject.select(tab)
     }
     
-    public func select(
-        _ tab: CoreBrowser.Tab,
-        onComplete: @escaping (Result<Void, Error>) -> Void
-    ) {
-        subject.select(tab, onComplete: onComplete)
+    public func addDefaultTab() async throws -> PreviewsInfo {
+        try await subject.addDefaultTab()
     }
     
-    public func addTab() async throws -> PreviewsInfo {
-        try await subject.addTab()
+    public func load(onComplete: @escaping (PreviewsInfo) -> Void) {
+        subject.load(onComplete: onComplete)
+    }
+    
+    public func close(
+        at index: Int,
+        from tabs: [CoreBrowser.Tab],
+        onComplete: @escaping (Result<PreviewsInfo, TabsPreviewsError>) -> Void
+    ) {
+        subject.close(at: index, from: tabs, onComplete: onComplete)
+    }
+    
+    public func select(
+        _ tab: CoreBrowser.Tab,
+        onComplete: @escaping (Result<Void, TabsPreviewsError>) -> Void
+    ) {
+        subject.select(tab, onComplete: onComplete)
     }
 }

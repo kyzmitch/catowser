@@ -94,8 +94,19 @@ extension TabsPreviewsViewModelImpl: TabsPreviewsStateContext {
         return info
     }
     
-    public func close(at index: Int, onComplete: @escaping () -> Void) {
-        
+    public func close(
+        at index: Int,
+        from tabs: [CoreBrowser.Tab],
+        onComplete: @escaping (Result<PreviewsInfo, TabsPreviewsError>) -> Void
+    ) {
+        Task {
+            do {
+                let info = try await close(at: index, from: tabs)
+                onComplete(.success(info))
+            } catch {
+                onComplete(.failure(.useCaseFailure(error)))
+            }
+        }
     }
     
     public func select(_ tab: Tab) async throws {
@@ -104,19 +115,19 @@ extension TabsPreviewsViewModelImpl: TabsPreviewsStateContext {
     
     public func select(
         _ tab: Tab,
-        onComplete: @escaping (Result<Void, Error>) -> Void
+        onComplete: @escaping (Result<Void, TabsPreviewsError>) -> Void
     ) {
         Task {
             do {
                 try await writeTabUseCase.select(tab: tab)
                 onComplete(.success(()))
             } catch {
-                onComplete(.failure(error))
+                onComplete(.failure(.useCaseFailure(error)))
             }
         }
     }
     
-    public func addTab() async throws -> PreviewsInfo {
+    public func addDefaultTab() async throws -> PreviewsInfo {
         let contentState = await appContext.contentState
         let tab = CoreBrowser.Tab(contentType: contentState)
         try await writeTabUseCase.add(tab: tab)

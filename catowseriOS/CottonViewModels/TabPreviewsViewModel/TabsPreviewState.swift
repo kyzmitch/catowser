@@ -78,7 +78,7 @@ public enum TabsPreviewState<C: TabsPreviewsStateContext>: ViewModelState {
         switch action {
         case .load:
             guard let context else {
-                onComplete(.failure(TabsPreviewsError.failToLoad))
+                onComplete(.failure(TabsPreviewsError.nilStateContext))
                 return
             }
             context.load(onComplete: { info in
@@ -89,7 +89,26 @@ public enum TabsPreviewState<C: TabsPreviewsStateContext>: ViewModelState {
                 onComplete(.success(nextState))
             })
         case .closeTab(index: let index):
-            onComplete(.success(.loading))
+            guard case let .tabs(tabs, _) = self else {
+                onComplete(.failure(TabsPreviewsError.tabsNotLoadedToClose))
+                return
+            }
+            guard let context else {
+                onComplete(.failure(TabsPreviewsError.nilStateContext))
+                return
+            }
+            context.close(at: index, from: tabs) { result in
+                switch result {
+                case .success(let info):
+                    let nextState: TabsPreviewState = .tabs(
+                        dataSource: info.tabs,
+                        selectedId: info.selectedTabUUID
+                    )
+                    onComplete(.success(nextState))
+                case .failure(let error):
+                    onComplete(.failure(error))
+                }
+            }
         case .select(let tab):
             onComplete(.success(.loading))
         case .addDefaultTab:
