@@ -28,5 +28,8 @@ struct TabsPreviewsLegacyView: CatowserUIVCRepresentable {
         return vc!.viewController
     }
 
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
+    func updateUIViewController(
+        _ uiViewController: UIViewControllerType,
+        context: Context
+    ) {}
 }

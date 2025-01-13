@@ -17,7 +17,7 @@ final class PhoneTabsCoordinator: Coordinator {
     weak var parent: CoordinatorOwner?
     var startedVC: AnyViewController?
     weak var presenterVC: AnyViewController?
-    private let viewModel: TabsPreviewsViewModel
+    private let viewModel: TabsPreviewsViewModelWithHolder
     var navigationStack: UINavigationController?
 
     let uiFramework: UIFrameworkType
@@ -25,7 +25,7 @@ final class PhoneTabsCoordinator: Coordinator {
     init(_ vcFactory: any ViewControllerFactory,
          _ presenter: AnyViewController?,
          _ uiFramework: UIFrameworkType,
-         _ viewModel: TabsPreviewsViewModel
+         _ viewModel: TabsPreviewsViewModelWithHolder
     ) {
         self.vcFactory = vcFactory
         self.presenterVC = presenter

@@ -14,11 +14,14 @@ public enum TabsPreviewsAction: ViewModelAction {
     case load
     case closeTab(index: Int)
     case select(CoreBrowser.Tab)
-    case addTab
+    case addDefaultTab
+    case addTab(tab: CoreBrowser.Tab, index: Int)
     
     public static let allCases: [TabsPreviewsAction] = [
         .load,
         .closeTab(index: -1),
-        .select(.blank)
+        .select(.blank),
+        .addDefaultTab,
+        .addTab(tab: .blank, index: -1)
     ]
 }

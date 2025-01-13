@@ -11,15 +11,14 @@ import CoreBrowser
 import FeatureFlagsKit
 import CottonViewModels
 
-@MainActor
-final class MainToolbarCoordinator: Coordinator {
+@MainActor final class MainToolbarCoordinator: Coordinator {
     let vcFactory: ViewControllerFactory
     var startedCoordinator: Coordinator?
     weak var parent: CoordinatorOwner?
     var startedVC: AnyViewController?
     weak var presenterVC: AnyViewController?
     var navigationStack: UINavigationController?
-    private let phoneTabPreviewsVM: TabsPreviewsViewModel
+    private let phoneTabPreviewsVM: TabsPreviewsViewModelWithHolder
 
     private weak var downloadDelegate: DownloadPanelPresenter?
     private weak var settingsDelegate: GlobalMenuDelegate?
@@ -31,7 +30,7 @@ final class MainToolbarCoordinator: Coordinator {
          _ downloadDelegate: DownloadPanelPresenter?,
          _ settingsDelegate: GlobalMenuDelegate,
          _ uiFramework: UIFrameworkType,
-         _ phoneTabPreviewsVM: TabsPreviewsViewModel
+         _ phoneTabPreviewsVM: TabsPreviewsViewModelWithHolder
     ) {
         self.vcFactory = vcFactory
         self.presenterVC = presenter

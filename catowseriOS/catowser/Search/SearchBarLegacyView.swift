@@ -98,10 +98,13 @@ final class SearchBarLegacyView<
     }
     
     func handleAction(_ action: SearchBarAction) {
-        do {
-            try viewModel.sendAction(action)
-        } catch {
-            print("Fail to send action: \(error)")
+        viewModel.sendAction(action) { result in
+            switch result {
+            case .success:
+                break
+            case .failure(let error):
+                print("Fail to send action: \(error)")
+            }
         }
     }
 

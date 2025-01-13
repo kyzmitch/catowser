@@ -11,15 +11,26 @@ import Combine
 import CottonBase
 import CoreBrowser
 import CottonUseCases
+import CottonDataServices
 import ViewModelKit
 
+/// Tab previews view model
 public typealias TabsPreviewsViewModel = BaseViewModel<
     TabsPreviewState<TabsPreviewsStateContextProxy>,
     TabsPreviewsAction,
     TabsPreviewsStateContextProxy
 >
 
-/// Tab previews view model
+/// Combined base class with additional protocol
+public typealias TabsPreviewsViewModelWithHolder = TabsPreviewsViewModel & TabsObserverHolder
+
+/// An interface which allows to add additional capability to view model base class
+/// because implementation of view model can't be exposed
+@MainActor public protocol TabsObserverHolder {
+    var observer: TabsObserver { get }
+}
+
+/// Tab previews view model implementation
 final public class TabsPreviewsViewModelImpl: TabsPreviewsViewModel {
     private let readTabUseCase: ReadTabsUseCase
     private let writeTabUseCase: WriteTabsUseCase
@@ -39,37 +50,13 @@ final public class TabsPreviewsViewModelImpl: TabsPreviewsViewModel {
     public override var context: Context? {
         TabsPreviewsStateContextProxy(subject: self)
     }
-    
-    public func selectTab(_ tab: CoreBrowser.Tab) {
-        Task {
-            do {
-                try await writeTabUseCase.select(tab: tab)
-            } catch {
-                print("Fail to select tab: \(error)")
-            }
-            // no need to select anything in the view, because it will be closed
-        }
-    }
-    
-    public func addTab() {
-        /*
-        Task {
-            let contentState = await context.contentState
-            let tab = CoreBrowser.Tab(contentType: contentState)
-            do {
-                try await writeTabUseCase.add(tab: tab)
-            } catch {
-                print("Fail to add tab: \(error)")
-            }
-            // now need to re-check selected tab in the view
-            async let allNewTabs = readTabUseCase.allTabs
-            async let newSelectedId = readTabUseCase.selectedId
-            uxState = await .tabs(
-                dataSource: TabsBox(allNewTabs),
-                selectedId: newSelectedId
-            )
-        }
-         */
+}
+
+// MARK: - TabsObserverHolder
+
+extension TabsPreviewsViewModelImpl: TabsObserverHolder {
+    public var observer: any TabsObserver {
+        self
     }
 }
 
@@ -83,39 +70,75 @@ extension TabsPreviewsViewModelImpl: TabsPreviewsStateContext {
     }
     
     public func load(onComplete: @escaping (PreviewsInfo) -> Void) {
-        
+        Task {
+            async let tabs = readTabUseCase.allTabs
+            async let selectedTabId = readTabUseCase.selectedId
+            let info = await PreviewsInfo(tabs, selectedTabId)
+            onComplete(info)
+        }
     }
     
-    public func close(at index: Int) async {
-        /*
-        guard case let .tabs(box, _) = uxState else {
-            return
-        }
-        let tab = box.value.remove(at: index)
+    public func close(
+        at index: Int,
+        from tabs: [CoreBrowser.Tab]
+    ) async throws -> PreviewsInfo {
+        var tabs = tabs
+        let tab = tabs.remove(at: index)
         /// Rewrite view model state with the updated box
-        uxState = .tabs(
-            dataSource: box,
-            selectedId: nil
-        )
+        var info = PreviewsInfo(tabs, nil)
         if let site = tab.site {
-            appContext.removeWebView(for: site)
+            _ = appContext.removeWebView(for: site)
         }
-        do {
-            guard let newSelectedId = try await writeTabUseCase.close(tab: tab) else {
-                print("Closed tab wasn't selected")
-                return
-            }
-            uxState = .tabs(
-                dataSource: box,
-                selectedId: newSelectedId
-            )
-        } catch {
-            print("Fail to close tab: \(error)")
-        }
-         */
+        let newSelectedId = try await writeTabUseCase.close(tab: tab)
+        info = PreviewsInfo(tabs, newSelectedId)
+        return info
     }
     
     public func close(at index: Int, onComplete: @escaping () -> Void) {
         
+    }
+    
+    public func select(_ tab: Tab) async throws {
+        try await writeTabUseCase.select(tab: tab)
+    }
+    
+    public func select(
+        _ tab: Tab,
+        onComplete: @escaping (Result<Void, Error>) -> Void
+    ) {
+        Task {
+            do {
+                try await writeTabUseCase.select(tab: tab)
+                onComplete(.success(()))
+            } catch {
+                onComplete(.failure(error))
+            }
+        }
+    }
+    
+    public func addTab() async throws -> PreviewsInfo {
+        let contentState = await appContext.contentState
+        let tab = CoreBrowser.Tab(contentType: contentState)
+        try await writeTabUseCase.add(tab: tab)
+        // now need to re-check selected tab in the view
+        async let allNewTabs = readTabUseCase.allTabs
+        async let newSelectedId = readTabUseCase.selectedId
+        return await PreviewsInfo(allNewTabs, newSelectedId)
+    }
+}
+
+// MARK: - TabsObserver
+
+extension TabsPreviewsViewModelImpl: TabsObserver {
+    public func tabDidAdd(_ tab: CoreBrowser.Tab, at index: Int) async {
+        guard case let .tabs(currentTabs, selectedTabId) = state else {
+            return
+        }
+        var tabs = currentTabs
+        tabs.insert(tab, at: index)
+        state = .tabs(
+            dataSource: tabs,
+            selectedId: selectedTabId
+        )
     }
 }

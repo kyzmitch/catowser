@@ -29,12 +29,21 @@ public protocol TabsPreviewsStateContext: StateContext {
     // MARK: - concurrent API
     
     func load() async -> PreviewsInfo
-    func close(at index: Int) async
+    func close(
+        at index: Int,
+        from tabs: [CoreBrowser.Tab]
+    ) async throws -> PreviewsInfo
+    func select(_ tab: CoreBrowser.Tab) async throws
+    func addTab() async throws -> PreviewsInfo
     
     // MARK: - closure based API
     
     func load(onComplete: @escaping (PreviewsInfo) -> Void)
     func close(at index: Int, onComplete: @escaping () -> Void)
+    func select(
+        _ tab: CoreBrowser.Tab,
+        onComplete: @escaping (Result<Void, Error>) -> Void
+    )
 }
 
 /// Tab previews state context impl proxy
@@ -49,8 +58,11 @@ public final class TabsPreviewsStateContextProxy: TabsPreviewsStateContext {
         await subject.load()
     }
     
-    public func close(at index: Int) async {
-        
+    public func close(
+        at index: Int,
+        from tabs: [CoreBrowser.Tab]
+    ) async throws -> PreviewsInfo {
+        try await subject.close(at: index, from: tabs)
     }
     
     public func load(onComplete: @escaping (PreviewsInfo) -> Void) {
@@ -59,5 +71,20 @@ public final class TabsPreviewsStateContextProxy: TabsPreviewsStateContext {
     
     public func close(at index: Int, onComplete: @escaping () -> Void) {
         
+    }
+    
+    public func select(_ tab: CoreBrowser.Tab) async throws {
+        try await subject.select(tab)
+    }
+    
+    public func select(
+        _ tab: CoreBrowser.Tab,
+        onComplete: @escaping (Result<Void, Error>) -> Void
+    ) {
+        subject.select(tab, onComplete: onComplete)
+    }
+    
+    public func addTab() async throws -> PreviewsInfo {
+        try await subject.addTab()
     }
 }

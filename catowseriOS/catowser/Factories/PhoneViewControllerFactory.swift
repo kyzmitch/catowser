@@ -79,7 +79,7 @@ final class PhoneViewControllerFactory: ViewControllerFactory {
 
     func tabsPreviewsViewController<C: Navigating>(
         _ coordinator: C,
-        _ viewModel: TabsPreviewsViewModel
+        _ viewModel: TabsPreviewsViewModelWithHolder
     ) -> UIViewController? where C.R == TabsScreenRoute {
         let vc: TabsPreviewsViewController = .init(
             coordinator,

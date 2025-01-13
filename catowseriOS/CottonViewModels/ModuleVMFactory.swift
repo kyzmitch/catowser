@@ -85,4 +85,13 @@ import ViewModelKit
             appContext
         )
     }
+    
+    /// Tab previews view model
+    public static func createTabPreviewsVM(
+        _ readTabUseCase: ReadTabsUseCase,
+        _ writeTabUseCase: WriteTabsUseCase,
+        _ appContext: TabPreviewsAppContext
+    ) -> TabsPreviewsViewModelWithHolder {
+        TabsPreviewsViewModelImpl(readTabUseCase, writeTabUseCase, appContext)
+    }
 }

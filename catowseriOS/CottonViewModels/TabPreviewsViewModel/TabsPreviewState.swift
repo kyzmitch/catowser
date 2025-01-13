@@ -50,10 +50,21 @@ public enum TabsPreviewState<C: TabsPreviewsStateContext>: ViewModelState {
                 throw TabsPreviewsError.failToLoad
             }
         case .closeTab(index: let index):
-            nextState = self
+            guard case let .tabs(tabs, selectedId) = self else {
+                throw TabsPreviewsError.tabsNotLoadedToClose
+            }
+            guard let info = try await context?.close(at: index, from: tabs) else {
+                throw TabsPreviewsError.nilStateContext
+            }
+            nextState = .tabs(
+                dataSource: info.tabs,
+                selectedId: info.selectedTabUUID
+            )
         case .select(let tab):
             nextState = self
-        case .addTab:
+        case .addDefaultTab:
+            nextState = self
+        case let .addTab(tab: tab, index: index):
             nextState = self
         }
         return nextState
@@ -81,7 +92,9 @@ public enum TabsPreviewState<C: TabsPreviewsStateContext>: ViewModelState {
             onComplete(.success(.loading))
         case .select(let tab):
             onComplete(.success(.loading))
-        case .addTab:
+        case .addDefaultTab:
+            onComplete(.success(.loading))
+        case let .addTab(tab: tab, index: index):
             onComplete(.success(.loading))
         }
     }

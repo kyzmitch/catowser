@@ -78,10 +78,14 @@ import FeatureFlagsKit
 
     func tabsPreviewsViewModel(
         _ context: TabPreviewsAppContext
-    ) async -> TabsPreviewsViewModel {
+    ) async -> TabsPreviewsViewModelWithHolder {
         async let readUseCase = useCaseRegistry.findUseCase(ReadTabsUseCase.self)
         async let writeUseCase = useCaseRegistry.findUseCase(WriteTabsUseCase.self)
-        return await TabsPreviewsViewModel(readUseCase, writeUseCase, context)
+        return await ModuleVMFactory.createTabPreviewsVM(
+            readUseCase,
+            writeUseCase,
+            context
+        )
     }
 
     func allTabsViewModel() async -> AllTabsViewModel {

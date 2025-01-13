@@ -95,7 +95,7 @@ protocol ViewControllerFactory: AnyObject {
     /// WIll return nil on Tablet
     func tabsPreviewsViewController<C: Navigating>(
         _ coordinator: C,
-        _ viewModel: TabsPreviewsViewModel
+        _ viewModel: TabsPreviewsViewModelWithHolder
     ) -> UIViewController? where C.R == TabsScreenRoute
     /// Tablet specific tabs
     func tabsViewController(_ vm: AllTabsViewModel) -> AnyViewController?
