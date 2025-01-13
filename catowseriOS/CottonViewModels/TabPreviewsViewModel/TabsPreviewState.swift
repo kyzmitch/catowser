@@ -61,11 +61,30 @@ public enum TabsPreviewState<C: TabsPreviewsStateContext>: ViewModelState {
                 selectedId: info.selectedTabUUID
             )
         case .select(let tab):
-            nextState = self
+            guard case let .tabs(tabs, _) = self else {
+                throw TabsPreviewsError.tabsNotLoadedToClose
+            }
+            try await context?.select(tab)
+            /// Set new selected id
+            nextState = .tabs(dataSource: tabs, selectedId: tab.id)
         case .addDefaultTab:
-            nextState = self
+            if let info = try await context?.addDefaultTab() {
+                nextState = .tabs(
+                    dataSource: info.tabs,
+                    selectedId: info.selectedTabUUID
+                )
+            } else {
+                throw TabsPreviewsError.nilStateContext
+            }
         case let .addTab(tab: tab, index: index):
-            nextState = self
+            if let info = try await context?.addTab(tab, at: index) {
+                nextState = .tabs(
+                    dataSource: info.tabs,
+                    selectedId: info.selectedTabUUID
+                )
+            } else {
+                throw TabsPreviewsError.nilStateContext
+            }
         }
         return nextState
     }
@@ -110,11 +129,11 @@ public enum TabsPreviewState<C: TabsPreviewsStateContext>: ViewModelState {
                 }
             }
         case .select(let tab):
-            onComplete(.success(.loading))
+            onComplete(.failure(TabsPreviewsError.notImplementedYet))
         case .addDefaultTab:
-            onComplete(.success(.loading))
+            onComplete(.failure(TabsPreviewsError.notImplementedYet))
         case let .addTab(tab: tab, index: index):
-            onComplete(.success(.loading))
+            onComplete(.failure(TabsPreviewsError.notImplementedYet))
         }
     }
     

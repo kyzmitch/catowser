@@ -136,6 +136,17 @@ extension TabsPreviewsViewModelImpl: TabsPreviewsStateContext {
         async let newSelectedId = readTabUseCase.selectedId
         return await PreviewsInfo(allNewTabs, newSelectedId)
     }
+    
+    public func addTab(
+        _ tab: CoreBrowser.Tab,
+        at index: Int
+    ) async throws -> PreviewsInfo {
+        #warning("TODO: figure out if index can be used")
+        try await writeTabUseCase.add(tab: tab)
+        async let allNewTabs = readTabUseCase.allTabs
+        async let newSelectedId = readTabUseCase.selectedId
+        return await PreviewsInfo(allNewTabs, newSelectedId)
+    }
 }
 
 // MARK: - TabsObserver

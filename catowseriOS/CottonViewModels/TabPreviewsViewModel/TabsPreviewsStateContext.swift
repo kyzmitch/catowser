@@ -35,6 +35,10 @@ public protocol TabsPreviewsStateContext: StateContext {
     ) async throws -> PreviewsInfo
     func select(_ tab: CoreBrowser.Tab) async throws
     func addDefaultTab() async throws -> PreviewsInfo
+    func addTab(
+        _ tab: CoreBrowser.Tab,
+        at index: Int
+    ) async throws -> PreviewsInfo
     
     // MARK: - closure based API
     
@@ -75,6 +79,13 @@ public final class TabsPreviewsStateContextProxy: TabsPreviewsStateContext {
     
     public func addDefaultTab() async throws -> PreviewsInfo {
         try await subject.addDefaultTab()
+    }
+    
+    public func addTab(
+        _ tab: CoreBrowser.Tab,
+        at index: Int
+    ) async throws -> PreviewsInfo {
+        try await subject.addTab(tab, at: index)
     }
     
     public func load(onComplete: @escaping (PreviewsInfo) -> Void) {

@@ -15,6 +15,7 @@ public enum TabsPreviewsAction: ViewModelAction {
     case closeTab(index: Int)
     case select(CoreBrowser.Tab)
     case addDefaultTab
+    #warning("TODO: remove when observation moves to view model")
     case addTab(tab: CoreBrowser.Tab, index: Int)
     
     public static let allCases: [TabsPreviewsAction] = [
