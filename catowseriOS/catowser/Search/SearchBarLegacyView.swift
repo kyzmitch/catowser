@@ -92,9 +92,8 @@ final class SearchBarLegacyView<
         dohStateIcon.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         dohStateIcon.widthAnchor.constraint(equalTo: dohStateIcon.heightAnchor).isActive = true
         
-        stateCancellable = viewModel.statePublisher.sink { [weak self] state in
-            self?.onStateChange(state)
-        }
+        stateCancellable?.cancel()
+        stateCancellable = startStateObserving()
     }
     
     func handleAction(_ action: SearchBarAction) {
@@ -207,6 +206,8 @@ final class SearchBarLegacyView<
         prepareForEditMode()
     }
     
+    // MARK: - ViewModelConsumer
+    
     func onStateChange(_ nextState: State) {
         switch nextState {
         case is SearchBarInViewMode<SearchBarStateContextProxy>:
@@ -233,6 +234,8 @@ final class SearchBarLegacyView<
         }
     }
 }
+
+// MARK: - private functions
 
 private extension SearchBarLegacyView {
     func prepareForEditMode(and showKeyboard: Bool = false) {
