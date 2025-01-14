@@ -141,11 +141,15 @@ extension TabsPreviewsViewModelImpl: TabsPreviewsStateContext {
         _ tab: CoreBrowser.Tab,
         at index: Int
     ) async throws -> PreviewsInfo {
-        #warning("TODO: figure out if index can be used")
-        try await writeTabUseCase.add(tab: tab)
-        async let allNewTabs = readTabUseCase.allTabs
-        async let newSelectedId = readTabUseCase.selectedId
-        return await PreviewsInfo(allNewTabs, newSelectedId)
+        // No need to call use case, tab is already
+        // stored in persistence store, just
+        // need to update the in-memory state
+        guard case let .tabs(currentTabs, selectedTabId) = state else {
+            throw TabsPreviewsError.tabsNotLoadedToInsert
+        }
+        var tabs = currentTabs
+        tabs.insert(tab, at: index)
+        return PreviewsInfo(tabs, selectedTabId)
     }
 }
 
@@ -153,14 +157,23 @@ extension TabsPreviewsViewModelImpl: TabsPreviewsStateContext {
 
 extension TabsPreviewsViewModelImpl: TabsObserver {
     public func tabDidAdd(_ tab: CoreBrowser.Tab, at index: Int) async {
-        guard case let .tabs(currentTabs, selectedTabId) = state else {
+        try? await sendAction(.addTab(tab: tab, index: index))
+    }
+    
+    public func tabDidSelect(
+        _ index: Int,
+        _ content: CoreBrowser.Tab.ContentType,
+        _ identifier: UUID
+    ) async {
+        // Would be good to handle new selected tab
+        // because after inserting/adding new tab
+        // in `tabDidAdd` handler, the selection might change
+        guard case let .tabs(currentTabs, _) = state else {
             return
         }
-        var tabs = currentTabs
-        tabs.insert(tab, at: index)
         state = .tabs(
-            dataSource: tabs,
-            selectedId: selectedTabId
+            currentTabs,
+            identifier
         )
     }
 }

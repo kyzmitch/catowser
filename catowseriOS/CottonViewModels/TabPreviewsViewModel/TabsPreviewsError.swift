@@ -13,6 +13,7 @@ public enum TabsPreviewsError: LocalizedError {
     case nilStateContext
     case useCaseFailure(Error)
     case notImplementedYet
+    case tabsNotLoadedToInsert
     
     public var errorDescription: String? {
         switch self {
@@ -26,6 +27,8 @@ public enum TabsPreviewsError: LocalizedError {
             return "Use case failure: \(error)"
         case .notImplementedYet:
             return "Not implemented yet"
+        case .tabsNotLoadedToInsert:
+            return "Tabs not loaded to insert"
         }
     }
 }
