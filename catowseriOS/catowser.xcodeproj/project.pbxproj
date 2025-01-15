@@ -112,6 +112,7 @@
 		756AE6D02CA348BF00938FCC /* DataServiceKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 756AE6BA2CA348BF00938FCC /* DataServiceKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		756AE6E52CA34B8E00938FCC /* DataServiceKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 756AE6BA2CA348BF00938FCC /* DataServiceKit.framework */; };
 		7570F7462B5C07E90066ABF1 /* UseCaseRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7570F7452B5C07E90066ABF1 /* UseCaseRegistry.swift */; };
+		757E842B2D37F5A000CFA7D5 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 757E842A2D37F5A000CFA7D5 /* ComposableArchitecture */; };
 		75869DC12D00C0D100D981B6 /* WebAutoCompletionSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752CF2CFED1DC008D40CF /* WebAutoCompletionSource.swift */; };
 		75869DD32D01B1D400D981B6 /* CottonUseCases.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75869DC92D01B1D400D981B6 /* CottonUseCases.framework */; };
 		75869DDE2D01B1D400D981B6 /* CottonUseCases.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75869DC92D01B1D400D981B6 /* CottonUseCases.framework */; };
@@ -1389,6 +1390,7 @@
 				8AE31138247C666A00FF28B1 /* UIKit.framework in Frameworks */,
 				8AD4F51E28F492DC009C4BDC /* AlamofireImage in Frameworks */,
 				7517D9C32A5F2E7C00D081AD /* CottonBase.xcframework in Frameworks */,
+				757E842B2D37F5A000CFA7D5 /* ComposableArchitecture in Frameworks */,
 				8A5E6C83290B0E6C0034A78B /* AutoMockable.framework in Frameworks */,
 				8AD4F51C28F49219009C4BDC /* ReactiveSwift in Frameworks */,
 				8ABF504427CC1A64007C6427 /* FeatureFlagsKit.framework in Frameworks */,
@@ -2942,6 +2944,7 @@
 				8AD4F51D28F492DC009C4BDC /* AlamofireImage */,
 				8AD4F51F28F49303009C4BDC /* Alamofire */,
 				759E3E4C2C863B3D00245B44 /* Atomics */,
+				757E842A2D37F5A000CFA7D5 /* ComposableArchitecture */,
 			);
 			productName = catowser;
 			productReference = 8435A4971EED5E700020102F /* Cotton Dev.app */;
@@ -3281,6 +3284,7 @@
 				8A03F45828F47ACB00E4A296 /* XCRemoteSwiftPackageReference "SwiftSoup" */,
 				8A0E4D5829133E77008F7964 /* XCRemoteSwiftPackageReference "SwiftyMocky" */,
 				759E3E4B2C863B3D00245B44 /* XCRemoteSwiftPackageReference "swift-atomics" */,
+				757E84292D37F5A000CFA7D5 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 			);
 			productRefGroup = 8435A4981EED5E700020102F /* Products */;
 			projectDirPath = "";
@@ -6574,6 +6578,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		757E84292D37F5A000CFA7D5 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture.git";
+			requirement = {
+				kind = exactVersion;
+				version = 1.17.1;
+			};
+		};
 		759E3E4B2C863B3D00245B44 /* XCRemoteSwiftPackageReference "swift-atomics" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "git@github.com:apple/swift-atomics.git";
@@ -6633,6 +6645,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		757E842A2D37F5A000CFA7D5 /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 757E84292D37F5A000CFA7D5 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
+		};
 		75869E0B2D01B43A00D981B6 /* ReactiveSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8A03F44028F4769B00E4A296 /* XCRemoteSwiftPackageReference "ReactiveSwift" */;
