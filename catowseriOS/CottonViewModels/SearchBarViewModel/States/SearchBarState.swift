@@ -50,12 +50,6 @@ public class SearchBarState<C: SearchBarStateContext>: ViewModelState, @unchecke
         throw SearchBarError.invalidDummyState
     }
     
-    @MainActor public func transitionOn(
-        _ action: Action,
-        with context: Context?,
-        onComplete: @escaping (Result<BaseState, Error>) -> Void
-    ) { }
-    
     public static func == (lhs: SearchBarState<C>, rhs: SearchBarState<C>) -> Bool {
         guard type(of: lhs) == type(of: rhs) else {
             return false

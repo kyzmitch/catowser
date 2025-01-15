@@ -38,6 +38,8 @@ final class BrowserToolbarViewModelImpl: BrowserToolbarViewModel {
     
     public override func sendAction(_ action: Action) async throws {
         try await super.sendAction(action)
+        // side effect of resetting the state back to original value
+        // to allow the observer to notice the difference
         state.stopWebViewReusage = false
     }
 }

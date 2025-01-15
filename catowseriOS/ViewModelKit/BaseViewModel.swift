@@ -44,25 +44,4 @@ open class BaseViewModel<
     ) async throws {
         state = try await state.transitionOn(action, with: context)
     }
-    
-    /// Apply an action to the view model state using closure API.
-    ///
-    /// - Parameter action: an action to apply to the state
-    /// - Parameter onComplete: Completion closure.
-    open func sendAction(
-        _ action: Action,
-        onComplete: CompletionCallback? = nil
-    ) {
-        state.transitionOn(action, with: context) { [weak self] result in
-            switch result {
-            case .success(let nextState):
-                self?.state = nextState
-                let nothing: Void = ()
-                onComplete?(.success(nothing))
-            case .failure(let failure):
-                onComplete?(.failure(failure))
-            }
-        }
-    }
-    
 }

@@ -136,7 +136,7 @@ final class TabsPreviewsViewController<
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        viewModel.sendAction(.load)
+        viewModel.sendAction(.load, onComplete: nil)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -245,14 +245,14 @@ final class TabsPreviewsViewController<
             return
         }
 
-        viewModel.sendAction(.select(correctTab))
+        viewModel.sendAction(.select(correctTab), onComplete: nil)
         coordinator?.stop()
     }
 
     // MARK: - private functions
 
     @objc func addTabPressed() {
-        viewModel.sendAction(.addDefaultTab)
+        viewModel.sendAction(.addDefaultTab, onComplete: nil)
         // on previews screen will make new added tab always selected
         // same behaviour has Safari and Firefox
         if DefaultTabProvider.shared.selected {
@@ -294,6 +294,6 @@ private struct Sizes {
 
 extension TabsPreviewsViewController: TabPreviewCellDelegate {
     func tabCellDidClose(at index: Int) {
-        viewModel.sendAction(.closeTab(index: index))
+        viewModel.sendAction(.closeTab(index: index), onComplete: nil)
     }
 }

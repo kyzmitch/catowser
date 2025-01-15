@@ -50,3 +50,20 @@ public protocol ViewModelState: Sendable, Equatable {
         onComplete: @escaping (Result<BaseState, Error>) -> Void
     )
 }
+
+extension ViewModelState {
+    @MainActor public func transitionOn(
+        _ action: Action,
+        with context: Context?,
+        onComplete: @escaping (Result<BaseState, Error>) -> Void
+    ) {
+        Task {
+            do {
+                let nextState = try await transitionOn(action, with: context)
+                onComplete(.success(nextState))
+            } catch {
+                onComplete(.failure(error))
+            }
+        }
+    }
+}

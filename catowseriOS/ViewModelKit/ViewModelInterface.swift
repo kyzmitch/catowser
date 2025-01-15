@@ -55,14 +55,13 @@ extension ViewModelInterface {
         _ action: Action,
         onComplete: CompletionCallback?
     ) {
-        state.transitionOn(action, with: context) { [weak self] result in
-            switch result {
-            case .success(let nextState):
-                self?.state = nextState
+        Task {
+            do {
+                try await sendAction(action)
                 let nothing: Void = ()
                 onComplete?(.success(nothing))
-            case .failure(let failure):
-                onComplete?(.failure(failure))
+            } catch {
+                onComplete?(.failure(error))
             }
         }
     }

@@ -10,6 +10,7 @@ import SwiftUI
 import CoreBrowser
 import FeatureFlagsKit
 import CottonViewModels
+import ViewModelKit
 
 struct PhoneView<
     W: WebViewModel,
@@ -311,7 +312,7 @@ struct PhoneView<
             DisableableButton(
                 "nav-back",
                 toolbarVM.state.goBackDisabled, {
-                    toolbarVM.sendAction(.goBack)
+                    toolbarVM.sendAction(.goBack, onComplete: nil)
                 }
             )
         }
@@ -322,7 +323,7 @@ struct PhoneView<
             DisableableButton(
                 "nav-forward",
                 toolbarVM.state.goForwardDisabled, {
-                    toolbarVM.sendAction(.goForward)
+                    toolbarVM.sendAction(.goForward, onComplete: nil)
                 }
             )
         }
@@ -333,7 +334,7 @@ struct PhoneView<
             DisableableButton(
                 "nav-refresh",
                 toolbarVM.state.reloadDisabled, {
-                    toolbarVM.sendAction(.reload)
+                    toolbarVM.sendAction(.reload, onComplete: nil)
                 }
             )
         }

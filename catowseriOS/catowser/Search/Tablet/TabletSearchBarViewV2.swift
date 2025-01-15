@@ -49,19 +49,19 @@ struct TabletSearchBarViewV2: View {
                 DisableableButton(
                     "nav-back",
                     toolbarVM.state.goBackDisabled, {
-                        toolbarVM.sendAction(.goBack)
+                        toolbarVM.sendAction(.goBack, onComplete: nil)
                     }
                 ).padding()
                 DisableableButton(
                     "nav-forward",
                     toolbarVM.state.goForwardDisabled, {
-                        toolbarVM.sendAction(.goForward)
+                        toolbarVM.sendAction(.goForward, onComplete: nil)
                     }
                 ).padding()
                 DisableableButton(
                     "nav-refresh",
                     toolbarVM.state.reloadDisabled, {
-                        toolbarVM.sendAction(.reload)
+                        toolbarVM.sendAction(.reload, onComplete: nil)
                     }
                 ).padding()
                 SearchBarViewV2($query, $action, searchBarVM)

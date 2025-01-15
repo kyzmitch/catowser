@@ -49,12 +49,6 @@ public final class SearchBarInSearchMode<C: SearchBarStateContext>: SearchBarSta
         return nextState
     }
     
-    @MainActor public override func transitionOn(
-        _ action: Action,
-        with context: Context?,
-        onComplete: @escaping (Result<BaseState, Error>) -> Void
-    ) { }
-    
     public override var showCancelButton: Bool {
         true
     }
