@@ -13,10 +13,13 @@ struct TabletSearchBarLegacyView: CatowserUIVCRepresentable {
     private weak var searchBarDelegate: UISearchBarDelegate?
     private let action: SearchBarAction
     private let webViewInterface: WebViewNavigatable?
+    @EnvironmentObject var viewModel: SearchBarViewModel
 
-    init(_ searchBarDelegate: UISearchBarDelegate?,
-         _ action: SearchBarAction,
-         _ webViewInterface: WebViewNavigatable?) {
+    init(
+        _ searchBarDelegate: UISearchBarDelegate?,
+        _ action: SearchBarAction,
+        _ webViewInterface: WebViewNavigatable?
+    ) {
         self.searchBarDelegate = searchBarDelegate
         self.action = action
         self.webViewInterface = webViewInterface
@@ -26,10 +29,13 @@ struct TabletSearchBarLegacyView: CatowserUIVCRepresentable {
 
     func makeUIViewController(context: Context) -> UIViewControllerType {
         let interface = context.environment.browserContentCoordinators
-        let vc = vcFactory.deviceSpecificSearchBarViewController(searchBarDelegate,
-                                                                 nil,
-                                                                 interface?.globalMenuDelegate,
-                                                                 .swiftUIWrapper)
+        let vc = vcFactory.deviceSpecificSearchBarViewController(
+            searchBarDelegate,
+            nil,
+            interface?.globalMenuDelegate,
+            .swiftUIWrapper,
+            viewModel
+        )
         // swiftlint:disable:next force_unwrapping
         return vc!.viewController
     }

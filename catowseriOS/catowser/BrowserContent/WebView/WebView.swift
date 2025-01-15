@@ -26,10 +26,12 @@ struct WebView<W: WebViewModel>: View {
     /// Selected swiftUI mode which is set at app start
     private let mode: SwiftUIMode
 
-    init(_ viewModel: W,
-         _ site: Site,
-         _ webViewNeedsUpdate: Bool,
-         _ mode: SwiftUIMode) {
+    init(
+        _ viewModel: W,
+        _ site: Site,
+        _ webViewNeedsUpdate: Bool,
+        _ mode: SwiftUIMode
+    ) {
         self.viewModel = viewModel
         self.site = site
         self.webViewNeedsUpdate = webViewNeedsUpdate
@@ -55,30 +57,32 @@ private struct WebViewLegacyView: CatowserUIVCRepresentable {
     /// but for the legacy view it has to be passed
     private let dummyArgument: WebContentCoordinator? = nil
 
-    init(_ viewModel: any WebViewModel,
-         _ site: Site,
-         _ webViewNeedsUpdate: Bool) {
+    init(
+        _ viewModel: any WebViewModel,
+        _ site: Site,
+        _ webViewNeedsUpdate: Bool
+    ) {
         self.viewModel = viewModel
         self.site = site
         self.webViewNeedsUpdate = webViewNeedsUpdate
     }
 
+    /**
+     - Can't save web view interface here because
+     `View` & `UIViewControllerRepresentable` is immutable type,
+     or actually this function `makeUIViewController` is not mutable.
+
+     - Could be possible to fetch it from `WebViewsReuseManager` if it is
+     configured to use web views cache.
+
+     - `makeUIViewController` is not called more than once
+     which is not expected, but at least `updateUIViewController`
+     is getting called when the state changes. So, that a web view controller
+     can't be replaced with a new one on SwiftUI level
+     and most likely advantage of `WebViewsReuseManager` can't be used here.
+     We have to re-create web view inside view controller.
+     */
     func makeUIViewController(context: Context) -> UIViewControllerType {
-        /**
-         - Can't save web view interface here because
-         `View` & `UIViewControllerRepresentable` is immutable type,
-         or actually this function `makeUIViewController` is not mutable.
-
-         - Could be possible to fetch it from `WebViewsReuseManager` if it is
-         configured to use web views cache.
-
-         - `makeUIViewController` is not called more than once
-         which is not expected, but at least `updateUIViewController`
-         is getting called when the state changes. So, that a web view controller
-         can't be replaced with a new one on SwiftUI level
-         and most likely advantage of `WebViewsReuseManager` can't be used here.
-         We have to re-create web view inside view controller.
-         */
         let manager = UIServiceRegistry.shared().reuseManager
         let vc = try? manager.controllerFor(site, dummyArgument, viewModel, .swiftUIWrapper)
         Task {
@@ -88,7 +92,10 @@ private struct WebViewLegacyView: CatowserUIVCRepresentable {
         return vc!.viewController
     }
 
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
+    func updateUIViewController(
+        _ uiViewController: UIViewControllerType,
+        context: Context
+    ) {
         guard let reusableWebView = uiViewController as? WebViewReusable else {
             return
         }

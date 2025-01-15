@@ -8,10 +8,11 @@
 
 import Foundation
 import FeatureFlagsKit
+import CottonViewModels
 
-typealias AppUIFrameworkTypeModel = BaseListViewModelImpl<UIFrameworkType>
+typealias AppUIFrameworkTypeModel = BaseListViewModel<UIFrameworkType>
 
-extension BaseListViewModelImpl where EnumDataSourceType == UIFrameworkType {
+extension BaseListViewModel where EnumDataSourceType == UIFrameworkType {
     init(
         _ selected: EnumDataSourceType?,
         _ completion: @escaping PopClosure

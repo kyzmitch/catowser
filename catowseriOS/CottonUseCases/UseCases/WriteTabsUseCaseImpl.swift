@@ -30,6 +30,7 @@ public final class WriteTabsUseCaseImpl: WriteTabsUseCase {
     }
 
     public func close(tab: CoreBrowser.Tab) async throws(AppError) -> Tab.ID? {
+        #warning("TODO: https://github.com/kyzmitch/Cotton/issues/92")
         let serviceData = await tabsDataService.sendCommand(.closeTab(tab), nil)
         guard case let .finished(result) = serviceData.tabClosed else {
             throw .commandNotFinishedYet

@@ -12,31 +12,41 @@ import Combine
 import FeatureFlagsKit
 import CottonDataServices
 import CottonViewModels
+import ViewModelKit
 
 final class TabsPreviewsViewController<
     C: Navigating
 >: BaseViewController,
    CollectionViewInterface,
+   ViewModelConsumer,
    UICollectionViewDelegateFlowLayout,
    UICollectionViewDataSource,
    UICollectionViewDelegate where C.R == TabsScreenRoute {
 
     private weak var coordinator: C?
 
-    private let viewModel: TabsPreviewsViewModel
+    let viewModel: TabsPreviewsViewModel
+    private let tabsObserverHolder: TabsObserverHolder
     private let featureManager: FeatureManager.StateHolder
     private let uiServiceRegistry: UIServiceRegistry
+    private var dataSource: [CoreBrowser.Tab]
+    private var selectedId: CoreBrowser.Tab.ID?
+    
+    // MARK: - init
 
     init(
         _ coordinator: C,
         _ viewModel: TabsPreviewsViewModel,
         _ featureManager: FeatureManager.StateHolder,
-        _ uiServiceRegistry: UIServiceRegistry
+        _ uiServiceRegistry: UIServiceRegistry,
+        _ tabsObserverHolder: TabsObserverHolder
     ) {
         self.coordinator = coordinator
         self.viewModel = viewModel
+        self.tabsObserverHolder = tabsObserverHolder
         self.featureManager = featureManager
         self.uiServiceRegistry = uiServiceRegistry
+        dataSource = []
         super.init(nibName: nil, bundle: nil)
         
         Task {
@@ -44,7 +54,10 @@ final class TabsPreviewsViewController<
             if #available(iOS 17.0, *), observingType.isSystemObservation {
                 startTabsObservation()
             } else {
-                await ServiceRegistry.shared.tabsService.attach(self, notify: false)
+                await ServiceRegistry.shared.tabsService.attach(
+                    tabsObserverHolder.observer,
+                    notify: false
+                )
             }
         }
     }
@@ -118,16 +131,12 @@ final class TabsPreviewsViewController<
         toolbar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
 
         stateHandlerCancellable?.cancel()
-        stateHandlerCancellable = viewModel.$uxState.sink { [weak self] nextState in
-            self?.render(state: nextState)
-        }
-
-        render(state: viewModel.uxState)
+        stateHandlerCancellable = startStateObserving()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        viewModel.load()
+        viewModel.sendAction(.load, onComplete: nil)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -138,18 +147,38 @@ final class TabsPreviewsViewController<
     override var prefersStatusBarHidden: Bool {
         return true
     }
+    
+    // MARK: - ViewModelConsumer
+    
+    func onStateChange(_ nextState: ViewModel.State) {
+        switch nextState {
+        case .loading:
+            view.addSubview(spinnerView)
+        case let .tabs(tabs, selectedTabId):
+            dataSource = tabs
+            selectedId = selectedTabId
+            collectionView.reloadData()
+            spinnerView.removeFromSuperview()
+        @unknown default:
+            fatalError("Unknown view model state")
+        }
+    }
 
     // MARK: - UICollectionViewDelegateFlowLayout
 
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        minimumInteritemSpacingForSectionAt section: Int
+    ) -> CGFloat {
         return Sizes.margin
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
         let viewWidth = collectionView.bounds.width
         let columnsNumber = CGFloat(numberOfColumns + 1)
         let width = (viewWidth - Sizes.margin * columnsNumber) / CGFloat(numberOfColumns)
@@ -158,38 +187,38 @@ final class TabsPreviewsViewController<
         return CGSize(width: cellWidth, height: cellHeight)
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        insetForSectionAt section: Int) -> UIEdgeInsets {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        insetForSectionAt section: Int
+    ) -> UIEdgeInsets {
         return UIEdgeInsets(equalInset: Sizes.margin)
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        minimumLineSpacingForSectionAt section: Int
+    ) -> CGFloat {
         return Sizes.margin
     }
 
     // MARK: - UICollectionViewDataSource
 
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.uxState.itemsNumber
+    func collectionView(
+        _ collectionView: UICollectionView,
+        numberOfItemsInSection section: Int
+    ) -> Int {
+        return dataSource.count
     }
 
     func collectionView(
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
-        var tab: CoreBrowser.Tab?
-        var shouldHighlightTab = false
-        switch viewModel.uxState {
-        case .tabs(let dataSource, let selectedId) where indexPath.item < dataSource.value.count:
-            // must use `item` for UICollectionView
-            tab = dataSource.value[safe: indexPath.item]
-            shouldHighlightTab = tab?.id == selectedId
-        default:
-            break
-        }
+        // must use `item` for UICollectionView
+        let tab: CoreBrowser.Tab? = dataSource[safe: indexPath.item]
+        let shouldHighlightTab = tab?.id == selectedId
 
         guard let correctTab = tab else {
             print("\(#function) wrong index")
@@ -211,27 +240,19 @@ final class TabsPreviewsViewController<
         _ collectionView: UICollectionView,
         didSelectItemAt indexPath: IndexPath
     ) {
-        var tab: CoreBrowser.Tab?
-        switch viewModel.uxState {
-        case .tabs(let dataSource, _) where indexPath.item < dataSource.value.count:
-            tab = dataSource.value[safe: indexPath.item]
-        default:
-            coordinator?.showNext(.error)
-        }
-
-        guard let correctTab = tab else {
+        guard let correctTab = dataSource[safe: indexPath.item] else {
             assertionFailure("\(#function) selected tab wasn't found")
             return
         }
 
-        viewModel.selectTab(correctTab)
+        viewModel.sendAction(.select(correctTab), onComplete: nil)
         coordinator?.stop()
     }
 
     // MARK: - private functions
 
     @objc func addTabPressed() {
-        viewModel.addTab()
+        viewModel.sendAction(.addDefaultTab, onComplete: nil)
         // on previews screen will make new added tab always selected
         // same behaviour has Safari and Firefox
         if DefaultTabProvider.shared.selected {
@@ -239,30 +260,26 @@ final class TabsPreviewsViewController<
         }
     }
     
-    private func render(state: TabsPreviewState) {
-        collectionView.reloadData()
-    }
-    
     @available(iOS 17.0, *)
     @MainActor
     private func startTabsObservation() {
         withObservationTracking {
-            _ = uiServiceRegistry.tabsSubject.addedTabIndex
+            _ = uiServiceRegistry.tabsSubject.selectedTabId
         } onChange: {
             Task { [weak self] in
-                await self?.handleAddedTabs()
+                await self?.handleSelectedTab()
             }
         }
     }
     
     @available(iOS 17.0, *)
     @MainActor
-    private func handleAddedTabs() async {
+    private func handleSelectedTab() async {
         let subject = uiServiceRegistry.tabsSubject
-        guard let index = subject.addedTabIndex else {
-            return
-        }
-        await tabDidAdd(subject.tabs[index], at: index)
+        viewModel.sendAction(
+            .selectTabIdWithoutSaving(subject.selectedTabId),
+            onComplete: nil
+        )
     }
 }
 
@@ -270,26 +287,10 @@ private struct Sizes {
     static let margin = CGFloat(15)
 }
 
-// MARK: - TabsObserver
-
-extension TabsPreviewsViewController: TabsObserver {
-    func tabDidAdd(_ tab: CoreBrowser.Tab, at index: Int) async {
-        let state = viewModel.uxState
-        guard case let .tabs(box, _) = state else {
-            return
-        }
-
-        box.value.insert(tab, at: index)
-        render(state: state)
-    }
-}
-
 // MARK: - TabPreviewCellDelegate
 
 extension TabsPreviewsViewController: TabPreviewCellDelegate {
-    nonisolated func tabCellDidClose(at index: Int) {
-        Task {
-            await viewModel.closeTab(at: index)
-        }
+    func tabCellDidClose(at index: Int) {
+        viewModel.sendAction(.closeTab(index: index), onComplete: nil)
     }
 }

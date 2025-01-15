@@ -44,6 +44,8 @@ final class SearchBarCoordinator: NSObject, Coordinator {
     private let searchDataService: any SearchDataServiceProtocol
     /// UI framework
     let uiFramework: UIFrameworkType
+    /// View model
+    private let viewModel: SearchBarViewModelWithDelegates
 
     init(
         _ vcFactory: ViewControllerFactory,
@@ -52,7 +54,8 @@ final class SearchBarCoordinator: NSObject, Coordinator {
         _ globalMenuDelegate: GlobalMenuDelegate?,
         _ delegate: SearchBarDelegate?,
         _ uiFramework: UIFrameworkType,
-        _ searchDataService: any SearchDataServiceProtocol
+        _ searchDataService: any SearchDataServiceProtocol,
+        _ viewModel: SearchBarViewModelWithDelegates
     ) {
         self.vcFactory = vcFactory
         self.presenterVC = presenter
@@ -61,17 +64,25 @@ final class SearchBarCoordinator: NSObject, Coordinator {
         self.delegate = delegate
         self.uiFramework = uiFramework
         self.searchDataService = searchDataService
+        self.viewModel = viewModel
     }
 
     func start() {
         let createdVC: (any AnyViewController)?
         if isPad {
-            createdVC = vcFactory.deviceSpecificSearchBarViewController(self,
-                                                                        downloadPanelDelegate,
-                                                                        globalMenuDelegate,
-                                                                        uiFramework)
+            createdVC = vcFactory.deviceSpecificSearchBarViewController(
+                self,
+                downloadPanelDelegate,
+                globalMenuDelegate,
+                uiFramework,
+                viewModel
+            )
         } else {
-            createdVC = vcFactory.deviceSpecificSearchBarViewController(self, uiFramework)
+            createdVC = vcFactory.deviceSpecificSearchBarViewController(
+                self,
+                uiFramework,
+                viewModel
+            )
         }
         guard let vc = createdVC, let controllerView = presenterVC?.controllerView else {
             return
@@ -208,16 +219,20 @@ private extension SearchBarCoordinator {
         searhSuggestionsCoordinator?.stop()
     }
 
-    func replaceTab(with url: URL, with suggestion: String? = nil) async {
+    func replaceTab(
+        with url: URL,
+        with suggestion: String? = nil
+    ) async throws {
         let blockPopups = DefaultTabProvider.shared.blockPopups
         let isJSEnabled = await FeatureManager.shared.boolValue(of: .javaScriptEnabled)
-        let settings = Site.Settings(isPrivate: false,
-                                     blockPopups: blockPopups,
-                                     isJSEnabled: isJSEnabled,
-                                     canLoadPlugins: true)
+        let settings = Site.Settings(
+            isPrivate: false,
+            blockPopups: blockPopups,
+            isJSEnabled: isJSEnabled,
+            canLoadPlugins: true
+        )
         guard let site = Site(url, suggestion, settings) else {
-            assertionFailure("\(#function) failed to replace current tab - failed create site")
-            return
+            throw SearchBarError.failToInitNewSiteValue
         }
         // tab content replacing will happen in `didCommit`
         delegate?.openTab(.site(site))
@@ -225,11 +240,15 @@ private extension SearchBarCoordinator {
 }
 
 extension SearchBarCoordinator: UISearchBarDelegate {
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchQuery: String) {
-        if searchQuery.isEmpty || searchQuery.looksLikeAURL() {
+    func searchBar(
+        _ searchBar: UISearchBar,
+        textDidChange searchQuery: String
+    ) {
+        if searchQuery.isEmpty || searchQuery.looksLikeURL() {
             showNext(.hideSuggestions)
         } else {
-            /// Async layout is fine for this case because both insert & show operations are together in one closure
+            /// Async layout is fine for this case because
+            /// both insert & show operations are together in one closure
             Task {
                 let viewModel = await ViewModelFactory.shared.searchSuggestionsViewModel()
                 insertNext(.suggestions(viewModel))
@@ -242,9 +261,11 @@ extension SearchBarCoordinator: UISearchBarDelegate {
         }
     }
 
-    func searchBar(_ searchBar: UISearchBar,
-                   shouldChangeTextIn range: NSRange,
-                   replacementText text: String) -> Bool {
+    func searchBar(
+        _ searchBar: UISearchBar,
+        shouldChangeTextIn range: NSRange,
+        replacementText text: String
+    ) -> Bool {
         guard let value = searchBar.text else {
             return text != " "
         }
@@ -263,13 +284,13 @@ extension SearchBarCoordinator: UISearchBarDelegate {
     }
 
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        showNext(.handleAction(.startSearch))
+        showNext(.handleAction(.startSearch(nil)))
     }
 
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         showNext(.hideSuggestions)
         searchBar.resignFirstResponder()
-        showNext(.handleAction(.cancelTapped))
+        showNext(.handleAction(.cancelSearch))
     }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -277,7 +298,7 @@ extension SearchBarCoordinator: UISearchBarDelegate {
             return
         }
         let content: SuggestionType
-        if text.looksLikeAURL() {
+        if text.looksLikeURL() {
             content = .looksLikeURL(text)
         } else {
             // need to open web view with url of search engine
@@ -285,7 +306,7 @@ extension SearchBarCoordinator: UISearchBarDelegate {
             content = .suggestion(text)
         }
         Task {
-            await searchSuggestionDidSelect(content)
+            try? await searchSuggestionDidSelect(content)
         }
     }
 
@@ -295,7 +316,7 @@ extension SearchBarCoordinator: UISearchBarDelegate {
 }
 
 extension SearchBarCoordinator: SearchSuggestionsListDelegate {
-    func searchSuggestionDidSelect(_ content: SuggestionType) async {
+    func searchSuggestionDidSelect(_ content: SuggestionType) async throws {
         showNext(.hideSuggestions)
 
         switch content {
@@ -304,13 +325,13 @@ extension SearchBarCoordinator: SearchSuggestionsListDelegate {
                 assertionFailure("Failed construct site URL using edited URL")
                 return
             }
-            await replaceTab(with: url)
+            try await replaceTab(with: url)
         case .knownDomain(let domain):
             guard let url = URL(string: "https://\(domain)") else {
                 assertionFailure("Failed construct site URL using domain name")
                 return
             }
-            await replaceTab(with: url)
+            try await replaceTab(with: url)
         case .suggestion(let suggestion):
             await handleSuggestion(suggestion)
         @unknown default:
@@ -339,7 +360,7 @@ private extension SearchBarCoordinator {
                 do {
                     let url = try serviceData.searchURL
                     Task {
-                        await self?.replaceTab(with: url, with: suggestion)
+                        try await self?.replaceTab(with: url, with: suggestion)
                     }
                 } catch {
                     print("Fail to construct search URL: \(error)")

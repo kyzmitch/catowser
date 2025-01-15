@@ -18,9 +18,11 @@ final class TabletTabsCoordinator: Coordinator {
     var navigationStack: UINavigationController?
     private let viewModel: AllTabsViewModel
 
-    init(_ vcFactory: any ViewControllerFactory,
-         _ presenter: AnyViewController,
-         _ viewModel: AllTabsViewModel) {
+    init(
+        _ vcFactory: any ViewControllerFactory,
+        _ presenter: AnyViewController,
+        _ viewModel: AllTabsViewModel
+    ) {
         self.vcFactory = vcFactory
         self.presenterVC = presenter
         self.viewModel = viewModel

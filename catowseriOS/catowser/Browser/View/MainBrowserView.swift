@@ -40,7 +40,7 @@ struct MainBrowserView<
     C: ContentCoordinatorsInterface,
     W: WebViewModel,
     S: SearchSuggestionsViewModel,
-    SB: SearchBarViewModel
+    SB: SearchBarViewModelWithDelegates
 >: View {
     /// Store main view model in this main view to not have generic parameter in phone/tablet views
     @StateObject private var viewModel: MainBrowserViewModel<C>
@@ -61,17 +61,20 @@ struct MainBrowserView<
     @StateObject private var webVM: W
     /// Search bar view model
     @StateObject private var searchBarVM: SB
+    /// Toolbar model needed by both UI modes
+    @StateObject private var toolbarVM: BrowserToolbarViewModel
     /// Default content type is determined in async way, so, would be good to pass it like this
     private let defaultContentType: CoreBrowser.Tab.ContentType
 
-    init(_ coordinatorsInterface: C,
-         _ uiFrameworkType: UIFrameworkType,
-         _ defaultContentType: CoreBrowser.Tab.ContentType,
-         _ allTabsVM: AllTabsViewModel,
-         _ topSitesVM: TopSitesViewModel,
-         _ searchSuggestionsVM: S,
-         _ webVM: W,
-         _ searchBarVM: SB
+    init(
+        _ coordinatorsInterface: C,
+        _ uiFrameworkType: UIFrameworkType,
+        _ defaultContentType: CoreBrowser.Tab.ContentType,
+        _ allTabsVM: AllTabsViewModel,
+        _ topSitesVM: TopSitesViewModel,
+        _ searchSuggestionsVM: S,
+        _ webVM: W,
+        _ searchBarVM: SB
     ) {
         let mainVM = MainBrowserViewModel(coordinatorsInterface)
         _viewModel = StateObject(wrappedValue: mainVM)
@@ -89,6 +92,7 @@ struct MainBrowserView<
         _searchSuggestionsVM = StateObject(wrappedValue: searchSuggestionsVM)
         _webVM = StateObject(wrappedValue: webVM)
         _searchBarVM = StateObject(wrappedValue: searchBarVM)
+        _toolbarVM = StateObject(wrappedValue: ViewModelFactory.shared.toolbarViewModel())
     }
 
     var body: some View {
@@ -99,6 +103,7 @@ struct MainBrowserView<
                     defaultContentType,
                     webVM,
                     searchSuggestionsVM,
+                    searchBarVM,
                     searchBarVM
                 )
             } else {
@@ -107,6 +112,7 @@ struct MainBrowserView<
                     defaultContentType,
                     webVM,
                     searchSuggestionsVM,
+                    searchBarVM,
                     searchBarVM
                 )
             }
@@ -116,6 +122,7 @@ struct MainBrowserView<
         .environmentObject(allTabsVM)
         .environmentObject(topSitesVM)
         .environmentObject(searchSuggestionsVM)
+        .environmentObject(toolbarVM)
         .onAppear {
             Task {
                 await ServiceRegistry.shared.tabsService.attach(

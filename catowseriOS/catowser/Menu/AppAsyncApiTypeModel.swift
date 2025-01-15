@@ -8,10 +8,11 @@
 
 import Foundation
 import FeatureFlagsKit
+import CottonViewModels
 
-typealias AppAsyncApiTypeModel = BaseListViewModelImpl<AsyncApiType>
+typealias AppAsyncApiTypeModel = BaseListViewModel<AsyncApiType>
 
-extension BaseListViewModelImpl where EnumDataSourceType == AsyncApiType {
+extension BaseListViewModel where EnumDataSourceType == AsyncApiType {
     init(
         _ selected: EnumDataSourceType?,
         _ completion: @escaping PopClosure

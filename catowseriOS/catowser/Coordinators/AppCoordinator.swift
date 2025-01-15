@@ -410,7 +410,8 @@ private extension AppCoordinator {
             self,
             self,
             uiFramework,
-            appStartInfo.searchDataService
+            appStartInfo.searchDataService,
+            appStartInfo.searchBarVM
         )
         coordinator.parent = self
         coordinator.start()

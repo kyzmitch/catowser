@@ -34,13 +34,20 @@ final class TabletSearchBarViewController: BaseViewController {
 
     private weak var downloadPanelDelegate: DownloadPanelPresenter?
 
-    init(_ searchBarDelegate: UISearchBarDelegate?,
-         _ settingsDelegate: GlobalMenuDelegate?,
-         _ downloadDelegate: DownloadPanelPresenter?,
-         _ uiFramework: UIFrameworkType) {
+    init(
+        _ searchBarDelegate: UISearchBarDelegate?,
+        _ settingsDelegate: GlobalMenuDelegate?,
+        _ downloadDelegate: DownloadPanelPresenter?,
+        _ uiFramework: UIFrameworkType,
+        _ viewModel: SearchBarViewModel
+    ) {
         searchBarViewController = UIServiceRegistry.shared()
             .vcFactory
-            .searchBarViewController(searchBarDelegate, uiFramework)
+            .searchBarViewController(
+                searchBarDelegate,
+                uiFramework,
+                viewModel
+            )
         globalSettingsDelegate = settingsDelegate
         downloadPanelDelegate = downloadDelegate
         super.init(nibName: nil, bundle: nil)

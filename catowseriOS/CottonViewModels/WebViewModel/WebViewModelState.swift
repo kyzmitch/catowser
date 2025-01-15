@@ -36,20 +36,6 @@ enum WebViewModelState: Sendable {
     case viewing(Site.Settings, URLInfo)
     case updatingJS(Site.Settings, JavaScriptEvaluateble, URLInfo)
 
-    enum Error: LocalizedError {
-        case unexpectedStateForAction(WebViewModelState, WebViewAction)
-        case notImplemented
-
-        public var localizedDescription: String {
-            switch self {
-            case .unexpectedStateForAction(let state, let action):
-                return "Unexpected state \(state.description) for action \(action.description)"
-            case .notImplemented:
-                return "Not implemented"
-            }
-        }
-    }
-
     /// Returns host with domain name (ignore ip address as a host even if it is present)
     var host: CottonBase.Host {
         switch self {

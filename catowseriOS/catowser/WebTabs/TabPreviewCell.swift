@@ -38,7 +38,7 @@ fileprivate extension UIBlurEffect.Style {
     static let tabTitleBlur: UIBlurEffect.Style = .extraLight
 }
 
-protocol TabPreviewCellDelegate: AnyObject {
+@MainActor protocol TabPreviewCellDelegate: AnyObject {
     func tabCellDidClose(at index: Int)
 }
 

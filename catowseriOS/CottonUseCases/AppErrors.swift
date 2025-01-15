@@ -15,4 +15,19 @@ public enum AppError: LocalizedError {
     case erasedSearchDataServiceError(Error)
     case commandNotFinishedYet
     case tabsServiceError(TabsListError)
+    
+    public var errorDescription: String? {
+        switch self {
+        case .zombieSelf:
+            "Use case reference is nil"
+        case .searchDataServiceError(let searchServiceError):
+            "Search data service failure (\(searchServiceError.errorDescription ?? "none"))"
+        case .erasedSearchDataServiceError(let error):
+            "Erased search data service failure (\(error.localizedDescription)"
+        case .commandNotFinishedYet:
+            "Same command not finished yet"
+        case .tabsServiceError(let tabsListError):
+            "Tabs data service failure (\(tabsListError.errorDescription ?? "none"))"
+        }
+    }
 }

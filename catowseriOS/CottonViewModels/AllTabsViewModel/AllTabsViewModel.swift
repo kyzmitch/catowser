@@ -10,15 +10,34 @@ import Combine
 import Foundation
 import CoreBrowser
 import CottonUseCases
+import ViewModelKit
 
-@MainActor public final class AllTabsViewModel: ObservableObject {
+public typealias AllTabsViewModel = BaseViewModel<
+    AllTabsState<AllTabsStateContextProxy>,
+    AllTabsAction,
+    AllTabsStateContextProxy
+>
+
+/// All tabs view model implementation
+final class AllTabsViewModelImpl: AllTabsViewModel {
     private let writeTabUseCase: WriteTabsUseCase
+    private lazy var proxy = {
+        AllTabsStateContextProxy(subject: self)
+    }()
 
-    public init(_ writeTabUseCase: WriteTabsUseCase) {
+    /// Internal initializer
+    init(_ writeTabUseCase: WriteTabsUseCase) {
         self.writeTabUseCase = writeTabUseCase
+        super.init()
     }
+    
+    public override var context: Context? {
+        proxy
+    }
+}
 
-    public func addTab(_ tab: CoreBrowser.Tab) {
+extension AllTabsViewModelImpl: AllTabsStateContext {
+    public func handleTabAdd(_ tab: CoreBrowser.Tab) {
         Task {
             do {
                 try await writeTabUseCase.add(tab: tab)

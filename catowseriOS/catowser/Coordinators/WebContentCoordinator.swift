@@ -124,11 +124,11 @@ extension WebContentCoordinator: Navigating {
 }
 
 extension WebContentCoordinator: SiteExternalNavigationDelegate {
-    func didBackNavigationUpdate(to canGoBack: Bool) {
+    func backNavigationDidUpdate(to canGoBack: Bool) {
         siteNavigationDelegate?.changeBackButton(to: canGoBack)
     }
 
-    func didForwardNavigationUpdate(to canGoForward: Bool) {
+    func forwardNavigationDidUpdate(to canGoForward: Bool) {
         siteNavigationDelegate?.changeForwardButton(to: canGoForward)
     }
 
@@ -136,12 +136,12 @@ extension WebContentCoordinator: SiteExternalNavigationDelegate {
         delegate?.provisionalNavigationDidStart()
     }
 
-    func didSiteOpen(appName: String) {
+    func siteDidOpen(appName: String) {
         // notify user to remove specific application from iOS
         // to be able to use Cotton browser features
     }
 
-    func loadingProgressdDidChange(_ progress: Float) {
+    func loadingProgressDidChange(_ progress: Float) {
         delegate?.loadingProgressdDidChange(progress)
     }
 

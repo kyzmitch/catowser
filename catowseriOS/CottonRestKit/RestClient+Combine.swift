@@ -44,17 +44,19 @@ extension RestClient {
             }
             return subject.handleEvents(
                 receiveCompletion: { [weak subscriber] _ in
-                    // Must capture `adapter` by strong reference comparing to
-                    // similar implementation for Rx, because the `adapter` is getting deallocated
-                    // for Combine implementation for some still unknown reason.
-                    // Actually we only store handlerType reference types in the ClientSubscriber sets
-                    // so, actually the first question is why Rx implementation was working
-                    // because I would expect that adapter is nil and you can't transfer execution back
-                    // to the handler
+                    /**
+                     Must capture `adapter` by strong reference comparing to
+                     similar implementation for Rx, because the `adapter` is getting deallocated
+                     for Combine implementation for some still unknown reason.
+                     Actually we only store handlerType reference types in the ClientSubscriber sets
+                     so, actually the first question is why Rx implementation was working
+                     because I would expect that adapter is nil and you can't transfer execution back
+                     to the handler
+                     */
                     subscriber?.remove(adapter.handlerType)
                 },
                 receiveCancel: {
-                    assertionFailure("Implement Combine.Deferred cancel")
+                    print("Implement Combine.Deferred cancel")
                 }
             )
         }

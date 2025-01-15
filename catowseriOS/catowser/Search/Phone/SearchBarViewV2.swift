@@ -20,31 +20,43 @@ import CottonViewModels
 struct SearchBarViewV2: View {
     @Environment(\.horizontalSizeClass) var hSizeClass
 
+    /// Search query field from the super view
     @Binding private var query: String
+    /// To be able to propagate gestures/taps from this view to the upper/super view
     @Binding private var action: SearchBarAction
+    /// Do we need to show clear button
     @State private var showClearButton: Bool = false
-    @State private var state: SearchBarState = .blankViewMode
+    /// Do we need to show cancel button
+    @State private var showCancelButton: Bool = false
+    /// Site name field (Figure out if it is the same with query?)
     @State private var siteName: String = ""
+    /// Determines if need to show overlay label
     @State private var showOverlay: Bool = false
+    /// Determines if need to show keyboard
     @State private var showKeyboard: Bool = false
 
     @StateObject private var cancelBtnVM: ClearCancelButtonViewModel = .init()
     @StateObject private var textFieldVM: SearchFieldViewModel = .init()
     @StateObject private var overlayVM: TappableTextOverlayViewModel = .init()
+    @ObservedObject var searchBarVM: SearchBarViewModel
 
     private let overlayHidden: CGFloat = -UIScreen.main.bounds.width
 
-    init(_ query: Binding<String>,
-         _ action: Binding<SearchBarAction>) {
+    init(
+        _ query: Binding<String>,
+        _ action: Binding<SearchBarAction>,
+        _ searchBarVM: SearchBarViewModel
+    ) {
         _query = query
         _action = action
+        self.searchBarVM = searchBarVM
     }
 
     var body: some View {
         ZStack {
             HStack {
                 SearchFieldView($query, showKeyboard, textFieldVM)
-                if state.showCancelButton {
+                if showCancelButton {
                     ClearCancelPairButton(showClearButton, cancelBtnVM)
                 }
             }.customHStackStyle()
@@ -55,52 +67,38 @@ struct SearchBarViewV2: View {
                 .offset(x: showOverlay ? 0 : (hSizeClass == .compact ? overlayHidden : -overlayHidden), y: 0)
                 .animation(.easeInOut(duration: SearchBarConstants.animationDuration), value: showOverlay)
         }
-        .onChange(of: action) { newValue in
-            switch newValue {
-            case .startSearch:
-                state = .inSearchMode(state.title, state.content)
-            case .cancelTapped:
-                if state.title.isEmpty {
-                    state = .blankViewMode
-                } else {
-                    state = .viewMode(state.title, state.content, true)
+        .onReceive(searchBarVM.$state) { value in
+            showCancelButton = value.showCancelButton
+            switch value {
+            case is SearchBarInViewMode<SearchBarStateContextProxy>:
+                guard let title = value.overlayContent, let content = value.searchBarContent else {
+                    showKeyboard = false
+                    query = ""
+                    siteName = ""
+                    showOverlay = false
+                    return
                 }
-            case .updateView(let title, let content) where !title.isEmpty:
-                state = .viewMode(title, content, false)
-            case .clearView:
-                state = .blankViewMode
-            default:
-                // just in case
-                state = .blankViewMode
-            }
-        }
-        .onChange(of: state) { newValue in
-            switch newValue {
-            case .blankViewMode:
-                showKeyboard = false
-                query = ""
-                siteName = ""
-                showOverlay = false
-            case .inSearchMode:
-                showOverlay = false
-                showKeyboard = true
-            case .viewMode(let title, let content, _):
                 showKeyboard = false
                 query = content
                 siteName = title
                 showOverlay = true
+            case is SearchBarInSearchMode<SearchBarStateContextProxy>:
+                showOverlay = false
+                showKeyboard = true
+            default:
+                break
             }
         }
         .onChange(of: query) { showClearButton = !$0.isEmpty }
         .onReceive(cancelBtnVM.$clearTapped.dropFirst()) { query = "" }
-        .onReceive(cancelBtnVM.$cancelTapped.dropFirst()) { action = .cancelTapped }
-        .onReceive(textFieldVM.$submitTapped.dropFirst()) { action = .cancelTapped }
+        .onReceive(cancelBtnVM.$cancelTapped.dropFirst()) { action = .cancelSearch }
+        .onReceive(textFieldVM.$submitTapped.dropFirst()) { action = .cancelSearch }
         .onReceive(textFieldVM.$isFocused.dropFirst()) { newValue in
             if newValue {
-                action = .startSearch
+                action = .startSearch(query)
             }
         }
-        .onReceive(overlayVM.$tapped.dropFirst()) { action = .startSearch }
+        .onReceive(overlayVM.$tapped.dropFirst()) { action = .startSearch(query) }
     }
 }
 
@@ -134,9 +132,10 @@ struct SearchBarViewV2_Previews: PreviewProvider {
         } set: { _ in
             //
         }
+        let viewModel = SearchBarViewModel()
 
         // For some reason it jumps after selection
-        SearchBarViewV2(query, action)
+        SearchBarViewV2(query, action, viewModel)
             .frame(maxWidth: 400)
             .previewDevice(PreviewDevice(rawValue: "iPhone 14"))
     }

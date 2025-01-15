@@ -9,11 +9,12 @@
 import CoreBrowser
 import Foundation
 import FeatureFlagsKit
+import CottonViewModels
 import CottonDataServices
 
-typealias ObservingApiTypeModel = BaseListViewModelImpl<ObservingApiType>
+typealias ObservingApiTypeModel = BaseListViewModel<ObservingApiType>
 
-extension BaseListViewModelImpl where EnumDataSourceType == ObservingApiType {
+extension BaseListViewModel where EnumDataSourceType == ObservingApiType {
     init(
         _ selected: EnumDataSourceType?,
         _ completion: @escaping PopClosure

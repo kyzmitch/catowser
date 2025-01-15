@@ -24,11 +24,11 @@ final class AppStartInfo: Sendable {
     /// phone tab previews view model needed to make Phone previews coordinator
     /// work without a crash, because View model used to fetch VM before use cases registration
     /// which is not the planned sequence of initialization
-    let phoneTabPreviewsVM: TabsPreviewsViewModel
+    let phoneTabPreviewsVM: TabsPreviewsViewModelWithHolder
     /// web view model
     let webViewModel: any WebViewModel
     /// Search bar view model
-    let searchBarVM: any SearchBarViewModel
+    let searchBarVM: SearchBarViewModelWithDelegates
     /// Java script plugins source
     let jsPluginsBuilder: (any JSPluginsSource)
     /// default tab content
@@ -43,10 +43,10 @@ final class AppStartInfo: Sendable {
     init(
         allTabsVM: AllTabsViewModel,
         topSitesVM: TopSitesViewModel,
-        phoneTabPreviewsVM: TabsPreviewsViewModel,
+        phoneTabPreviewsVM: TabsPreviewsViewModelWithHolder,
         suggestionsVM: any SearchSuggestionsViewModel,
         webViewModel: any WebViewModel,
-        searchBarVM: any SearchBarViewModel,
+        searchBarVM: SearchBarViewModelWithDelegates,
         jsPluginsBuilder: (any JSPluginsSource),
         defaultTabContent: CoreBrowser.Tab.ContentType,
         observingType: ObservingApiType,

@@ -13,17 +13,27 @@ struct PhoneSearchBarLegacyView: CatowserUIVCRepresentable {
     private weak var searchBarDelegate: UISearchBarDelegate?
     /// Model also has action property
     private let action: SearchBarAction
+    /// View model
+    @ObservedObject var viewModel: SearchBarViewModel
 
-    init(_ searchBarDelegate: UISearchBarDelegate?,
-         _ action: SearchBarAction) {
+    init(
+        _ searchBarDelegate: UISearchBarDelegate?,
+        _ action: SearchBarAction,
+        _ viewModel: SearchBarViewModel
+    ) {
         self.searchBarDelegate = searchBarDelegate
         self.action = action
+        self.viewModel = viewModel
     }
 
     typealias UIViewControllerType = UIViewController
 
     func makeUIViewController(context: Context) -> UIViewControllerType {
-        let vc = vcFactory.deviceSpecificSearchBarViewController(searchBarDelegate, .swiftUIWrapper)
+        let vc = vcFactory.deviceSpecificSearchBarViewController(
+            searchBarDelegate,
+            .swiftUIWrapper,
+            viewModel
+        )
         // swiftlint:disable:next force_unwrapping
         return vc!.viewController
     }

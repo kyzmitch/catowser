@@ -11,11 +11,17 @@
 ///
 /// Can be sendable because it is a main actor.
 @MainActor public protocol SiteExternalNavigationDelegate: AnyObject, Sendable {
+    /// Provisional navigation of we kit started
     func provisionalNavigationDidStart()
-    func didSiteOpen(appName: String)
-    func loadingProgressdDidChange(_ progress: Float)
-    func didBackNavigationUpdate(to canGoBack: Bool)
-    func didForwardNavigationUpdate(to canGoForward: Bool)
+    /// Web site opened for native application name
+    func siteDidOpen(appName: String)
+    /// Change in loading progress
+    func loadingProgressDidChange(_ progress: Float)
+    /// Back navigation button update
+    func backNavigationDidUpdate(to canGoBack: Bool)
+    /// Forward navigation button update
+    func forwardNavigationDidUpdate(to canGoForward: Bool)
+    /// Show loading progress
     func showLoadingProgress(_ show: Bool)
     /// SwiftUI specific callback to notify that no need to initiate a re-use of web view anymore
     func webViewDidHandleReuseAction()
@@ -23,9 +29,4 @@
     /// It will pass the existing web view controller because it is reused.
     /// It is the only way to reset interface when web view is re-created.
     func webViewDidReplace(_ interface: WebViewNavigatable?)
-}
-
-@MainActor public protocol SiteNavigationChangable: AnyObject {
-    func changeBackButton(to canGoBack: Bool)
-    func changeForwardButton(to canGoForward: Bool)
 }

@@ -11,15 +11,21 @@ import CoreBrowser
 import FeatureFlagsKit
 import CottonViewModels
 
-struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarViewModel>: View {
+struct TabletView<
+    W: WebViewModel,
+    S: SearchSuggestionsViewModel,
+    SB: SearchBarViewModel
+>: View {
     // MARK: - view models of subviews
 
-    /// Search bar view model
+    /// Search bar view model, can't be environment object (always nil for some reason)
     @ObservedObject private var searchBarVM: SB
+    /// Separate field for the delegate (environment object for Search bar view model can't compile with it)
+    private let delegatesHolder: SearchBarDelegateHolder
     /// A reference to created vm in main view
     @EnvironmentObject private var browserContentVM: BrowserContentViewModel
     /// Toolbar model needed by both UI modes
-    @StateObject private var toolbarVM: BrowserToolbarViewModel = .init()
+    @EnvironmentObject private var toolbarVM: BrowserToolbarViewModel
     /// Top sites view model is async dependency, so, can only be injected from outside
     @EnvironmentObject private var topSitesVM: TopSitesViewModel
     /// Search suggestions view model has async init
@@ -44,21 +50,12 @@ struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarV
     /// Needs to be fetched from global actor in task to know current value
     @State private var searchProviderType: WebAutoCompletionSource
 
-    // MARK: - web content loading state
-
-    @State private var showProgress: Bool = false
-    @State private var websiteLoadProgress: Double = 0.0
-
     // MARK: - browser content state
 
     @State private var isLoading: Bool = true
     @State private var contentType: CoreBrowser.Tab.ContentType
     /// A workaround to avoid unnecessary web view updates
     @State private var webViewNeedsUpdate: Bool = false
-
-    // MARK: - web view related
-
-    @State private var webViewInterface: WebViewNavigatable?
 
     // MARK: - constants
 
@@ -72,7 +69,7 @@ struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarV
 
     private var menuModel: MenuViewModel {
         let style: BrowserMenuStyle
-        if let interface = webViewInterface {
+        if let interface = toolbarVM.state.webViewInterface {
             style = .withSiteMenu(interface.host, interface.siteSettings)
         } else {
             style = .onlyGlobalMenu
@@ -91,12 +88,14 @@ struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarV
         _ defaultContentType: CoreBrowser.Tab.ContentType,
         _ webVM: W,
         _ searchVM: S,
-        _ searchBarVM: SB
+        _ searchBarVM: SB,
+        _ delegatesHolder: SearchBarDelegateHolder
     ) {
         self.webVM = webVM
         // search suggestions vm is used as a template argument later
         self.searchSuggestionsVM = searchVM
         self.searchBarVM = searchBarVM
+        self.delegatesHolder = delegatesHolder
         self.contentType = defaultContentType
         self.mode = mode
 
@@ -120,20 +119,24 @@ struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarV
 
     private var uiKitWrapperView: some View {
         VStack {
-            let searchBarDelegate: UISearchBarDelegate = searchBarVM
+            let searchBarDelegate = delegatesHolder.searchBarDelegate
             TabletTabsView(mode)
-            TabletSearchBarLegacyView(searchBarDelegate, searchBarAction, webViewInterface)
+            TabletSearchBarLegacyView(
+                searchBarDelegate,
+                searchBarAction,
+                toolbarVM.state.webViewInterface
+            )
                 .frame(height: .toolbarViewHeight)
             // this should be the same with the value in `SearchBarBaseViewController`
-            if showProgress {
-                ProgressView(value: websiteLoadProgress)
+            if toolbarVM.state.showProgress {
+                ProgressView(value: toolbarVM.state.loadingProgress)
             }
             if showSearchSuggestions {
-                let delegate: SearchSuggestionsListDelegate = searchBarVM
+                let delegate = delegatesHolder.searchSuggestionsDelegate
                 SearchSuggestionsView<S>(searchQuery, delegate, mode)
             } else {
                 let jsPlugins = browserContentVM.jsPluginsBuilder
-                let siteNavigation: SiteExternalNavigationDelegate = toolbarVM
+                let siteNavigation = toolbarVM.context?.siteExternalDelegate
                 BrowserContentView(
                     jsPlugins,
                     siteNavigation,
@@ -146,13 +149,24 @@ struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarV
             }
         }
         .ignoresSafeArea(.keyboard)
-        .onReceive(toolbarVM.$showProgress) { showProgress = $0 }
-        .onReceive(toolbarVM.$websiteLoadProgress) { websiteLoadProgress = $0 }
-        .onReceive(toolbarVM.$webViewInterface) { webViewInterface = $0 }
-        .onReceive(searchBarVM.showSearchSuggestions) { showSearchSuggestions = $0 }
-        .onReceive(searchBarVM.searchQuery) { searchQuery = $0 }
-        .onReceive(searchBarVM.action.dropFirst()) { searchBarAction = $0 }
-        .onReceive(toolbarVM.$stopWebViewReuseAction.dropFirst()) { webViewNeedsUpdate = false }
+        .onReceive(searchBarVM.$state) { value in
+            switch value {
+            case is SearchBarInViewMode<SearchBarStateContextProxy>:
+                showSearchSuggestions = false
+            case is SearchBarInSearchMode<SearchBarStateContextProxy>:
+                showSearchSuggestions = true
+            default:
+                break
+            }
+            if let query = value.query {
+                searchQuery = query
+            }
+        }
+        .onReceive(toolbarVM.$state) { value in
+            if value.stopWebViewReusage {
+                webViewNeedsUpdate = false
+            }
+        }
         .onReceive(browserContentVM.$webViewNeedsUpdate.dropFirst()) { webViewNeedsUpdate = true }
         .onReceive(browserContentVM.$contentType) { value in
             contentType = value
@@ -175,48 +189,64 @@ struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarV
             self.isDohEnabled = combinedValue.isDohEnabled
             self.isJavaScriptEnabled = combinedValue.isJavaScriptEnabled
             self.nativeAppRedirectEnabled = combinedValue.nativeAppRedirectEnabled
-            webVM.siteNavigation = toolbarVM
+            webVM.siteNavigation = toolbarVM.context?.siteExternalDelegate
         }
     }
 
     private var fullySwiftUIView: some View {
         VStack {
             TabletTabsView(mode)
-            TabletSearchBarViewV2($showingMenu, $showSearchSuggestions, $searchQuery, $searchBarAction)
+            TabletSearchBarViewV2(
+                $showingMenu,
+                $showSearchSuggestions,
+                $searchQuery,
+                $searchBarAction,
+                searchBarVM
+            )
                 .frame(height: .toolbarViewHeight)
                 .environmentObject(toolbarVM)
-            if showProgress {
-                ProgressView(value: websiteLoadProgress)
+            if toolbarVM.state.showProgress {
+                ProgressView(value: toolbarVM.state.loadingProgress)
             }
             if showSearchSuggestions {
-                let delegate: SearchSuggestionsListDelegate = searchBarVM
+                let delegate = delegatesHolder.searchSuggestionsDelegate
                 SearchSuggestionsView<S>(searchQuery, delegate, mode)
             } else {
                 let jsPlugins = browserContentVM.jsPluginsBuilder
-                let siteNavigation: SiteExternalNavigationDelegate = toolbarVM
-                BrowserContentView(jsPlugins,
-                                   siteNavigation,
-                                   isLoading,
-                                   contentType,
-                                   $webViewNeedsUpdate,
-                                   mode,
-                                   webVM)
+                let siteNavigation = toolbarVM.context?.siteExternalDelegate
+                BrowserContentView(
+                    jsPlugins,
+                    siteNavigation,
+                    isLoading,
+                    contentType,
+                    $webViewNeedsUpdate,
+                    mode,
+                    webVM
+                )
             }
         }
         .sheet(isPresented: $showingMenu) {
             BrowserMenuView(menuModel)
         }
         .ignoresSafeArea(.keyboard)
-        .onReceive(toolbarVM.$showProgress) { showProgress = $0 }
-        .onReceive(toolbarVM.$websiteLoadProgress) { websiteLoadProgress = $0 }
-        .onReceive(toolbarVM.$webViewInterface) { webViewInterface = $0 }
-        .onReceive(searchBarVM.showSearchSuggestions) { showSearchSuggestions = $0 }
-        .onChange(of: searchQuery) { value in
-            let inSearchMode = searchBarAction == .startSearch
-            let validQuery = !value.isEmpty && !value.looksLikeAURL()
-            showSearchSuggestions = inSearchMode && validQuery
+        .onReceive(searchBarVM.$state) { value in
+            switch value {
+            case is SearchBarInViewMode<SearchBarStateContextProxy>:
+                showSearchSuggestions = false
+            case is SearchBarInSearchMode<SearchBarStateContextProxy>:
+                showSearchSuggestions = true
+            default:
+                break
+            }
+            if let query = value.query {
+                searchQuery = query
+            }
         }
-        .onReceive(toolbarVM.$stopWebViewReuseAction.dropFirst()) { webViewNeedsUpdate = false }
+        .onReceive(toolbarVM.$state) { value in
+            if value.stopWebViewReusage {
+                webViewNeedsUpdate = false
+            }
+        }
         .onReceive(browserContentVM.$webViewNeedsUpdate.dropFirst()) { webViewNeedsUpdate = true }
         .onReceive(browserContentVM.$contentType.dropFirst()) { value in
             showSearchSuggestions = false
@@ -240,7 +270,7 @@ struct TabletView<W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarV
             self.isDohEnabled = combinedValue.isDohEnabled
             self.isJavaScriptEnabled = combinedValue.isJavaScriptEnabled
             self.nativeAppRedirectEnabled = combinedValue.nativeAppRedirectEnabled
-            webVM.siteNavigation = toolbarVM
+            webVM.siteNavigation = toolbarVM.context?.siteExternalDelegate
         }
     }
 }

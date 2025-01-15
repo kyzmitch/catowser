@@ -89,7 +89,7 @@ import CottonDataServices
             do {
                 try await writeTabUseCase.select(tab: tab)
             } catch {
-                print("Fail to select tab: \(error)")
+                print("Fail to select tab: \(error.localizedDescription)")
             }
         }
     }

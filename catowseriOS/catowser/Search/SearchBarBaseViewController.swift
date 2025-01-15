@@ -18,7 +18,7 @@ import CottonViewModels
 
 final class SearchBarBaseViewController: BaseViewController {
     /// main search bar view
-    private let searchBarView: SearchBarLegacyView
+    private let searchBarView: SearchBarLegacyView<SearchBarViewModel>
     private let featureManager: FeatureManager.StateHolder
     private let uiServiceRegistry: UIServiceRegistry
 
@@ -26,7 +26,8 @@ final class SearchBarBaseViewController: BaseViewController {
         _ searchBarDelegate: UISearchBarDelegate?,
         _ uiFramework: UIFrameworkType,
         _ featureManager: FeatureManager.StateHolder,
-        _ uiServiceRegistry: UIServiceRegistry
+        _ uiServiceRegistry: UIServiceRegistry,
+        _ viewModel: SearchBarViewModel
     ) {
         let customFrame: CGRect
         if case .uiKit = uiFramework {
@@ -34,7 +35,11 @@ final class SearchBarBaseViewController: BaseViewController {
         } else {
             customFrame = .init(x: 0, y: 0, width: 0, height: .toolbarViewHeight)
         }
-        searchBarView = .init(frame: customFrame, uiFramework: uiFramework)
+        searchBarView = .init(
+            frame: customFrame,
+            uiFramework: uiFramework,
+            viewModel: viewModel
+        )
         searchBarView.delegate = searchBarDelegate
         self.featureManager = featureManager
         self.uiServiceRegistry = uiServiceRegistry
@@ -123,6 +128,8 @@ extension SearchBarBaseViewController: TabsObserver {
         _ content: CoreBrowser.Tab.ContentType,
         _ identifier: UUID
     ) async {
+        // Cancel search mode just in case if it was active
+        handleAction(.cancelSearch)
         switch content {
         case .site(let site):
             handleAction(.updateView(site.title, site.searchBarContent))

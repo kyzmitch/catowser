@@ -218,6 +218,8 @@ private extension TabsDataService {
             let addedTab = try await tabsRepository.add(tab, select: needSelect)
             await handleTabAdded(addedTab, index: newIndex, select: needSelect)
             serviceData.tabAdded = .finished(output: .success(newIndex))
+            // update state with new tabs array (+ 1 new tab)
+            serviceData.allTabs = .finished(output: .success(tabs))
         } catch {
             // It doesn't matter, on view level it must be added right away
             print("Failed to add this tab to cache: \(error)")
@@ -234,6 +236,9 @@ private extension TabsDataService {
             }
             let newSelectedId = try await handleCachedTabRemove(removedTab)
             serviceData.tabClosed = .finished(output: .success(newSelectedId))
+            if let newSelectedId {
+                serviceData.selectedTabId = .finished(output: .success(newSelectedId))
+            }
         } catch {
             // tab view should be removed immediately on view level anyway
             print("Failure to remove tab from cache: \(error)")
@@ -347,11 +352,12 @@ private extension TabsDataService {
             return serviceData
         }
         guard let tabTuple = tabs.element(by: selectedTabIdentifier) else {
-            serviceData.tabContentReplaced = .finished(output: .failure(.notInitializedYet))
+            serviceData.tabContentReplaced = .finished(output: .failure(.selectedNotFound))
             return serviceData
         }
+        let void: Void = ()
         guard tabTuple.tab.contentType != tabContent else {
-            serviceData.tabContentReplaced = .finished(output: .failure(.tabContentAlreadySet))
+            serviceData.tabContentReplaced = .finished(output: .success(void))
             return serviceData
         }
         var newTab = tabTuple.tab
@@ -372,7 +378,6 @@ private extension TabsDataService {
                     await observer.tabDidReplace(newTab, at: tabIndex)
                 }
             }
-            let void: Void = ()
             serviceData.tabContentReplaced = .finished(output: .success(void))
             return serviceData
         } catch {
@@ -392,7 +397,7 @@ private extension TabsDataService {
         }
         let defaultValue = positioning.defaultSelectedTabId
         guard selectedTabIdentifier != defaultValue else {
-            serviceData.tabPreviewUpdated = .finished(output: .failure(.notInitializedYet))
+            serviceData.tabPreviewUpdated = .finished(output: .failure(.onlyDefaultTabPresent))
             return serviceData
         }
         guard
@@ -408,7 +413,7 @@ private extension TabsDataService {
         }
         var tab = tabTuple.tab
         guard let tabTuple = tabs.element(by: selectedTabIdentifier) else {
-            serviceData.tabPreviewUpdated = .finished(output: .failure(.notInitializedYet))
+            serviceData.tabPreviewUpdated = .finished(output: .failure(.selectedNotFound))
             return serviceData
         }
         let tabIndex = tabTuple.index
@@ -579,10 +584,10 @@ private extension TabsDataService {
                     await observer.tabDidAdd(tab, at: index)
                 }
                 if select {
+                    serviceData.selectedTabId = .finished(output: .success(tab.id))
                     if observingType.isSystemObservation {
                         await notifyAboutNewSelectedTab(tab.id)
                     } else {
-                        serviceData.selectedTabId = .finished(output: .success(tab.id))
                         selectedTabIdInput.yield(tab.id)
                     }
                 }
@@ -660,28 +665,29 @@ private extension TabsDataService {
 
     func fetchTabs() async throws {
         async let cachedTabs = tabsRepository.fetchAllTabs()
-        async let id = tabsRepository.fetchSelectedTabId()
         async let defaultContentType = positioning.contentState
-        var cachedData = try await CachedTabsInitialInfo(
+        var cachedData = try await TabsAppStartInfo(
             cachedTabs,
-            id,
             defaultContentType
         )
-        if cachedData.cachedTabs.isEmpty {
+        let selectedTabId: Tab.ID
+        if cachedData.tabs.isEmpty {
             let tab = CoreBrowser.Tab(contentType: cachedData.defaultContentType)
             let savedTab = try await tabsRepository.add(tab, select: true)
-            cachedData.cachedTabs = [savedTab]
-            cachedData.id = tab.id
-        }
-        serviceData.allTabs = .finished(output: .success(cachedData.cachedTabs))
-        serviceData.tabsCount = .finished(output: .success(cachedData.cachedTabs.count))
-        serviceData.selectedTabId = .finished(output: .success(cachedData.id))
-        if observingType.isSystemObservation {
-            await notifyAboutNewTabs(cachedData.cachedTabs, nil)
-            await notifyAboutNewSelectedTab(cachedData.id)
+            cachedData.tabs = [savedTab]
+            selectedTabId = tab.id
         } else {
-            tabsCountInput.yield(cachedData.cachedTabs.count)
-            selectedTabIdInput.yield(cachedData.id)
+            selectedTabId = try await tabsRepository.fetchSelectedTabId()
+        }
+        serviceData.allTabs = .finished(output: .success(cachedData.tabs))
+        serviceData.tabsCount = .finished(output: .success(cachedData.tabs.count))
+        serviceData.selectedTabId = .finished(output: .success(selectedTabId))
+        if observingType.isSystemObservation {
+            await notifyAboutNewTabs(cachedData.tabs, nil)
+            await notifyAboutNewSelectedTab(selectedTabId)
+        } else {
+            tabsCountInput.yield(cachedData.tabs.count)
+            selectedTabIdInput.yield(selectedTabId)
         }
     }
 
@@ -761,18 +767,20 @@ private extension AddedTabPosition {
     }
 }
 
-struct CachedTabsInitialInfo {
-    var cachedTabs: [Tab]
-    var id: Tab.ID
+/// App start initial tabs data, this value type
+/// is very usseful because it allows to
+/// fetch tabs & default content in parallel
+struct TabsAppStartInfo {
+    /// tabs array
+    var tabs: [Tab]
+    /// default tab content
     let defaultContentType: Tab.ContentType
     
     init(
-        _ cachedTabs: [Tab],
-        _ id: Tab.ID,
+        _ tabs: [Tab],
         _ defaultContentType: Tab.ContentType
     ) {
-        self.cachedTabs = cachedTabs
-        self.id = id
+        self.tabs = tabs
         self.defaultContentType = defaultContentType
     }
 }

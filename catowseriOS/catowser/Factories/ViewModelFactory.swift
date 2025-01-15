@@ -77,16 +77,20 @@ import FeatureFlagsKit
     }
 
     func tabsPreviewsViewModel(
-        _ context: TabPreviewsContext
-    ) async -> TabsPreviewsViewModel {
+        _ context: TabPreviewsAppContext
+    ) async -> TabsPreviewsViewModelWithHolder {
         async let readUseCase = useCaseRegistry.findUseCase(ReadTabsUseCase.self)
         async let writeUseCase = useCaseRegistry.findUseCase(WriteTabsUseCase.self)
-        return await TabsPreviewsViewModel(readUseCase, writeUseCase, context)
+        return await ModuleVMFactory.createTabPreviewsVM(
+            readUseCase,
+            writeUseCase,
+            context
+        )
     }
 
     func allTabsViewModel() async -> AllTabsViewModel {
         let writeUseCase = await useCaseRegistry.findUseCase(WriteTabsUseCase.self)
-        return AllTabsViewModel(writeUseCase)
+        return ModuleVMFactory.createAllTabsVM(writeUseCase)
     }
 
     func topSitesViewModel() async -> TopSitesViewModel {
@@ -98,13 +102,18 @@ import FeatureFlagsKit
     
     func searchBarViewModel(
         _ context: SearchBarContext
-    ) async -> any SearchBarViewModel {
+    ) async -> SearchBarViewModelWithDelegates {
         async let writeUseCase = useCaseRegistry.findUseCase(WriteTabsUseCase.self)
-        async let autocompleteUseCase = useCaseRegistry.findUseCase(AutocompleteSearchUseCase.self)
-        return await SearchBarViewModelImpl(
+        async let searchUseCase = useCaseRegistry.findUseCase(AutocompleteSearchUseCase.self)
+        return await ModuleVMFactory.createSearchBarVM(
             writeUseCase,
-            autocompleteUseCase,
+            searchUseCase,
             context
         )
+    }
+    
+    func toolbarViewModel() -> BrowserToolbarViewModel {
+        let context = BrowserToolbarViewContextImpl()
+        return ModuleVMFactory.createToolbarVM(context)
     }
 }

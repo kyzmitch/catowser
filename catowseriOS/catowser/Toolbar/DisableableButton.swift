@@ -8,8 +8,7 @@
 
 import SwiftUI
 
-@MainActor
-struct DisableableButton: View {
+@MainActor struct DisableableButton: View {
     private let disabled: Bool
     private let imageName: String
     private let onTap: @MainActor () -> Void

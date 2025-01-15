@@ -10,6 +10,7 @@ import CottonBase
 import CoreBrowser
 import CottonUseCases
 import FeatureFlagsKit
+import ViewModelKit
 
 /// Factory for the view models in this framework to hide actual implementations
 @MainActor public final class ModuleVMFactory {
@@ -56,5 +57,41 @@ import FeatureFlagsKit
             context,
             FeatureManager.shared
         )
+    }
+    
+    /// all tabs view model
+    public static func createAllTabsVM(
+        _ writeTabUseCase: WriteTabsUseCase
+    ) -> AllTabsViewModel {
+        AllTabsViewModelImpl(writeTabUseCase)
+    }
+    
+    /// Toolbar view model
+    public static func createToolbarVM(
+        _ appContext: BrowserToolbarViewContext
+    ) -> BrowserToolbarViewModel {
+        BrowserToolbarViewModelImpl(appContext)
+    }
+    
+    /// Search bar view model
+    public static func createSearchBarVM(
+        _ writeTabsUseCase: WriteTabsUseCase,
+        _ autocompletionUseCase: AutocompleteSearchUseCase,
+        _ appContext: SearchBarContext
+    ) -> SearchBarViewModelWithDelegates {
+        SearchBarViewModelImpl(
+            writeTabsUseCase,
+            autocompletionUseCase,
+            appContext
+        )
+    }
+    
+    /// Tab previews view model
+    public static func createTabPreviewsVM(
+        _ readTabUseCase: ReadTabsUseCase,
+        _ writeTabUseCase: WriteTabsUseCase,
+        _ appContext: TabPreviewsAppContext
+    ) -> TabsPreviewsViewModelWithHolder {
+        TabsPreviewsViewModelImpl(readTabUseCase, writeTabUseCase, appContext)
     }
 }

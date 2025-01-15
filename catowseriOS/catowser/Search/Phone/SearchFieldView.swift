@@ -8,26 +8,22 @@
 
 import SwiftUI
 
-final class SearchFieldViewModel: ObservableObject {
-    @Published var isFocused: Bool
-    @Published var submitTapped: Void
-
-    init() {
-        self.isFocused = false
-        submitTapped = ()
-    }
-}
-
+/// Search field view
 struct SearchFieldView: View {
+    /// Text content, from the super view it is search query
     @Binding private var textContent: String
+    /// Determines if keyboard visible or not
     private let showKeyboard: Bool
+    /// Determines if need to be focused
     @FocusState private var isFocused: Bool
-
+    /// View model
     @ObservedObject private var vm: SearchFieldViewModel
 
-    init(_ textContent: Binding<String>,
-         _ showKeyboard: Bool,
-         _ vm: SearchFieldViewModel) {
+    init(
+        _ textContent: Binding<String>,
+        _ showKeyboard: Bool,
+        _ vm: SearchFieldViewModel
+    ) {
         self.vm = vm
         _textContent = textContent
         self.showKeyboard = showKeyboard

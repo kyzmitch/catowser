@@ -7,7 +7,7 @@
 //
 
 /// Search suggestion type in the list of combined suggestions
-public enum SuggestionType: Equatable {
+public enum SuggestionType: Equatable, Sendable {
     /// Suggestion from the remote provider like any search engine like Google, etc.
     case suggestion(String)
     /// Suggestion is a known domain name

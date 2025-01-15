@@ -36,11 +36,12 @@ protocol ViewControllerFactory: AnyObject {
         _ webVM: W,
         _ searchBarVM: SB
     ) -> AnyViewController
-    where W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarViewModel
+    where W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarViewModelWithDelegates
 
     func searchBarViewController(
         _ searchBarDelegate: UISearchBarDelegate?,
-        _ uiFramework: UIFrameworkType
+        _ uiFramework: UIFrameworkType,
+        _ viewModel: SearchBarViewModel
     ) -> SearchBarBaseViewController
     func searchSuggestionsViewController(
         _ delegate: SearchSuggestionsListDelegate?,
@@ -72,14 +73,16 @@ protocol ViewControllerFactory: AnyObject {
     /// WIll return nil on Tablet
     func deviceSpecificSearchBarViewController(
         _ searchBarDelegate: UISearchBarDelegate?,
-        _ uiFramework: UIFrameworkType
+        _ uiFramework: UIFrameworkType,
+        _ viewModel: SearchBarViewModel
     ) -> AnyViewController?
     /// Will return nil on Phone
     func deviceSpecificSearchBarViewController(
         _ searchBarDelegate: UISearchBarDelegate?,
         _ downloadDelegate: DownloadPanelPresenter?,
         _ settingsDelegate: GlobalMenuDelegate?,
-        _ uiFramework: UIFrameworkType
+        _ uiFramework: UIFrameworkType,
+        _ viewModel: SearchBarViewModel
     ) -> AnyViewController?
     /// WIll return nil on Tablet. Should re-create tabs every time to update them
     func toolbarViewController<C: Navigating>(
@@ -92,7 +95,7 @@ protocol ViewControllerFactory: AnyObject {
     /// WIll return nil on Tablet
     func tabsPreviewsViewController<C: Navigating>(
         _ coordinator: C,
-        _ viewModel: TabsPreviewsViewModel
+        _ viewModel: TabsPreviewsViewModelWithHolder
     ) -> UIViewController? where C.R == TabsScreenRoute
     /// Tablet specific tabs
     func tabsViewController(_ vm: AllTabsViewModel) -> AnyViewController?
@@ -113,7 +116,7 @@ extension ViewControllerFactory {
         _ webVM: W,
         _ searchBarVM: SB
     ) -> AnyViewController
-    where W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarViewModel {
+    where W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarViewModelWithDelegates {
         let vc: AnyViewController
         switch uiFramework {
         case .uiKit:
@@ -135,13 +138,15 @@ extension ViewControllerFactory {
 
     func searchBarViewController(
         _ searchBarDelegate: UISearchBarDelegate?,
-        _ uiFramework: UIFrameworkType
+        _ uiFramework: UIFrameworkType,
+        _ viewModel: SearchBarViewModel
     ) -> SearchBarBaseViewController {
         let vc: SearchBarBaseViewController = .init(
             searchBarDelegate,
             uiFramework,
             FeatureManager.shared,
-            UIServiceRegistry.shared()
+            UIServiceRegistry.shared(),
+            viewModel
         )
         return vc
     }

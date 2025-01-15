@@ -31,6 +31,9 @@ import WebKit
         _ navigationAction: NavigationActionable,
         _ decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
     ) async
+    func decidePolicy(
+        _ navigationAction: NavigationActionable
+    ) async -> WKNavigationActionPolicy
     func setJavaScript(
         _ subject: JavaScriptEvaluateble,
         _ enabled: Bool

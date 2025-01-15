@@ -40,11 +40,6 @@ final class SearchSuggestionsViewController: UITableViewController {
         super.init(nibName: nil, bundle: nil)
     }
 
-    deinit {
-        #warning("AnyCancellable is not sendable, so, skipping cancel")
-        // taskHandler?.cancel()
-    }
-
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -105,7 +100,10 @@ extension SearchSuggestionsViewController /* UITableViewDataSource */ {
 }
 
 extension SearchSuggestionsViewController /* UITableViewDelegate */ {
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func tableView(
+        _ tableView: UITableView,
+        didSelectRowAt indexPath: IndexPath
+    ) {
         tableView.deselectRow(at: indexPath, animated: true)
 
         guard let text = state.value(from: indexPath.row, section: indexPath.section) else {
@@ -122,7 +120,7 @@ extension SearchSuggestionsViewController /* UITableViewDelegate */ {
             return
         }
         Task {
-            await delegate?.searchSuggestionDidSelect(content)
+            try? await delegate?.searchSuggestionDidSelect(content)
         }
     }
 }
