@@ -17,16 +17,16 @@ public enum TabsPreviewsAction: ViewModelAction {
     case closeTab(index: Int)
     /// Select different tab
     case select(CoreBrowser.Tab)
+    /// Select tab by id and only change the state, saving was done already
+    case selectTabIdWithoutSaving(CoreBrowser.Tab.ID)
     /// Handle user tap on + tab button
     case addDefaultTab
-    /// Add custom tab to in-memory state/cache only
-    case addTab(tab: CoreBrowser.Tab, index: Int)
     
     public static let allCases: [TabsPreviewsAction] = [
         .load,
         .closeTab(index: -1),
         .select(.blank),
-        .addDefaultTab,
-        .addTab(tab: .blank, index: -1)
+        .selectTabIdWithoutSaving(UUID()),
+        .addDefaultTab
     ]
 }

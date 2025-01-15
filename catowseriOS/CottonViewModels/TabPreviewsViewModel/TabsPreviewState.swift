@@ -67,6 +67,11 @@ public enum TabsPreviewState<C: TabsPreviewsStateContext>: ViewModelState {
             try await context?.select(tab)
             // Set new selected id
             nextState = .tabs(tabs, tab.id)
+        case .selectTabIdWithoutSaving(let identifier):
+            guard case let .tabs(tabs, _) = self else {
+                throw TabsPreviewsError.tabsNotLoadedToClose
+            }
+            nextState = .tabs(tabs, identifier)
         case .addDefaultTab:
             if let info = try await context?.addDefaultTab() {
                 nextState = .tabs(
@@ -76,99 +81,8 @@ public enum TabsPreviewState<C: TabsPreviewsStateContext>: ViewModelState {
             } else {
                 throw TabsPreviewsError.nilStateContext
             }
-        case let .addTab(tab: tab, index: index):
-            if let info = try await context?.addTab(tab, at: index) {
-                nextState = .tabs(
-                    info.tabs,
-                    info.selectedTabUUID
-                )
-            } else {
-                throw TabsPreviewsError.nilStateContext
-            }
         }
         return nextState
-    }
-    
-    @MainActor public func transitionOn(
-        _ action: Action,
-        with context: Context?,
-        onComplete: @escaping (Result<BaseState, Error>) -> Void
-    ) {
-        guard let context else {
-            onComplete(.failure(TabsPreviewsError.nilStateContext))
-            return
-        }
-        switch action {
-        case .load:
-            context.load(onComplete: { info in
-                let nextState: TabsPreviewState = .tabs(
-                    info.tabs,
-                    info.selectedTabUUID
-                )
-                onComplete(.success(nextState))
-            })
-        case .closeTab(index: let index):
-            guard case let .tabs(tabs, _) = self else {
-                onComplete(.failure(TabsPreviewsError.tabsNotLoadedToClose))
-                return
-            }
-            context.close(at: index, from: tabs) { result in
-                switch result {
-                case .success(let info):
-                    let nextState: TabsPreviewState = .tabs(
-                        info.tabs,
-                        info.selectedTabUUID
-                    )
-                    onComplete(.success(nextState))
-                case .failure(let error):
-                    onComplete(.failure(error))
-                }
-            }
-        case .select(let tab):
-            context.select(tab) { result in
-                switch result {
-                case .success:
-                    guard case let .tabs(tabs, _) = self else {
-                        onComplete(.failure(TabsPreviewsError.tabsNotLoadedToClose))
-                        return
-                    }
-                    let nextState: TabsPreviewState = .tabs(
-                        tabs,
-                        tab.id
-                    )
-                    onComplete(.success(nextState))
-                case .failure(let error):
-                    onComplete(.failure(error))
-                }
-            }
-        case .addDefaultTab:
-            Task {
-                do {
-                    let info = try await context.addDefaultTab()
-                    let nextState: TabsPreviewState = .tabs(
-                        info.tabs,
-                        info.selectedTabUUID
-                    )
-                    onComplete(.success(nextState))
-                } catch {
-                    onComplete(.failure(error))
-                }
-            }
-        case let .addTab(tab: tab, index: index):
-            Task {
-                do {
-                    // This won't call any use cases or persistence storage
-                    let info = try await context.addTab(tab, at: index)
-                    let nextState: TabsPreviewState = .tabs(
-                        info.tabs,
-                        info.selectedTabUUID
-                    )
-                    onComplete(.success(nextState))
-                } catch {
-                    onComplete(.failure(error))
-                }
-            }
-        }
     }
     
     public static func == (

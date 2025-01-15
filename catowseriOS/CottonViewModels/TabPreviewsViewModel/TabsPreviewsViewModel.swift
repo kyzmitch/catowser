@@ -159,10 +159,6 @@ extension TabsPreviewsViewModelImpl: TabsPreviewsStateContext {
 // MARK: - TabsObserver
 
 extension TabsPreviewsViewModelImpl: TabsObserver {
-    public func tabDidAdd(_ tab: CoreBrowser.Tab, at index: Int) async {
-        try? await sendAction(.addTab(tab: tab, index: index))
-    }
-    
     public func tabDidSelect(
         _ index: Int,
         _ content: CoreBrowser.Tab.ContentType,

@@ -264,23 +264,20 @@ final class TabsPreviewsViewController<
     @MainActor
     private func startTabsObservation() {
         withObservationTracking {
-            _ = uiServiceRegistry.tabsSubject.addedTabIndex
+            _ = uiServiceRegistry.tabsSubject.selectedTabId
         } onChange: {
             Task { [weak self] in
-                await self?.handleAddedTabs()
+                await self?.handleSelectedTab()
             }
         }
     }
     
     @available(iOS 17.0, *)
     @MainActor
-    private func handleAddedTabs() async {
+    private func handleSelectedTab() async {
         let subject = uiServiceRegistry.tabsSubject
-        guard let index = subject.addedTabIndex else {
-            return
-        }
         viewModel.sendAction(
-            .addTab(tab: subject.tabs[index], index: index),
+            .selectTabIdWithoutSaving(subject.selectedTabId),
             onComplete: nil
         )
     }

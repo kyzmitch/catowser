@@ -218,6 +218,8 @@ private extension TabsDataService {
             let addedTab = try await tabsRepository.add(tab, select: needSelect)
             await handleTabAdded(addedTab, index: newIndex, select: needSelect)
             serviceData.tabAdded = .finished(output: .success(newIndex))
+            // update state with new tabs array (+ 1 new tab)
+            serviceData.allTabs = .finished(output: .success(tabs))
         } catch {
             // It doesn't matter, on view level it must be added right away
             print("Failed to add this tab to cache: \(error)")
@@ -234,6 +236,9 @@ private extension TabsDataService {
             }
             let newSelectedId = try await handleCachedTabRemove(removedTab)
             serviceData.tabClosed = .finished(output: .success(newSelectedId))
+            if let newSelectedId {
+                serviceData.selectedTabId = .finished(output: .success(newSelectedId))
+            }
         } catch {
             // tab view should be removed immediately on view level anyway
             print("Failure to remove tab from cache: \(error)")
@@ -579,10 +584,10 @@ private extension TabsDataService {
                     await observer.tabDidAdd(tab, at: index)
                 }
                 if select {
+                    serviceData.selectedTabId = .finished(output: .success(tab.id))
                     if observingType.isSystemObservation {
                         await notifyAboutNewSelectedTab(tab.id)
                     } else {
-                        serviceData.selectedTabId = .finished(output: .success(tab.id))
                         selectedTabIdInput.yield(tab.id)
                     }
                 }

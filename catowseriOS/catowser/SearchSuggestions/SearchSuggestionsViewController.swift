@@ -40,11 +40,6 @@ final class SearchSuggestionsViewController: UITableViewController {
         super.init(nibName: nil, bundle: nil)
     }
 
-    deinit {
-        #warning("AnyCancellable is not sendable, so, skipping cancel")
-        // taskHandler?.cancel()
-    }
-
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
