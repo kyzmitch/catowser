@@ -49,6 +49,9 @@ public protocol SearchBarDelegateHolder {
     public var searchSuggestionsDelegate: SearchSuggestionsListDelegate? {
         self
     }
+    private lazy var proxy: SearchBarStateContextProxy = {
+        SearchBarStateContextProxy(subject: self)
+    }()
 
     init(
         _ writeTabsUseCase: WriteTabsUseCase,
@@ -63,7 +66,7 @@ public protocol SearchBarDelegateHolder {
     }
     
     public override var context: Context? {
-        SearchBarStateContextProxy(subject: self)
+        proxy
     }
     
     private func replaceTab(

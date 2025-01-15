@@ -68,6 +68,7 @@ struct SearchBarViewV2: View {
                 .animation(.easeInOut(duration: SearchBarConstants.animationDuration), value: showOverlay)
         }
         .onReceive(searchBarVM.$state) { value in
+            showCancelButton = value.showCancelButton
             switch value {
             case is SearchBarInViewMode<SearchBarStateContextProxy>:
                 guard let title = value.overlayContent, let content = value.searchBarContent else {

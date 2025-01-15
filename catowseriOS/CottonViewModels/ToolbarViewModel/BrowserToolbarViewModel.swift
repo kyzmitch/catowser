@@ -21,6 +21,9 @@ public typealias BrowserToolbarViewModel = BaseViewModel<
 final class BrowserToolbarViewModelImpl: BrowserToolbarViewModel {
     /// View model context but from the app side, not related to the state
     private let appContext: BrowserToolbarViewContext
+    private lazy var proxy: BrowserToolbarStateContextProxy = {
+        BrowserToolbarStateContextProxy(subject: self)
+    }()
     
     init(
         _ appContext: BrowserToolbarViewContext
@@ -30,7 +33,7 @@ final class BrowserToolbarViewModelImpl: BrowserToolbarViewModel {
     }
     
     public override var context: Context? {
-        BrowserToolbarStateContextProxy(subject: self)
+        proxy
     }
     
     public override func sendAction(_ action: Action) async throws {

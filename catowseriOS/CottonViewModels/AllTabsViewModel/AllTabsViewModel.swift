@@ -21,6 +21,9 @@ public typealias AllTabsViewModel = BaseViewModel<
 /// All tabs view model implementation
 final class AllTabsViewModelImpl: AllTabsViewModel {
     private let writeTabUseCase: WriteTabsUseCase
+    private lazy var proxy = {
+        AllTabsStateContextProxy(subject: self)
+    }()
 
     /// Internal initializer
     init(_ writeTabUseCase: WriteTabsUseCase) {
@@ -29,7 +32,7 @@ final class AllTabsViewModelImpl: AllTabsViewModel {
     }
     
     public override var context: Context? {
-        AllTabsStateContextProxy(subject: self)
+        proxy
     }
 }
 

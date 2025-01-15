@@ -35,6 +35,9 @@ final public class TabsPreviewsViewModelImpl: TabsPreviewsViewModel {
     private let readTabUseCase: ReadTabsUseCase
     private let writeTabUseCase: WriteTabsUseCase
     private let appContext: TabPreviewsAppContext
+    private lazy var proxy: TabsPreviewsStateContextProxy = {
+        TabsPreviewsStateContextProxy(subject: self)
+    }()
 
     init(
         _ readTabUseCase: ReadTabsUseCase,
@@ -48,7 +51,7 @@ final public class TabsPreviewsViewModelImpl: TabsPreviewsViewModel {
     }
     
     public override var context: Context? {
-        TabsPreviewsStateContextProxy(subject: self)
+        proxy
     }
 }
 

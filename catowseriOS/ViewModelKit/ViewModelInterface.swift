@@ -59,8 +59,8 @@ extension ViewModelInterface {
             switch result {
             case .success(let nextState):
                 self?.state = nextState
-                let void: Void = ()
-                onComplete?(.success(void))
+                let nothing: Void = ()
+                onComplete?(.success(nothing))
             case .failure(let failure):
                 onComplete?(.failure(failure))
             }

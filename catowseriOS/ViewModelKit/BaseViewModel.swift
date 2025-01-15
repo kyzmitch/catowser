@@ -14,7 +14,6 @@ import Combine
 /// for the state, action & state context.
 ///
 /// It can be used for SwiftUI because it confirms to `ObservableObject` as well.
-/// But doesn't have published property for a state for now.
 open class BaseViewModel<
     S: ViewModelState,
     A: ViewModelAction,
@@ -37,12 +36,19 @@ open class BaseViewModel<
         self.state = .createInitial()
     }
     
+    /// Apply an action to the view model state to get a new valid state
+    /// - Parameter action: an action to apply to the state
+    /// - Throws an error if incoming action is not valid for a current state or due to other errors
     open func sendAction(
         _ action: Action
     ) async throws {
         state = try await state.transitionOn(action, with: context)
     }
     
+    /// Apply an action to the view model state using closure API.
+    ///
+    /// - Parameter action: an action to apply to the state
+    /// - Parameter onComplete: Completion closure.
     open func sendAction(
         _ action: Action,
         onComplete: CompletionCallback? = nil
@@ -51,8 +57,8 @@ open class BaseViewModel<
             switch result {
             case .success(let nextState):
                 self?.state = nextState
-                let void: Void = ()
-                onComplete?(.success(void))
+                let nothing: Void = ()
+                onComplete?(.success(nothing))
             case .failure(let failure):
                 onComplete?(.failure(failure))
             }
