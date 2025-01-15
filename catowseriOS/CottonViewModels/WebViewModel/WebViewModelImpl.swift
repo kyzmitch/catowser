@@ -198,31 +198,35 @@ import FeatureFlagsKit
         }
     }
 
-    public func decidePolicy(_ navigationAction: NavigationActionable,
-                             _ decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) async {
+    public func decidePolicy(
+        _ navigationAction: NavigationActionable,
+        _ decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
+    ) async {
+        let policy = await decidePolicy(navigationAction)
+        decisionHandler(policy)
+    }
+    
+    func decidePolicy(
+        _ navigationAction: NavigationActionable
+    ) async -> WKNavigationActionPolicy {
         guard navigationAction.navigationType.needsHandling else {
             print("navigationType: ignored '\(navigationAction.navigationType)'")
-            decisionHandler(.allow)
-            return
+            return .allow
         }
         print("navigationType: need to handle '\(navigationAction.navigationType)'")
         guard let url = navigationAction.request.url else {
-            decisionHandler(.allow)
-            return
+            return .allow
         }
         if let policy = isSystemAppRedirectNeeded(url) {
             updateLoadingState(.openApp(url))
-            decisionHandler(policy)
-            return
+            return policy
         }
         let allowRedirect = await context.allowNativeAppRedirects()
         if !allowRedirect, let policy = isNativeAppRedirectNeeded(url) {
-            decisionHandler(policy)
-            return
+            return policy
         }
         guard let scheme = url.scheme else {
-            decisionHandler(.allow)
-            return
+            return .allow
         }
 
         switch scheme {
@@ -230,26 +234,26 @@ import FeatureFlagsKit
             let currentURLinfo = state.urlInfo
             if currentURLinfo.platformURL == url ||
                 (currentURLinfo.ipAddressString != nil && currentURLinfo.urlWithResolvedDomainName == url) {
-                decisionHandler(.allow)
                 // No need to change vm state
                 // because it is the same URL which was provided
                 // in `.load` or `.loadNextLink`
-                return
+                return .allow
             }
             do {
                 // Cancelling navigation because it is a different URL.
                 // Need to handle DoH, plugins and vm state.
                 // It also applies for go back and forward navigation actions.
-                decisionHandler(.cancel)
                 await updateState(try state.transition(on: .loadNextLink(url)))
+                return .cancel
             } catch {
                 print("Fail to load next URL due to error: \(error.localizedDescription)")
             }
         case .about:
-            decisionHandler(.allow)
+            return .allow
         default:
-            decisionHandler(.cancel)
+            return .cancel
         }
+        return .allow
     }
 
     public func setJavaScript(_ subject: JavaScriptEvaluateble, _ enabled: Bool) async {

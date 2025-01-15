@@ -176,6 +176,17 @@ final class WebViewController<C: Navigating>: BaseViewController, WKUIDelegate, 
     }
 
     // MARK: - WKNavigationDelegate
+    
+    func webView(
+        _ webView: WKWebView,
+        decidePolicyFor navigationAction: WKNavigationAction
+    ) async -> WKNavigationActionPolicy {
+        if let domain = viewModel.nativeAppDomainNameString {
+            viewModel.siteNavigation?.siteDidOpen(appName: domain)
+            // no need to interrupt
+        }
+        return await viewModel.decidePolicy(navigationAction)
+    }
 
     private func webView(
         _ webView: WKWebView,
