@@ -79,6 +79,10 @@
 		7517D9D02A5F2ED200D081AD /* CottonBase.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7517D9C22A5F2E7A00D081AD /* CottonBase.xcframework */; };
 		7517D9D32A5F2EDC00D081AD /* CottonBase.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7517D9C22A5F2E7A00D081AD /* CottonBase.xcframework */; };
 		7517D9D62A5F2EE600D081AD /* CottonBase.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7517D9C22A5F2E7A00D081AD /* CottonBase.xcframework */; };
+		7518E4582D39A49F00E8B2FA /* TcaFrameworkWrapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7518E4522D39A49F00E8B2FA /* TcaFrameworkWrapper.framework */; };
+		7518E4592D39A49F00E8B2FA /* TcaFrameworkWrapper.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7518E4522D39A49F00E8B2FA /* TcaFrameworkWrapper.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		7518E45F2D39A4E000E8B2FA /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 7518E45E2D39A4E000E8B2FA /* ComposableArchitecture */; };
+		7518E4602D39A4F300E8B2FA /* TcaFrameworkWrapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7518E4522D39A49F00E8B2FA /* TcaFrameworkWrapper.framework */; };
 		75196D072944ABA700B3A45B /* MainBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75196D062944ABA700B3A45B /* MainBrowserView.swift */; };
 		75196D0D2944AF8B00B3A45B /* SiteMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75196D0C2944AF8B00B3A45B /* SiteMenuViewController.swift */; };
 		75196D102944AFD800B3A45B /* MainBrowserV2ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75196D0F2944AFD800B3A45B /* MainBrowserV2ViewController.swift */; };
@@ -112,8 +116,6 @@
 		756AE6D02CA348BF00938FCC /* DataServiceKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 756AE6BA2CA348BF00938FCC /* DataServiceKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		756AE6E52CA34B8E00938FCC /* DataServiceKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 756AE6BA2CA348BF00938FCC /* DataServiceKit.framework */; };
 		7570F7462B5C07E90066ABF1 /* UseCaseRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7570F7452B5C07E90066ABF1 /* UseCaseRegistry.swift */; };
-		757E842B2D37F5A000CFA7D5 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 757E842A2D37F5A000CFA7D5 /* ComposableArchitecture */; };
-		757E86442D39089D00CFA7D5 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 757E86432D39089D00CFA7D5 /* ComposableArchitecture */; };
 		757E864A2D3930F600CFA7D5 /* TopSitesAppContextImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 757E86492D3930F300CFA7D5 /* TopSitesAppContextImpl.swift */; };
 		75869DC12D00C0D100D981B6 /* WebAutoCompletionSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752CF2CFED1DC008D40CF /* WebAutoCompletionSource.swift */; };
 		75869DD32D01B1D400D981B6 /* CottonUseCases.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75869DC92D01B1D400D981B6 /* CottonUseCases.framework */; };
@@ -461,6 +463,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = 6094E71B221FD2B9004269A2;
 			remoteInfo = CoreBrowser;
+		};
+		7518E4562D39A49F00E8B2FA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8435A48F1EED5E700020102F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7518E4512D39A49F00E8B2FA;
+			remoteInfo = TcaFrameworkWrapper;
+		};
+		7518E4622D39A4F300E8B2FA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8435A48F1EED5E700020102F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7518E4512D39A49F00E8B2FA;
+			remoteInfo = TcaFrameworkWrapper;
 		};
 		756AE6C52CA348BF00938FCC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -814,6 +830,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				7518E4592D39A49F00E8B2FA /* TcaFrameworkWrapper.framework in Embed Frameworks */,
 				8A5F72112826DD59008E5638 /* CottonReactiveRestKit.framework in Embed Frameworks */,
 				608DA752223A3BD5009F75BD /* CottonPlugins.framework in Embed Frameworks */,
 				75869DDF2D01B1D400D981B6 /* CottonUseCases.framework in Embed Frameworks */,
@@ -898,6 +915,7 @@
 		750EDEBA2949215900212A4E /* MainBrowserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainBrowserViewModel.swift; sourceTree = "<group>"; };
 		750EDEBD294924A800212A4E /* BrowserContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserContentView.swift; sourceTree = "<group>"; };
 		7517D9C22A5F2E7A00D081AD /* CottonBase.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = CottonBase.xcframework; path = "../cotton-base/build/XCFrameworks/release/CottonBase.xcframework"; sourceTree = "<group>"; };
+		7518E4522D39A49F00E8B2FA /* TcaFrameworkWrapper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TcaFrameworkWrapper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		75196D062944ABA700B3A45B /* MainBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainBrowserView.swift; sourceTree = "<group>"; };
 		75196D0C2944AF8B00B3A45B /* SiteMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteMenuViewController.swift; sourceTree = "<group>"; };
 		75196D0F2944AFD800B3A45B /* MainBrowserV2ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainBrowserV2ViewController.swift; sourceTree = "<group>"; };
@@ -1205,6 +1223,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		7518E45A2D39A49F00E8B2FA /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			publicHeaders = (
+				TcaFrameworkWrapper.h,
+			);
+			target = 7518E4512D39A49F00E8B2FA /* TcaFrameworkWrapper */;
+		};
 		756AE6D52CA348BF00938FCC /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			publicHeaders = (
@@ -1243,6 +1268,7 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		7518E4532D39A49F00E8B2FA /* TcaFrameworkWrapper */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (7518E45A2D39A49F00E8B2FA /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = TcaFrameworkWrapper; sourceTree = "<group>"; };
 		756AE6BB2CA348BF00938FCC /* DataServiceKit */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (756AE6D52CA348BF00938FCC /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = DataServiceKit; sourceTree = "<group>"; };
 		756AE6C92CA348BF00938FCC /* DataServiceKitTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = DataServiceKitTests; sourceTree = "<group>"; };
 		75869DCA2D01B1D400D981B6 /* CottonUseCases */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (75869DE02D01B1D400D981B6 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = CottonUseCases; sourceTree = "<group>"; };
@@ -1279,6 +1305,14 @@
 				7586A39E2D0C158C00D981B6 /* SWXMLHash in Frameworks */,
 				8A5E6C89290B0EAE0034A78B /* AutoMockable.framework in Frameworks */,
 				8AD4F51028F491A7009C4BDC /* ReactiveSwift in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7518E44F2D39A49F00E8B2FA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7518E45F2D39A4E000E8B2FA /* ComposableArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1322,9 +1356,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7518E4602D39A4F300E8B2FA /* TcaFrameworkWrapper.framework in Frameworks */,
 				75869E542D01B60700D981B6 /* CoreBrowser.framework in Frameworks */,
 				75869E4F2D01B5A500D981B6 /* FeatureFlagsKit.framework in Frameworks */,
-				757E86442D39089D00CFA7D5 /* ComposableArchitecture in Frameworks */,
 				75869E312D01B55400D981B6 /* CottonUseCases.framework in Frameworks */,
 				75869E5A2D01BA1C00D981B6 /* CottonBase.xcframework in Frameworks */,
 				75869E622D01BAC100D981B6 /* CottonPlugins.framework in Frameworks */,
@@ -1394,7 +1428,6 @@
 				8AE31138247C666A00FF28B1 /* UIKit.framework in Frameworks */,
 				8AD4F51E28F492DC009C4BDC /* AlamofireImage in Frameworks */,
 				7517D9C32A5F2E7C00D081AD /* CottonBase.xcframework in Frameworks */,
-				757E842B2D37F5A000CFA7D5 /* ComposableArchitecture in Frameworks */,
 				8A5E6C83290B0E6C0034A78B /* AutoMockable.framework in Frameworks */,
 				8AD4F51C28F49219009C4BDC /* ReactiveSwift in Frameworks */,
 				8ABF504427CC1A64007C6427 /* FeatureFlagsKit.framework in Frameworks */,
@@ -1407,6 +1440,7 @@
 				75869DDE2D01B1D400D981B6 /* CottonUseCases.framework in Frameworks */,
 				6094E723221FD2B9004269A2 /* CoreBrowser.framework in Frameworks */,
 				8A5FD6A426AF31FE0019384A /* CottonRestKit.framework in Frameworks */,
+				7518E4582D39A49F00E8B2FA /* TcaFrameworkWrapper.framework in Frameworks */,
 				8AE31136247C664600FF28B1 /* SwiftUI.framework in Frameworks */,
 				8ABA3CD22522602900E304E2 /* CoreData.framework in Frameworks */,
 				8A6CD6D424585D830068ACB5 /* Combine.framework in Frameworks */,
@@ -1848,6 +1882,7 @@
 				75869E8D2D01DDBB00D981B6 /* CottonDataServicesTests */,
 				7586A8FA2D11CA9C00D981B6 /* ViewModelKit */,
 				7586A9082D11CA9C00D981B6 /* ViewModelKitTests */,
+				7518E4532D39A49F00E8B2FA /* TcaFrameworkWrapper */,
 				8435A4981EED5E700020102F /* Products */,
 				5906B47E95A37FC0872DBD1A /* Frameworks */,
 			);
@@ -1880,6 +1915,7 @@
 				75869E872D01DDBB00D981B6 /* CottonDataServicesTests.xctest */,
 				7586A8F92D11CA9C00D981B6 /* ViewModelKit.framework */,
 				7586A9022D11CA9C00D981B6 /* ViewModelKitTests.xctest */,
+				7518E4522D39A49F00E8B2FA /* TcaFrameworkWrapper.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2528,6 +2564,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7518E44D2D39A49F00E8B2FA /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		756AE6B52CA348BF00938FCC /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -2661,6 +2704,30 @@
 			productReference = 6094E71C221FD2B9004269A2 /* CoreBrowser.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		7518E4512D39A49F00E8B2FA /* TcaFrameworkWrapper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7518E45B2D39A49F00E8B2FA /* Build configuration list for PBXNativeTarget "TcaFrameworkWrapper" */;
+			buildPhases = (
+				7518E44D2D39A49F00E8B2FA /* Headers */,
+				7518E44E2D39A49F00E8B2FA /* Sources */,
+				7518E44F2D39A49F00E8B2FA /* Frameworks */,
+				7518E4502D39A49F00E8B2FA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				7518E4532D39A49F00E8B2FA /* TcaFrameworkWrapper */,
+			);
+			name = TcaFrameworkWrapper;
+			packageProductDependencies = (
+				7518E45E2D39A4E000E8B2FA /* ComposableArchitecture */,
+			);
+			productName = TcaFrameworkWrapper;
+			productReference = 7518E4522D39A49F00E8B2FA /* TcaFrameworkWrapper.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		756AE6B92CA348BF00938FCC /* DataServiceKit */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 756AE6D62CA348BF00938FCC /* Build configuration list for PBXNativeTarget "DataServiceKit" */;
@@ -2778,13 +2845,13 @@
 				75869FB32D030A7A00D981B6 /* PBXTargetDependency */,
 				75869FB92D030A9300D981B6 /* PBXTargetDependency */,
 				7586A9222D11F90500D981B6 /* PBXTargetDependency */,
+				7518E4632D39A4F300E8B2FA /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				75869E142D01B4BD00D981B6 /* CottonViewModels */,
 			);
 			name = CottonViewModels;
 			packageProductDependencies = (
-				757E86432D39089D00CFA7D5 /* ComposableArchitecture */,
 			);
 			productName = CottonViewModels;
 			productReference = 75869E132D01B4BD00D981B6 /* CottonViewModels.framework */;
@@ -2943,6 +3010,7 @@
 				75869E272D01B4BD00D981B6 /* PBXTargetDependency */,
 				75869E922D01DDBB00D981B6 /* PBXTargetDependency */,
 				7586A90D2D11CA9C00D981B6 /* PBXTargetDependency */,
+				7518E4572D39A49F00E8B2FA /* PBXTargetDependency */,
 			);
 			name = Cotton;
 			packageProductDependencies = (
@@ -2950,7 +3018,6 @@
 				8AD4F51D28F492DC009C4BDC /* AlamofireImage */,
 				8AD4F51F28F49303009C4BDC /* Alamofire */,
 				759E3E4C2C863B3D00245B44 /* Atomics */,
-				757E842A2D37F5A000CFA7D5 /* ComposableArchitecture */,
 			);
 			productName = catowser;
 			productReference = 8435A4971EED5E700020102F /* Cotton Dev.app */;
@@ -3192,6 +3259,9 @@
 						CreatedOnToolsVersion = 10.1;
 						LastSwiftMigration = 1100;
 					};
+					7518E4512D39A49F00E8B2FA = {
+						CreatedOnToolsVersion = 16.0;
+					};
 					756AE6B92CA348BF00938FCC = {
 						CreatedOnToolsVersion = 16.0;
 					};
@@ -3322,6 +3392,7 @@
 				75869E1B2D01B4BD00D981B6 /* CottonViewModelsTests */,
 				75869E862D01DDBB00D981B6 /* CottonDataServicesTests */,
 				7586A9012D11CA9C00D981B6 /* ViewModelKitTests */,
+				7518E4512D39A49F00E8B2FA /* TcaFrameworkWrapper */,
 			);
 		};
 /* End PBXProject section */
@@ -3341,6 +3412,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				60D52D43225F55B400CB56F0 /* topdomains.txt in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7518E4502D39A49F00E8B2FA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3641,6 +3719,13 @@
 				60D52D3E225F47DB00CB56F0 /* InMemoryDomainSearchProvider.swift in Sources */,
 				75EFE97B2CD2CA15001CD0E6 /* WeakWrapper.swift in Sources */,
 				6094E740221FE6CB004269A2 /* Box.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7518E44E2D39A49F00E8B2FA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4057,6 +4142,16 @@
 			isa = PBXTargetDependency;
 			target = 6094E71B221FD2B9004269A2 /* CoreBrowser */;
 			targetProxy = 6094E721221FD2B9004269A2 /* PBXContainerItemProxy */;
+		};
+		7518E4572D39A49F00E8B2FA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7518E4512D39A49F00E8B2FA /* TcaFrameworkWrapper */;
+			targetProxy = 7518E4562D39A49F00E8B2FA /* PBXContainerItemProxy */;
+		};
+		7518E4632D39A4F300E8B2FA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7518E4512D39A49F00E8B2FA /* TcaFrameworkWrapper */;
+			targetProxy = 7518E4622D39A4F300E8B2FA /* PBXContainerItemProxy */;
 		};
 		756AE6C62CA348BF00938FCC /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -4544,6 +4639,110 @@
 				SUPPORTS_MACCATALYST = FALSE;
 			};
 			name = Debug;
+		};
+		7518E45C2D39A49F00E8B2FA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Cotton (Catowser). All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ae.TcaFrameworkWrapper;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				REGISTER_APP_GROUPS = NO;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		7518E45D2D39A49F00E8B2FA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 Cotton (Catowser). All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ae.TcaFrameworkWrapper;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				REGISTER_APP_GROUPS = NO;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
 		};
 		756AE6D12CA348BF00938FCC /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -6357,6 +6556,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		7518E45B2D39A49F00E8B2FA /* Build configuration list for PBXNativeTarget "TcaFrameworkWrapper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7518E45C2D39A49F00E8B2FA /* Debug */,
+				7518E45D2D39A49F00E8B2FA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		756AE6D62CA348BF00938FCC /* Build configuration list for PBXNativeTarget "DataServiceKit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -6652,12 +6860,7 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		757E842A2D37F5A000CFA7D5 /* ComposableArchitecture */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 757E84292D37F5A000CFA7D5 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
-			productName = ComposableArchitecture;
-		};
-		757E86432D39089D00CFA7D5 /* ComposableArchitecture */ = {
+		7518E45E2D39A4E000E8B2FA /* ComposableArchitecture */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 757E84292D37F5A000CFA7D5 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
 			productName = ComposableArchitecture;
