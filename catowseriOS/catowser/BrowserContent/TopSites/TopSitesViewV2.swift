@@ -13,8 +13,9 @@ import CottonViewModels
 
 @available(iOS 14.0, *)
 struct TopSitesViewV2: View {
-    @EnvironmentObject private var vm: TopSitesViewModel
+    @EnvironmentObject private var viewModel: TopSitesViewModel
     @State private var selected: Site?
+    @State private var topSites: [Site] = []
 
     init() { }
 
@@ -28,7 +29,7 @@ struct TopSitesViewV2: View {
     var body: some View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: ImageViewSizes.spacing) {
-                ForEach(vm.topSites) { TitledImageView($0, $selected) }
+                ForEach(topSites) { TitledImageView($0, $selected) }
             }
         }
         .padding(EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8))
@@ -36,7 +37,10 @@ struct TopSitesViewV2: View {
             guard let newValue else {
                 return
             }
-            vm.replaceSelected(tabContent: .site(newValue))
+            viewModel.replaceSelected(tabContent: .site(newValue))
+        }
+        .task {
+            topSites = await viewModel.topSites
         }
     }
 }

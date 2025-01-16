@@ -8,6 +8,7 @@
 
 import SwiftUI
 import CottonViewModels
+import ComposableArchitecture
 
 struct TopSitesView: View {
     @EnvironmentObject private var vm: TopSitesViewModel
