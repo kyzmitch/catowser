@@ -63,7 +63,7 @@ import CottonUseCases
                     await send(.handleSites(sites))
                 }.cancellable(id: CancelID.fetchSites)
             case .selectSite(let content):
-                if case let .topSites = content {
+                if case .topSites = content {
                     return .none
                 } else {
                     return .run { send in
