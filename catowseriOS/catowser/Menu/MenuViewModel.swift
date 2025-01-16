@@ -95,10 +95,12 @@ final class MenuViewModel: ObservableObject {
     // MARK: - init
 
     /// Depends on menu style and initial values of feaure flags
-    init(_ menuStyle: BrowserMenuStyle,
-         _ isDohEnabled: Bool,
-         _ isJavaScriptEnabled: Bool,
-         _ nativeAppRedirectEnabled: Bool) {
+    init(
+        _ menuStyle: BrowserMenuStyle,
+        _ isDohEnabled: Bool,
+        _ isJavaScriptEnabled: Bool,
+        _ nativeAppRedirectEnabled: Bool
+    ) {
         style = menuStyle
         switch menuStyle {
         case .withSiteMenu(_, let settings):
