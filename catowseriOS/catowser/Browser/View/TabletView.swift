@@ -32,6 +32,8 @@ struct TabletView<
     @ObservedObject private var webVM: W
     /// All tabs view model specific only to table layout
     @EnvironmentObject private var allTabsVM: AllTabsViewModel
+    /// Reducer
+    private let topSitesReducer: TopSitesReducer
 
     // MARK: - Tablet search bar state
 
@@ -87,7 +89,8 @@ struct TabletView<
         _ webVM: W,
         _ searchVM: S,
         _ searchBarVM: SB,
-        _ delegatesHolder: SearchBarDelegateHolder
+        _ delegatesHolder: SearchBarDelegateHolder,
+        _ topSitesReducer: TopSitesReducer
     ) {
         self.webVM = webVM
         // search suggestions vm is used as a template argument later
@@ -96,6 +99,7 @@ struct TabletView<
         self.delegatesHolder = delegatesHolder
         self.contentType = defaultContentType
         self.mode = mode
+        self.topSitesReducer = topSitesReducer
 
         // Next states are set to some random "good" values
         // because actualy values need to be fetched from Global actor
@@ -142,7 +146,8 @@ struct TabletView<
                     contentType,
                     $webViewNeedsUpdate,
                     mode,
-                    webVM
+                    webVM,
+                    topSitesReducer
                 )
             }
         }
@@ -219,7 +224,8 @@ struct TabletView<
                     contentType,
                     $webViewNeedsUpdate,
                     mode,
-                    webVM
+                    webVM,
+                    topSitesReducer
                 )
             }
         }

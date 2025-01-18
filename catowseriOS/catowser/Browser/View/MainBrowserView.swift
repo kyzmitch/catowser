@@ -55,6 +55,8 @@ struct MainBrowserView<
     @StateObject private var allTabsVM: AllTabsViewModel
     /// Top sites view model has async dependencies and has to be injected
     @StateObject private var topSitesVM: TopSitesViewModel
+    /// Reducer
+    private let topSitesReducer: TopSitesReducer
     /// Search suggestions view model has async dependencies and has to be injected
     @StateObject private var searchSuggestionsVM: S
     /// Web view model without a specific site
@@ -74,7 +76,8 @@ struct MainBrowserView<
         _ topSitesVM: TopSitesViewModel,
         _ searchSuggestionsVM: S,
         _ webVM: W,
-        _ searchBarVM: SB
+        _ searchBarVM: SB,
+        _ topSitesReducer: TopSitesReducer
     ) {
         let mainVM = MainBrowserViewModel(coordinatorsInterface)
         _viewModel = StateObject(wrappedValue: mainVM)
@@ -93,6 +96,7 @@ struct MainBrowserView<
         _webVM = StateObject(wrappedValue: webVM)
         _searchBarVM = StateObject(wrappedValue: searchBarVM)
         _toolbarVM = StateObject(wrappedValue: ViewModelFactory.shared.toolbarViewModel())
+        self.topSitesReducer = topSitesReducer
     }
 
     var body: some View {
@@ -104,7 +108,8 @@ struct MainBrowserView<
                     webVM,
                     searchSuggestionsVM,
                     searchBarVM,
-                    searchBarVM
+                    searchBarVM,
+                    topSitesReducer
                 )
             } else {
                 PhoneView(
@@ -113,7 +118,8 @@ struct MainBrowserView<
                     webVM,
                     searchSuggestionsVM,
                     searchBarVM,
-                    searchBarVM
+                    searchBarVM,
+                    topSitesReducer
                 )
             }
         }

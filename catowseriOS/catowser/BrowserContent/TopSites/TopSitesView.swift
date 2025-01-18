@@ -10,21 +10,31 @@ import SwiftUI
 import CottonViewModels
 import ComposableArchitecture
 
+/// Generic top sites view
 struct TopSitesView: View {
-    @EnvironmentObject private var vm: TopSitesViewModel
     /// Selected swiftUI mode which is set at app start
     private let mode: SwiftUIMode
+    /// Reducer
+    private let reducer: TopSitesReducer
 
-    init(_ mode: SwiftUIMode) {
+    init(
+        _ mode: SwiftUIMode,
+        _ reducer: TopSitesReducer
+    ) {
         self.mode = mode
+        self.reducer = reducer
     }
 
     var body: some View {
-        switch mode {
-        case .compatible:
-            TopSitesLegacyView()
-        case .full:
-            TopSitesViewV2()
+        WithPerceptionTracking {
+            switch mode {
+            case .compatible:
+                TopSitesLegacyView()
+            case .full:
+                TopSitesViewV2(store: Store(initialState: .loading, reducer: {
+                    reducer
+                }))
+            }
         }
     }
 }

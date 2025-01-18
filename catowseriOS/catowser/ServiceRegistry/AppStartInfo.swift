@@ -19,6 +19,8 @@ final class AppStartInfo: Sendable {
     let allTabsVM: AllTabsViewModel
     /// Top sites UIKit view controller needs that view model and it is async
     let topSitesVM: TopSitesViewModel
+    /// Reducer for the top sites
+    let topSitesReducer: TopSitesReducer
     /// Search suggestions view model
     let suggestionsVM: any SearchSuggestionsViewModel
     /// phone tab previews view model needed to make Phone previews coordinator
@@ -43,6 +45,7 @@ final class AppStartInfo: Sendable {
     init(
         allTabsVM: AllTabsViewModel,
         topSitesVM: TopSitesViewModel,
+        topSitesReducer: TopSitesReducer,
         phoneTabPreviewsVM: TabsPreviewsViewModelWithHolder,
         suggestionsVM: any SearchSuggestionsViewModel,
         webViewModel: any WebViewModel,
@@ -55,6 +58,7 @@ final class AppStartInfo: Sendable {
     ) {
         self.allTabsVM = allTabsVM
         self.topSitesVM = topSitesVM
+        self.topSitesReducer = topSitesReducer
         self.phoneTabPreviewsVM = phoneTabPreviewsVM
         self.suggestionsVM = suggestionsVM
         self.webViewModel = webViewModel

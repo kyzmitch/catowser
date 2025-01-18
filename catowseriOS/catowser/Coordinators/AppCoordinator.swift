@@ -109,6 +109,7 @@ final class AppCoordinator: Coordinator, ContentCoordinatorsInterface, PluginsPr
             appStartInfo.defaultTabContent,
             allTabsVM,
             topSitesVM,
+            appStartInfo.topSitesReducer,
             suggestionsVM,
             webViewModel,
             searchBarVM

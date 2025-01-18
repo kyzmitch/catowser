@@ -29,18 +29,23 @@ struct BrowserContentView<W: WebViewModel>: View {
     private let mode: SwiftUIMode
     /// Top sites view model, possibly somehow needs to be recreated JS setting changes
     @EnvironmentObject private var topSitesVM: TopSitesViewModel
+    /// Reducer
+    private let topSitesReducer: TopSitesReducer
     /// A delegate for the web view model
     private var siteNavigation: SiteExternalNavigationDelegate?
     /// Web view model
     @ObservedObject private var webVM: W
 
-    init(_ jsPluginsBuilder: any JSPluginsSource,
-         _ siteNavigation: SiteExternalNavigationDelegate?,
-         _ isLoading: Bool,
-         _ contentType: CoreBrowser.Tab.ContentType,
-         _ webViewNeedsUpdate: Binding<Bool>,
-         _ mode: SwiftUIMode,
-         _ webVM: W) {
+    init(
+        _ jsPluginsBuilder: any JSPluginsSource,
+        _ siteNavigation: SiteExternalNavigationDelegate?,
+        _ isLoading: Bool,
+        _ contentType: CoreBrowser.Tab.ContentType,
+        _ webViewNeedsUpdate: Binding<Bool>,
+        _ mode: SwiftUIMode,
+        _ webVM: W,
+        _ topSitesReducer: TopSitesReducer
+    ) {
         self.isLoading = isLoading
         self.contentType = contentType
         _webViewNeedsUpdate = webViewNeedsUpdate
@@ -48,6 +53,7 @@ struct BrowserContentView<W: WebViewModel>: View {
         self.siteNavigation = siteNavigation
         self.mode = mode
         self.webVM = webVM
+        self.topSitesReducer = topSitesReducer
     }
 
     var body: some View {
@@ -63,7 +69,7 @@ struct BrowserContentView<W: WebViewModel>: View {
             case .blank:
                 Spacer()
             case .topSites:
-                TopSitesView(mode)
+                TopSitesView(mode, topSitesReducer)
             case .site(let site):
                 WebView(webVM, site, webViewNeedsUpdate, mode)
             default:

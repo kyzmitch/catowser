@@ -11,7 +11,7 @@ import UIKit
 import CottonViewModels
 
 struct TopSitesLegacyView: CatowserUIVCRepresentable {
-    @EnvironmentObject private var vm: TopSitesViewModel
+    @EnvironmentObject private var viewModel: TopSitesViewModel
     typealias UIViewControllerType = UIViewController
 
     init() { }
@@ -20,7 +20,7 @@ struct TopSitesLegacyView: CatowserUIVCRepresentable {
         let interface = context.environment.browserContentCoordinators
         let vc: AnyViewController = vcFactory.topSitesViewController(
             interface?.topSitesCoordinator,
-            vm
+            viewModel
         )
         return vc.viewController
     }

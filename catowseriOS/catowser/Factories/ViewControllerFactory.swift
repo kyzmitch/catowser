@@ -32,6 +32,7 @@ protocol ViewControllerFactory: AnyObject {
         _ defaultContentType: CoreBrowser.Tab.ContentType,
         _ allTabsVM: AllTabsViewModel,
         _ topSitesVM: TopSitesViewModel,
+        _ topSitesReducer: TopSitesReducer,
         _ searchSuggestionsVM: S,
         _ webVM: W,
         _ searchBarVM: SB
@@ -112,6 +113,7 @@ extension ViewControllerFactory {
         _ defaultContentType: CoreBrowser.Tab.ContentType,
         _ allTabsVM: AllTabsViewModel,
         _ topSitesVM: TopSitesViewModel,
+        _ topSitesReducer: TopSitesReducer,
         _ searchSuggestionsVM: S,
         _ webVM: W,
         _ searchBarVM: SB
@@ -130,7 +132,8 @@ extension ViewControllerFactory {
                 topSitesVM,
                 searchSuggestionsVM,
                 webVM,
-                searchBarVM
+                searchBarVM,
+                topSitesReducer
             )
         }
         return vc

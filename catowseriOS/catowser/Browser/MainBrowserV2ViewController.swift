@@ -45,7 +45,8 @@ final class MainBrowserV2ViewController<
         _ topSitesVM: TopSitesViewModel,
         _ searchSuggestionsVM: S,
         _ webVM: W,
-        _ searchBarVM: SB
+        _ searchBarVM: SB,
+        _ topSitesReducer: TopSitesReducer
     ) {
         self.coordinator = coordinator
 
@@ -57,7 +58,8 @@ final class MainBrowserV2ViewController<
             topSitesVM,
             searchSuggestionsVM,
             webVM,
-            searchBarVM
+            searchBarVM,
+            topSitesReducer
         )
         super.init(rootView: view)
     }

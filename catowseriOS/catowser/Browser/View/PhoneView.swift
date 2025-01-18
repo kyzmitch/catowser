@@ -31,6 +31,8 @@ struct PhoneView<
     @ObservedObject private var searchSuggestionsVM: S
     /// Web view model without a specific site
     @ObservedObject private var webVM: W
+    /// Reducer
+    private let topSitesReducer: TopSitesReducer
 
     // MARK: - search bar state
 
@@ -93,7 +95,8 @@ struct PhoneView<
         _ webVM: W,
         _ searchVM: S,
         _ searchBarVM: SB,
-        _ delegatesHolder: SearchBarDelegateHolder
+        _ delegatesHolder: SearchBarDelegateHolder,
+        _ topSitesReducer: TopSitesReducer
     ) {
         self.webVM = webVM
         // search suggestions vm is used as a template argument later
@@ -117,6 +120,7 @@ struct PhoneView<
         isDohEnabled = false
         isJavaScriptEnabled = true
         nativeAppRedirectEnabled = true
+        self.topSitesReducer = topSitesReducer
     }
 
     var body: some View {
@@ -154,7 +158,8 @@ struct PhoneView<
                     contentType,
                     $webViewNeedsUpdate,
                     mode,
-                    webVM
+                    webVM,
+                    topSitesReducer
                 )
             }
             ToolbarView()
@@ -228,7 +233,8 @@ struct PhoneView<
                         contentType,
                         $webViewNeedsUpdate,
                         mode,
-                        webVM
+                        webVM,
+                        topSitesReducer
                     )
                 }
             }
