@@ -27,8 +27,6 @@ struct PhoneView<
     @EnvironmentObject private var browserContentVM: BrowserContentViewModel
     /// Toolbar model needed by both UI modes
     @EnvironmentObject private var toolbarVM: BrowserToolbarViewModel
-    /// Top sites view model is async dependency, so, can only be injected from outside
-    @EnvironmentObject private var topSitesVM: TopSitesViewModel
     /// Search suggestions view model has async init
     @ObservedObject private var searchSuggestionsVM: S
     /// Web view model without a specific site

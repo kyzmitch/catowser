@@ -123,13 +123,11 @@ struct MainBrowserView<
         .environmentObject(topSitesVM)
         .environmentObject(searchSuggestionsVM)
         .environmentObject(toolbarVM)
-        .onAppear {
-            Task {
-                await ServiceRegistry.shared.tabsService.attach(
-                    browserContentVM,
-                    notify: true
-                )
-            }
+        .task {
+            await ServiceRegistry.shared.tabsService.attach(
+                browserContentVM,
+                notify: true
+            )
         }
     }
 }
