@@ -103,13 +103,10 @@ final class AppCoordinator: Coordinator, ContentCoordinatorsInterface, PluginsPr
         let suggestionsVM = appStartInfo.suggestionsVM
         let webViewModel = appStartInfo.webViewModel
         let searchBarVM = appStartInfo.searchBarVM
+        #warning("TODO: pass whole app start info parameter")
         let vc = vcFactory.rootViewController(
             self,
-            uiFramework,
-            appStartInfo.defaultTabContent,
-            allTabsVM,
-            topSitesVM,
-            appStartInfo.topSitesReducer,
+            appStartInfo,
             suggestionsVM,
             webViewModel,
             searchBarVM

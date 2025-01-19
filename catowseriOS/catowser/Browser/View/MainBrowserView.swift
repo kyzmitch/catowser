@@ -70,33 +70,29 @@ struct MainBrowserView<
 
     init(
         _ coordinatorsInterface: C,
-        _ uiFrameworkType: UIFrameworkType,
-        _ defaultContentType: CoreBrowser.Tab.ContentType,
-        _ allTabsVM: AllTabsViewModel,
-        _ topSitesVM: TopSitesViewModel,
+        _ startContext: AppStartInfo,
         _ searchSuggestionsVM: S,
         _ webVM: W,
-        _ searchBarVM: SB,
-        _ topSitesReducer: TopSitesReducer
+        _ searchBarVM: SB
     ) {
         let mainVM = MainBrowserViewModel(coordinatorsInterface)
         _viewModel = StateObject(wrappedValue: mainVM)
         let browserVM = BrowserContentViewModel(
             mainVM.jsPluginsBuilder,
-            defaultContentType,
+            startContext.defaultTabContent,
             FeatureManager.shared,
             UIServiceRegistry.shared()
         )
         _browserContentVM = StateObject(wrappedValue: browserVM)
-        mode = uiFrameworkType.swiftUIMode
-        self.defaultContentType = defaultContentType
-        _allTabsVM = StateObject(wrappedValue: allTabsVM)
-        _topSitesVM = StateObject(wrappedValue: topSitesVM)
+        mode = startContext.uiFramework.swiftUIMode
+        self.defaultContentType = startContext.defaultTabContent
+        _allTabsVM = StateObject(wrappedValue: startContext.allTabsVM)
+        _topSitesVM = StateObject(wrappedValue: startContext.topSitesVM)
         _searchSuggestionsVM = StateObject(wrappedValue: searchSuggestionsVM)
         _webVM = StateObject(wrappedValue: webVM)
         _searchBarVM = StateObject(wrappedValue: searchBarVM)
         _toolbarVM = StateObject(wrappedValue: ViewModelFactory.shared.toolbarViewModel())
-        self.topSitesReducer = topSitesReducer
+        self.topSitesReducer = startContext.topSitesReducer
     }
 
     var body: some View {

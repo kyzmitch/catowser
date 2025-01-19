@@ -28,11 +28,7 @@ import CottonViewModels
 protocol ViewControllerFactory: AnyObject {
     func rootViewController<W, S, SB>(
         _ coordinator: AppCoordinator,
-        _ uiFramework: UIFrameworkType,
-        _ defaultContentType: CoreBrowser.Tab.ContentType,
-        _ allTabsVM: AllTabsViewModel,
-        _ topSitesVM: TopSitesViewModel,
-        _ topSitesReducer: TopSitesReducer,
+        _ startContext: AppStartInfo,
         _ searchSuggestionsVM: S,
         _ webVM: W,
         _ searchBarVM: SB
@@ -109,31 +105,23 @@ protocol ViewControllerFactory: AnyObject {
 extension ViewControllerFactory {
     func rootViewController<W, S, SB>(
         _ coordinator: AppCoordinator,
-        _ uiFramework: UIFrameworkType,
-        _ defaultContentType: CoreBrowser.Tab.ContentType,
-        _ allTabsVM: AllTabsViewModel,
-        _ topSitesVM: TopSitesViewModel,
-        _ topSitesReducer: TopSitesReducer,
+        _ startContext: AppStartInfo,
         _ searchSuggestionsVM: S,
         _ webVM: W,
         _ searchBarVM: SB
     ) -> AnyViewController
     where W: WebViewModel, S: SearchSuggestionsViewModel, SB: SearchBarViewModelWithDelegates {
         let vc: AnyViewController
-        switch uiFramework {
+        switch startContext.uiFramework {
         case .uiKit:
             vc = MainBrowserViewController(coordinator)
         case .swiftUIWrapper, .swiftUI:
             vc = MainBrowserV2ViewController(
                 coordinator,
-                uiFramework,
-                defaultContentType,
-                allTabsVM,
-                topSitesVM,
+                startContext,
                 searchSuggestionsVM,
                 webVM,
-                searchBarVM,
-                topSitesReducer
+                searchBarVM
             )
         }
         return vc

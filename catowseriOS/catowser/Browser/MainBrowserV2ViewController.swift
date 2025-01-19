@@ -39,27 +39,19 @@ final class MainBrowserV2ViewController<
 
     init(
         _ coordinator: C,
-        _ uiFramework: UIFrameworkType,
-        _ defaultContent: CoreBrowser.Tab.ContentType,
-        _ allTabsVM: AllTabsViewModel,
-        _ topSitesVM: TopSitesViewModel,
+        _ startContext: AppStartInfo,
         _ searchSuggestionsVM: S,
         _ webVM: W,
-        _ searchBarVM: SB,
-        _ topSitesReducer: TopSitesReducer
+        _ searchBarVM: SB
     ) {
         self.coordinator = coordinator
 
         let view = MainBrowserView(
             coordinator,
-            uiFramework,
-            defaultContent,
-            allTabsVM,
-            topSitesVM,
+            startContext,
             searchSuggestionsVM,
             webVM,
-            searchBarVM,
-            topSitesReducer
+            searchBarVM
         )
         super.init(rootView: view)
     }
