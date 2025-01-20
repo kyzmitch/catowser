@@ -31,9 +31,12 @@ struct TopSitesView: View {
             case .compatible:
                 TopSitesLegacyView()
             case .full:
-                TopSitesViewV2(store: Store(initialState: .loading, reducer: {
-                    reducer
-                }))
+                TopSitesViewV2(store: Store(
+                    initialState: .loading,
+                    reducer: {
+                        reducer
+                    })
+                )
             }
         }
     }

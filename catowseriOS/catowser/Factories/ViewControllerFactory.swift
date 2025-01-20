@@ -28,7 +28,7 @@ import CottonViewModels
 protocol ViewControllerFactory: AnyObject {
     func rootViewController<W, S, SB>(
         _ coordinator: AppCoordinator,
-        _ startContext: AppStartInfo,
+        _ startContext: AppStartContext,
         _ searchSuggestionsVM: S,
         _ webVM: W,
         _ searchBarVM: SB
@@ -105,7 +105,7 @@ protocol ViewControllerFactory: AnyObject {
 extension ViewControllerFactory {
     func rootViewController<W, S, SB>(
         _ coordinator: AppCoordinator,
-        _ startContext: AppStartInfo,
+        _ startContext: AppStartContext,
         _ searchSuggestionsVM: S,
         _ webVM: W,
         _ searchBarVM: SB

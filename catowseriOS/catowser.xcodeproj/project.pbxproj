@@ -93,7 +93,7 @@
 		753392B32921613E00570461 /* GlobalMenuCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753392B22921613E00570461 /* GlobalMenuCoordinator.swift */; };
 		753392B62922C9EB00570461 /* MainToolbarCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753392B52922C9EB00570461 /* MainToolbarCoordinator.swift */; };
 		753752842CF5FEDE008D40CF /* AppAssembler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752832CF5FED8008D40CF /* AppAssembler.swift */; };
-		753752862CF6F1A9008D40CF /* AppStartInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752852CF6F1A8008D40CF /* AppStartInfo.swift */; };
+		753752862CF6F1A9008D40CF /* AppStartContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752852CF6F1A8008D40CF /* AppStartContext.swift */; };
 		753752882CF6FFCA008D40CF /* PluginsProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752872CF6FFB7008D40CF /* PluginsProxy.swift */; };
 		7537528A2CF798B9008D40CF /* ContentCoordinatorsInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752892CF798B7008D40CF /* ContentCoordinatorsInterface.swift */; };
 		753752C82CFEB4B8008D40CF /* GoogleDNSOverJSONResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753752C72CFEB4B7008D40CF /* GoogleDNSOverJSONResponse.swift */; };
@@ -926,7 +926,7 @@
 		753392B22921613E00570461 /* GlobalMenuCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalMenuCoordinator.swift; sourceTree = "<group>"; };
 		753392B52922C9EB00570461 /* MainToolbarCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainToolbarCoordinator.swift; sourceTree = "<group>"; };
 		753752832CF5FED8008D40CF /* AppAssembler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAssembler.swift; sourceTree = "<group>"; };
-		753752852CF6F1A8008D40CF /* AppStartInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartInfo.swift; sourceTree = "<group>"; };
+		753752852CF6F1A8008D40CF /* AppStartContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartContext.swift; sourceTree = "<group>"; };
 		753752872CF6FFB7008D40CF /* PluginsProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginsProxy.swift; sourceTree = "<group>"; };
 		753752892CF798B7008D40CF /* ContentCoordinatorsInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentCoordinatorsInterface.swift; sourceTree = "<group>"; };
 		753752C72CFEB4B7008D40CF /* GoogleDNSOverJSONResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleDNSOverJSONResponse.swift; sourceTree = "<group>"; };
@@ -2251,7 +2251,7 @@
 				7570F7452B5C07E90066ABF1 /* UseCaseRegistry.swift */,
 				75869D9E2CFEE2D400D981B6 /* UseCaseLocator.swift */,
 				753752832CF5FED8008D40CF /* AppAssembler.swift */,
-				753752852CF6F1A8008D40CF /* AppStartInfo.swift */,
+				753752852CF6F1A8008D40CF /* AppStartContext.swift */,
 				753752872CF6FFB7008D40CF /* PluginsProxy.swift */,
 				60724EED220C4FDC0071BECF /* WebViewsReuseManager.swift */,
 			);
@@ -3950,7 +3950,7 @@
 				8AB9BE2028FF0D0D002063C2 /* AnyViewController.swift in Sources */,
 				8A1273DD2937B7FC0022B934 /* FilesGridCoordinator.swift in Sources */,
 				8A0FC19B29F246640044829A /* SearchSuggestionsLegacyView.swift in Sources */,
-				753752862CF6F1A9008D40CF /* AppStartInfo.swift in Sources */,
+				753752862CF6F1A9008D40CF /* AppStartContext.swift in Sources */,
 				8A55351A247D740900E3B330 /* MenuViewModel.swift in Sources */,
 				8A0319DC29FE71A500AF3BE3 /* UIViewControllerRepresentable+Extension.swift in Sources */,
 				841A2D7E203ACC220050A996 /* BlankWebPageViewController.swift in Sources */,

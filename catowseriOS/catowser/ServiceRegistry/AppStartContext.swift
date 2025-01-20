@@ -13,7 +13,7 @@ import CottonDataServices
 
 /// A simple type to return multiple view models from one function
 /// instead of a tuple.
-final class AppStartInfo: Sendable {
+final class AppStartContext: Sendable {
     /// Tablet specific view model which has to be initialised in async way earlier
     /// to not do async coordinator start for the tabs
     let allTabsVM: AllTabsViewModel

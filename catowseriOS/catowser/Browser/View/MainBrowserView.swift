@@ -70,7 +70,7 @@ struct MainBrowserView<
 
     init(
         _ coordinatorsInterface: C,
-        _ startContext: AppStartInfo,
+        _ startContext: AppStartContext,
         _ searchSuggestionsVM: S,
         _ webVM: W,
         _ searchBarVM: SB

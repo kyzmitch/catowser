@@ -39,7 +39,7 @@ final class MainBrowserV2ViewController<
 
     init(
         _ coordinator: C,
-        _ startContext: AppStartInfo,
+        _ startContext: AppStartContext,
         _ searchSuggestionsVM: S,
         _ webVM: W,
         _ searchBarVM: SB

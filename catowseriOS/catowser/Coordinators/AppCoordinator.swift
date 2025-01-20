@@ -74,7 +74,7 @@ final class AppCoordinator: Coordinator, ContentCoordinatorsInterface, PluginsPr
         appStartInfo.uiFramework
     }
     /// App start info (including view models and other data)
-    private let appStartInfo: AppStartInfo
+    private let appStartInfo: AppStartContext
     /// Feature manager
     private let featureManager: FeatureManager.StateHolder
     /// UI service registry
@@ -87,7 +87,7 @@ final class AppCoordinator: Coordinator, ContentCoordinatorsInterface, PluginsPr
         _ featureManager: FeatureManager.StateHolder,
         _ uiServiceRegistry: UIServiceRegistry,
         _ pluginsDelegate: PluginsProxy,
-        _ appStartInfo: AppStartInfo
+        _ appStartInfo: AppStartContext
     ) {
         self.vcFactory = vcFactory
         self.featureManager = featureManager

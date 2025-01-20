@@ -32,7 +32,7 @@ import CottonViewModels
         func configure(
             baseDelegate: BasePluginContentDelegate,
             instagramDelegate: InstagramContentDelegate
-        ) async -> AppStartInfo {
+        ) async -> AppStartContext {
             // Register data services and use cases
             await serviceRegistry.registerDataServices()
             await UseCaseRegistry.shared.registerUseCases()
@@ -76,7 +76,7 @@ import CottonViewModels
                 .searchDataServiceKey
             )
             // Wait for all the view models needed for app start
-            return await AppStartInfo(
+            return await AppStartContext(
                 allTabsVM: allTabsVM,
                 topSitesVM: topSitesVM,
                 topSitesReducer: topSitesReducer,
