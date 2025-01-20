@@ -234,7 +234,6 @@ struct PhoneView<
                     )
                 }
             }
-#if swift(<6.0)
             .toolbar {
                 ToolbarViewV2(
                     tabsCount,
@@ -243,9 +242,6 @@ struct PhoneView<
                     $showSearchSuggestions
                 )
             }
-#else
-            .toolbar(content: toolBarContent)
-#endif
         }
         .sheet(isPresented: $showingMenu) {
             BrowserMenuView(menuModel)
@@ -302,62 +298,4 @@ struct PhoneView<
             webVM.siteNavigation = toolbarVM.context?.siteExternalDelegate
         }
     }
-
-#if swift(>=6.0)
-    /// A workaround for swift 6.0 Xcode 16 beta 4 to compile the project
-    /// and use instead of `ToolbarViewV2` type
-    @ToolbarContentBuilder
-    func toolBarContent() -> some ToolbarContent {
-        ToolbarItem(placement: .bottomBar) {
-            DisableableButton(
-                "nav-back",
-                toolbarVM.state.goBackDisabled, {
-                    toolbarVM.sendAction(.goBack, onComplete: nil)
-                }
-            )
-        }
-        ToolbarItem(placement: .bottomBar) {
-            Spacer()
-        }
-        ToolbarItem(placement: .bottomBar) {
-            DisableableButton(
-                "nav-forward",
-                toolbarVM.state.goForwardDisabled, {
-                    toolbarVM.sendAction(.goForward, onComplete: nil)
-                }
-            )
-        }
-        ToolbarItem(placement: .bottomBar) {
-            Spacer()
-        }
-        ToolbarItem(placement: .bottomBar) {
-            DisableableButton(
-                "nav-refresh",
-                toolbarVM.state.reloadDisabled, {
-                    toolbarVM.sendAction(.reload, onComplete: nil)
-                }
-            )
-        }
-        ToolbarItem(placement: .bottomBar) {
-            Spacer()
-        }
-        ToolbarItem(placement: .bottomBar) {
-            Button {
-                showSearchSuggestions = false
-                withAnimation(.easeInOut(duration: 1)) {
-                    showingTabs.toggle()
-                }
-            } label: {
-                Text(verbatim: "\(tabsCount)")
-            }
-            .foregroundColor(.black)
-        }
-        ToolbarItem(placement: .bottomBar) {
-            Spacer()
-        }
-        ToolbarItem(placement: .bottomBar) {
-            MenuButton($showSearchSuggestions, $showingMenu)
-        }
-    }
-#endif
 }
