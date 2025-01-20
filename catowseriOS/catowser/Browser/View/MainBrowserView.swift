@@ -55,6 +55,8 @@ struct MainBrowserView<
     @StateObject private var allTabsVM: AllTabsViewModel
     /// Top sites view model has async dependencies and has to be injected
     @StateObject private var topSitesVM: TopSitesViewModel
+    /// Reducer
+    private let topSitesReducer: TopSitesReducer
     /// Search suggestions view model has async dependencies and has to be injected
     @StateObject private var searchSuggestionsVM: S
     /// Web view model without a specific site
@@ -68,10 +70,7 @@ struct MainBrowserView<
 
     init(
         _ coordinatorsInterface: C,
-        _ uiFrameworkType: UIFrameworkType,
-        _ defaultContentType: CoreBrowser.Tab.ContentType,
-        _ allTabsVM: AllTabsViewModel,
-        _ topSitesVM: TopSitesViewModel,
+        _ startContext: AppStartContext,
         _ searchSuggestionsVM: S,
         _ webVM: W,
         _ searchBarVM: SB
@@ -80,19 +79,20 @@ struct MainBrowserView<
         _viewModel = StateObject(wrappedValue: mainVM)
         let browserVM = BrowserContentViewModel(
             mainVM.jsPluginsBuilder,
-            defaultContentType,
+            startContext.defaultTabContent,
             FeatureManager.shared,
             UIServiceRegistry.shared()
         )
         _browserContentVM = StateObject(wrappedValue: browserVM)
-        mode = uiFrameworkType.swiftUIMode
-        self.defaultContentType = defaultContentType
-        _allTabsVM = StateObject(wrappedValue: allTabsVM)
-        _topSitesVM = StateObject(wrappedValue: topSitesVM)
+        mode = startContext.uiFramework.swiftUIMode
+        self.defaultContentType = startContext.defaultTabContent
+        _allTabsVM = StateObject(wrappedValue: startContext.allTabsVM)
+        _topSitesVM = StateObject(wrappedValue: startContext.topSitesVM)
         _searchSuggestionsVM = StateObject(wrappedValue: searchSuggestionsVM)
         _webVM = StateObject(wrappedValue: webVM)
         _searchBarVM = StateObject(wrappedValue: searchBarVM)
         _toolbarVM = StateObject(wrappedValue: ViewModelFactory.shared.toolbarViewModel())
+        self.topSitesReducer = startContext.topSitesReducer
     }
 
     var body: some View {
@@ -104,7 +104,8 @@ struct MainBrowserView<
                     webVM,
                     searchSuggestionsVM,
                     searchBarVM,
-                    searchBarVM
+                    searchBarVM,
+                    topSitesReducer
                 )
             } else {
                 PhoneView(
@@ -113,7 +114,8 @@ struct MainBrowserView<
                     webVM,
                     searchSuggestionsVM,
                     searchBarVM,
-                    searchBarVM
+                    searchBarVM,
+                    topSitesReducer
                 )
             }
         }
@@ -123,13 +125,11 @@ struct MainBrowserView<
         .environmentObject(topSitesVM)
         .environmentObject(searchSuggestionsVM)
         .environmentObject(toolbarVM)
-        .onAppear {
-            Task {
-                await ServiceRegistry.shared.tabsService.attach(
-                    browserContentVM,
-                    notify: true
-                )
-            }
+        .task {
+            await ServiceRegistry.shared.tabsService.attach(
+                browserContentVM,
+                notify: true
+            )
         }
     }
 }

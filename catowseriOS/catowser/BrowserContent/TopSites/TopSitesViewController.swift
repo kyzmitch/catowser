@@ -18,14 +18,15 @@ final class TopSitesViewController<
 
     @IBOutlet fileprivate weak var collectionView: UICollectionView!
     weak var coordinator: C?
-    private let vm: TopSitesViewModel
+    private let viewModel: TopSitesViewModel
+    private var topSites: [Site] = []
     
     init(
         nibName nibNameOrNil: String?,
         bundle nibBundleOrNil: Bundle?,
         vm: TopSitesViewModel
     ) {
-        self.vm = vm
+        self.viewModel = vm
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
@@ -46,6 +47,14 @@ final class TopSitesViewController<
         collectionView.register(SiteCollectionViewCell.self)
         collectionView.dataSource = self
         collectionView.delegate = self
+        
+        Task { [weak self] in
+            guard let self else {
+                return
+            }
+            self.topSites = await viewModel.topSites
+            self.collectionView.reloadData()
+        }
     }
 
     // MARK: - UICollectionViewDataSource
@@ -54,7 +63,7 @@ final class TopSitesViewController<
         _ collectionView: UICollectionView,
         numberOfItemsInSection section: Int
     ) -> Int {
-        return vm.topSites.count
+        return topSites.count
     }
 
     func collectionView(
@@ -62,7 +71,7 @@ final class TopSitesViewController<
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
         let cell = collectionView.dequeueCell(at: indexPath, type: SiteCollectionViewCell.self)
-        guard let site = vm.topSites[safe: indexPath.row] else {
+        guard let site = topSites[safe: indexPath.row] else {
             return cell
         }
         cell.reloadSiteCell(with: site)
@@ -92,9 +101,9 @@ final class TopSitesViewController<
         didSelectItemAt indexPath: IndexPath
     ) {
         collectionView.deselectItem(at: indexPath, animated: true)
-        guard let site = vm.topSites[safe: indexPath.row] else {
+        guard let site = topSites[safe: indexPath.row] else {
             return
         }
-        vm.replaceSelected(tabContent: .site(site))
+        viewModel.replaceSelected(tabContent: .site(site))
     }
 }

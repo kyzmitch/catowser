@@ -21,7 +21,8 @@ extension WKUserContentController: JavaScriptPluginVisitor {
             return false
         }
         guard let pluginHostName = plugin.hostKeyword else {
-            return true // should be a base plugin which doesn't need to be enabled (ON by default)
+            // should be a base plugin which doesn't need to be enabled (ON by default)
+            return true
         }
         guard host.isSimilar(name: pluginHostName) else {
             return false
@@ -44,9 +45,11 @@ extension WKUserContentController: JavaScriptPluginVisitor {
         basePlugin: BasePlugin,
         handler: WKScriptMessageHandler
     ) throws {
-        let wkScript = try JSPluginFactory.shared.script(for: basePlugin,
-                                                               with: .atDocumentEnd,
-                                                               isMainFrameOnly: true)
+        let wkScript = try JSPluginFactory.shared.script(
+            for: basePlugin,
+            with: .atDocumentEnd,
+            isMainFrameOnly: true
+        )
         addHandler(wkScript, basePlugin.messageHandlerName, handler)
     }
 
@@ -54,9 +57,11 @@ extension WKUserContentController: JavaScriptPluginVisitor {
         instagramPlugin: InstagramContentPlugin,
         handler: WKScriptMessageHandler
     ) throws {
-        let wkScript = try JSPluginFactory.shared.script(for: instagramPlugin,
-                                                               with: .atDocumentStart,
-                                                               isMainFrameOnly: instagramPlugin.isMainFrameOnly)
+        let wkScript = try JSPluginFactory.shared.script(
+            for: instagramPlugin,
+            with: .atDocumentStart,
+            isMainFrameOnly: instagramPlugin.isMainFrameOnly
+        )
         addHandler(wkScript, instagramPlugin.messageHandlerName, handler)
     }
 

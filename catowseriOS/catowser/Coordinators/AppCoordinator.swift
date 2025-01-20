@@ -74,7 +74,7 @@ final class AppCoordinator: Coordinator, ContentCoordinatorsInterface, PluginsPr
         appStartInfo.uiFramework
     }
     /// App start info (including view models and other data)
-    private let appStartInfo: AppStartInfo
+    private let appStartInfo: AppStartContext
     /// Feature manager
     private let featureManager: FeatureManager.StateHolder
     /// UI service registry
@@ -87,7 +87,7 @@ final class AppCoordinator: Coordinator, ContentCoordinatorsInterface, PluginsPr
         _ featureManager: FeatureManager.StateHolder,
         _ uiServiceRegistry: UIServiceRegistry,
         _ pluginsDelegate: PluginsProxy,
-        _ appStartInfo: AppStartInfo
+        _ appStartInfo: AppStartContext
     ) {
         self.vcFactory = vcFactory
         self.featureManager = featureManager
@@ -103,12 +103,10 @@ final class AppCoordinator: Coordinator, ContentCoordinatorsInterface, PluginsPr
         let suggestionsVM = appStartInfo.suggestionsVM
         let webViewModel = appStartInfo.webViewModel
         let searchBarVM = appStartInfo.searchBarVM
+        #warning("TODO: pass whole app start info parameter")
         let vc = vcFactory.rootViewController(
             self,
-            uiFramework,
-            appStartInfo.defaultTabContent,
-            allTabsVM,
-            topSitesVM,
+            appStartInfo,
             suggestionsVM,
             webViewModel,
             searchBarVM
@@ -747,10 +745,15 @@ extension AppCoordinator: GlobalMenuDelegate {
             style = .onlyGlobalMenu
         }
         Task {
-            let isDohEnabled = await featureManager.boolValue(of: .dnsOverHTTPSAvailable)
-            let isJavaScriptEnabled = await featureManager.boolValue(of: .javaScriptEnabled)
-            let nativeAppRedirectEnabled = await featureManager.boolValue(of: .nativeAppRedirect)
-            let menuModel: MenuViewModel = .init(style, isDohEnabled, isJavaScriptEnabled, nativeAppRedirectEnabled)
+            async let isDohEnabled = featureManager.boolValue(of: .dnsOverHTTPSAvailable)
+            async let isJavaScriptEnabled = featureManager.boolValue(of: .javaScriptEnabled)
+            async let nativeAppRedirectEnabled = featureManager.boolValue(of: .nativeAppRedirect)
+            let menuModel = await MenuViewModel(
+                style,
+                isDohEnabled,
+                isJavaScriptEnabled,
+                nativeAppRedirectEnabled
+            )
             menuModel.developerMenuPresenter = self
             showNext(.menu(menuModel, sourceView, sourceRect))
         }

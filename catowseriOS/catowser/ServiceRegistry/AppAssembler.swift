@@ -32,7 +32,7 @@ import CottonViewModels
         func configure(
             baseDelegate: BasePluginContentDelegate,
             instagramDelegate: InstagramContentDelegate
-        ) async -> AppStartInfo {
+        ) async -> AppStartContext {
             // Register data services and use cases
             await serviceRegistry.registerDataServices()
             await UseCaseRegistry.shared.registerUseCases()
@@ -46,16 +46,20 @@ import CottonViewModels
                 .setInstagram(instagramDelegate)
             // Init view model factory
             async let viewModelFactory = ViewModelFactory.shared
+            async let reducersFactory = ReducersFactory.shared
             let supplementaryData = await (
                 pluginsSource: pluginsSource,
-                viewModelFactory: viewModelFactory
+                viewModelFactory: viewModelFactory,
+                reducersFactory: reducersFactory
             )
             // Construct dependencies for the view models
             let webContext = await WebViewContextImpl(pluginsSource)
             let factory = supplementaryData.viewModelFactory
+            let factoryForReducers = supplementaryData.reducersFactory
             // Init view models
             async let allTabsVM = factory.allTabsViewModel()
             async let topSitesVM = factory.topSitesViewModel()
+            async let topSitesReducer = factoryForReducers.topSitesReducer()
             async let suggestionsVM = factory.searchSuggestionsViewModel()
             let previewsContext = TabPreviewsContextImpl()
             async let phoneTabPreviewsVM = factory.tabsPreviewsViewModel(previewsContext)
@@ -72,9 +76,10 @@ import CottonViewModels
                 .searchDataServiceKey
             )
             // Wait for all the view models needed for app start
-            return await AppStartInfo(
+            return await AppStartContext(
                 allTabsVM: allTabsVM,
                 topSitesVM: topSitesVM,
+                topSitesReducer: topSitesReducer,
                 phoneTabPreviewsVM: phoneTabPreviewsVM,
                 suggestionsVM: suggestionsVM,
                 webViewModel: webViewModel,

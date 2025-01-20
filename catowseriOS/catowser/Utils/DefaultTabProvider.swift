@@ -26,10 +26,12 @@ final class DefaultTabProvider {
 
         func topSites(_ isJsEnabled: Bool) -> [Site] {
             let array: [Site?]
-            let settings: Site.Settings = .init(isPrivate: false,
-                                                blockPopups: blockPopups,
-                                                isJSEnabled: isJsEnabled,
-                                                canLoadPlugins: true)
+            let settings: Site.Settings = .init(
+                isPrivate: false,
+                blockPopups: blockPopups,
+                isJSEnabled: isJsEnabled,
+                canLoadPlugins: true
+            )
             let opennet = Site("https://opennet.ru", "OpenNet", settings)
             let yahooFinance = Site("https://finance.yahoo.com", "Yahoo Finance", settings)
             let github = Site("https://github.com", "GitHub", settings)

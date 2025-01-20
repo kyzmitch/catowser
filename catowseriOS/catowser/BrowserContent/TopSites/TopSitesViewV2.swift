@@ -10,13 +10,11 @@ import SwiftUI
 import CottonBase
 import CoreBrowser
 import CottonViewModels
+import ComposableArchitecture
 
-@available(iOS 14.0, *)
 struct TopSitesViewV2: View {
-    @EnvironmentObject private var vm: TopSitesViewModel
     @State private var selected: Site?
-
-    init() { }
+    @ComposableArchitecture.Bindable var store: StoreOf<TopSitesReducer>
 
     /// Number of items which will be displayed in a row
     private let columns: [GridItem] = [
@@ -26,17 +24,31 @@ struct TopSitesViewV2: View {
     ]
 
     var body: some View {
-        ScrollView {
-            LazyVGrid(columns: columns, spacing: ImageViewSizes.spacing) {
-                ForEach(vm.topSites) { TitledImageView($0, $selected) }
+        WithPerceptionTracking {
+            Group {
+                switch store.state {
+                case .loading:
+                    ProgressView()
+                case .loaded(let topSites):
+                    ScrollView {
+                        LazyVGrid(columns: columns, spacing: ImageViewSizes.spacing) {
+                            ForEach(topSites) { TitledImageView($0, $selected) }
+                        }
+                    }
+                    .padding(EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8))
+                    .onChange(of: selected) { newValue in
+                        guard let newValue else {
+                            return
+                        }
+                        store.send(.selectSite(.site(newValue)))
+                    }
+                @unknown default:
+                    EmptyView()
+                }
             }
-        }
-        .padding(EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8))
-        .onChange(of: selected) { newValue in
-            guard let newValue else {
-                return
+            .onAppear {
+                store.send(.fetchSites)
             }
-            vm.replaceSelected(tabContent: .site(newValue))
         }
     }
 }

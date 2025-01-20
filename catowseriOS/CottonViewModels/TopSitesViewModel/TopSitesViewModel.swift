@@ -11,18 +11,21 @@ import CottonBase
 import CoreBrowser
 import CottonUseCases
 
+/// Top sites view model
 @MainActor public final class TopSitesViewModel: ObservableObject {
-    public let topSites: [Site]
+    private let appContext: TopSitesAppContext
     private let writeTabUseCase: WriteTabsUseCase
 
     public init(
-        _ topSites: [Site],
+        _ appContext: TopSitesAppContext,
         _ writeTabUseCase: WriteTabsUseCase
     ) {
-        self.topSites = topSites
+        self.appContext = appContext
         self.writeTabUseCase = writeTabUseCase
     }
 
+    /// Replaces current content of the selected tab
+    /// - Parameter tabContent: Content to put in the currently selected tab
     public func replaceSelected(
         tabContent: CoreBrowser.Tab.ContentType
     ) {
@@ -32,6 +35,13 @@ import CottonUseCases
             } catch {
                 print("Fail to replace current tab: \(error)")
             }
+        }
+    }
+    
+    /// Gives an array of top sites
+    public var topSites: [Site] {
+        get async {
+            await appContext.topSites()
         }
     }
 }

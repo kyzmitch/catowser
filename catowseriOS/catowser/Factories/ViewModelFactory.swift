@@ -95,9 +95,9 @@ import FeatureFlagsKit
 
     func topSitesViewModel() async -> TopSitesViewModel {
         let isJsEnabled = await featureManager.boolValue(of: .javaScriptEnabled)
-        async let sites = defaultTabProvider.topSites(isJsEnabled)
         async let writeUseCase = useCaseRegistry.findUseCase(WriteTabsUseCase.self)
-        return await TopSitesViewModel(sites, writeUseCase)
+        let context = TopSitesAppContextImpl(isJsEnabled, DefaultTabProvider.shared)
+        return await TopSitesViewModel(context, writeUseCase)
     }
     
     func searchBarViewModel(
