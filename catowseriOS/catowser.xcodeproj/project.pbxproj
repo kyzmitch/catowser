@@ -80,7 +80,6 @@
 		7517D9D32A5F2EDC00D081AD /* CottonBase.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7517D9C22A5F2E7A00D081AD /* CottonBase.xcframework */; };
 		7517D9D62A5F2EE600D081AD /* CottonBase.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7517D9C22A5F2E7A00D081AD /* CottonBase.xcframework */; };
 		7518E4582D39A49F00E8B2FA /* TcaFrameworkWrapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7518E4522D39A49F00E8B2FA /* TcaFrameworkWrapper.framework */; };
-		7518E4592D39A49F00E8B2FA /* TcaFrameworkWrapper.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7518E4522D39A49F00E8B2FA /* TcaFrameworkWrapper.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7518E45F2D39A4E000E8B2FA /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 7518E45E2D39A4E000E8B2FA /* ComposableArchitecture */; };
 		7518E4602D39A4F300E8B2FA /* TcaFrameworkWrapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7518E4522D39A49F00E8B2FA /* TcaFrameworkWrapper.framework */; };
 		75196D072944ABA700B3A45B /* MainBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75196D062944ABA700B3A45B /* MainBrowserView.swift */; };
@@ -831,7 +830,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				7518E4592D39A49F00E8B2FA /* TcaFrameworkWrapper.framework in Embed Frameworks */,
 				8A5F72112826DD59008E5638 /* CottonReactiveRestKit.framework in Embed Frameworks */,
 				608DA752223A3BD5009F75BD /* CottonPlugins.framework in Embed Frameworks */,
 				75869DDF2D01B1D400D981B6 /* CottonUseCases.framework in Embed Frameworks */,
@@ -3382,6 +3380,7 @@
 				75869DC82D01B1D400D981B6 /* CottonUseCases */,
 				75869E122D01B4BD00D981B6 /* CottonViewModels */,
 				75869E7D2D01DDBB00D981B6 /* CottonDataServices */,
+				7518E4512D39A49F00E8B2FA /* TcaFrameworkWrapper */,
 				8A5E6C7C290B0E6C0034A78B /* AutoMockable */,
 				8A8035EE24446234000E035F /* DNSProxy */,
 				7E8949E866832B2BB787758D /* Gryphon */,
@@ -3395,7 +3394,6 @@
 				75869E1B2D01B4BD00D981B6 /* CottonViewModelsTests */,
 				75869E862D01DDBB00D981B6 /* CottonDataServicesTests */,
 				7586A9012D11CA9C00D981B6 /* ViewModelKitTests */,
-				7518E4512D39A49F00E8B2FA /* TcaFrameworkWrapper */,
 			);
 		};
 /* End PBXProject section */
@@ -4651,7 +4649,7 @@
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -4704,7 +4702,7 @@
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
