@@ -137,8 +137,11 @@ struct PhoneView<
                 searchBarDelegate,
                 searchBarAction,
                 searchBarVM
+            ).frame(
+                minWidth: 0,
+                maxWidth: .infinity,
+                maxHeight: CGFloat.searchViewHeight
             )
-                .frame(minWidth: 0, maxWidth: .infinity, maxHeight: CGFloat.searchViewHeight)
             if toolbarVM.state.showProgress {
                 ProgressView(value: toolbarVM.state.loadingProgress)
             }
@@ -181,12 +184,16 @@ struct PhoneView<
                 searchQuery = query
             }
         }
-        .onReceive(browserContentVM.$webViewNeedsUpdate.dropFirst()) { webViewNeedsUpdate = true }
+        .onReceive(browserContentVM.$webViewNeedsUpdate, perform: { _ in
+            webViewNeedsUpdate = true
+        })
         .onReceive(browserContentVM.$contentType) { value in
             showSearchSuggestions = false
             contentType = value
         }
-        .onReceive(browserContentVM.$loading.dropFirst()) { isLoading = $0 }
+        .onReceive(browserContentVM.$loading.dropFirst(), perform: { value in
+            isLoading = value
+        })
         .task {
             async let searchProviderType = FeatureManager.shared.webSearchAutoCompleteValue()
             async let isDohEnabled = FeatureManager.shared.boolValue(of: .dnsOverHTTPSAvailable)
@@ -265,13 +272,17 @@ struct PhoneView<
                 webViewNeedsUpdate = false
             }
         }
-        .onReceive(browserContentVM.$webViewNeedsUpdate.dropFirst()) { webViewNeedsUpdate = true }
+        .onReceive(browserContentVM.$webViewNeedsUpdate.dropFirst()) { _ in
+            webViewNeedsUpdate = true
+        }
         .onReceive(browserContentVM.$contentType.dropFirst()) { value in
             showSearchSuggestions = false
             contentType = value
             searchBarAction = .create(value)
         }
-        .onReceive(browserContentVM.$tabsCount) { tabsCount = $0 }
+        .onReceive(browserContentVM.$tabsCount) { value in
+            tabsCount = value
+        }
         .onChange(of: showingTabs) { newValue in
             // Reset the search bar from editing mode
             // when new modal screen is about to get shown
@@ -279,7 +290,9 @@ struct PhoneView<
                 searchBarAction = .cancelSearch
             }
         }
-        .onReceive(browserContentVM.$loading.dropFirst()) { isLoading = $0 }
+        .onReceive(browserContentVM.$loading.dropFirst()) { value in
+            isLoading = value
+        }
         .task {
             async let searchProviderType = FeatureManager.shared.webSearchAutoCompleteValue()
             async let isDohEnabled = FeatureManager.shared.boolValue(of: .dnsOverHTTPSAvailable)

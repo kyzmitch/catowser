@@ -34,13 +34,15 @@ struct BrowserContentView<W: WebViewModel>: View {
     /// Web view model
     @ObservedObject private var webVM: W
 
-    init(_ jsPluginsBuilder: any JSPluginsSource,
-         _ siteNavigation: SiteExternalNavigationDelegate?,
-         _ isLoading: Bool,
-         _ contentType: CoreBrowser.Tab.ContentType,
-         _ webViewNeedsUpdate: Binding<Bool>,
-         _ mode: SwiftUIMode,
-         _ webVM: W) {
+    init(
+        _ jsPluginsBuilder: any JSPluginsSource,
+        _ siteNavigation: SiteExternalNavigationDelegate?,
+        _ isLoading: Bool,
+        _ contentType: CoreBrowser.Tab.ContentType,
+        _ webViewNeedsUpdate: Binding<Bool>,
+        _ mode: SwiftUIMode,
+        _ webVM: W
+    ) {
         self.isLoading = isLoading
         self.contentType = contentType
         _webViewNeedsUpdate = webViewNeedsUpdate
@@ -51,11 +53,6 @@ struct BrowserContentView<W: WebViewModel>: View {
     }
 
     var body: some View {
-        dynamicContentView
-    }
-
-    @ViewBuilder
-    private var dynamicContentView: some View {
         if isLoading {
             Spacer()
         } else {
