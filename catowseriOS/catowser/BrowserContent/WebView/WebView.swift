@@ -45,10 +45,10 @@ struct WebView<W: WebViewModel>: View {
 }
 
 /// SwiftUI wrapper around UIKit web view view controller
-private struct WebViewLegacyView: CatowserUIVCRepresentable {
+private struct WebViewLegacyView<W: WebViewModel>: CatowserUIVCRepresentable {
     typealias UIViewControllerType = UIViewController
 
-    private let viewModel: any WebViewModel
+    @ObservedObject private var viewModel: W
     /// Initial site with an url to load the web view
     private let site: Site
     /// A workaround to avoid unnecessary web view updates
@@ -58,7 +58,7 @@ private struct WebViewLegacyView: CatowserUIVCRepresentable {
     private let dummyArgument: WebContentCoordinator? = nil
 
     init(
-        _ viewModel: any WebViewModel,
+        _ viewModel: W,
         _ site: Site,
         _ webViewNeedsUpdate: Bool
     ) {
