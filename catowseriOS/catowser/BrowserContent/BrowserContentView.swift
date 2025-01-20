@@ -57,11 +57,6 @@ struct BrowserContentView<W: WebViewModel>: View {
     }
 
     var body: some View {
-        dynamicContentView
-    }
-
-    @ViewBuilder
-    private var dynamicContentView: some View {
         if isLoading {
             Spacer()
         } else {

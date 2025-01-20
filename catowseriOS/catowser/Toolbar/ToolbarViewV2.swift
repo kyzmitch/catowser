@@ -7,9 +7,8 @@
 //
 
 import SwiftUI
-import CoreBrowser
+import CottonViewModels
 
-#if swift(<6.0)
 struct ToolbarViewV2: ToolbarContent {
     @EnvironmentObject var viewModel: BrowserToolbarViewModel
     private var tabsCount: Int
@@ -38,19 +37,34 @@ struct ToolbarViewV2: ToolbarContent {
     
     var body: some ToolbarContent {
         ToolbarItem(placement: .bottomBar) {
-            DisableableButton("nav-back", viewModel.goBackDisabled, viewModel.goBack)
+            DisableableButton(
+                "nav-back",
+                viewModel.state.goBackDisabled, {
+                    viewModel.sendAction(.goBack, onComplete: nil)
+                }
+            )
         }
         ToolbarItem(placement: .bottomBar) {
             Spacer()
         }
         ToolbarItem(placement: .bottomBar) {
-            DisableableButton("nav-forward", viewModel.goForwardDisabled, viewModel.goForward)
+            DisableableButton(
+                "nav-forward",
+                viewModel.state.goForwardDisabled, {
+                    viewModel.sendAction(.goForward, onComplete: nil)
+                }
+            )
         }
         ToolbarItem(placement: .bottomBar) {
             Spacer()
         }
         ToolbarItem(placement: .bottomBar) {
-            DisableableButton("nav-refresh", viewModel.reloadDisabled, viewModel.reload)
+            DisableableButton(
+                "nav-refresh",
+                viewModel.state.reloadDisabled, {
+                    viewModel.sendAction(.reload, onComplete: nil)
+                }
+            )
         }
         ToolbarItem(placement: .bottomBar) {
             Spacer()
@@ -74,4 +88,3 @@ struct ToolbarViewV2: ToolbarContent {
         }
     }
 }
-#endif

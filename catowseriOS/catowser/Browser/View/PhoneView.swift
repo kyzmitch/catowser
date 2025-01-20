@@ -139,8 +139,11 @@ struct PhoneView<
                 searchBarDelegate,
                 searchBarAction,
                 searchBarVM
+            ).frame(
+                minWidth: 0,
+                maxWidth: .infinity,
+                maxHeight: CGFloat.searchViewHeight
             )
-                .frame(minWidth: 0, maxWidth: .infinity, maxHeight: CGFloat.searchViewHeight)
             if toolbarVM.state.showProgress {
                 ProgressView(value: toolbarVM.state.loadingProgress)
             }
@@ -184,12 +187,16 @@ struct PhoneView<
                 searchQuery = query
             }
         }
-        .onReceive(browserContentVM.$webViewNeedsUpdate.dropFirst()) { webViewNeedsUpdate = true }
+        .onReceive(browserContentVM.$webViewNeedsUpdate, perform: { _ in
+            webViewNeedsUpdate = true
+        })
         .onReceive(browserContentVM.$contentType) { value in
             showSearchSuggestions = false
             contentType = value
         }
-        .onReceive(browserContentVM.$loading.dropFirst()) { isLoading = $0 }
+        .onReceive(browserContentVM.$loading.dropFirst(), perform: { value in
+            isLoading = value
+        })
         .task {
             async let searchProviderType = FeatureManager.shared.webSearchAutoCompleteValue()
             async let isDohEnabled = FeatureManager.shared.boolValue(of: .dnsOverHTTPSAvailable)
@@ -238,7 +245,6 @@ struct PhoneView<
                     )
                 }
             }
-#if swift(<6.0)
             .toolbar {
                 ToolbarViewV2(
                     tabsCount,
@@ -247,9 +253,6 @@ struct PhoneView<
                     $showSearchSuggestions
                 )
             }
-#else
-            .toolbar(content: toolBarContent)
-#endif
         }
         .sheet(isPresented: $showingMenu) {
             BrowserMenuView(menuModel)
@@ -273,13 +276,17 @@ struct PhoneView<
                 webViewNeedsUpdate = false
             }
         }
-        .onReceive(browserContentVM.$webViewNeedsUpdate.dropFirst()) { webViewNeedsUpdate = true }
+        .onReceive(browserContentVM.$webViewNeedsUpdate.dropFirst()) { _ in
+            webViewNeedsUpdate = true
+        }
         .onReceive(browserContentVM.$contentType.dropFirst()) { value in
             showSearchSuggestions = false
             contentType = value
             searchBarAction = .create(value)
         }
-        .onReceive(browserContentVM.$tabsCount) { tabsCount = $0 }
+        .onReceive(browserContentVM.$tabsCount) { value in
+            tabsCount = value
+        }
         .onChange(of: showingTabs) { newValue in
             // Reset the search bar from editing mode
             // when new modal screen is about to get shown
@@ -287,7 +294,9 @@ struct PhoneView<
                 searchBarAction = .cancelSearch
             }
         }
-        .onReceive(browserContentVM.$loading.dropFirst()) { isLoading = $0 }
+        .onReceive(browserContentVM.$loading.dropFirst()) { value in
+            isLoading = value
+        }
         .task {
             async let searchProviderType = FeatureManager.shared.webSearchAutoCompleteValue()
             async let isDohEnabled = FeatureManager.shared.boolValue(of: .dnsOverHTTPSAvailable)
@@ -306,62 +315,4 @@ struct PhoneView<
             webVM.siteNavigation = toolbarVM.context?.siteExternalDelegate
         }
     }
-
-#if swift(>=6.0)
-    /// A workaround for swift 6.0 Xcode 16 beta 4 to compile the project
-    /// and use instead of `ToolbarViewV2` type
-    @ToolbarContentBuilder
-    func toolBarContent() -> some ToolbarContent {
-        ToolbarItem(placement: .bottomBar) {
-            DisableableButton(
-                "nav-back",
-                toolbarVM.state.goBackDisabled, {
-                    toolbarVM.sendAction(.goBack, onComplete: nil)
-                }
-            )
-        }
-        ToolbarItem(placement: .bottomBar) {
-            Spacer()
-        }
-        ToolbarItem(placement: .bottomBar) {
-            DisableableButton(
-                "nav-forward",
-                toolbarVM.state.goForwardDisabled, {
-                    toolbarVM.sendAction(.goForward, onComplete: nil)
-                }
-            )
-        }
-        ToolbarItem(placement: .bottomBar) {
-            Spacer()
-        }
-        ToolbarItem(placement: .bottomBar) {
-            DisableableButton(
-                "nav-refresh",
-                toolbarVM.state.reloadDisabled, {
-                    toolbarVM.sendAction(.reload, onComplete: nil)
-                }
-            )
-        }
-        ToolbarItem(placement: .bottomBar) {
-            Spacer()
-        }
-        ToolbarItem(placement: .bottomBar) {
-            Button {
-                showSearchSuggestions = false
-                withAnimation(.easeInOut(duration: 1)) {
-                    showingTabs.toggle()
-                }
-            } label: {
-                Text(verbatim: "\(tabsCount)")
-            }
-            .foregroundColor(.black)
-        }
-        ToolbarItem(placement: .bottomBar) {
-            Spacer()
-        }
-        ToolbarItem(placement: .bottomBar) {
-            MenuButton($showSearchSuggestions, $showingMenu)
-        }
-    }
-#endif
 }
